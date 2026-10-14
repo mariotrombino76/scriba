@@ -49,6 +49,17 @@ export interface MarkSpec {
   [key: string]: unknown
 }
 
+export interface NodeFromJSONOptions {
+  /** Maximum nesting depth (untrusted input). Default 200. */
+  maxDepth?: number
+  /**
+   * Accept nodes whose content is incomplete (missing required children), as
+   * found in slices. Child types and marks are still checked; full validity is
+   * enforced when the slice is inserted into a document.
+   */
+  partial?: boolean
+}
+
 export interface SchemaSpec<N extends string = string, M extends string = string> {
   nodes: Record<N, NodeSpec>
   marks?: Record<M, MarkSpec>
@@ -308,11 +319,11 @@ export class Schema<N extends string = string, M extends string = string> {
    * Deserializes and validates a node from JSON. Throws on anything the schema rejects.
    * JSON is untrusted input: nesting is limited by `maxDepth` (default 200).
    */
-  nodeFromJSON(json: NodeJSON, options: { maxDepth?: number } = {}): Node {
-    return this.readNode(json, options.maxDepth ?? 200)
+  nodeFromJSON(json: NodeJSON, options: NodeFromJSONOptions = {}): Node {
+    return this.readNode(json, options.maxDepth ?? 200, options.partial ?? false)
   }
 
-  private readNode(json: NodeJSON, depthLeft: number): Node {
+  private readNode(json: NodeJSON, depthLeft: number, partial: boolean): Node {
     if (!json || typeof json !== 'object' || typeof json.type !== 'string') {
       throw new RangeError('Invalid node JSON')
     }
@@ -329,8 +340,18 @@ export class Schema<N extends string = string, M extends string = string> {
     }
     if (json.content !== undefined && !Array.isArray(json.content))
       throw new RangeError('Invalid content JSON')
-    const children = (json.content ?? []).map((c) => this.readNode(c, depthLeft - 1))
-    return this.nodeType(json.type).createChecked(json.attrs, children, marks)
+    const children = (json.content ?? []).map((c) => this.readNode(c, depthLeft - 1, partial))
+    const type = this.nodeType(json.type)
+    if (!partial) return type.createChecked(json.attrs, children, marks)
+    // Partial content (slices): children must be of allowed types, in order, but may be incomplete.
+    const content = Fragment.fromArray(children)
+    if (
+      !type.contentExpr.matchFragment(content) ||
+      !content.content.every((c) => type.allowsMarks(c.marks))
+    ) {
+      throw new RangeError(`Invalid content for node ${type.name}`)
+    }
+    return type.create(json.attrs, content, marks)
   }
 
   markFromJSON(json: MarkJSON): Mark {

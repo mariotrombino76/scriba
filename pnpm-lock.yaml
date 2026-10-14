@@ -70,6 +70,24 @@ importers:
 
   packages/i18n: {}
 
+  packages/plugins/blockquote:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+
+  packages/plugins/list:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+
   packages/sanitize-server:
     dependencies:
       '@scriba/core':

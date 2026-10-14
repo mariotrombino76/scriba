@@ -46,3 +46,40 @@ describe('Step.fromJSON with untrusted input', () => {
     expect(step.apply(doc(p('a'))).failed).toBeTruthy()
   })
 })
+
+describe('replaceAround step JSON', () => {
+  it.each([
+    [{ stepType: 'replaceAround', from: 5, to: 2, gapFrom: 3, gapTo: 4, insert: 0 }],
+    [{ stepType: 'replaceAround', from: 0, to: 4, gapFrom: 3, gapTo: 2, insert: 0 }],
+    [{ stepType: 'replaceAround', from: 0, to: 4, gapFrom: 0, gapTo: 4, insert: 9 }],
+    [{ stepType: 'replaceAround', from: 0, to: 4, gapFrom: 0, gapTo: 4, insert: -1 }],
+  ])('rejects %j', (json) => {
+    expect(() => Step.fromJSON(schema, json as StepJSON)).toThrow()
+  })
+})
+
+describe('slices with incomplete nodes (regression)', () => {
+  it('accepts incomplete wrappers in slice JSON but never inserts them whole', () => {
+    // An empty blockquote is invalid (block+). As an inserted whole node it must be refused.
+    const step = Step.fromJSON(schema, {
+      stepType: 'replace',
+      from: 3,
+      to: 3,
+      slice: { content: [{ type: 'blockquote' }] },
+    })
+    const result = step.apply(doc(p('a')))
+    expect(result.doc).toBeNull()
+    expect(result.failed).toMatch(/blockquote/)
+  })
+
+  it('still rejects wrong child types in partial content', () => {
+    expect(() =>
+      Step.fromJSON(schema, {
+        stepType: 'replace',
+        from: 1,
+        to: 1,
+        slice: { content: [{ type: 'blockquote', content: [{ type: 'text', text: 'x' }] }] },
+      }),
+    ).toThrow()
+  })
+})

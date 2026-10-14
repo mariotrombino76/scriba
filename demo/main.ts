@@ -4,7 +4,8 @@ import {
   Slice,
   TextSelection,
   baseKeymap,
-  basicSchema,
+  Schema,
+  basicSchemaSpec,
   formatKeymap,
   history,
   historyKeymap,
@@ -16,10 +17,15 @@ import {
 } from '@scriba/core'
 import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
-import { defineScribaToolbar } from '@scriba/ui'
+import { defaultToolbarItems, defineScribaToolbar } from '@scriba/ui'
+import { listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
+import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquote'
 import '../packages/themes/scriba.css'
 
-const schema = basicSchema
+const schema = new Schema({
+  nodes: { ...basicSchemaSpec.nodes, ...blockquoteNodes, ...listNodes },
+  marks: basicSchemaSpec.marks,
+})
 
 const SAMPLE = `
 <h1>Benvenuto in Scriba</h1>
@@ -27,6 +33,10 @@ const SAMPLE = `
 ciò che lo schema non conosce viene <u>scartato</u>, mai eseguito.</p>
 <h2>Cose da provare</h2>
 <p>Scrivi, premi Invio, seleziona del testo e usa <code>Ctrl+B</code>.<br>Poi <s>annulla</s> con Ctrl+Z.</p>
+<ul><li><p>Elenchi puntati e numerati: <code>Ctrl+Shift+8</code> / <code>Ctrl+Shift+7</code></p>
+<ul><li><p>Tab per rientrare, Shift+Tab per tornare indietro</p></li></ul></li>
+<li><p>Invio su un elemento vuoto per uscire dall'elenco</p></li></ul>
+<blockquote><p>Citazioni dal pulsante ❝ — Backspace all'inizio per uscirne.</p></blockquote>
 <p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>`
 
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
@@ -34,7 +44,13 @@ const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="
 const doc = parseHTML(schema, parseInertHTML(SAMPLE).body)
 const state = EditorState.create({
   doc,
-  plugins: [history(), keymap(historyKeymap), keymap(formatKeymap(schema)), keymap(baseKeymap)],
+  plugins: [
+    history(),
+    keymap(listKeymap(schema), { priority: 50 }),
+    keymap(historyKeymap),
+    keymap(formatKeymap(schema)),
+    keymap(baseKeymap),
+  ],
 })
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
@@ -58,6 +74,12 @@ defineScribaToolbar()
 const toolbar = document.createElement('scriba-toolbar')
 $('toolbar-slot').appendChild(toolbar)
 toolbar.translator = createTranslator('it')
+toolbar.items = [
+  ...defaultToolbarItems(schema),
+  { type: 'separator' },
+  ...listToolbarItems(schema),
+  ...blockquoteToolbarItems(schema),
+]
 toolbar.view = view
 
 const checkbox = $<HTMLInputElement>('readonly')

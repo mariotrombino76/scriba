@@ -13,6 +13,7 @@ export {
   type NodeSpec,
   type MarkSpec,
   type SchemaSpec,
+  type NodeFromJSONOptions,
 } from './model/schema.js'
 
 export { StepMap, Mapping, type Mappable, type MapResult } from './transform/map.js'
@@ -21,6 +22,15 @@ export { ReplaceStep } from './transform/replace-step.js'
 export { AddMarkStep, RemoveMarkStep } from './transform/mark-step.js'
 export { SetAttrsStep, SetNodeTypeStep } from './transform/attr-step.js'
 export { Transform, TransformError } from './transform/transform.js'
+export { ReplaceAroundStep } from './transform/replace-around-step.js'
+export {
+  NodeRange,
+  blockRange,
+  canReplace,
+  findWrapping,
+  liftTarget,
+  type Wrapper,
+} from './transform/structure.js'
 export { deleteRangeSlice, type DeletePlan } from './transform/delete-range.js'
 
 export {
@@ -54,6 +64,7 @@ export {
   setBlockType,
 } from './commands/base.js'
 export { toggleMark, isMarkActive } from './commands/marks.js'
+export { wrapIn, lift, liftEmptyOrFirstBlock, toggleWrap, isInNode } from './commands/structure.js'
 export { baseKeymap, historyKeymap, formatKeymap } from './commands/base-keymap.js'
 export {
   keymap,

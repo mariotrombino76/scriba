@@ -5,6 +5,7 @@ import {
   insertNode,
   joinBackward,
   joinForward,
+  liftEmptyOrFirstBlock,
   newlineInCode,
   redo,
   runKeymaps,
@@ -17,7 +18,12 @@ import {
 import { handleCopy, handlePaste } from './clipboard.js'
 import type { EditorView } from './view.js'
 
-const deleteBackward = chainCommands(deleteSelection, joinBackward, deleteChar(-1))
+const deleteBackward = chainCommands(
+  deleteSelection,
+  liftEmptyOrFirstBlock,
+  joinBackward,
+  deleteChar(-1),
+)
 const deleteForward = chainCommands(deleteSelection, joinForward, deleteChar(1))
 
 function lineBreak(view: EditorView): Command {

@@ -56,6 +56,20 @@ function close(node: Node, content: Fragment): Node {
   return node.copy(content)
 }
 
+/**
+ * Slice children inserted whole (not merged at an open edge) must be fully valid:
+ * slices can come from untrusted JSON with incomplete nodes.
+ */
+function wholeChild(slice: Node, index: number): Node {
+  const child = slice.child(index)
+  try {
+    child.check()
+  } catch (e) {
+    throw new ReplaceError(e instanceof Error ? e.message : String(e))
+  }
+  return child
+}
+
 function edgeChild(node: Node, first: boolean): Node {
   const child = first ? node.firstChild : node.lastChild
   if (!child || child.isText || child.isLeaf) {
@@ -73,7 +87,7 @@ function buildShared($from: ResolvedPos, $to: ResolvedPos, depth: number, slice:
   } else {
     if (fromOpen) parts.push(buildLeft($from, depth + 1, edgeChild(slice, true)))
     const end = toOpen ? slice.childCount - 1 : slice.childCount
-    for (let i = fromOpen ? 1 : 0; i < end; i++) parts.push(slice.child(i))
+    for (let i = fromOpen ? 1 : 0; i < end; i++) parts.push(wholeChild(slice, i))
     if (toOpen) parts.push(buildRight($to, depth + 1, edgeChild(slice, false)))
   }
   const content = leftOf($from, depth).append(Fragment.fromArray(parts)).append(rightOf($to, depth))
@@ -84,7 +98,7 @@ function buildLeft($from: ResolvedPos, depth: number, slice: Node): Node {
   const open = depth < $from.depth
   const parts: Node[] = []
   if (open) parts.push(buildLeft($from, depth + 1, edgeChild(slice, true)))
-  for (let i = open ? 1 : 0; i < slice.childCount; i++) parts.push(slice.child(i))
+  for (let i = open ? 1 : 0; i < slice.childCount; i++) parts.push(wholeChild(slice, i))
   return close($from.node(depth), leftOf($from, depth).append(Fragment.fromArray(parts)))
 }
 
@@ -92,7 +106,7 @@ function buildRight($to: ResolvedPos, depth: number, slice: Node): Node {
   const open = depth < $to.depth
   const parts: Node[] = []
   const end = open ? slice.childCount - 1 : slice.childCount
-  for (let i = 0; i < end; i++) parts.push(slice.child(i))
+  for (let i = 0; i < end; i++) parts.push(wholeChild(slice, i))
   if (open) parts.push(buildRight($to, depth + 1, edgeChild(slice, false)))
   return close(slice, Fragment.fromArray(parts).append(rightOf($to, depth)))
 }

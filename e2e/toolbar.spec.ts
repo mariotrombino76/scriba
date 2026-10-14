@@ -45,7 +45,7 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
   await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Corsivo')).toBeFocused()
   await page.keyboard.press('End')
-  await expect(button(page, 'Ripeti')).toBeFocused()
+  await expect(button(page, 'Citazione')).toBeFocused()
   await page.keyboard.press('Home')
   await page.keyboard.press('ArrowRight')
   await page.keyboard.press('Enter')

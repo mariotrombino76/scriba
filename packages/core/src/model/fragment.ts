@@ -1,6 +1,6 @@
 import { Mark } from './mark.js'
 import type { Node, NodeJSON } from './node.js'
-import type { Schema } from './schema.js'
+import type { NodeFromJSONOptions, Schema } from './schema.js'
 
 /** Callback for tree walks. Return `false` to skip the node's children. */
 export type NodeVisitor = (node: Node, pos: number, parent: Node | null, index: number) => unknown
@@ -43,10 +43,14 @@ export class Fragment {
     return Fragment.fromArray([nodes as Node])
   }
 
-  static fromJSON(schema: Schema, json: readonly NodeJSON[] | undefined): Fragment {
+  static fromJSON(
+    schema: Schema,
+    json: readonly NodeJSON[] | undefined,
+    options: NodeFromJSONOptions = {},
+  ): Fragment {
     if (!json) return Fragment.empty
     if (!Array.isArray(json)) throw new RangeError('Invalid fragment JSON')
-    return Fragment.fromArray(json.map((n: NodeJSON) => schema.nodeFromJSON(n)))
+    return Fragment.fromArray(json.map((n: NodeJSON) => schema.nodeFromJSON(n, options)))
   }
 
   get childCount(): number {

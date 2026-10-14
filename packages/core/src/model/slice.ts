@@ -67,6 +67,7 @@ export class Slice {
     ) {
       throw new RangeError('Invalid slice JSON')
     }
-    return new Slice(Fragment.fromJSON(schema, json.content), openStart, openEnd)
+    // Slices may hold incomplete nodes (e.g. an empty wrapper); `replace` validates on insertion.
+    return new Slice(Fragment.fromJSON(schema, json.content, { partial: true }), openStart, openEnd)
   }
 }

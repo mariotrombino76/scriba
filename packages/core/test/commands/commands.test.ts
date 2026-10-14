@@ -11,6 +11,11 @@ import {
   splitBlock,
   toggleMark,
   newlineInCode,
+  wrapIn,
+  lift,
+  toggleWrap,
+  isInNode,
+  liftEmptyOrFirstBlock,
 } from '../../src/index.js'
 import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
 import { nodeStateAt, run, stateAt } from '../helpers/state.js'
@@ -142,5 +147,30 @@ describe('block commands', () => {
     const r = run(stateAt(doc(p('ab')), 2), insertNode(schema.nodes.hard_break))!
     expect(r.doc.eq(doc(p('a', br(), 'b')))).toBe(true)
     expect(r.selection.head).toBe(3)
+  })
+})
+
+describe('structure commands', () => {
+  it('wraps in and lifts out of a blockquote', () => {
+    const wrapped = run(stateAt(doc(p('a'), p('b')), 1, 4), wrapIn(schema.nodes.blockquote))!
+    expect(wrapped.doc.eq(doc(quote(p('a'), p('b'))))).toBe(true)
+    const lifted = run(wrapped, lift)!
+    expect(lifted.doc.eq(doc(p('a'), p('b')))).toBe(true)
+  })
+
+  it('toggles a wrapper', () => {
+    const bq = schema.nodes.blockquote
+    const on = run(stateAt(doc(p('a')), 2), toggleWrap(bq))!
+    expect(on.doc.eq(doc(quote(p('a'))))).toBe(true)
+    expect(isInNode(on, bq)).toBe(true)
+    const off = run(on, toggleWrap(bq))!
+    expect(off.doc.eq(doc(p('a')))).toBe(true)
+  })
+
+  it('Backspace at the start of the first quoted block lifts it out', () => {
+    const r = run(stateAt(doc(p('x'), quote(p('a'), p('b'))), 5), liftEmptyOrFirstBlock)!
+    expect(r.doc.eq(doc(p('x'), p('a'), quote(p('b'))))).toBe(true)
+    expect(run(stateAt(doc(p('x'), quote(p('a'), p('b'))), 8), liftEmptyOrFirstBlock)).toBeNull()
+    expect(run(stateAt(doc(p('a')), 1), liftEmptyOrFirstBlock)).toBeNull()
   })
 })

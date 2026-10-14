@@ -61,6 +61,20 @@
   padding: 0.05em 0.3em;
   border-radius: 4px;
 }
+.scriba-editor blockquote {
+  margin: 0.75em 0;
+  padding: 0.25em 1em;
+  border-left: 4px solid var(--scriba-accent);
+  color: var(--scriba-text);
+  background: var(--scriba-code-bg);
+}
+.scriba-editor ul,
+.scriba-editor ol {
+  padding-left: 1.75em;
+}
+.scriba-editor li > p {
+  margin: 0.25em 0;
+}
 .scriba-editor .scriba-selected-node {
   outline: 2px solid var(--scriba-focus);
 }

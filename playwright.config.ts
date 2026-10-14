@@ -4,6 +4,8 @@ export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
   fullyParallel: true,
+  // Firefox under WSL becomes unstable with many parallel browsers.
+  workers: process.env['CI'] ? 2 : 3,
   reporter: 'list',
   use: { baseURL: 'http://localhost:4173' },
   webServer: {

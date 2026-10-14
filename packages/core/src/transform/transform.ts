@@ -9,6 +9,7 @@ import { Mapping } from './map.js'
 import { AddMarkStep, RemoveMarkStep } from './mark-step.js'
 import { ReplaceStep } from './replace-step.js'
 import type { Step } from './step.js'
+import { lift as liftRange, wrap as wrapRange, type NodeRange, type Wrapper } from './structure.js'
 
 /** Thrown when a transform helper produces a step that cannot be applied. */
 export class TransformError extends Error {
@@ -190,6 +191,18 @@ export class Transform {
       after = Fragment.from(t ? t.type.create(t.attrs, after) : node.copy(after))
     }
     return this.step(new ReplaceStep(pos, pos, new Slice(before.append(after), depth, depth)))
+  }
+
+  /** Wraps a range of blocks in the given nodes (outermost first). */
+  wrap(range: NodeRange, wrappers: readonly Wrapper[]): this {
+    wrapRange(this, range, wrappers)
+    return this
+  }
+
+  /** Lifts a range of blocks out of its ancestors, up to `target` depth. */
+  lift(range: NodeRange, target: number): this {
+    liftRange(this, range, target)
+    return this
   }
 
   /** Joins the blocks on either side of `pos` (`depth` levels deep). */
