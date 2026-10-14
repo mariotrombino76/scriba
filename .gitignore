@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+.nuxt
+.output
+*.log
+e2e/.dist
+test-results
+playwright-report
+.vitest

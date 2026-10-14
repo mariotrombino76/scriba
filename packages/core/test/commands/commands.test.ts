@@ -1,0 +1,146 @@
+import { describe, expect, it } from 'vitest'
+import {
+  deleteChar,
+  deleteSelection,
+  insertNode,
+  isMarkActive,
+  joinBackward,
+  joinForward,
+  selectAll,
+  setBlockType,
+  splitBlock,
+  toggleMark,
+  newlineInCode,
+} from '../../src/index.js'
+import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
+import { nodeStateAt, run, stateAt } from '../helpers/state.js'
+
+const bold = schema.marks.bold
+
+describe('deleteSelection', () => {
+  it('deletes a range and does nothing on a cursor', () => {
+    expect(run(stateAt(doc(p('abcd')), 2, 4), deleteSelection)!.doc.eq(doc(p('ad')))).toBe(true)
+    expect(run(stateAt(doc(p('ab')), 2), deleteSelection)).toBeNull()
+  })
+
+  it('deletes a node selection', () => {
+    const s = nodeStateAt(doc(p('a', img('x'), 'b')), 2)
+    expect(run(s, deleteSelection)!.doc.eq(doc(p('ab')))).toBe(true)
+  })
+
+  it('select all + delete leaves an empty paragraph', () => {
+    const s = run(stateAt(doc(h(1, 'T'), p('x')), 1), selectAll)!
+    expect(run(s, deleteSelection)!.doc.eq(doc(p()))).toBe(true)
+  })
+})
+
+describe('joinBackward / joinForward', () => {
+  it('joins with the previous paragraph', () => {
+    const r = run(stateAt(doc(p('ab'), p('cd')), 5), joinBackward)!
+    expect(r.doc.eq(doc(p('abcd')))).toBe(true)
+    expect(r.selection.head).toBe(3)
+  })
+
+  it('joins out of a quote into the previous paragraph', () => {
+    const r = run(stateAt(doc(p('ab'), quote(p('cd'))), 6), joinBackward)!
+    expect(r.doc.eq(doc(p('abcd')))).toBe(true)
+  })
+
+  it('turns a heading at the start of the doc into a paragraph', () => {
+    expect(run(stateAt(doc(h(1, 'ab')), 1), joinBackward)!.doc.eq(doc(p('ab')))).toBe(true)
+    expect(run(stateAt(doc(p('ab')), 1), joinBackward)).toBeNull()
+  })
+
+  it('only works at the block edge', () => {
+    expect(run(stateAt(doc(p('ab'), p('cd')), 6), joinBackward)).toBeNull()
+    expect(run(stateAt(doc(p('ab'), p('cd')), 2), joinForward)).toBeNull()
+  })
+
+  it('joins forward', () => {
+    expect(run(stateAt(doc(p('ab'), p('cd')), 3), joinForward)!.doc.eq(doc(p('abcd')))).toBe(true)
+    expect(run(stateAt(doc(p('ab')), 3), joinForward)).toBeNull()
+  })
+})
+
+describe('deleteChar', () => {
+  it('deletes characters and whole graphemes', () => {
+    expect(run(stateAt(doc(p('abc')), 3), deleteChar(-1))!.doc.eq(doc(p('ac')))).toBe(true)
+    expect(run(stateAt(doc(p('abc')), 2), deleteChar(1))!.doc.eq(doc(p('ac')))).toBe(true)
+    // family emoji = 8 UTF-16 units, one grapheme
+    const family = '👨‍👩‍👧'
+    const d = doc(p('a' + family + 'b'))
+    expect(run(stateAt(d, 2 + family.length), deleteChar(-1))!.doc.eq(doc(p('ab')))).toBe(true)
+    expect(run(stateAt(d, 2), deleteChar(1))!.doc.eq(doc(p('ab')))).toBe(true)
+  })
+
+  it('treats inline leaves as one character', () => {
+    expect(run(stateAt(doc(p('a', br(), 'b')), 3), deleteChar(-1))!.doc.eq(doc(p('ab')))).toBe(true)
+  })
+})
+
+describe('splitBlock', () => {
+  it('splits a paragraph', () => {
+    const r = run(stateAt(doc(p('abcd')), 3), splitBlock)!
+    expect(r.doc.eq(doc(p('ab'), p('cd')))).toBe(true)
+    expect(r.selection.head).toBe(5)
+  })
+
+  it('creates a paragraph after a heading when at its end', () => {
+    expect(run(stateAt(doc(h(1, 'ab')), 3), splitBlock)!.doc.eq(doc(h(1, 'ab'), p()))).toBe(true)
+    expect(run(stateAt(doc(h(1, 'ab')), 2), splitBlock)!.doc.eq(doc(h(1, 'a'), h(1, 'b')))).toBe(
+      true,
+    )
+  })
+
+  it('replaces the selection', () => {
+    expect(run(stateAt(doc(p('abcd')), 2, 4), splitBlock)!.doc.eq(doc(p('a'), p('d')))).toBe(true)
+  })
+
+  it('inserts a newline in code blocks', () => {
+    expect(run(stateAt(doc(pre('ab')), 2), newlineInCode)!.doc.eq(doc(pre('a\nb')))).toBe(true)
+    expect(run(stateAt(doc(p('ab')), 2), newlineInCode)).toBeNull()
+  })
+})
+
+describe('marks', () => {
+  it('toggles a mark on a range', () => {
+    const on = run(stateAt(doc(p('abcd')), 2, 4), toggleMark(bold))!
+    expect(on.doc.eq(doc(p('a', b('bc'), 'd')))).toBe(true)
+    expect(isMarkActive(on, bold)).toBe(true)
+    const off = run(on, toggleMark(bold))!
+    expect(off.doc.eq(doc(p('abcd')))).toBe(true)
+  })
+
+  it('adds the mark when the range is only partly marked', () => {
+    const r = run(stateAt(doc(p('a', b('b'), 'c')), 1, 4), toggleMark(bold))!
+    expect(r.doc.eq(doc(p(b('abc'))))).toBe(true)
+  })
+
+  it('toggles stored marks on a cursor', () => {
+    const r = run(stateAt(doc(p('ab')), 2), toggleMark(bold))!
+    expect(isMarkActive(r, bold)).toBe(true)
+    const typed = r.apply(r.tr.insertText('X'))
+    expect(typed.doc.eq(doc(p('a', b('X'), 'b')))).toBe(true)
+  })
+
+  it('is unavailable where the mark is not allowed', () => {
+    expect(toggleMark(bold)(stateAt(doc(pre('ab')), 1, 3))).toBe(false)
+  })
+})
+
+describe('block commands', () => {
+  it('sets block type', () => {
+    const r = run(
+      stateAt(doc(p('ab'), p('cd')), 2, 6),
+      setBlockType(schema.nodes.heading, { level: 2 }),
+    )!
+    expect(r.doc.eq(doc(h(2, 'ab'), h(2, 'cd')))).toBe(true)
+    expect(setBlockType(schema.nodes.heading, { level: 2 })(r)).toBe(false)
+  })
+
+  it('inserts a hard break', () => {
+    const r = run(stateAt(doc(p('ab')), 2), insertNode(schema.nodes.hard_break))!
+    expect(r.doc.eq(doc(p('a', br(), 'b')))).toBe(true)
+    expect(r.selection.head).toBe(3)
+  })
+})

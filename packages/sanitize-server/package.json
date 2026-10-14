@@ -1,0 +1,29 @@
+{
+  "name": "@scriba/sanitize-server",
+  "version": "0.0.0",
+  "description": "Server-side (Node) HTML sanitization with the same schema as the Scriba editor.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@scriba/core": "workspace:*",
+    "parse5": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5"
+  }
+}

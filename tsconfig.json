@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@scriba/core": ["./packages/core/src/index.ts"],
+      "@scriba/view": ["./packages/view/src/index.ts"]
+    },
+    "types": ["node"]
+  },
+  "include": ["packages/*/src", "packages/*/test"]
+}
