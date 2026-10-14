@@ -46,6 +46,16 @@ La sanificazione nel browser è una comodità, **non una protezione**: chiunque 
 la tua API saltando l'editor. Prima di salvare o mostrare HTML proveniente dai client,
 passalo **sempre** da `@scriba/sanitize-server` con lo stesso schema usato nell'editor.
 
+L'HTML prodotto può contenere attributi `style`, ma solo **tipizzati e validati**
+(allineamento, rientro, colori, font e dimensione), mai stili liberi. L'editor li applica
+via CSSOM e funziona con una CSP rigida. Se la pagina che _mostra_ l'HTML salvato usa una
+CSP che vieta gli stili inline, quegli stili non verranno applicati: o si permette
+`style-src-attr 'unsafe-inline'` su quella pagina, o si accetta la resa senza stili.
+
+Se la tua CSP usa la direttiva `trusted-types`, aggiungi la policy `scriba`: serve solo
+a leggere l'HTML incollato in un documento inerte, il cui contenuto passa comunque dal
+parser dello schema.
+
 Anche la validazione dei file caricati (tipo reale, dimensione, eventuale antivirus)
 spetta al tuo server.
 

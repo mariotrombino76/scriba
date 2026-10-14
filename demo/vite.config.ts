@@ -17,6 +17,8 @@ export default defineConfig({
       '@scriba/ui': src('ui'),
       '@scriba/plugin-list': plugin('list'),
       '@scriba/plugin-blockquote': plugin('blockquote'),
+      '@scriba/plugin-text-style': plugin('text-style'),
+      '@scriba/plugin-link': plugin('link'),
     },
   },
   server: { port: 5173, open: false },

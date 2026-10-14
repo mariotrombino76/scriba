@@ -1,5 +1,6 @@
 import {
   isVoidTag,
+  outputStyle,
   safeOutputAttrs,
   safeTagName,
   type HTMLAttrs,
@@ -30,6 +31,9 @@ export function renderSpec(doc: Document, spec: HTMLSpec): RenderedSpec {
     if (first !== undefined && first !== 0 && typeof first === 'object' && !Array.isArray(first)) {
       for (const [name, value] of safeOutputAttrs(tag, first as HTMLAttrs))
         el.setAttribute(name, value)
+      // Typed styles go through CSSOM, never a style attribute: works under a strict CSP (§5.7).
+      for (const [property, value] of outputStyle(first as HTMLAttrs))
+        el.style.setProperty(property, value)
       start = 1
     }
     if (isVoidTag(tag) && rest.length > start)

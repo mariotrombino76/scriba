@@ -3,6 +3,7 @@ import type { Mark } from '../model/mark.js'
 import type { Node } from '../model/node.js'
 import type { Schema } from '../model/schema.js'
 import type { HTMLAttrs, HTMLSpec, MarkToHTML, NodeToHTML } from './types.js'
+import { safeStyleDecls } from './css.js'
 import { sanitizeUrl } from './url.js'
 
 const VOID_TAGS = new Set(['area', 'br', 'col', 'hr', 'img', 'wbr'])
@@ -93,6 +94,13 @@ export function safeOutputAttrs(tag: string, attrs: HTMLAttrs): [string, string]
   for (const [name, raw] of Object.entries(attrs)) {
     if (raw === null || raw === undefined || raw === false) continue
     const lower = name.toLowerCase()
+    if (lower === 'style') {
+      // Only typed declarations (an object); free style strings are never written.
+      if (typeof raw !== 'object')
+        throw new RangeError('A style must be an object of typed declarations')
+      continue // see outputStyle()
+    }
+    if (typeof raw === 'object') throw new RangeError(`Attribute "${name}" must be a scalar`)
     if (!ATTR_NAME.test(lower) || lower.startsWith('on') || FORBIDDEN_ATTRS.has(lower)) {
       throw new RangeError(`Attribute "${name}" is not allowed in HTML output`)
     }
@@ -108,6 +116,12 @@ export function safeOutputAttrs(tag: string, attrs: HTMLAttrs): [string, string]
   return out
 }
 
+/** Validated typed style declarations of an attributes object (`[]` when none). */
+export function outputStyle(attrs: HTMLAttrs): [string, string][] {
+  const style = attrs['style']
+  return style && typeof style === 'object' ? safeStyleDecls(style) : []
+}
+
 /** Validates and lowercases a tag name from a `toHTML` spec. */
 export function safeTagName(tag: string): string {
   const lower = tag.toLowerCase()
@@ -120,11 +134,17 @@ export function isVoidTag(tag: string): boolean {
 }
 
 function renderAttrs(tag: string, attrs: HTMLAttrs): string {
-  return safeOutputAttrs(tag, attrs)
-    .map(([name, value]) =>
-      value === '' && attrs[name] === true ? ` ${name}` : ` ${name}="${escapeAttr(value)}"`,
-    )
-    .join('')
+  const style = outputStyle(attrs)
+    .map(([p, v]) => `${p}: ${v}`)
+    .join('; ')
+  return (
+    (style ? ` style="${escapeAttr(style)}"` : '') +
+    safeOutputAttrs(tag, attrs)
+      .map(([name, value]) =>
+        value === '' && attrs[name] === true ? ` ${name}` : ` ${name}="${escapeAttr(value)}"`,
+      )
+      .join('')
+  )
 }
 
 function render(spec: HTMLSpec, content: () => string): string {

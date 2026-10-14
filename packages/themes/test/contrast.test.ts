@@ -34,6 +34,8 @@ describe.each(Object.entries(themes))('%s theme contrast', (_name, v) => {
     ['accent', 'accent-bg', 4.5],
     ['text', 'accent-bg', 4.5],
     ['text', 'code-bg', 4.5],
+    ['error', 'bg', 4.5],
+    ['bg', 'accent', 4.5],
     ['focus', 'bg', 3],
     ['accent', 'bg', 3],
   ] as const)('%s on %s ≥ %s:1', (fg, bg, min) => {

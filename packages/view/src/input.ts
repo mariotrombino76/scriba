@@ -48,7 +48,7 @@ function targetRange(view: EditorView, event: InputEvent): { from: number; to: n
 }
 
 function run(view: EditorView, cmd: Command | null): void {
-  cmd?.(view.state, (tr) => view.dispatch(tr))
+  cmd?.(view.state, (tr) => view.dispatch(tr), view)
 }
 
 function insertText(
@@ -141,7 +141,7 @@ function onKeyDown(view: EditorView, event: KeyboardEvent): void {
   if (view.composing || event.isComposing || event.keyCode === 229) return
   if (!view.editable) return
   view.syncSelectionFromDOM()
-  if (runKeymaps(view.state, (tr) => view.dispatch(tr), event)) event.preventDefault()
+  if (runKeymaps(view.state, (tr) => view.dispatch(tr), event, view)) event.preventDefault()
 }
 
 function onCompositionStart(view: EditorView): void {

@@ -1,6 +1,12 @@
 import type { EditorView } from '@scriba/view'
 import { createTranslator, type Translate } from '@scriba/i18n'
-import { defaultToolbarItems, type ToolbarButton, type ToolbarItem } from './items.js'
+import {
+  defaultToolbarItems,
+  type ToolbarButton,
+  type ToolbarItem,
+  type ToolbarMenu,
+} from './items.js'
+import { MenuPopup } from './menu.js'
 import { formatShortcut, isMac } from './shortcut.js'
 
 /** Base class: `HTMLElement` when available, so the module can be imported on the server. */
@@ -20,7 +26,11 @@ export class ScribaToolbar extends Base {
   private _items: ToolbarItem[] | null = null
   private _translate: Translate | null = null
   private unsubscribe: (() => void) | null = null
-  private buttons: { el: HTMLButtonElement; item: ToolbarButton }[] = []
+  private buttons: {
+    el: HTMLButtonElement
+    item: ToolbarButton | ToolbarMenu
+    popup?: MenuPopup
+  }[] = []
   private focusIndex = 0
   /** Whether `Mod` shortcuts are shown as ⌘. Defaults to platform detection. */
   mac = isMac()
@@ -94,10 +104,11 @@ export class ScribaToolbar extends Base {
       el.dataset['item'] = item.id
       const label = item.label(t)
       el.setAttribute('aria-label', label)
-      el.title = item.shortcut
-        ? t('shortcut.hint', { label, shortcut: formatShortcut(item.shortcut, t, this.mac) })
+      const shortcut = item.type === 'button' ? item.shortcut : undefined
+      el.title = shortcut
+        ? t('shortcut.hint', { label, shortcut: formatShortcut(shortcut, t, this.mac) })
         : label
-      if (item.shortcut) el.setAttribute('aria-keyshortcuts', ariaShortcut(item.shortcut, this.mac))
+      if (shortcut) el.setAttribute('aria-keyshortcuts', ariaShortcut(shortcut, this.mac))
       const glyph = this.ownerDocument.createElement('span')
       glyph.setAttribute('aria-hidden', 'true')
       glyph.textContent = item.text
@@ -105,9 +116,23 @@ export class ScribaToolbar extends Base {
       el.tabIndex = -1
       // Keep the editor's selection when the button is pressed with the mouse.
       el.addEventListener('mousedown', (e) => e.preventDefault())
-      el.addEventListener('click', () => this.run(item, el))
       this.appendChild(el)
-      this.buttons.push({ el, item })
+      if (item.type === 'menu') {
+        const popup = new MenuPopup(item, el, t, () => this.view)
+        el.addEventListener('click', () => this.toggleMenu(popup))
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' && !popup.isOpen) {
+            e.preventDefault()
+            e.stopPropagation()
+            this.toggleMenu(popup)
+          }
+        })
+        this.appendChild(popup.el)
+        this.buttons.push({ el, item, popup })
+      } else {
+        el.addEventListener('click', () => this.run(item, el))
+        this.buttons.push({ el, item })
+      }
     }
     this.focusIndex = Math.min(this.focusIndex, Math.max(0, this.buttons.length - 1))
     this.updateState()
@@ -118,6 +143,11 @@ export class ScribaToolbar extends Base {
     const view = this.view
     this.buttons.forEach(({ el, item }, i) => {
       el.tabIndex = i === this.focusIndex ? 0 : -1
+      if (item.type === 'menu') {
+        const enabled = !!view && view.editable && item.entries.some((e) => e.command(view.state))
+        el.setAttribute('aria-disabled', String(!enabled))
+        return
+      }
       const enabled =
         !!view && view.editable && (item.command(view.state) || !!item.isActive?.(view.state))
       el.setAttribute('aria-disabled', String(!enabled))
@@ -126,9 +156,20 @@ export class ScribaToolbar extends Base {
     })
   }
 
+  private toggleMenu(popup: MenuPopup): void {
+    if (popup.button.getAttribute('aria-disabled') === 'true') return
+    for (const b of this.buttons) if (b.popup && b.popup !== popup) b.popup.close(false)
+    if (popup.isOpen) popup.close(true)
+    else popup.open()
+  }
+
   private run(item: ToolbarButton, el: HTMLButtonElement): void {
     const view = this.view
     if (!view || el.getAttribute('aria-disabled') === 'true') return
+    if (item.run) {
+      item.run(view)
+      return
+    }
     item.command(view.state, (tr) => view.dispatch(tr))
     // Mouse users go back to typing; keyboard users stay in the toolbar.
     if (this.ownerDocument.activeElement !== el) view.focus()

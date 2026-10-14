@@ -45,7 +45,7 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
   await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Corsivo')).toBeFocused()
   await page.keyboard.press('End')
-  await expect(button(page, 'Citazione')).toBeFocused()
+  await expect(button(page, 'Dimensione carattere')).toBeFocused()
   await page.keyboard.press('Home')
   await page.keyboard.press('ArrowRight')
   await page.keyboard.press('Enter')
@@ -60,4 +60,12 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
 test('tooltips show the shortcut', async ({ page }) => {
   await expect(button(page, 'Grassetto')).toHaveAttribute('title', 'Grassetto (Ctrl+B)')
   await expect(button(page, 'Titolo 1')).toHaveAttribute('title', 'Titolo 1 (Alt+Ctrl+1)')
+})
+
+test('every toolbar control has a unique accessible name', async ({ page }) => {
+  const names = await toolbar(page)
+    .locator(':scope > button')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('aria-label')))
+  expect(names.length).toBeGreaterThan(10)
+  expect(new Set(names).size).toBe(names.length)
 })

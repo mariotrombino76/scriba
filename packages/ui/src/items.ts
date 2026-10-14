@@ -9,6 +9,7 @@ import {
   type Schema,
 } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
+import type { EditorView } from '@scriba/view'
 
 /** A toolbar button bound to a command. */
 export interface ToolbarButton {
@@ -23,13 +24,40 @@ export interface ToolbarButton {
   command: Command
   /** For toggle buttons: whether the format is active (sets `aria-pressed`). */
   isActive?: (state: EditorState) => boolean
+  /**
+   * Custom action instead of running `command` (e.g. open a dialog).
+   * `command` is still used to decide whether the button is enabled.
+   */
+  run?: (view: EditorView) => void
 }
 
 export interface ToolbarSeparator {
   type: 'separator'
 }
 
-export type ToolbarItem = ToolbarButton | ToolbarSeparator
+/** One choice in a toolbar menu (a color, a font…). */
+export interface ToolbarMenuEntry {
+  id: string
+  label: (t: Translate) => string
+  /** Visible text (defaults to the label). */
+  text?: string
+  /** A color shown as a swatch next to the text (validated before use). */
+  swatch?: string
+  command: Command
+  /** Marks the current choice (`aria-checked`). */
+  isActive?: (state: EditorState) => boolean
+}
+
+/** A button opening a popup menu (WAI-ARIA menu button pattern). */
+export interface ToolbarMenu {
+  type: 'menu'
+  id: string
+  text: string
+  label: (t: Translate) => string
+  entries: ToolbarMenuEntry[]
+}
+
+export type ToolbarItem = ToolbarButton | ToolbarMenu | ToolbarSeparator
 
 const separator: ToolbarSeparator = { type: 'separator' }
 

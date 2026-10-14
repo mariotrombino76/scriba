@@ -1,4 +1,4 @@
-import type { Command } from './commands/base.js'
+import type { Command, CommandView } from './commands/base.js'
 import { Plugin } from './state/plugin.js'
 import type { EditorState } from './state/state.js'
 import type { Transaction } from './state/transaction.js'
@@ -27,6 +27,7 @@ export interface KeymapProps {
     state: EditorState,
     dispatch: ((tr: Transaction) => void) | undefined,
     input: KeyInput,
+    view?: CommandView,
   ): boolean
 }
 
@@ -92,9 +93,9 @@ export function keymap(bindings: KeyBindings, options: KeymapOptions = {}): Plug
   for (const [name, cmd] of Object.entries(bindings)) map.set(normalizeKeyName(name, mac), cmd)
   const props: KeymapProps = {
     keymapPriority: options.priority ?? 0,
-    handleKey: (state, dispatch, input) => {
+    handleKey: (state, dispatch, input, view) => {
       const cmd = map.get(keyInputName(input))
-      return !!cmd && cmd(state, dispatch)
+      return !!cmd && cmd(state, dispatch, view)
     },
   }
   return new Plugin({ props: { ...props } })
@@ -105,10 +106,11 @@ export function runKeymaps(
   state: EditorState,
   dispatch: ((tr: Transaction) => void) | undefined,
   input: KeyInput,
+  view?: CommandView,
 ): boolean {
   const keymaps = state.plugins
     .map((p, i) => ({ props: p.props as Partial<KeymapProps>, i }))
     .filter((k) => typeof k.props.handleKey === 'function')
     .sort((a, b) => (b.props.keymapPriority ?? 0) - (a.props.keymapPriority ?? 0) || a.i - b.i)
-  return keymaps.some((k) => k.props.handleKey!(state, dispatch, input))
+  return keymaps.some((k) => k.props.handleKey!(state, dispatch, input, view))
 }

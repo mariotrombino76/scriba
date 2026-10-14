@@ -1,4 +1,4 @@
-import type { KeyBindings, Schema } from '@scriba/core'
+import type { Command, KeyBindings, Schema } from '@scriba/core'
 import type { ToolbarItem } from '@scriba/ui'
 import {
   isInList,
@@ -37,9 +37,46 @@ export function listKeymap(schema: Schema): KeyBindings {
   }
 }
 
-/** Toolbar buttons: bulleted, numbered, indent, outdent. */
-export function listToolbarItems(schema: Schema): ToolbarItem[] {
+/**
+ * Indent/outdent commands for list items. Combine them with block indentation
+ * (e.g. `textStyleToolbarItems(schema, { indent: listIndentCommands(schema) })`)
+ * to get a single pair of indent buttons, as in word processors.
+ */
+export function listIndentCommands(schema: Schema): { more: Command; less: Command } {
   const t = types(schema)
+  return { more: sinkListItem(t.item), less: liftListItem(t.item) }
+}
+
+/**
+ * Toolbar buttons: bulleted and numbered list, plus indent/outdent unless
+ * `indent: false` (when another plugin provides the combined indent buttons).
+ */
+export function listToolbarItems(
+  schema: Schema,
+  options: { indent?: boolean } = {},
+): ToolbarItem[] {
+  const t = types(schema)
+  const indent: ToolbarItem[] =
+    options.indent === false
+      ? []
+      : [
+          {
+            type: 'button',
+            id: 'list_sink',
+            text: '→',
+            label: (tr) => tr('list.sink'),
+            shortcut: 'Tab',
+            command: sinkListItem(t.item),
+          },
+          {
+            type: 'button',
+            id: 'list_lift',
+            text: '←',
+            label: (tr) => tr('list.lift'),
+            shortcut: 'Shift-Tab',
+            command: liftListItem(t.item),
+          },
+        ]
   return [
     {
       type: 'button',
@@ -59,21 +96,6 @@ export function listToolbarItems(schema: Schema): ToolbarItem[] {
       command: toggleList(t.ordered, t.item),
       isActive: (state) => isInList(state, t.ordered, t.item),
     },
-    {
-      type: 'button',
-      id: 'list_sink',
-      text: '→',
-      label: (tr) => tr('list.sink'),
-      shortcut: 'Tab',
-      command: sinkListItem(t.item),
-    },
-    {
-      type: 'button',
-      id: 'list_lift',
-      text: '←',
-      label: (tr) => tr('list.lift'),
-      shortcut: 'Shift-Tab',
-      command: liftListItem(t.item),
-    },
+    ...indent,
   ]
 }

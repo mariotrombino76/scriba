@@ -57,7 +57,7 @@ export default tseslint.config(
   },
   {
     // Tests contain javascript: URLs on purpose: they are the XSS payloads being blocked.
-    files: ['**/test/**/*.ts'],
+    files: ['**/test/**/*.ts', 'e2e/**/*.spec.ts'],
     rules: { 'no-script-url': 'off', 'vue/one-component-per-file': 'off' },
   },
 )

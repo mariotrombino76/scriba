@@ -1,6 +1,7 @@
 import type { Attrs } from '../model/attrs.js'
 import type { Mark } from '../model/mark.js'
 import type { Node } from '../model/node.js'
+import type { StyleDecls } from './css.js'
 
 /**
  * The minimal DOM shape the parser reads. A browser `Node` from an inert
@@ -43,7 +44,13 @@ export interface ParseRule {
  */
 export type HTMLSpec = string | readonly [string, ...(HTMLAttrs | HTMLSpec | 0)[]]
 
-export type HTMLAttrs = Readonly<Record<string, string | number | boolean | null | undefined>>
+/**
+ * Output attributes. `style` is never a string: it is an object of typed
+ * declarations, validated against the style whitelist (see `css.ts`).
+ */
+export type HTMLAttrs = Readonly<
+  Record<string, string | number | boolean | null | undefined | StyleDecls>
+>
 
 export type NodeToHTML = (node: Node) => HTMLSpec
 export type MarkToHTML = (mark: Mark) => HTMLSpec

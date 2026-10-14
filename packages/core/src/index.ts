@@ -52,6 +52,7 @@ export {
 
 export {
   type Command,
+  type CommandView,
   chainCommands,
   deleteSelection,
   joinBackward,
@@ -113,7 +114,18 @@ export {
   safeOutputAttrs,
   safeTagName,
   isVoidTag,
+  outputStyle,
 } from './html/serializer.js'
+export {
+  normalizeColor,
+  normalizeLength,
+  normalizeFontFamily,
+  safeStyleDecls,
+  styleToString,
+  isAllowedStyleProperty,
+  withStyle,
+  type StyleDecls,
+} from './html/css.js'
 export { sanitizeUrl, DEFAULT_MAX_DATA_IMAGE_BYTES, type UrlRule } from './html/url.js'
 export { styleValue, isBoldWeight } from './html/style.js'
 export { parseHTML, serializeHTML } from './html/index.js'

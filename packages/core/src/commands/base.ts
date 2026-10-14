@@ -9,11 +9,24 @@ import { deleteRangeSlice } from '../transform/delete-range.js'
  * A command: a pure function of the state. Without `dispatch` it only tells
  * whether it could run (used to enable/disable toolbar buttons).
  */
-export type Command = (state: EditorState, dispatch?: (tr: Transaction) => void) => boolean
+/**
+ * The view running a command, as seen by the core (which knows nothing about
+ * the DOM). Commands that need UI (e.g. opening a dialog) cast it to the real view.
+ */
+export interface CommandView {
+  readonly state: EditorState
+  dispatch(tr: Transaction): void
+}
+
+export type Command = (
+  state: EditorState,
+  dispatch?: (tr: Transaction) => void,
+  view?: CommandView,
+) => boolean
 
 /** Runs the first command that succeeds. */
 export function chainCommands(...commands: Command[]): Command {
-  return (state, dispatch) => commands.some((cmd) => cmd(state, dispatch))
+  return (state, dispatch, view) => commands.some((cmd) => cmd(state, dispatch, view))
 }
 
 /** True when deleting [from, to) is possible without breaking the schema. */

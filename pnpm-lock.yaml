@@ -79,11 +79,38 @@ importers:
         specifier: workspace:*
         version: link:../../ui
 
+  packages/plugins/link:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
   packages/plugins/list:
     dependencies:
       '@scriba/core':
         specifier: workspace:*
         version: link:../../core
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+
+  packages/plugins/text-style:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
       '@scriba/ui':
         specifier: workspace:*
         version: link:../../ui

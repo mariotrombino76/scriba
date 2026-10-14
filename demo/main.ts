@@ -18,13 +18,21 @@ import {
 import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
 import { defaultToolbarItems, defineScribaToolbar } from '@scriba/ui'
-import { listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
+import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquote'
+import {
+  textStyleKeymap,
+  textStyleMarks,
+  textStyleToolbarItems,
+  withBlockStyles,
+} from '@scriba/plugin-text-style'
+import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
 import '../packages/themes/scriba.css'
 
+const t = createTranslator('it')
 const schema = new Schema({
-  nodes: { ...basicSchemaSpec.nodes, ...blockquoteNodes, ...listNodes },
-  marks: basicSchemaSpec.marks,
+  nodes: withBlockStyles({ ...basicSchemaSpec.nodes, ...blockquoteNodes, ...listNodes }),
+  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
 
 const SAMPLE = `
@@ -47,6 +55,8 @@ const state = EditorState.create({
   plugins: [
     history(),
     keymap(listKeymap(schema), { priority: 50 }),
+    keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
+    keymap(linkKeymap(t)),
     keymap(historyKeymap),
     keymap(formatKeymap(schema)),
     keymap(baseKeymap),
@@ -73,12 +83,15 @@ const view: EditorView = new EditorView($('editor'), {
 defineScribaToolbar()
 const toolbar = document.createElement('scriba-toolbar')
 $('toolbar-slot').appendChild(toolbar)
-toolbar.translator = createTranslator('it')
+toolbar.translator = t
 toolbar.items = [
   ...defaultToolbarItems(schema),
   { type: 'separator' },
-  ...listToolbarItems(schema),
+  ...listToolbarItems(schema, { indent: false }),
   ...blockquoteToolbarItems(schema),
+  ...linkToolbarItems(schema, t),
+  { type: 'separator' },
+  ...textStyleToolbarItems(schema, { indent: listIndentCommands(schema) }),
 ]
 toolbar.view = view
 
