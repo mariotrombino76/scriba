@@ -1,0 +1,15 @@
+{
+  "name": "@scriba/themes",
+  "version": "0.0.0",
+  "description": "CSS themes for the Scriba editor (light/dark, CSS custom properties).",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./scriba.css": "./scriba.css"
+  },
+  "files": [
+    "scriba.css"
+  ],
+  "license": "MIT"
+}

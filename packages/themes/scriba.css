@@ -1,0 +1,112 @@
+/*
+ * Scriba default theme. Override the custom properties to restyle.
+ * Plain stylesheet: works with a strict CSP (no inline styles needed).
+ * Colors meet WCAG 2.2 AA contrast in both schemes.
+ */
+:root {
+  --scriba-bg: #ffffff;
+  --scriba-text: #1d2330;
+  --scriba-muted: #5b6475;
+  --scriba-border: #c9ced8;
+  --scriba-accent: #2549b8;
+  --scriba-accent-bg: #e5ecfc;
+  --scriba-focus: #2549b8;
+  --scriba-code-bg: #eef1f6;
+  --scriba-radius: 8px;
+  --scriba-font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-scriba-theme='light']) {
+    --scriba-bg: #1c2028;
+    --scriba-text: #e6e9ef;
+    --scriba-muted: #a6aebd;
+    --scriba-border: #3c4350;
+    --scriba-accent: #9db5ff;
+    --scriba-accent-bg: #26324d;
+    --scriba-focus: #9db5ff;
+    --scriba-code-bg: #2a303b;
+  }
+}
+
+:root[data-scriba-theme='dark'] {
+  --scriba-bg: #1c2028;
+  --scriba-text: #e6e9ef;
+  --scriba-muted: #a6aebd;
+  --scriba-border: #3c4350;
+  --scriba-accent: #9db5ff;
+  --scriba-accent-bg: #26324d;
+  --scriba-focus: #9db5ff;
+  --scriba-code-bg: #2a303b;
+}
+
+/* Editing area */
+.scriba-editor {
+  min-height: 8rem;
+  padding: 1rem 1.25rem;
+  color: var(--scriba-text);
+  background: var(--scriba-bg);
+  font-family: var(--scriba-font);
+  line-height: 1.6;
+  outline: none;
+}
+.scriba-editor:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--scriba-focus);
+}
+.scriba-editor[aria-readonly='true'] {
+  cursor: default;
+}
+.scriba-editor code {
+  background: var(--scriba-code-bg);
+  padding: 0.05em 0.3em;
+  border-radius: 4px;
+}
+.scriba-editor .scriba-selected-node {
+  outline: 2px solid var(--scriba-focus);
+}
+
+/* Toolbar */
+scriba-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  background: var(--scriba-bg);
+  border-bottom: 1px solid var(--scriba-border);
+  font-family: var(--scriba-font);
+}
+.scriba-toolbar-button {
+  min-width: 2.25rem;
+  height: 2.25rem; /* ≥ 24px target size (WCAG 2.5.8) */
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--scriba-radius);
+  background: transparent;
+  color: var(--scriba-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.scriba-toolbar-button:hover:not([aria-disabled='true']) {
+  background: var(--scriba-accent-bg);
+}
+.scriba-toolbar-button:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+.scriba-toolbar-button[aria-pressed='true'] {
+  background: var(--scriba-accent-bg);
+  border-color: var(--scriba-accent);
+  color: var(--scriba-accent);
+}
+.scriba-toolbar-button[aria-disabled='true'] {
+  color: var(--scriba-muted);
+  cursor: default;
+}
+.scriba-toolbar-separator {
+  width: 1px;
+  height: 1.25rem;
+  margin: 0 4px;
+  background: var(--scriba-border);
+}

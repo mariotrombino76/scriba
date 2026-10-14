@@ -30,6 +30,7 @@ export class EditorView {
   private readonly observer: MutationObserver
   private readonly detach: () => void
   private destroyed = false
+  private readonly listeners = new Set<(view: EditorView) => void>()
 
   constructor(
     place: HTMLElement,
@@ -83,6 +84,16 @@ export class EditorView {
       })
     }
     if (!this.composing && this.hasFocus()) this.syncSelectionToDOM()
+    for (const listener of this.listeners) listener(this)
+  }
+
+  /**
+   * Calls `listener` after every state update (toolbars, counters…).
+   * Returns a function that removes it.
+   */
+  subscribe(listener: (view: EditorView) => void): () => void {
+    this.listeners.add(listener)
+    return () => this.listeners.delete(listener)
   }
 
   focus(): void {
@@ -107,6 +118,7 @@ export class EditorView {
   destroy(): void {
     if (this.destroyed) return
     this.destroyed = true
+    this.listeners.clear()
     this.detach()
     this.observer.disconnect()
     this.dom.remove()

@@ -83,13 +83,13 @@ Pensa all'editor come a una **casa di LEGO**:
 ## 4. Funzionalità — checklist di parità e superamento
 
 ### Fase 1 — Fondamenta (MVP)
-- [ ] Schema base: doc, paragrafo, titoli h1–h6, testo, a capo
-- [ ] Mark: grassetto, corsivo, sottolineato, barrato, codice inline
-- [ ] Transazioni, step, undo/redo con raggruppamento temporale
-- [ ] View con `beforeinput`, selezione, IME
-- [ ] Toolbar minima + scorciatoie (Ctrl+B/I/U/Z/Y)
-- [ ] Wrapper Vue con `v-model` (HTML o JSON)
-- [ ] Serializzazione HTML ↔ documento
+- [x] Schema base: doc, paragrafo, titoli h1–h6, testo, a capo
+- [x] Mark: grassetto, corsivo, sottolineato, barrato, codice inline
+- [x] Transazioni, step, undo/redo con raggruppamento temporale
+- [x] View con `beforeinput`, selezione, IME
+- [x] Toolbar minima + scorciatoie (Ctrl+B/I/U/Z/Y)
+- [x] Wrapper Vue con `v-model` (HTML o JSON)
+- [x] Serializzazione HTML ↔ documento
 
 ### Fase 2 — Parità TinyMCE
 - [ ] Liste puntate/numerate annidate, Tab/Shift+Tab

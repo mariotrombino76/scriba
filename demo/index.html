@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scriba — prova</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Scriba <small>prova dell'editor — Fase 1</small></h1>
+    </header>
+
+    <main>
+      <section class="editor-area">
+        <div class="toolbar-row">
+          <div id="toolbar-slot"></div>
+          <label class="toggle"><input type="checkbox" id="readonly" /> sola lettura</label>
+        </div>
+        <div id="editor"></div>
+        <p class="status" id="status" aria-live="polite"></p>
+      </section>
+
+      <aside>
+        <details open>
+          <summary>HTML (serializzatore)</summary>
+          <pre id="out-html"></pre>
+        </details>
+        <details>
+          <summary>JSON del documento</summary>
+          <pre id="out-json"></pre>
+        </details>
+        <details>
+          <summary>Scorciatoie</summary>
+          <ul class="keys">
+            <li>
+              <kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>I</kbd> / <kbd>U</kbd> grassetto, corsivo,
+              sottolineato
+            </li>
+            <li>
+              <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> barrato, <kbd>Ctrl</kbd>+<kbd>E</kbd>
+              codice
+            </li>
+            <li>
+              <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd>…<kbd>6</kbd> titoli,
+              <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>0</kbd> paragrafo
+            </li>
+            <li><kbd>Shift</kbd>+<kbd>Invio</kbd> a capo</li>
+            <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla, <kbd>Ctrl</kbd>+<kbd>Y</kbd> ripeti</li>
+          </ul>
+        </details>
+        <details>
+          <summary>Prova la sicurezza</summary>
+          <p>
+            Copia questo HTML da una pagina e incollalo nell'editor: script, gestori e link
+            <code>javascript:</code> vengono scartati.
+          </p>
+          <pre id="xss-sample"></pre>
+          <button type="button" id="paste-xss">Simula incolla di questo HTML</button>
+        </details>
+      </aside>
+    </main>
+  </body>
+</html>

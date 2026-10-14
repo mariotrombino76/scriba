@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@scriba/core": ["../core/src/index.ts"],
+      "@scriba/view": ["../view/src/index.ts"],
+      "@scriba/ui": ["../ui/src/index.ts"],
+      "@scriba/i18n": ["../i18n/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts"]
+}

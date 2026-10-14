@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import {
   EditorState,
   baseKeymap,
@@ -9,6 +10,9 @@ import {
   serializeHTML,
 } from '@scriba/core'
 import { EditorView } from '@scriba/view'
+import { createTranslator } from '@scriba/i18n'
+import { defineScribaToolbar } from '@scriba/ui'
+import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
 const state = EditorState.create({
@@ -20,7 +24,14 @@ const state = EditorState.create({
     keymap(baseKeymap),
   ],
 })
-const view = new EditorView(document.getElementById('app')!, { state, label: 'Editor di prova' })
+defineScribaToolbar()
+const app = document.getElementById('app')!
+const toolbar = document.createElement('scriba-toolbar')
+app.appendChild(toolbar)
+const view = new EditorView(app, { state, label: 'Editor di prova' })
+toolbar.mac = false
+toolbar.translator = createTranslator('it')
+toolbar.view = view
 
 const cspViolations: string[] = []
 document.addEventListener('securitypolicyviolation', (e) =>

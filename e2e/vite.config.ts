@@ -17,7 +17,14 @@ const CSP = [
 
 export default defineConfig({
   root: fileURLToPath(new URL('./fixture', import.meta.url)),
-  resolve: { alias: { '@scriba/core': src('core'), '@scriba/view': src('view') } },
+  resolve: {
+    alias: {
+      '@scriba/core': src('core'),
+      '@scriba/view': src('view'),
+      '@scriba/i18n': src('i18n'),
+      '@scriba/ui': src('ui'),
+    },
+  },
   build: {
     outDir: fileURLToPath(new URL('./.dist', import.meta.url)),
     emptyOutDir: true,
