@@ -14,11 +14,11 @@ import {
   splitBlock,
 } from './base.js'
 import { toggleMark } from './marks.js'
-import { liftEmptyOrFirstBlock } from './structure.js'
+import { liftEmptyBlock, liftEmptyOrFirstBlock } from './structure.js'
 
 /** Editing keys that work with any schema: Enter, Backspace, Delete, select all. */
 export const baseKeymap: KeyBindings = {
-  Enter: chainCommands(newlineInCode, splitBlock),
+  Enter: chainCommands(newlineInCode, liftEmptyBlock, splitBlock),
   Backspace: chainCommands(deleteSelection, liftEmptyOrFirstBlock, joinBackward, deleteChar(-1)),
   'Mod-Backspace': chainCommands(deleteSelection, joinBackward),
   Delete: chainCommands(deleteSelection, joinForward, deleteChar(1)),

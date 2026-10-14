@@ -16,6 +16,7 @@ import {
   toggleWrap,
   isInNode,
   liftEmptyOrFirstBlock,
+  liftEmptyBlock,
 } from '../../src/index.js'
 import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
 import { nodeStateAt, run, stateAt } from '../helpers/state.js'
@@ -172,5 +173,22 @@ describe('structure commands', () => {
     expect(r.doc.eq(doc(p('x'), p('a'), quote(p('b'))))).toBe(true)
     expect(run(stateAt(doc(p('x'), quote(p('a'), p('b'))), 8), liftEmptyOrFirstBlock)).toBeNull()
     expect(run(stateAt(doc(p('a')), 1), liftEmptyOrFirstBlock)).toBeNull()
+  })
+})
+
+describe('leaving a container with Enter', () => {
+  it('lifts an empty last block out of the quote', () => {
+    const r = run(stateAt(doc(quote(p('a'), p())), 5), liftEmptyBlock)!
+    expect(r.doc.eq(doc(quote(p('a')), p()))).toBe(true)
+  })
+
+  it('splits the quote around an empty middle block', () => {
+    const r = run(stateAt(doc(quote(p('a'), p(), p('b'))), 5), liftEmptyBlock)!
+    expect(r.doc.eq(doc(quote(p('a')), p(), quote(p('b'))))).toBe(true)
+  })
+
+  it('does nothing for non-empty blocks or at the top level', () => {
+    expect(run(stateAt(doc(quote(p('a'))), 3), liftEmptyBlock)).toBeNull()
+    expect(run(stateAt(doc(p()), 1), liftEmptyBlock)).toBeNull()
   })
 })

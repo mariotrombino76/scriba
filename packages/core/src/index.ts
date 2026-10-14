@@ -64,7 +64,14 @@ export {
   setBlockType,
 } from './commands/base.js'
 export { toggleMark, isMarkActive } from './commands/marks.js'
-export { wrapIn, lift, liftEmptyOrFirstBlock, toggleWrap, isInNode } from './commands/structure.js'
+export {
+  wrapIn,
+  lift,
+  liftEmptyBlock,
+  liftEmptyOrFirstBlock,
+  toggleWrap,
+  isInNode,
+} from './commands/structure.js'
 export { baseKeymap, historyKeymap, formatKeymap } from './commands/base-keymap.js'
 export {
   keymap,

@@ -5,6 +5,7 @@ import {
   insertNode,
   joinBackward,
   joinForward,
+  liftEmptyBlock,
   liftEmptyOrFirstBlock,
   newlineInCode,
   redo,
@@ -79,6 +80,8 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
   if (event.inputType === 'insertCompositionText' || (view.composing && !event.cancelable)) return
   if (!event.cancelable) return // e.g. some Android keyboards: picked up by the mutation observer
   event.preventDefault()
+  // selectionchange is async: make sure the model has the caret the user sees.
+  view.syncSelectionFromDOM()
   const sel = view.state.selection
   switch (event.inputType) {
     case 'insertText':
@@ -88,7 +91,7 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
       return
     }
     case 'insertParagraph':
-      return run(view, chainCommands(newlineInCode, splitBlock))
+      return run(view, chainCommands(newlineInCode, liftEmptyBlock, splitBlock))
     case 'insertLineBreak':
       return run(view, lineBreak(view))
     case 'deleteContentBackward':
@@ -137,6 +140,7 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
 function onKeyDown(view: EditorView, event: KeyboardEvent): void {
   if (view.composing || event.isComposing || event.keyCode === 229) return
   if (!view.editable) return
+  view.syncSelectionFromDOM()
   if (runKeymaps(view.state, (tr) => view.dispatch(tr), event)) event.preventDefault()
 }
 

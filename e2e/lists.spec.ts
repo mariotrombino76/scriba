@@ -56,3 +56,14 @@ test('blockquote: toggle from the toolbar, Backspace at start lifts out', async 
   await page.keyboard.press('Backspace')
   expect(await html(page)).toBe('<p>citazione</p>')
 })
+
+test('blockquote: Enter twice at the end leaves the quote', async ({ page }) => {
+  await page.keyboard.type('citazione')
+  await button(page, 'Citazione').click()
+  await page.keyboard.press('End')
+  await page.keyboard.press('Enter')
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('fuori')
+  expect(await html(page)).toBe('<blockquote><p>citazione</p></blockquote><p>fuori</p>')
+  await expect(button(page, 'Citazione')).toHaveAttribute('aria-pressed', 'false')
+})

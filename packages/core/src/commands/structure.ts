@@ -64,3 +64,14 @@ export function isInNode(state: EditorState, type: NodeType): boolean {
   for (let d = $from.depth; d > 0; d--) if ($from.node(d).type === type) return true
   return false
 }
+
+/**
+ * Enter in an empty block inside a container (blockquote…): take the block out
+ * of the container, so the user can leave it. In the middle, the container splits.
+ */
+export const liftEmptyBlock: Command = (state, dispatch) => {
+  const sel = state.selection
+  const $cursor = sel instanceof TextSelection ? sel.$cursor : null
+  if (!$cursor || $cursor.parent.content.size || $cursor.depth < 2) return false
+  return lift(state, dispatch)
+}
