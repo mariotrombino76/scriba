@@ -43,7 +43,8 @@ test('numbered list from the toolbar and Backspace at item start', async ({ page
 test('Tab outside a list leaves the editor (no keyboard trap)', async ({ page }) => {
   await page.keyboard.type('x')
   await page.keyboard.press('Tab')
-  await expect(page.getByRole('button', { name: "Dopo l'editor" })).toBeFocused()
+  // focus leaves the editor: the next control is the word counter under it
+  await expect(page.getByRole('button', { name: /parol[ae]$/ })).toBeFocused()
   expect(await html(page)).toBe('<p>x</p>')
 })
 

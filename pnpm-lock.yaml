@@ -104,6 +104,21 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
 
+  packages/plugins/fullscreen:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
   packages/plugins/image:
     dependencies:
       '@scriba/core':
@@ -188,6 +203,21 @@ importers:
       '@scriba/ui':
         specifier: workspace:*
         version: link:../../ui
+
+  packages/plugins/word-count:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
 
   packages/sanitize-server:
     dependencies:

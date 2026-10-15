@@ -49,8 +49,8 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
   await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Ripeti')).toBeFocused()
   await page.keyboard.press('End')
-  // the code language menu is contextual: hidden outside code blocks, so it is skipped
-  await expect(button(page, 'Blocco di codice')).toBeFocused()
+  // the last control (contextual menus like the code language are hidden, so skipped)
+  await expect(button(page, 'Schermo intero')).toBeFocused()
   await page.keyboard.press('Home')
   for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Corsivo')).toBeFocused()
@@ -75,6 +75,7 @@ test('controls are grouped and named', async ({ page }) => {
     'Inserisci',
     'Elenchi e rientro',
     'Blocchi',
+    'Visualizzazione',
   ])
   await expect(toolbar(page).getByRole('button', { name: 'Altre opzioni' })).toBeHidden()
 })

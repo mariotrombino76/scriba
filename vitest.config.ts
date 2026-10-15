@@ -26,6 +26,8 @@ export default defineConfig({
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
       '@scriba/plugin-image': plugin('image'),
       '@scriba/plugin-table': plugin('table'),
+      '@scriba/plugin-fullscreen': plugin('fullscreen'),
+      '@scriba/plugin-word-count': plugin('word-count'),
     },
   },
   test: {

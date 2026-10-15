@@ -54,7 +54,8 @@ test('Tab inside a code block does not trap the keyboard', async ({ page }) => {
   await button(page, 'Blocco di codice').click()
   await page.keyboard.type('x')
   await page.keyboard.press('Tab')
-  await expect(page.getByRole('button', { name: "Dopo l'editor" })).toBeFocused()
+  // focus leaves the editor: the next control is the word counter under it
+  await expect(page.getByRole('button', { name: /parol[ae]$/ })).toBeFocused()
   expect(await html(page)).toBe('<pre><code>x</code></pre>')
 })
 

@@ -101,7 +101,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Incolla pulito da Word / Google Docs / pagine web
 - [ ] Vista sorgente HTML
 - [ ] Trova e sostituisci (anche regex)
-- [ ] Schermo intero, conteggio parole/caratteri
+- [x] Schermo intero, conteggio parole/caratteri
 - [ ] Caratteri speciali ed emoji
 - [x] i18n (it, en) e temi chiaro/scuro
 

@@ -52,6 +52,8 @@ import {
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
 import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
+import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
+import { createWordCountStatus } from '@scriba/plugin-word-count'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
@@ -100,12 +102,15 @@ function saluta(nome: string): string {
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
 
 const doc = parseHTML(schema, parseInertHTML(SAMPLE).body)
+// Fullscreen covers the editor container (toolbar, editing area, status bar).
+const fullscreen = new Fullscreen(document.querySelector<HTMLElement>('.editor-area')!)
 const state = EditorState.create({
   doc,
   plugins: [
     history(),
     pasteClean(),
     ...imagePlugins(t, images),
+    keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
@@ -169,8 +174,10 @@ toolbar.items = [
     ...blockquoteToolbarItems(schema),
     ...codeBlockToolbarItems(schema),
   ]),
+  toolbarGroup('view', 'toolbar.group.view', [fullscreenToolbarItem(fullscreen)]),
 ]
 toolbar.view = view
+status.before(createWordCountStatus(view, t).el)
 
 const checkbox = $<HTMLInputElement>('readonly')
 checkbox.addEventListener('change', () => {
@@ -183,9 +190,7 @@ function refresh(): void {
   const s = view.state
   outHTML.textContent = serializeHTML(s.doc)
   outJSON.textContent = JSON.stringify(s.doc.toJSON(), null, 2)
-  const text = s.doc.textBetween(0, s.doc.content.size, ' ')
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0
-  status.textContent = `${words} parole · ${text.length} caratteri · annulla: ${undoDepth(s)} · ripeti: ${redoDepth(s)}`
+  status.textContent = `annulla: ${undoDepth(s)} · ripeti: ${redoDepth(s)}`
 }
 
 // --- Security demo: simulate pasting hostile HTML ---

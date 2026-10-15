@@ -47,6 +47,8 @@ import {
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
 import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
+import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
+import { createWordCountStatus } from '@scriba/plugin-word-count'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
@@ -75,12 +77,15 @@ const schema = new Schema({
   }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
+// Fullscreen covers the editor container (toolbar, editing area, status bar).
+const fullscreen = new Fullscreen(document.getElementById('app')!)
 const state = EditorState.create({
   schema,
   plugins: [
     history(),
     pasteClean(),
     ...imagePlugins(t, images),
+    keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
@@ -129,8 +134,10 @@ toolbar.items = [
     ...blockquoteToolbarItems(schema),
     ...codeBlockToolbarItems(schema),
   ]),
+  toolbarGroup('view', 'toolbar.group.view', [fullscreenToolbarItem(fullscreen)]),
 ]
 toolbar.view = view
+app.appendChild(createWordCountStatus(view, t, { delay: 50 }).el)
 
 const cspViolations: string[] = []
 document.addEventListener('securitypolicyviolation', (e) =>
