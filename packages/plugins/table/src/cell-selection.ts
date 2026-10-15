@@ -1,4 +1,5 @@
 import {
+  Fragment,
   Selection,
   Slice,
   TextSelection,
@@ -9,7 +10,7 @@ import {
   type Transform,
 } from '@scriba/core'
 import { isCell } from './nodes.js'
-import { TableGrid, type GridCell, type Rect } from './grid.js'
+import { TableGrid, buildTable, type GridCell, type Rect } from './grid.js'
 
 /** The table around a position: its node, its start position and its grid. */
 export interface TableContext {
@@ -98,6 +99,22 @@ export class CellSelection extends Selection {
       read.to <= ctx.pos + ctx.table.nodeSize &&
       cellPosAt(read.$head) === this.head
     )
+  }
+
+  /** Copying a cell selection gives a table made of just the selected cells. */
+  override content(): Slice {
+    const ctx = this.context()
+    if (!ctx) return Slice.empty
+    const { rect } = ctx
+    const cells = ctx.cells.map((c) => ({
+      node: c.node,
+      row: c.row - rect.top,
+      col: c.col - rect.left,
+      rowspan: c.rowspan,
+      colspan: c.colspan,
+    }))
+    const table = buildTable(ctx.table, cells, rect.bottom - rect.top, rect.right - rect.left)
+    return table ? new Slice(Fragment.from(table), 0, 0) : Slice.empty
   }
 
   /** Deleting a cell selection empties the cells (the table structure stays). */

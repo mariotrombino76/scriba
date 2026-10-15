@@ -42,6 +42,11 @@ export function tableNormalize(): Plugin {
     appendTransaction(trs, oldState, newState) {
       const tr = newState.tr
       if (trs.some((t) => t.docChanged)) fixTables(newState, tr)
+      // The document never ends with a table: there is always a line below to click or type in.
+      const last = tr.doc.lastChild
+      const paragraph = tr.doc.type.schema.nodes['paragraph']
+      if (last?.type.spec['tableRole'] === 'table' && paragraph)
+        tr.insert(tr.doc.content.size, paragraph.create())
       const sel = tr.selection
       if (sel instanceof TextSelection && !sel.empty) {
         const anchorCell = cellPosAt(sel.$anchor)

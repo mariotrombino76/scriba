@@ -414,3 +414,38 @@ export function goToCell(dir: 1 | -1): Command {
     return true
   }
 }
+
+/**
+ * Pasting a table into a table fills the cells from the selected cell (top-left
+ * of a cell selection) like a spreadsheet, growing the table when needed.
+ * Returns null when `content` is not a single table or the selection is not in one.
+ */
+export function pasteCells(state: EditorState, content: Fragment): Transaction | null {
+  const source = content.childCount === 1 ? content.firstChild! : null
+  if (!source || source.type.spec['tableRole'] !== 'table') return null
+  const ctx = selectedRect(state)
+  if (!ctx) return null
+  const pasted = TableGrid.of(source)
+  const top = ctx.rect.top
+  const left = ctx.rect.left
+  const bottom = top + pasted.height
+  const right = left + pasted.width
+  if (bottom > MAX_ROWS * 4 || right > MAX_COLS * 4) return null // keep it sane (DoS, §5.10)
+  // existing cells overlapping the pasted area are replaced
+  const cells: BuildCell[] = toBuildCells(ctx.grid).filter(
+    (c) =>
+      c.row >= bottom || c.row + c.rowspan <= top || c.col >= right || c.col + c.colspan <= left,
+  )
+  for (const c of pasted.cells) {
+    cells.push({
+      node: c.node,
+      row: c.row + top,
+      col: c.col + left,
+      rowspan: c.rowspan,
+      colspan: c.colspan,
+    })
+  }
+  const height = Math.max(ctx.grid.height, bottom)
+  const width = Math.max(ctx.grid.width, right)
+  return replaceTable(state, ctx, cells, height, width, [top, left])
+}

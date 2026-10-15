@@ -221,12 +221,16 @@ export class NodeSelection extends Selection {
 
   /** The DOM shows a node selection as a range around the node (or a caret next to it). */
   override preserves(read: Selection): boolean {
-    return (
-      read.empty ||
-      (read.from <= this.from &&
-        read.to >= this.to &&
-        read.to - read.from <= this.to - this.from + 2)
+    if (read.empty) return true
+    if (
+      read.from <= this.from &&
+      read.to >= this.to &&
+      read.to - read.from <= this.to - this.from + 2
     )
+      return true
+    // A block node (e.g. a table) read back as the text range just inside it.
+    const inner = TextSelection.between(this.$from, this.$to)
+    return read.from === inner.from && read.to === inner.to
   }
 
   static isSelectable(node: Node): boolean {

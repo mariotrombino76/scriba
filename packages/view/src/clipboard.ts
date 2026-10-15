@@ -3,6 +3,7 @@ import {
   Fragment,
   HTMLSerializer,
   Selection,
+  TextSelection,
   insertContent,
   parseHTML,
   type Node,
@@ -16,9 +17,10 @@ export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean
   const sel = view.state.selection
   if (sel.empty || !event.clipboardData) return
   event.preventDefault()
+  // the selection decides what it holds (a cell selection: just its cells, as a table)
   const slice = sel.content()
   const html = new HTMLSerializer(view.state.schema).serializeFragment(slice.content)
-  const text = view.state.doc.textBetween(sel.from, sel.to, '\n\n', '\n')
+  const text = slice.content.textBetween(0, slice.content.size, '\n\n', '\n')
   event.clipboardData.setData('text/html', html)
   event.clipboardData.setData('text/plain', text)
   if (cut && view.editable) view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
@@ -64,7 +66,13 @@ export function handlePaste(view: EditorView, event: ClipboardEvent): void {
       doc = null // limits exceeded or unparsable: fall back to plain text
     }
   }
-  if (doc && hasContent(doc) && insertFragment(view, doc.content)) return
+  if (
+    doc &&
+    hasContent(doc) &&
+    (someProp(view.state, 'handlePasteContent', (handle) => handle(view, doc.content)) ||
+      insertFragment(view, doc.content))
+  )
+    return
   if (text) insertPlainText(view, text)
 }
 
@@ -89,7 +97,13 @@ function insertFragment(view: EditorView, content: Fragment): boolean {
     view.dispatch(tr.scrollIntoView())
     return true
   }
-  const end = insertContent(tr, sel.from, sel.to, content)
+  let { from, to } = sel
+  if (!(sel instanceof TextSelection) && !sel.empty) {
+    // node and cell selections delete themselves first (a cell selection keeps its table)
+    tr.deleteSelection()
+    from = to = tr.selection.from
+  }
+  const end = insertContent(tr, from, to, content)
   if (end === null) return false
   tr.setSelection(Selection.near(tr.doc.resolve(Math.min(end, tr.doc.content.size)), -1))
   view.dispatch(tr.scrollIntoView())
@@ -102,11 +116,18 @@ function insertPlainText(view: EditorView, text: string): void {
   const schema = view.state.schema
   const para = schema.nodes['paragraph']
   if (lines.length === 1 || !para || view.state.selection.$from.parent.type.spec.code) {
-    view.dispatch(view.state.tr.insertText(para ? text : lines.join(' ')).scrollIntoView())
+    view.dispatch(typeText(view, para ? text : lines.join(' ')))
     return
   }
   const blocks = lines.map((line) => para.create(null, line ? schema.text(line) : null))
   if (!insertFragment(view, Fragment.fromArray(blocks))) {
-    view.dispatch(view.state.tr.insertText(lines.join(' ')).scrollIntoView())
+    view.dispatch(typeText(view, lines.join(' ')))
   }
+}
+
+/** Text typed over the selection (node and cell selections delete themselves first). */
+function typeText(view: EditorView, text: string) {
+  const tr = view.state.tr
+  if (!(tr.selection instanceof TextSelection) && !tr.selection.empty) tr.deleteSelection()
+  return tr.insertText(text).scrollIntoView()
 }

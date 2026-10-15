@@ -31,6 +31,12 @@ describe('Selection', () => {
     expect(TextSelection.create(d, 7, 2).domRange()).toEqual({ anchor: 7, head: 2 })
   })
 
+  it('a selected block keeps its node selection when the DOM reads back the text just inside it', () => {
+    const sel = NodeSelection.create(d, 4) // the quote
+    expect(sel.preserves(TextSelection.create(d, 6, 8))).toBe(true)
+    expect(sel.preserves(TextSelection.create(d, 6, 7))).toBe(false) // a real selection inside
+  })
+
   it('maps through changes', () => {
     const sel = TextSelection.create(d, 2)
     const mapped = sel.map(d.replace(1, 1, d.slice(1, 2)), new Mapping([StepMap.replace(1, 1, 1)]))

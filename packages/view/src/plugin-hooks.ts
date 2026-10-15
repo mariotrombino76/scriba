@@ -1,4 +1,4 @@
-import type { EditorState, Node } from '@scriba/core'
+import type { EditorState, Fragment, Node } from '@scriba/core'
 import type { EditorView } from './view.js'
 
 /**
@@ -12,6 +12,12 @@ export interface ViewPluginProps {
   handleDrop?: (view: EditorView, event: DragEvent, pos: number | null) => boolean
   /** Files were pasted (e.g. a screenshot). Return true if handled. */
   handlePasteFiles?: (view: EditorView, files: readonly File[]) => boolean
+  /**
+   * Pasted content, already parsed through the schema (safe), about to be
+   * inserted at the selection. Return true if handled (e.g. a table pasted
+   * into a table fills its cells).
+   */
+  handlePasteContent?: (view: EditorView, content: Fragment) => boolean
   /** A node (e.g. an image) was double-clicked. Return true if handled. */
   handleDoubleClickNode?: (view: EditorView, pos: number, node: Node) => boolean
 }

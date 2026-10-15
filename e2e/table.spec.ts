@@ -45,7 +45,9 @@ async function fill2x2(page: Page) {
   }
 }
 
-const T = (body: string) => `<table><tbody>${body}</tbody></table>`
+const T0 = (body: string) => `<table><tbody>${body}</tbody></table>`
+/** A table at the end of the document: a paragraph always follows it. */
+const T = (body: string) => T0(body) + '<p></p>'
 
 test('insert from the dialog, type, Tab between cells', async ({ page }) => {
   await insertTable(page, '2', '3')
@@ -203,7 +205,7 @@ test('Backspace/Delete at the table border never merge text into the table', asy
   await page.keyboard.press('Home')
   await insertTable(page, '1', '1', false)
   await page.keyboard.type('x')
-  const before = T('<tr><td><p>x</p></td></tr>') + '<p>dopo</p>'
+  const before = T0('<tr><td><p>x</p></td></tr>') + '<p>dopo</p>'
   expect(await html(page)).toBe(before)
   // Delete at the end of the cell
   await page.keyboard.press('Delete')
@@ -213,6 +215,82 @@ test('Backspace/Delete at the table border never merge text into the table', asy
   await page.keyboard.press('Home')
   await page.keyboard.press('Backspace')
   expect(await html(page)).toBe(before)
-  await page.keyboard.type('!')
-  expect(await html(page)).toBe(T('<tr><td><p>x</p></td></tr>') + '<p>!dopo</p>')
+  // (the table is now selected: see the next test)
+  await expect(editor(page).locator('table.scriba-selected-node')).toHaveCount(1)
+})
+
+/** Synthetic copy: returns what the editor put on the clipboard. */
+function copy(page: Page) {
+  return page.evaluate(() => {
+    const data: Record<string, string> = {}
+    const event = new Event('copy', { bubbles: true, cancelable: true })
+    Object.defineProperty(event, 'clipboardData', {
+      value: { setData: (t: string, v: string) => (data[t] = v), getData: () => '' },
+    })
+    document.querySelector('[role=textbox]')!.dispatchEvent(event)
+    return data
+  })
+}
+
+async function paste(page: Page, data: Record<string, string>) {
+  await page.evaluate((data) => {
+    const event = new Event('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(event, 'clipboardData', {
+      value: { getData: (t: string) => data[t] ?? '', files: [] },
+    })
+    document.querySelector('[role=textbox]')!.dispatchEvent(event)
+  }, data)
+}
+
+test('Backspace after the table selects it, a second Backspace deletes it', async ({ page }) => {
+  await page.keyboard.type('dopo')
+  await page.keyboard.press('Home')
+  await insertTable(page, '1', '2', false)
+  await page.keyboard.press('Control+End')
+  await page.keyboard.press('Home')
+  await page.keyboard.press('Backspace')
+  await expect(editor(page).locator('table.scriba-selected-node')).toHaveCount(1)
+  await page.keyboard.press('Backspace')
+  expect(await html(page)).toBe('<p>dopo</p>')
+})
+
+test('selecting every cell and pressing Delete deletes the table', async ({ page }) => {
+  await fill2x2(page)
+  await page.keyboard.press('Shift+ArrowLeft') // a → over "d" text, then cells
+  await page.keyboard.press('Shift+ArrowUp')
+  await page.keyboard.press('Shift+ArrowLeft')
+  await expect(page.locator('.scriba-selected-cell')).toHaveCount(4)
+  await page.keyboard.press('Delete')
+  expect(await html(page)).not.toContain('<table>')
+})
+
+test('arrows leave a table at the start or end of the document', async ({ page }) => {
+  await insertTable(page, '1', '1', false)
+  // the document never ends with a table: there is a paragraph below
+  expect(await html(page)).toBe(T('<tr><td><p></p></td></tr>'))
+  await page.keyboard.press('ArrowUp')
+  await page.keyboard.type('sopra')
+  expect(await html(page)).toBe('<p>sopra</p>' + T('<tr><td><p></p></td></tr>'))
+})
+
+test('copy cells and paste them into another place of the table', async ({ page }) => {
+  await fill2x2(page)
+  // select a…b
+  for (let i = 0; i < 3; i++) await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('Shift+ArrowRight')
+  await page.keyboard.press('Shift+ArrowRight')
+  await expect(page.locator('.scriba-selected-cell')).toHaveCount(2)
+  const data = await copy(page)
+  expect(data['text/html']).toBe(
+    '<table><tbody><tr><td><p>a</p></td><td><p>b</p></td></tr></tbody></table>',
+  )
+  // paste into "d": fills d and a new column to its right
+  await editor(page).locator('td').nth(3).click()
+  await paste(page, data)
+  expect(await html(page)).toBe(
+    T(
+      '<tr><td><p>a</p></td><td><p>b</p></td><td><p></p></td></tr>' +
+        '<tr><td><p>c</p></td><td><p>a</p></td><td><p>b</p></td></tr>',
+    ),
+  )
 })

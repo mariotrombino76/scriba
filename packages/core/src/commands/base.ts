@@ -77,7 +77,8 @@ function isolatingSides(
 
 /**
  * At a table (isolating) border, Backspace/Delete never merge blocks: an empty
- * textblock outside the table is removed, otherwise nothing happens.
+ * textblock outside the table is removed; otherwise the block next to it (the
+ * table) gets selected, so a second press deletes it (like word processors).
  */
 function atIsolatingBorder(
   state: EditorState,
@@ -85,10 +86,19 @@ function atIsolatingBorder(
   $cursor: NonNullable<TextSelection['$cursor']>,
   other: number,
   cursorInside: boolean,
+  dir: -1 | 1,
 ): boolean {
+  if (cursorInside) return true
   const block = $cursor.parent
-  if (cursorInside || block.content.size || !canDelete(state, $cursor.before(), $cursor.after()))
+  if (block.content.size || !canDelete(state, $cursor.before(), $cursor.after())) {
+    const $edge = state.doc.resolve(dir < 0 ? $cursor.before() : $cursor.after())
+    const neighbor = dir < 0 ? $edge.nodeBefore : $edge.nodeAfter
+    if (neighbor && NodeSelection.isSelectable(neighbor) && dispatch) {
+      const pos = dir < 0 ? $edge.pos - neighbor.nodeSize : $edge.pos
+      dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos)).scrollIntoView())
+    }
     return true
+  }
   if (dispatch) {
     const tr = state.tr.delete($cursor.before(), $cursor.after())
     const target = tr.mapping.map(other)
@@ -109,7 +119,7 @@ export const joinBackward: Command = (state, dispatch) => {
   if (!before) return resetBlockType(state, dispatch, $cursor.before())
   const sides = isolatingSides(state, before.from, $cursor.pos)
   if (sides.from || sides.to)
-    return atIsolatingBorder(state, dispatch, $cursor, before.head, sides.to)
+    return atIsolatingBorder(state, dispatch, $cursor, before.head, sides.to, -1)
   if (before instanceof NodeSelection) {
     if (!canDelete(state, before.from, before.to)) return false
     dispatch?.(state.tr.delete(before.from, before.to).scrollIntoView())
@@ -132,7 +142,7 @@ export const joinForward: Command = (state, dispatch) => {
   if (!after) return false
   const sides = isolatingSides(state, $cursor.pos, after.to)
   if (sides.from || sides.to)
-    return atIsolatingBorder(state, dispatch, $cursor, after.head, sides.from)
+    return atIsolatingBorder(state, dispatch, $cursor, after.head, sides.from, 1)
   if (after instanceof NodeSelection) {
     if (!canDelete(state, after.from, after.to)) return false
     dispatch?.(state.tr.delete(after.from, after.to).scrollIntoView())

@@ -24,8 +24,10 @@ import {
   goToCell,
   insertTable,
   mergeCells,
+  pasteCells,
   splitCell,
   tableNodes,
+  tableKeymap,
   tableNormalize,
   toggleHeader,
 } from '../src/index.js'
@@ -66,7 +68,8 @@ const TABLE3 =
 
 /** State with the cursor in the cell containing `text` (first match). */
 function stateIn(source: string, text: string): EditorState {
-  const doc = parse(source)
+  // already normalized: a document never ends with a table (see tableNormalize)
+  const doc = parse(source.endsWith('</table>') ? source + '<p></p>' : source)
   let pos = -1
   doc.descendants((node, p) => {
     if (pos < 0 && node.isText && node.text === text) pos = p
@@ -215,8 +218,8 @@ describe('table commands', () => {
 
   it('deleting the last row deletes the table', () => {
     const state = stateIn('<p>x</p><table><tr><td>a</td></tr></table>', 'a')
-    expect(html(run(state, deleteRow).doc)).toBe('<p>x</p>')
-    expect(html(run(state, deleteTable).doc)).toBe('<p>x</p>')
+    expect(html(run(state, deleteRow).doc)).toBe('<p>x</p><p></p>')
+    expect(html(run(state, deleteTable).doc)).toBe('<p>x</p><p></p>')
   })
 
   it('deleting the only block leaves an empty paragraph (the document stays valid)', () => {
@@ -349,6 +352,62 @@ describe('cell selection', () => {
       ['', '', 'f'],
       ['g', 'h', 'i'],
     ])
+  })
+
+  it('Backspace/Delete with every cell selected delete the table', () => {
+    const keys = tableKeymap()
+    const all = withCells('<p>x</p>' + TABLE3, 'a', 'i')
+    expect(html(run(all, keys['Delete']!).doc)).toBe('<p>x</p><p></p>')
+    expect(html(run(all, keys['Backspace']!).doc)).toBe('<p>x</p><p></p>')
+    expect(keys['Delete']!(withCells(TABLE3, 'a', 'e'))).toBe(false) // fewer cells: just emptied
+  })
+
+  it('copying a cell selection gives a table of just those cells', () => {
+    const slice = withCells(TABLE3, 'e', 'i').selection.content()
+    expect(slice.content.childCount).toBe(1)
+    expect(cells(schema.node('doc', null, [slice.content.firstChild!]))).toEqual([
+      ['e', 'f'],
+      ['h', 'i'],
+    ])
+  })
+
+  it('pasting a table into a table fills the cells, growing the table', () => {
+    const state = stateIn(TABLE3, 'h')
+    const source = parse(
+      '<table><tr><td>1</td><td>2</td></tr><tr><td>3</td><td>4</td></tr></table>',
+    )
+    const tr = pasteCells(state, source.content)!
+    expect(cells(state.apply(tr).doc)).toEqual([
+      ['a', 'b', 'c'],
+      ['d', 'e', 'f'],
+      ['g', '1', '2'],
+      ['', '3', '4'],
+    ])
+    expect(pasteCells(state, parse('<p>x</p>').content)).toBeNull()
+    expect(pasteCells(stateIn('<p>x</p>', 'x'), source.content)).toBeNull()
+  })
+
+  it('the document never ends with a table', () => {
+    const doc = parse(TABLE3)
+    const state = EditorState.create({ doc, plugins: [tableNormalize()] })
+    const next = state.apply(state.tr.insertText('z', 4))
+    expect(next.doc.lastChild!.type.name).toBe('paragraph')
+  })
+
+  it('arrows past a table with nothing around create a paragraph', () => {
+    const keys = tableKeymap()
+    const doc = parse(TABLE3)
+    const start = EditorState.create({ doc, selection: TextSelection.create(doc, 4) })
+    const up = run(start, keys['ArrowLeft']!)
+    expect(html(up.doc).startsWith('<p></p><table>')).toBe(true)
+    expect(up.selection.head).toBe(1)
+    const end = doc.content.size - 4 // after "i"
+    expect(doc.textBetween(end - 1, end)).toBe('i')
+    const atEnd = EditorState.create({ doc, selection: TextSelection.create(doc, end) })
+    expect(html(run(atEnd, keys['ArrowRight']!).doc).endsWith('</table><p></p>')).toBe(true)
+    // not at the edge, or something already there: the browser moves normally
+    expect(keys['ArrowLeft']!(stateIn(TABLE3, 'e'))).toBe(false)
+    expect(keys['ArrowLeft']!(stateIn('<p>x</p>' + TABLE3, 'a'))).toBe(false)
   })
 
   it('maps through changes and falls back when the table is gone', () => {

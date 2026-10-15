@@ -17,6 +17,7 @@ import {
   isInNode,
   liftEmptyOrFirstBlock,
   liftEmptyBlock,
+  NodeSelection,
 } from '../../src/index.js'
 import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
 import { nodeStateAt, run, stateAt } from '../helpers/state.js'
@@ -76,6 +77,10 @@ describe('joinBackward / joinForward', () => {
       const d = doc(table(p('ab')), p('cd'))
       const r = run(stateAt(d, 11), joinBackward)!
       expect(r.doc.eq(d)).toBe(true)
+      // the table gets selected: a second Backspace deletes it
+      expect(r.selection).toBeInstanceOf(NodeSelection)
+      expect([r.selection.from, r.selection.to]).toEqual([0, 10])
+      expect(run(r, deleteSelection)!.doc.eq(doc(p('cd')))).toBe(true)
     })
 
     it('Backspace in an empty paragraph after a table removes it, cursor in the last cell', () => {
@@ -86,7 +91,9 @@ describe('joinBackward / joinForward', () => {
 
     it('Delete before a table leaves the table alone', () => {
       const d = doc(p('ab'), table(p('cd')))
-      expect(run(stateAt(d, 3), joinForward)!.doc.eq(d)).toBe(true)
+      const sel = run(stateAt(d, 3), joinForward)!
+      expect(sel.doc.eq(d)).toBe(true)
+      expect([sel.selection.from, sel.selection.to]).toEqual([4, 4 + d.child(1).nodeSize])
       const r = run(stateAt(doc(p(), table(p('cd'))), 1), joinForward)!
       expect(r.doc.eq(doc(table(p('cd'))))).toBe(true)
       expect(r.selection.head).toBe(4)

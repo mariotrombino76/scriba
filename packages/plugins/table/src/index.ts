@@ -11,6 +11,7 @@ import {
   deleteTable,
   insertTable,
   isHeaderOn,
+  pasteCells,
   mergeCells,
   selectedRect,
   splitCell,
@@ -38,6 +39,7 @@ export {
   setColumnWidths,
   deleteTable,
   goToCell,
+  pasteCells,
   selectedRect,
   MAX_ROWS,
   MAX_COLS,
@@ -52,7 +54,15 @@ export { openTableDialog } from './dialog.js'
  * schema and `tableKeymap()` (priority above lists, so Tab moves between cells).
  */
 export function tablePlugins(): Plugin[] {
-  const props: ViewPluginProps = { pluginView: tableView }
+  const props: ViewPluginProps = {
+    pluginView: tableView,
+    handlePasteContent(view, content) {
+      const tr = pasteCells(view.state, content)
+      if (!tr) return false
+      view.dispatch(tr)
+      return true
+    },
+  }
   return [tableNormalize(), new Plugin({ props: { ...props } })]
 }
 
