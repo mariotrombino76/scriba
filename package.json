@@ -14,7 +14,8 @@
     "test:security": "vitest run packages/core/test/security packages/sanitize-server/test",
     "audit": "pnpm audit",
     "test:e2e": "playwright test",
-    "demo": "vite --config demo/vite.config.ts"
+    "demo": "vite --config demo/vite.config.ts",
+    "collab": "vite build --config e2e/collab.vite.config.ts && (node e2e/.collab/server.mjs & vite --config demo/vite.config.ts)"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

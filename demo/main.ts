@@ -76,6 +76,7 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
+import { collab, collabStatusElement } from '@scriba/plugin-collab'
 import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   findReplaceKeymap,
@@ -186,10 +187,23 @@ const slashItems: SlashItem[] = [
 
 // Fullscreen covers the editor container (toolbar, editing area, status bar).
 const fullscreen = new Fullscreen(document.querySelector<HTMLElement>('.editor-area')!)
+// Collaboration: open /?collab=<document>&token=tok-anna (and tok-bruno or tok-ospite
+// in another browser) while `pnpm collab` runs the test server.
+const params = new URLSearchParams(location.search)
+const collabDoc = params.get('collab')
+const shared = collabDoc
+  ? collab({
+      url: 'ws://localhost:4174',
+      documentName: collabDoc,
+      token: params.get('token') ?? '',
+    })
+  : null
+
 const state = EditorState.create({
   doc,
   plugins: [
     history(),
+    ...(shared?.plugins ?? []),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -227,7 +241,8 @@ let readOnly = false
 const view: EditorView = new EditorView($('editor'), {
   state,
   label: 'Testo del documento',
-  editable: () => !readOnly,
+  editable: () =>
+    !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
   dispatchTransaction(tr) {
     view.updateState(view.state.apply(tr))
     refresh()
@@ -276,6 +291,10 @@ toolbar.items = [
 ]
 toolbar.view = view
 status.before(createWordCountStatus(view, t).el)
+if (shared) {
+  status.before(collabStatusElement(document, shared.provider, t))
+  shared.provider.onStatus(() => view.updateState(view.state))
+}
 
 const checkbox = $<HTMLInputElement>('readonly')
 checkbox.addEventListener('change', () => {
