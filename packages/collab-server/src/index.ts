@@ -16,6 +16,15 @@ export {
   type AuthResult,
   type CollabUserInfo,
 } from './server.js'
+export {
+  MESSAGE_COMMENTS,
+  MAX_THREADS,
+  MAX_COMMENTS_PER_THREAD,
+  applyCommentOp,
+  publicThreads,
+  type StoredThread,
+  type CommentOp,
+} from './comments.js'
 
 /**
  * The shared document as a Scriba document, rebuilt through the schema

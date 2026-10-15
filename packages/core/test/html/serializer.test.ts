@@ -16,6 +16,29 @@ describe('serializeHTML', () => {
     )
   })
 
+  it('leaves out marks with serialize: false (only their text is written)', () => {
+    const s = new Schema({
+      nodes: {
+        doc: { content: 'para+' },
+        para: { content: 'text*', toHTML: () => ['p', 0] },
+        text: {},
+      },
+      marks: {
+        note: {
+          attrs: { id: {} },
+          serialize: false,
+          excludes: '',
+          toHTML: () => ['span', { class: 'n' }, 0],
+        },
+        strong: { toHTML: () => ['strong', 0] },
+      },
+    })
+    const text = s.text('ab', [s.mark('note', { id: '1' }), s.mark('strong')])
+    expect(new HTMLSerializer(s).serializeNode(s.node('para', null, [text]))).toBe(
+      '<p><strong>ab</strong></p>',
+    )
+  })
+
   it('escapes text and attributes', () => {
     expect(serializeHTML(doc(p('<script>alert("x")</script> & co')))).toBe(
       '<p>&lt;script&gt;alert("x")&lt;/script&gt; &amp; co</p>',

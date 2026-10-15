@@ -59,7 +59,7 @@ test('file picker: upload, alt text, width and alignment', async ({ page }) => {
     `<p>prima <img src="data:image/png;base64,${PNG_B64}" alt="Una foto" width="200" style="float: left"></p>`,
   )
   await expect(editor(page).locator('img')).toHaveCSS('float', 'left')
-  await expect(page.getByRole('status')).toHaveText('Immagine inserita')
+  await expect(page.locator('#app').getByRole('status')).toHaveText('Immagine inserita')
 })
 
 test('alternative text is required unless the image is decorative', async ({ page }) => {

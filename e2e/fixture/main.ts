@@ -71,7 +71,15 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
-import { collab, collabStatusElement } from '@scriba/plugin-collab'
+import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
+import {
+  commentMarks,
+  commentToolbarItem,
+  commentsKeymap,
+  commentsPanel,
+  commentsPlugin,
+  createMemoryCommentStore,
+} from '@scriba/plugin-comments'
 import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   aiAssistant,
@@ -112,7 +120,7 @@ const schema = new Schema({
     ...imageNodes,
     ...tableNodes,
   }),
-  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
+  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks, ...commentMarks },
 })
 // AI assistant with a FAKE backend (no network): a real app calls its own server here.
 const wait = (ms: number, signal: AbortSignal) =>
@@ -229,11 +237,19 @@ const shared = collabDoc
     })
   : null
 
+// Comments: through the collaboration server when connected (authors set by the server),
+// otherwise kept in this page only.
+const comments = shared
+  ? collabCommentStore(shared.provider)
+  : createMemoryCommentStore({ id: 'local', name: 'Tu' })
+
 const state = EditorState.create({
   schema,
   plugins: [
     history(),
     ...(shared?.plugins ?? []),
+    commentsPlugin(comments),
+    keymap(commentsKeymap(comments, t), { priority: 80 }),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -241,7 +257,12 @@ const state = EditorState.create({
     ...aiAssistant(aiOptions),
     keymap(aiKeymap(aiOptions), { priority: 90 }),
     bubbleMenu({
-      items: [...markItems(schema), ...linkToolbarItems(schema, t), aiToolbarItem(aiOptions)],
+      items: [
+        ...markItems(schema),
+        ...linkToolbarItems(schema, t),
+        commentToolbarItem(comments, t),
+        aiToolbarItem(aiOptions),
+      ],
       t,
       mac: false,
     }),
@@ -296,6 +317,7 @@ toolbar.items = [
       ...imageToolbarItems(schema, t, images),
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
+      commentToolbarItem(comments, t),
       aiToolbarItem(aiOptions),
     ],
     2,
@@ -316,6 +338,10 @@ toolbar.items = [
   ]),
 ]
 toolbar.view = view
+const sidebar = document.createElement('aside')
+sidebar.className = 'comments-sidebar'
+document.body.appendChild(sidebar)
+commentsPanel(view, { store: comments, t, container: sidebar })
 app.appendChild(createWordCountStatus(view, t, { delay: 50 }).el)
 
 const cspViolations: string[] = []

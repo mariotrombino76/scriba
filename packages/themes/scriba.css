@@ -25,6 +25,8 @@
   --scriba-hl-meta: #566070;
   --scriba-find-bg: #fde68a;
   --scriba-find-current: #fbbf24;
+  --scriba-comment-bg: #fef3c7;
+  --scriba-comment-active: #fcd34d;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +50,8 @@
     --scriba-hl-meta: #a6aebd;
     --scriba-find-bg: #5c4a00;
     --scriba-find-current: #7a5c00;
+    --scriba-comment-bg: #4a3b10;
+    --scriba-comment-active: #6b5414;
   }
 }
 
@@ -71,6 +75,8 @@
   --scriba-hl-meta: #a6aebd;
   --scriba-find-bg: #5c4a00;
   --scriba-find-current: #7a5c00;
+  --scriba-comment-bg: #4a3b10;
+  --scriba-comment-active: #6b5414;
 }
 
 /* Editing area */
@@ -1206,6 +1212,114 @@ scriba-toolbar.scriba-bubble {
 .scriba-ai-menu button:focus-visible,
 .scriba-ai-menu input:focus-visible,
 .scriba-ai-bar button:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+
+/* Comments: highlighted anchors and the sidebar */
+.scriba-editor .scriba-comment {
+  background: var(--scriba-comment-bg);
+  border-bottom: 2px solid var(--scriba-comment-active);
+}
+.scriba-editor .scriba-comment-active {
+  background: var(--scriba-comment-active);
+}
+.scriba-comments {
+  font-family: var(--scriba-font);
+  font-size: 0.875rem;
+  color: var(--scriba-text);
+}
+.scriba-comments h2 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+.scriba-comments-empty {
+  color: var(--scriba-muted);
+}
+.scriba-thread-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.scriba-thread {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  background: var(--scriba-bg);
+}
+.scriba-thread-active {
+  border-color: var(--scriba-accent);
+  box-shadow: 0 0 0 1px var(--scriba-accent);
+}
+.scriba-thread-resolved {
+  opacity: 0.75;
+}
+.scriba-thread-quote {
+  display: block;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 2px 6px;
+  border: 0;
+  border-left: 3px solid var(--scriba-comment-active);
+  background: transparent;
+  color: var(--scriba-muted);
+  font: inherit;
+  font-style: italic;
+  text-align: start;
+  cursor: pointer;
+}
+.scriba-comment-entry {
+  margin-bottom: 6px;
+}
+.scriba-comment-head {
+  margin: 0;
+}
+.scriba-comment-head time {
+  color: var(--scriba-muted);
+  font-size: 0.75rem;
+}
+.scriba-comment-text {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.scriba-comment-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-bg);
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+.scriba-comment-reply {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin-top: 6px;
+}
+.scriba-thread-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.scriba-thread button:not(.scriba-thread-quote),
+.scriba-comment-delete {
+  padding: 2px 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-code-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.scriba-comments button:focus-visible,
+.scriba-comments textarea:focus-visible,
+.scriba-comments input:focus-visible {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
 }

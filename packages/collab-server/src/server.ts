@@ -5,6 +5,7 @@ import * as decoding from 'lib0/decoding'
 import * as syncProtocol from 'y-protocols/sync'
 import * as awarenessProtocol from 'y-protocols/awareness'
 import { WebSocketServer, type WebSocket } from 'ws'
+import { MESSAGE_COMMENTS, applyCommentOp, publicThreads, type StoredThread } from './comments.js'
 
 /** Message types (y-websocket compatible, plus our auth message from the client). */
 export const MESSAGE_SYNC = 0
@@ -64,6 +65,10 @@ export interface CollabServerOptions {
   store?(documentName: string, state: Uint8Array, ydoc: Y.Doc): Promise<void> | void
   /** Delay before storing after changes (ms, default 2000). */
   storeDelayMs?: number
+  /** Loads the comment threads of a document (authors and ids as stored). */
+  loadComments?(documentName: string): Promise<StoredThread[] | null> | StoredThread[] | null
+  /** Stores the comment threads (with the documents, same timing). */
+  storeComments?(documentName: string, threads: StoredThread[]): Promise<void> | void
   limits?: CollabLimits
 }
 
@@ -87,6 +92,7 @@ interface SharedDoc {
   connections: Map<WebSocket, Connection>
   storeTimer?: ReturnType<typeof setTimeout>
   ready: Promise<void>
+  threads: StoredThread[]
 }
 
 function send(ws: WebSocket, data: Uint8Array): void {
@@ -272,6 +278,7 @@ export class CollabServer {
     encoding.writeVarUint(step1, MESSAGE_SYNC)
     syncProtocol.writeSyncStep1(step1, shared.ydoc)
     send(ws, encoding.toUint8Array(step1))
+    this.sendComments(conn, shared, { type: 'snapshot' })
     const states = [...shared.awareness.getStates().keys()]
     if (states.length) {
       const aw = encoding.createEncoder()
@@ -283,6 +290,18 @@ export class CollabServer {
       send(ws, encoding.toUint8Array(aw))
     }
     return { conn, shared }
+  }
+
+  /** A comments message: results go to the sender, snapshots (with the user's own id) to everyone. */
+  private sendComments(conn: Connection, shared: SharedDoc, body: Record<string, unknown>): void {
+    const encoder = encoding.createEncoder()
+    encoding.writeVarUint(encoder, MESSAGE_COMMENTS)
+    const payload =
+      body['type'] === 'snapshot'
+        ? { ...body, threads: publicThreads(shared.threads), you: conn.auth.user.id }
+        : body
+    encoding.writeVarString(encoder, JSON.stringify(payload))
+    send(conn.ws, encoding.toUint8Array(encoder))
   }
 
   /** Token bucket: `messagesPerSecond`, bursts up to twice that. */
@@ -318,6 +337,24 @@ export class CollabServer {
             return conn.ws.close(CLOSE.tooLarge, 'document too large')
           Y.applyUpdate(shared.ydoc, update, conn)
         }
+      } else if (type === MESSAGE_COMMENTS) {
+        const request = JSON.parse(decoding.readVarString(decoder)) as { ref?: unknown }
+        const ref = typeof request.ref === 'number' ? request.ref : 0
+        const result = applyCommentOp(shared.threads, request, conn.auth.user, conn.auth.canWrite)
+        if ('error' in result) {
+          this.sendComments(conn, shared, { type: 'result', ref, ok: false, error: result.error })
+          return
+        }
+        shared.threads = result.threads
+        this.sendComments(conn, shared, {
+          type: 'result',
+          ref,
+          ok: true,
+          threadId: result.threadId,
+        })
+        for (const other of shared.connections.values())
+          this.sendComments(other, shared, { type: 'snapshot' })
+        this.scheduleStore(shared)
       } else if (type === MESSAGE_AWARENESS) {
         const update = decoding.readVarUint8Array(decoder)
         const owned = (id: number) =>
@@ -342,10 +379,12 @@ export class CollabServer {
       awareness,
       connections: new Map(),
       ready: Promise.resolve(),
+      threads: [],
     }
     shared.ready = (async () => {
       const stored = await this.options.load?.(name)
       if (stored) Y.applyUpdate(ydoc, stored, 'load')
+      shared.threads = (await this.options.loadComments?.(name)) ?? []
     })()
     ydoc.on('update', (update: Uint8Array, origin: unknown) => {
       const encoder = encoding.createEncoder()
@@ -369,7 +408,7 @@ export class CollabServer {
   }
 
   private scheduleStore(shared: SharedDoc): void {
-    if (!this.options.store) return
+    if (!this.options.store && !this.options.storeComments) return
     clearTimeout(shared.storeTimer)
     shared.storeTimer = setTimeout(() => void this.store(shared), this.options.storeDelayMs ?? 2000)
   }
@@ -377,6 +416,7 @@ export class CollabServer {
   private async store(shared: SharedDoc): Promise<void> {
     clearTimeout(shared.storeTimer)
     await this.options.store?.(shared.name, Y.encodeStateAsUpdate(shared.ydoc), shared.ydoc)
+    await this.options.storeComments?.(shared.name, shared.threads)
   }
 
   private leave(shared: SharedDoc, conn: Connection): void {

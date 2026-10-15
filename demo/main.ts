@@ -76,7 +76,15 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
-import { collab, collabStatusElement } from '@scriba/plugin-collab'
+import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
+import {
+  commentMarks,
+  commentToolbarItem,
+  commentsKeymap,
+  commentsPanel,
+  commentsPlugin,
+  createMemoryCommentStore,
+} from '@scriba/plugin-comments'
 import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   aiAssistant,
@@ -116,7 +124,7 @@ const schema = new Schema({
     ...imageNodes,
     ...tableNodes,
   }),
-  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
+  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks, ...commentMarks },
 })
 
 const SAMPLE = `
@@ -255,11 +263,19 @@ const shared = collabDoc
     })
   : null
 
+// Comments: through the collaboration server when connected (authors set by the server),
+// otherwise kept in this page only.
+const comments = shared
+  ? collabCommentStore(shared.provider)
+  : createMemoryCommentStore({ id: 'local', name: 'Tu' })
+
 const state = EditorState.create({
   doc,
   plugins: [
     history(),
     ...(shared?.plugins ?? []),
+    commentsPlugin(comments),
+    keymap(commentsKeymap(comments, t), { priority: 80 }),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -267,7 +283,12 @@ const state = EditorState.create({
     ...aiAssistant(aiOptions),
     keymap(aiKeymap(aiOptions), { priority: 90 }),
     bubbleMenu({
-      items: [...markItems(schema), ...linkToolbarItems(schema, t), aiToolbarItem(aiOptions)],
+      items: [
+        ...markItems(schema),
+        ...linkToolbarItems(schema, t),
+        commentToolbarItem(comments, t),
+        aiToolbarItem(aiOptions),
+      ],
       t,
     }),
     keymap(bubbleKeymap(), { priority: 80 }),
@@ -329,6 +350,7 @@ toolbar.items = [
       ...imageToolbarItems(schema, t, images),
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
+      commentToolbarItem(comments, t),
       aiToolbarItem(aiOptions),
     ],
     2,
@@ -349,6 +371,7 @@ toolbar.items = [
   ]),
 ]
 toolbar.view = view
+commentsPanel(view, { store: comments, t, container: $('comments') })
 status.before(createWordCountStatus(view, t).el)
 if (shared) {
   status.before(collabStatusElement(document, shared.provider, t))

@@ -62,7 +62,8 @@ export class HTMLSerializer {
     let out = ''
     const open: { mark: Mark; close: string }[] = []
     fragment.forEach((child) => {
-      const marks = child.isInline ? child.marks : []
+      // marks that are not serialized (e.g. comment anchors) leave only their text
+      const marks = child.isInline ? child.marks.filter((m) => m.type.spec.serialize !== false) : []
       let keep = 0
       while (keep < open.length && keep < marks.length && open[keep]!.mark.eq(marks[keep]!)) keep++
       while (open.length > keep) out += open.pop()!.close

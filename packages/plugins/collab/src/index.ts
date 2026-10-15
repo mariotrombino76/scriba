@@ -74,3 +74,4 @@ export function collab(options: CollabSetupOptions): {
     },
   }
 }
+export { collabCommentStore } from './comments.js'

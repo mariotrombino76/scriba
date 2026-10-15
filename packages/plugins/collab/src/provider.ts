@@ -42,6 +42,7 @@ export class CollabProvider {
   private destroyed = false
   private ready = false
   private readonly listeners = new Set<Listener>()
+  private readonly handlers = new Map<number, Set<(payload: string) => void>>()
   private resolveSynced!: () => void
   /** Resolves once the first full sync with the server is done. */
   readonly synced: Promise<void> = new Promise((r) => (this.resolveSynced = r))
@@ -145,6 +146,12 @@ export class CollabProvider {
         decoding.readVarUint8Array(decoder),
         this,
       )
+    } else {
+      const handlers = this.handlers.get(type)
+      if (handlers) {
+        const payload = decoding.readVarString(decoder)
+        for (const h of handlers) h(payload)
+      }
     }
   }
 
@@ -170,6 +177,24 @@ export class CollabProvider {
       awarenessProtocol.encodeAwarenessUpdate(this.awareness, ids),
     )
     this.send(encoding.toUint8Array(encoder))
+  }
+
+  /** Listens to an extra message type (e.g. 3: comments); its payload is a string. */
+  onMessageType(type: number, handler: (payload: string) => void): () => void {
+    let set = this.handlers.get(type)
+    if (!set) this.handlers.set(type, (set = new Set()))
+    set.add(handler)
+    return () => set.delete(handler)
+  }
+
+  /** Sends an extra message type; false when not connected (nothing is queued). */
+  sendMessageType(type: number, payload: string): boolean {
+    if (!this.ready || !this.ws || this.ws.readyState !== 1) return false
+    const encoder = encoding.createEncoder()
+    encoding.writeVarUint(encoder, type)
+    encoding.writeVarString(encoder, payload)
+    this.send(encoding.toUint8Array(encoder))
+    return true
   }
 
   /** Disconnects for good (removes our cursor for the others first). */

@@ -46,6 +46,11 @@ export interface MarkSpec {
   parseHTML?: readonly ParseRule[]
   /** How this mark is written as HTML (with a `0` hole for the text). */
   toHTML?: MarkToHTML
+  /**
+   * False: shown in the editor (its `toHTML`) but left out of the serialized
+   * HTML (only its text is written), e.g. comment anchors and suggestions.
+   */
+  serialize?: boolean
   [key: string]: unknown
 }
 

@@ -19,7 +19,8 @@ export default defineConfig({
       // collaboration server (bundled, then run with Node)
       command: 'vite build --config e2e/collab.vite.config.ts && node e2e/.collab/server.mjs',
       port: 4174,
-      reuseExistingServer: !process.env['CI'],
+      // never reuse: a server left running from an older build would test old code
+      reuseExistingServer: false,
     },
   ],
   projects: [
