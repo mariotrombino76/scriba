@@ -51,6 +51,7 @@ export function applyCommentOp(
       const thread: StoredThread = {
         id: randomUUID(),
         kind,
+        author: { id: user.id, name },
         resolved: false,
         comments: text ? [entry(text)] : [],
         createdBy: user.id,

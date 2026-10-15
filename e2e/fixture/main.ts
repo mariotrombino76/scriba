@@ -79,6 +79,9 @@ import {
   commentsPanel,
   commentsPlugin,
   createMemoryCommentStore,
+  suggestToolbarItem,
+  suggestionMarks,
+  suggestionsPlugin,
 } from '@scriba/plugin-comments'
 import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
@@ -120,7 +123,13 @@ const schema = new Schema({
     ...imageNodes,
     ...tableNodes,
   }),
-  marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks, ...commentMarks },
+  marks: {
+    ...linkMarks,
+    ...basicSchemaSpec.marks,
+    ...textStyleMarks,
+    ...commentMarks,
+    ...suggestionMarks,
+  },
 })
 // AI assistant with a FAKE backend (no network): a real app calls its own server here.
 const wait = (ms: number, signal: AbortSignal) =>
@@ -249,6 +258,7 @@ const state = EditorState.create({
     history(),
     ...(shared?.plugins ?? []),
     commentsPlugin(comments),
+    suggestionsPlugin({ store: comments, t }),
     keymap(commentsKeymap(comments, t), { priority: 80 }),
     pasteClean(),
     ...imagePlugins(t, images),
@@ -332,6 +342,7 @@ toolbar.items = [
     ...codeBlockToolbarItems(schema),
   ]),
   toolbarGroup('view', 'toolbar.group.view', [
+    suggestToolbarItem(),
     findReplaceToolbarItem(t),
     sourceToolbarItem(t),
     fullscreenToolbarItem(fullscreen),

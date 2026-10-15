@@ -18,6 +18,8 @@ export type ThreadKind = 'comment' | 'suggestion'
 export interface CommentThread {
   id: string
   kind: ThreadKind
+  /** Who opened it (set by the store / server). */
+  author: CommentAuthor
   resolved: boolean
   /** The first entry opens the thread (for a suggestion: an optional note). */
   comments: CommentEntry[]
@@ -91,6 +93,7 @@ export function createMemoryCommentStore(user: CommentAuthor): CommentStore {
       const thread: CommentThread = {
         id: newId(),
         kind,
+        author: { ...user },
         resolved: false,
         comments: clean ? [entry(clean)] : [],
       }

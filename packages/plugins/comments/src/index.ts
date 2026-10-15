@@ -3,6 +3,7 @@ import type { Translate } from '@scriba/i18n'
 import type { ToolbarButton } from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
 import { openCommentDialog } from './panel.js'
+import { setSuggesting, suggestingEnabled } from './suggestions.js'
 import type { CommentStore } from './store.js'
 
 export {
@@ -49,5 +50,30 @@ export function commentToolbarItem(store: CommentStore, t: Translate): ToolbarBu
     shortcut: 'Mod-Alt-m',
     command: (state) => !state.selection.empty && !!state.schema.marks['comment'],
     run: (view) => openCommentDialog(view, store, t),
+  }
+}
+export {
+  suggestionMarks,
+  suggestionsPlugin,
+  suggestKey,
+  suggestingEnabled,
+  setSuggesting,
+  listSuggestions,
+  resolveSuggestion,
+  resolveAllSuggestions,
+  SUGGEST_META,
+  type Suggestion,
+} from './suggestions.js'
+
+/** Toolbar toggle for suggestion mode (`aria-pressed`). */
+export function suggestToolbarItem(): ToolbarButton {
+  return {
+    type: 'button',
+    id: 'suggest',
+    icon: 'suggest',
+    label: (tr) => tr('suggest.mode'),
+    command: (state) => !!state.schema.marks['suggest_insert'],
+    isActive: (state) => suggestingEnabled(state),
+    run: (view) => setSuggesting(view, !suggestingEnabled(view.state)),
   }
 }

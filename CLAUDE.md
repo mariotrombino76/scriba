@@ -109,7 +109,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Input rules Markdown + import/export Markdown
 - [x] Comandi slash e bubble menu
 - [x] Collaborazione Yjs con cursori degli altri utenti
-- [ ] Commenti e suggerimenti (track changes)
+- [x] Commenti e suggerimenti (track changes)
 - [ ] Menzioni `@utente` con sorgente dati asincrona
 - [x] API per assistente AI (stream di testo inserito come transazioni annullabili)
 - [ ] Modalità sola lettura e permessi per blocco

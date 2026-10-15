@@ -105,12 +105,16 @@ function applyTransaction(
   const last = history.done[history.done.length - 1]
   const typing = isTyping(tr)
   // Only typing is grouped: formatting, block changes etc. are always their own undo step.
+  // a transaction appended by a plugin (normalization, suggestions…) belongs to its root's step
+  const root = tr.getMeta<Transaction>('appendedTransaction')
+  const appended = !!root && !!last && root.docChanged && root.getMeta(ADD_TO_HISTORY) !== false
   const newGroup =
-    !last ||
-    !typing ||
-    !history.prevTyping ||
-    tr.time - history.prevTime > options.newGroupDelay ||
-    tr.getMeta(CLOSE_HISTORY) === true
+    !appended &&
+    (!last ||
+      !typing ||
+      !history.prevTyping ||
+      tr.time - history.prevTime > options.newGroupDelay ||
+      tr.getMeta(CLOSE_HISTORY) === true)
   let done: HistoryEvent[]
   if (newGroup) {
     done = [...history.done, { steps, anchor: sel.anchor, head: sel.head }]
@@ -124,7 +128,7 @@ function applyTransaction(
     done = [...history.done.slice(0, -1), { steps: combined, anchor: last.anchor, head: last.head }]
   }
   if (done.length > options.depth) done = done.slice(done.length - options.depth)
-  return { done, undone: [], prevTime: tr.time, prevTyping: typing }
+  return { done, undone: [], prevTime: tr.time, prevTyping: appended ? history.prevTyping : typing }
 }
 
 /**

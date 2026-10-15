@@ -27,6 +27,8 @@
   --scriba-find-current: #fbbf24;
   --scriba-comment-bg: #fef3c7;
   --scriba-comment-active: #fcd34d;
+  --scriba-suggest-insert: #166534;
+  --scriba-suggest-delete: #b91c1c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +54,8 @@
     --scriba-find-current: #7a5c00;
     --scriba-comment-bg: #4a3b10;
     --scriba-comment-active: #6b5414;
+    --scriba-suggest-insert: #86efac;
+    --scriba-suggest-delete: #fca5a5;
   }
 }
 
@@ -77,6 +81,8 @@
   --scriba-find-current: #7a5c00;
   --scriba-comment-bg: #4a3b10;
   --scriba-comment-active: #6b5414;
+  --scriba-suggest-insert: #86efac;
+  --scriba-suggest-delete: #fca5a5;
 }
 
 /* Editing area */
@@ -1322,4 +1328,29 @@ scriba-toolbar.scriba-bubble {
 .scriba-comments input:focus-visible {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
+}
+
+/* Suggested changes (track changes) */
+.scriba-editor .scriba-suggest-insert {
+  color: var(--scriba-suggest-insert);
+  text-decoration: underline 2px;
+}
+.scriba-editor .scriba-suggest-delete {
+  color: var(--scriba-suggest-delete);
+  text-decoration: line-through 2px;
+}
+.scriba-suggestions h3 {
+  margin: 12px 0 6px;
+  font-size: 0.9375rem;
+}
+.scriba-suggestion-list {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.scriba-suggestion {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
 }

@@ -1,3 +1,4 @@
+import { TextSelection } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import { openDialog, type DialogHandle } from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
@@ -10,6 +11,7 @@ import {
   threadRange,
 } from './comments.js'
 import type { CommentStore, CommentThread } from './store.js'
+import { listSuggestions, resolveSuggestion } from './suggestions.js'
 import { MAX_COMMENT_LENGTH } from './store.js'
 
 export interface CommentsPanelOptions {
@@ -110,8 +112,78 @@ export function commentsPanel(
   empty.textContent = t('comments.none')
   const list = doc.createElement('ol')
   list.className = 'scriba-thread-list'
-  el.append(title, filter, empty, list)
+  // suggested changes (track changes): one entry per proposal, with its author
+  const suggestions = doc.createElement('div')
+  suggestions.className = 'scriba-suggestions'
+  const sTitle = doc.createElement('h3')
+  sTitle.textContent = t('suggest.title')
+  const all = doc.createElement('div')
+  all.className = 'scriba-thread-actions'
+  const acceptAll = doc.createElement('button')
+  acceptAll.type = 'button'
+  acceptAll.textContent = t('suggest.acceptAll')
+  const rejectAll = doc.createElement('button')
+  rejectAll.type = 'button'
+  rejectAll.textContent = t('suggest.rejectAll')
+  all.append(acceptAll, rejectAll)
+  const sList = doc.createElement('ul')
+  sList.className = 'scriba-suggestion-list'
+  suggestions.append(sTitle, all, sList)
+  const settle = (id: string | null, accept: boolean) => {
+    const ids = id ? [id] : listSuggestions(view.state.doc).map((x) => x.id)
+    resolveSuggestion(view, id, accept)
+    for (const x of ids) void store.setResolved(x, true).catch(() => undefined) // keep the record
+    view.focus()
+  }
+  acceptAll.addEventListener('click', () => settle(null, true))
+  rejectAll.addEventListener('click', () => settle(null, false))
+  el.append(title, filter, empty, list, suggestions)
   container.appendChild(el)
+
+  const renderSuggestions = () => {
+    const found = view.state.schema.marks['suggest_insert'] ? listSuggestions(view.state.doc) : []
+    suggestions.hidden = !found.length
+    sList.replaceChildren()
+    const threads = getComments(view.state).threads
+    for (const sug of found) {
+      const li = doc.createElement('li')
+      li.className = 'scriba-suggestion'
+      const who = doc.createElement('strong')
+      who.textContent = threads.find((th) => th.id === sug.id)?.author.name ?? '…' // from the store
+      const what = doc.createElement('button')
+      what.type = 'button'
+      what.className = 'scriba-thread-quote'
+      const short = (x: string) => (x.length > 60 ? `${x.slice(0, 60)}…` : x)
+      what.textContent =
+        sug.inserted && sug.deleted
+          ? t('suggest.replace', { old: short(sug.deleted), text: short(sug.inserted) })
+          : sug.inserted
+            ? t('suggest.insert', { text: short(sug.inserted) })
+            : t('suggest.delete', { text: short(sug.deleted) })
+      what.addEventListener('click', () => {
+        const at = Math.min(sug.from, view.state.doc.content.size)
+        view.dispatch(
+          view.state.tr
+            .setSelection(TextSelection.near(view.state.doc.resolve(at)))
+            .scrollIntoView(),
+        )
+        view.focus()
+      })
+      const accept = doc.createElement('button')
+      accept.type = 'button'
+      accept.textContent = t('suggest.accept')
+      accept.addEventListener('click', () => settle(sug.id, true))
+      const reject = doc.createElement('button')
+      reject.type = 'button'
+      reject.textContent = t('suggest.reject')
+      reject.addEventListener('click', () => settle(sug.id, false))
+      const actions = doc.createElement('div')
+      actions.className = 'scriba-thread-actions'
+      actions.append(accept, reject)
+      li.append(who, ' ', what, actions)
+      sList.appendChild(li)
+    }
+  }
 
   const items = new Map<string, { li: HTMLLIElement; thread: CommentThread }>()
   const message = doc.createElement('p')
@@ -260,6 +332,7 @@ export function commentsPanel(
       prev = item.li
     }
     empty.hidden = shown.length > 0
+    renderSuggestions()
   }
 
   let lastState: unknown = null

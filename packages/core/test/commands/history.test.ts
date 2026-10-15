@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   ADD_TO_HISTORY,
+  Plugin,
   history,
   redo,
   redoDepth,
@@ -53,6 +54,20 @@ describe('history', () => {
     s = type(s, 'z', 1200)
     s = type(s, 'w', 1300)
     expect(undoDepth(s)).toBe(3)
+  })
+
+  it("changes appended by a plugin belong to their root's undo step", () => {
+    const shout = new Plugin({
+      appendTransaction(trs, _old, state) {
+        if (!trs.some((t) => t.docChanged) || !state.doc.textContent.endsWith('b')) return null
+        return state.tr.insertText('!', state.doc.content.size - 1)
+      },
+    })
+    let s = stateAt(doc(p('a')), 2, 2, [history(), shout])
+    s = s.apply(s.tr.insertText('b'))
+    expect(s.doc.eq(doc(p('ab!')))).toBe(true)
+    expect(undoDepth(s)).toBe(1)
+    expect(run(s, undo)!.doc.eq(doc(p('a')))).toBe(true)
   })
 
   it('splits groups after the delay', () => {

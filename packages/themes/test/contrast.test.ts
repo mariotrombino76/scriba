@@ -41,6 +41,8 @@ describe.each(Object.entries(themes))('%s theme contrast', (_name, v) => {
     ).map((t) => [`hl-${t}`, 'code-bg', 4.5] as const),
     ['text', 'find-bg', 4.5],
     ['text', 'comment-bg', 4.5],
+    ['suggest-insert', 'bg', 4.5],
+    ['suggest-delete', 'bg', 4.5],
     ['text', 'comment-active', 4.5],
     ['text', 'find-current', 4.5],
     ['focus', 'find-current', 3],
