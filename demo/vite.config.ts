@@ -20,6 +20,7 @@ export default defineConfig({
       '@scriba/plugin-text-style': plugin('text-style'),
       '@scriba/plugin-link': plugin('link'),
       '@scriba/plugin-code-block': plugin('code-block'),
+      '@scriba/plugin-paste-clean': plugin('paste-clean'),
     },
   },
   server: { port: 5173, open: false },

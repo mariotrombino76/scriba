@@ -38,6 +38,7 @@ import {
   codeHighlight,
 } from '@scriba/plugin-code-block'
 import { common, createLowlight } from 'lowlight'
+import { pasteClean } from '@scriba/plugin-paste-clean'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
@@ -55,6 +56,7 @@ const state = EditorState.create({
   schema,
   plugins: [
     history(),
+    pasteClean(),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     keymap(listKeymap(schema), { priority: 50 }),

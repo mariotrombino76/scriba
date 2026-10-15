@@ -33,6 +33,7 @@ export class EditorView {
   private destroyed = false
   private readonly listeners = new Set<(view: EditorView) => void>()
   private decorations: DecorationIndex = DecorationIndex.empty
+  private plainPasteUntil = 0
 
   constructor(
     place: HTMLElement,
@@ -234,6 +235,18 @@ export class EditorView {
   /** @internal Textblock containing the DOM selection anchor (e.g. the one being composed). */
   textblockDescAtDOMSelection(): NodeViewDesc | null {
     return textblockDescOf(this.document.getSelection()?.anchorNode ?? null, this.rootDesc)
+  }
+
+  /** @internal Ctrl/Cmd+Shift+V was pressed: the next paste (within 1s) is plain text. */
+  requestPlainPaste(): void {
+    this.plainPasteUntil = Date.now() + 1000
+  }
+
+  /** @internal */
+  consumePlainPaste(): boolean {
+    const plain = Date.now() < this.plainPasteUntil
+    this.plainPasteUntil = 0
+    return plain
   }
 
   /** @internal */

@@ -98,7 +98,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [ ] Tabelle: inserimento, unione/divisione celle, righe/colonne, intestazioni, ridimensionamento colonne
 - [x] Allineamento testo, rientro, colore testo/sfondo, font e dimensione
 - [x] Blocchi citazione e blocchi codice con evidenziazione sintassi
-- [ ] Incolla pulito da Word / Google Docs / pagine web
+- [x] Incolla pulito da Word / Google Docs / pagine web
 - [ ] Vista sorgente HTML
 - [ ] Trova e sostituisci (anche regex)
 - [ ] Schermo intero, conteggio parole/caratteri

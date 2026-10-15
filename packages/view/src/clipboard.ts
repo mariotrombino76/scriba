@@ -1,4 +1,12 @@
-import { Fragment, HTMLSerializer, Slice, parseHTML, type Node } from '@scriba/core'
+import {
+  AllSelection,
+  Fragment,
+  HTMLSerializer,
+  Selection,
+  insertContent,
+  parseHTML,
+  type Node,
+} from '@scriba/core'
 import { parseInertHTML } from './trusted-types.js'
 import type { EditorView } from './view.js'
 
@@ -19,63 +27,82 @@ export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean
 const MAX_PASTE_LENGTH = 5_000_000
 
 /**
- * Paste: HTML is parsed in an inert document (`DOMParser`) and passed through
- * the schema parser, exactly like any other untrusted input (§5.2).
+ * Plugin prop to clean pasted HTML before it is parsed:
+ * `props: { transformPastedDOM(body, view) { … } }`. It receives the body of
+ * the INERT document (scripts never run there) and may rewrite it; the result
+ * still goes through the schema parser.
+ */
+export type TransformPastedDOM = (body: HTMLElement, view: EditorView) => void
+
+/**
+ * Paste: HTML is parsed in an inert document (`DOMParser`), cleaned by the
+ * plugins' `transformPastedDOM` and passed through the schema parser, exactly
+ * like any other untrusted input (§5.2). Then it is fitted to the place it
+ * goes (`insertContent`). Ctrl/Cmd+Shift+V pastes plain text.
  */
 export function handlePaste(view: EditorView, event: ClipboardEvent): void {
   event.preventDefault()
   if (!view.editable || !event.clipboardData) return
-  const html = event.clipboardData.getData('text/html')
+  const plainOnly = view.consumePlainPaste()
+  const html = plainOnly ? '' : event.clipboardData.getData('text/html')
   const text = event.clipboardData.getData('text/plain')
   if (html.length > MAX_PASTE_LENGTH || text.length > MAX_PASTE_LENGTH) return
   let doc: Node | null = null
   if (html) {
     try {
-      doc = parseHTML(view.state.schema, parseInertHTML(html).body)
+      const body = parseInertHTML(html).body
+      for (const plugin of view.state.plugins) {
+        const transform = plugin.props['transformPastedDOM'] as TransformPastedDOM | undefined
+        if (typeof transform === 'function') transform(body, view)
+      }
+      doc = parseHTML(view.state.schema, body)
     } catch {
       doc = null // limits exceeded or unparsable: fall back to plain text
     }
   }
-  if (doc && insertDoc(view, doc)) return
+  if (doc && hasContent(doc) && insertFragment(view, doc.content)) return
   if (text) insertPlainText(view, text)
 }
 
-/** Inserts parsed content: inline content of a single textblock, or the blocks as an open slice. */
-function insertDoc(view: EditorView, doc: Node): boolean {
-  const first = doc.firstChild
-  const slice =
-    doc.childCount === 1 && first?.isTextblock
-      ? new Slice(first.content, 0, 0)
-      : Slice.maxOpen(doc.content)
-  if (!slice.size) return true
-  try {
-    view.dispatch(view.state.tr.replaceSelection(slice).scrollIntoView())
-    return true
-  } catch {
-    return false // the slice does not fit here (full fitting comes with paste-clean, Phase 2)
-  }
+/** A parsed paste that produced only an empty paragraph has nothing to insert. */
+function hasContent(doc: Node): boolean {
+  let found = false
+  doc.descendants((node) => {
+    if (found) return false
+    if (node.isText || node.isLeaf) found = true
+    return !found
+  })
+  return found || doc.childCount > 1
 }
 
-/** Plain text: one paragraph per line, inserted as typed text. */
+/** Inserts content where the selection is, fitting it to the place (see `insertContent`). */
+function insertFragment(view: EditorView, content: Fragment): boolean {
+  const tr = view.state.tr
+  const sel = view.state.selection
+  if (sel instanceof AllSelection) {
+    tr.replaceWith(0, tr.doc.content.size, content)
+    tr.setSelection(Selection.atEnd(tr.doc))
+    view.dispatch(tr.scrollIntoView())
+    return true
+  }
+  const end = insertContent(tr, sel.from, sel.to, content)
+  if (end === null) return false
+  tr.setSelection(Selection.near(tr.doc.resolve(Math.min(end, tr.doc.content.size)), -1))
+  view.dispatch(tr.scrollIntoView())
+  return true
+}
+
+/** Plain text: one paragraph per line (a single line or code: inserted as typed text). */
 function insertPlainText(view: EditorView, text: string): void {
   const lines = text.replace(/\r\n?/g, '\n').split('\n')
-  const tr = view.state.tr
-  const code = !!tr.selection.$from.parent.type.spec.code
-  if (code || lines.length === 1) {
-    tr.insertText(text)
-  } else {
-    const schema = view.state.schema
-    const para = schema.nodes['paragraph']
-    if (!para) {
-      tr.insertText(lines.join(' '))
-    } else {
-      const blocks = lines.map((line) => para.create(null, line ? schema.text(line) : null))
-      try {
-        tr.replaceSelection(Slice.maxOpen(Fragment.fromArray(blocks)))
-      } catch {
-        tr.insertText(lines.join(' '))
-      }
-    }
+  const schema = view.state.schema
+  const para = schema.nodes['paragraph']
+  if (lines.length === 1 || !para || view.state.selection.$from.parent.type.spec.code) {
+    view.dispatch(view.state.tr.insertText(para ? text : lines.join(' ')).scrollIntoView())
+    return
   }
-  view.dispatch(tr.scrollIntoView())
+  const blocks = lines.map((line) => para.create(null, line ? schema.text(line) : null))
+  if (!insertFragment(view, Fragment.fromArray(blocks))) {
+    view.dispatch(view.state.tr.insertText(lines.join(' ')).scrollIntoView())
+  }
 }

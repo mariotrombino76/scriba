@@ -43,6 +43,7 @@ import {
   codeHighlight,
 } from '@scriba/plugin-code-block'
 import { common, createLowlight } from 'lowlight'
+import { pasteClean } from '@scriba/plugin-paste-clean'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
@@ -79,6 +80,7 @@ const state = EditorState.create({
   doc,
   plugins: [
     history(),
+    pasteClean(),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     keymap(listKeymap(schema), { priority: 50 }),

@@ -128,6 +128,25 @@ importers:
         specifier: workspace:*
         version: link:../../ui
 
+  packages/plugins/paste-clean:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+    devDependencies:
+      '@scriba/plugin-link':
+        specifier: workspace:*
+        version: link:../link
+      '@scriba/plugin-list':
+        specifier: workspace:*
+        version: link:../list
+      '@scriba/plugin-text-style':
+        specifier: workspace:*
+        version: link:../text-style
+
   packages/plugins/text-style:
     dependencies:
       '@scriba/core':

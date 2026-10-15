@@ -1,12 +1,20 @@
 import type { DOMLikeElement } from './types.js'
 
 /**
- * Reads one CSS property from an element's inline `style`, lowercased.
- * Only for *recognizing* formatting while parsing (e.g. Google Docs bold spans);
- * styles are never copied to the output.
+ * Attribute where paste transforms put a rewritten style. Browsers enforcing a
+ * strict CSP may refuse to (re)write `style` attributes, even in an inert
+ * document; `data-*` attributes are not subject to CSP. Untrusted like `style`.
+ */
+export const STYLE_DATA_ATTR = 'data-scriba-style'
+
+/**
+ * Reads one CSS property from an element's inline style (`data-scriba-style`
+ * when present, else `style`), lowercased. Only for *recognizing* formatting
+ * while parsing (e.g. Google Docs bold spans); styles are never copied to the
+ * output, values are validated by the parse rules.
  */
 export function styleValue(el: DOMLikeElement, property: string): string | null {
-  const style = el.getAttribute('style')
+  const style = el.getAttribute(STYLE_DATA_ATTR) ?? el.getAttribute('style')
   if (!style || style.length > 10_000) return null
   const wanted = property.toLowerCase()
   let found: string | null = null

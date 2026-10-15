@@ -7,3 +7,4 @@ export {
   type InlineDecoration,
   type DecorationSource,
 } from './decorations.js'
+export type { TransformPastedDOM } from './clipboard.js'
