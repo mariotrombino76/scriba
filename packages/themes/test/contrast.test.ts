@@ -53,3 +53,9 @@ describe.each(Object.entries(themes))('%s theme contrast', (_name, v) => {
 it('dark values are the same in the media query and the explicit attribute', () => {
   expect(block('@media (prefers-color-scheme: dark)')).toEqual(themes.dark)
 })
+
+it('collaboration name labels: white text on every user color ≥ 4.5:1', () => {
+  const colors = [...css.matchAll(/--scriba-collab:\s*(#[0-9a-f]{6})/gi)].map((m) => m[1]!)
+  expect(colors.length).toBeGreaterThanOrEqual(8)
+  for (const c of colors) expect(ratio(c, '#ffffff'), c).toBeGreaterThanOrEqual(4.5)
+})
