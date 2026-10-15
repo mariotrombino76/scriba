@@ -33,6 +33,7 @@ export {
 } from './transform/structure.js'
 export { deleteRangeSlice, type DeletePlan } from './transform/delete-range.js'
 export { insertContent } from './transform/insert-content.js'
+export { crossesIsolating, deleteAcrossIsolating, isolatingSides } from './transform/isolating.js'
 
 export {
   Selection,
@@ -56,6 +57,7 @@ export {
   type CommandView,
   chainCommands,
   deleteSelection,
+  deleteSelectedBlock,
   joinBackward,
   joinForward,
   deleteChar,
@@ -125,6 +127,7 @@ export {
   styleToString,
   isAllowedStyleProperty,
   withStyle,
+  BORDER_STYLES,
   type StyleDecls,
 } from './html/css.js'
 export { sanitizeUrl, DEFAULT_MAX_DATA_IMAGE_BYTES, type UrlRule } from './html/url.js'

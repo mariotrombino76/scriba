@@ -24,6 +24,8 @@ import {
   goToCell,
   insertTable,
   mergeCells,
+  setCellProps,
+  setTableProps,
   pasteCells,
   splitCell,
   tableNodes,
@@ -329,6 +331,67 @@ describe('table commands', () => {
     ]) {
       expect(cmd(state)).toBe(false)
     }
+  })
+})
+
+describe('table and cell properties', () => {
+  it('cell properties go on every selected cell, in one undo step', () => {
+    const state = withCells(TABLE3, 'a', 'b')
+    const next = runAndUndo(
+      state,
+      setCellProps({
+        background: '#ffee00',
+        valign: 'middle',
+        borderWidth: 2,
+        borderStyle: 'dotted',
+      }),
+    )
+    const out = html(next.doc)
+    const td =
+      '<td style="background-color: #ffee00; vertical-align: middle; border-width: 2px; border-style: dotted">'
+    expect(out).toContain(`${td}<p>a</p></td>${td}<p>b</p></td><td><p>c</p></td>`)
+    // removing a property
+    expect(html(run(next, setCellProps({ background: null })).doc)).toContain(
+      '<td style="vertical-align: middle; border-width: 2px; border-style: dotted"><p>a</p>',
+    )
+  })
+
+  it('invalid values are refused by the schema', () => {
+    const state = stateIn(TABLE3, 'a')
+    expect(() => run(state, setCellProps({ background: 'url(x)' }))).toThrow()
+    expect(() => run(state, setCellProps({ borderWidth: 99 }))).toThrow()
+    expect(() => run(state, setTableProps({ caption: 'x'.repeat(501) }))).toThrow()
+  })
+
+  it('table properties: caption and alignment on the table, border also on the cells', () => {
+    const state = stateIn('<table><tr><td>a</td></tr></table>', 'a')
+    const next = runAndUndo(
+      state,
+      setTableProps({
+        caption: 'Q1 <b>',
+        align: 'right',
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#000000',
+      }),
+    )
+    expect(html(next.doc)).toBe(
+      '<table style="margin-left: auto; border-width: 1px; border-style: solid; border-color: #000000"><caption>Q1 &lt;b&gt;</caption><tbody><tr><td style="border-width: 1px; border-style: solid; border-color: #000000"><p>a</p></td></tr></tbody></table><p></p>',
+    )
+    // without border props the cells keep their own
+    const captionOnly = run(next, setTableProps({ caption: null, align: null }))
+    expect(html(captionOnly.doc)).toContain('<td style="border-width: 1px')
+    expect(html(captionOnly.doc)).not.toContain('caption')
+  })
+
+  it('round-trips properties written by other editors', () => {
+    expect(
+      roundTrip(
+        '<table border="1" style="margin-left:auto;margin-right:auto"><caption>T</caption><tr><td style="background:#eee;border:1pt solid black" valign="top">a</td></tr></table>',
+      ),
+    ).toBe(
+      '<table style="margin-left: auto; margin-right: auto; border-width: 1px; border-style: solid"><caption>T</caption><tbody><tr><td style="background-color: #eeeeee; vertical-align: top; border-width: 1px; border-style: solid; border-color: #000000"><p>a</p></td></tr></tbody></table>',
+    )
   })
 })
 

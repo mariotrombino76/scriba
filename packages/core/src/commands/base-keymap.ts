@@ -5,6 +5,7 @@ import {
   chainCommands,
   deleteChar,
   deleteSelection,
+  deleteSelectedBlock,
   insertNode,
   joinBackward,
   joinForward,
@@ -19,9 +20,15 @@ import { liftEmptyBlock, liftEmptyOrFirstBlock } from './structure.js'
 /** Editing keys that work with any schema: Enter, Backspace, Delete, select all. */
 export const baseKeymap: KeyBindings = {
   Enter: chainCommands(newlineInCode, liftEmptyBlock, splitBlock),
-  Backspace: chainCommands(deleteSelection, liftEmptyOrFirstBlock, joinBackward, deleteChar(-1)),
+  Backspace: chainCommands(
+    deleteSelectedBlock(-1),
+    deleteSelection,
+    liftEmptyOrFirstBlock,
+    joinBackward,
+    deleteChar(-1),
+  ),
   'Mod-Backspace': chainCommands(deleteSelection, joinBackward),
-  Delete: chainCommands(deleteSelection, joinForward, deleteChar(1)),
+  Delete: chainCommands(deleteSelectedBlock(1), deleteSelection, joinForward, deleteChar(1)),
   'Mod-Delete': chainCommands(deleteSelection, joinForward),
   'Mod-a': selectAll,
 }

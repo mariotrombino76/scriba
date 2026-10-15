@@ -55,6 +55,10 @@ export interface ToolbarMenuEntry {
   isActive?: (state: EditorState) => boolean
   /** With `isActive`: a toggle (`menuitemcheckbox`) instead of a choice (`menuitemradio`). */
   toggle?: boolean
+  /** Runs instead of `command` (e.g. opens a dialog); `command` still decides whether it is enabled. */
+  run?: (view: EditorView) => void
+  /** In a `size` menu: the (row, column) this entry stands for, 1-based (e.g. a table size). */
+  cell?: readonly [number, number]
 }
 
 /** A button opening a popup menu (WAI-ARIA menu button pattern). */
@@ -68,8 +72,14 @@ export interface ToolbarMenu {
   valueLabel?: (state: EditorState, t: Translate) => string
   /** A color bar under the icon showing the current color. */
   indicator?: (state: EditorState) => string | null
-  /** `grid`: color swatches in a grid, other entries as rows below. */
-  layout?: 'list' | 'grid'
+  /**
+   * `grid`: color swatches in a grid, other entries as rows below.
+   * `size`: entries with a `cell` form a rows×columns picker (hovering 3×4
+   * highlights the 3×4 area, arrows move in two dimensions); others are rows below.
+   */
+  layout?: 'list' | 'grid' | 'size'
+  /** Columns of a `size` picker. */
+  columns?: number
   entries: ToolbarMenuEntry[]
   isVisible?: (state: EditorState) => boolean
   /** When space is short, lower priorities move into "More options" first. Default: the group's. */

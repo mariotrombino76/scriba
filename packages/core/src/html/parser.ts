@@ -22,6 +22,7 @@ const SKIP_TAGS = new Set([
   'script', 'style', 'template', 'noscript', 'iframe', 'frame', 'frameset', 'object', 'embed',
   'applet', 'head', 'title', 'meta', 'link', 'base', 'svg', 'math', 'input', 'button', 'select',
   'textarea', 'option', 'canvas', 'audio', 'video', 'source', 'track', 'map', 'portal',
+  'caption', // read as plain text by the table rule (a table attribute), never as content
 ]) // prettier-ignore
 
 /** Unknown elements that still separate blocks (their inline content gets its own paragraph). */

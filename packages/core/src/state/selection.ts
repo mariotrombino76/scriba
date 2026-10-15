@@ -3,6 +3,7 @@ import type { ResolvedPos } from '../model/resolvedpos.js'
 import { Slice } from '../model/slice.js'
 import type { Mappable } from '../transform/map.js'
 import type { Transform } from '../transform/transform.js'
+import { crossesIsolating, deleteAcrossIsolating } from '../transform/isolating.js'
 
 /** JSON form of a selection. */
 export type SelectionJSON =
@@ -69,6 +70,15 @@ export abstract class Selection {
   /** Replaces the selection with a slice (deletes when empty) and puts the cursor after it. */
   replace(tr: Transform & { setSelection(sel: Selection): unknown }, slice = Slice.empty): void {
     const start = tr.steps.length
+    if (crossesIsolating(tr.doc, this.from, this.to)) {
+      // never join across a table border: delete the selected text on each side
+      deleteAcrossIsolating(tr, this.from, this.to)
+      // (this.from is never moved by those deletions: they all come after it)
+      if (slice.size) tr.replace(this.from, this.from, slice)
+      const end = tr.mapping.slice(start).map(this.from, 1)
+      tr.setSelection(Selection.near(tr.doc.resolve(Math.min(end, tr.doc.content.size)), -1))
+      return
+    }
     tr.delete(this.from, this.to)
     if (slice.size) tr.replace(tr.mapping.slice(start).map(this.from), undefined, slice)
     const end = tr.mapping.slice(start).map(this.to, 1)

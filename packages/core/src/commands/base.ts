@@ -4,6 +4,7 @@ import { AllSelection, NodeSelection, Selection, TextSelection } from '../state/
 import type { EditorState } from '../state/state.js'
 import type { Transaction } from '../state/transaction.js'
 import { deleteRangeSlice } from '../transform/delete-range.js'
+import { crossesIsolating, isolatingSides } from '../transform/isolating.js'
 
 /**
  * A command: a pure function of the state. Without `dispatch` it only tells
@@ -34,12 +35,36 @@ function canDelete(state: EditorState, from: number, to: number): boolean {
   return !!deleteRangeSlice(state.doc.resolve(from), state.doc.resolve(to))
 }
 
+/**
+ * Backspace/Delete on a selected block (e.g. a table): deletes it and leaves
+ * the cursor where the block was: at the start of what follows for Backspace,
+ * at the end of what precedes for Delete (as in word processors).
+ */
+export function deleteSelectedBlock(dir: -1 | 1): Command {
+  return (state, dispatch) => {
+    const sel = state.selection
+    if (!(sel instanceof NodeSelection) || !sel.node.isBlock) return false
+    if (dispatch) {
+      const tr = state.tr.deleteSelection()
+      const pos = Math.min(tr.mapping.map(sel.from), tr.doc.content.size)
+      tr.setSelection(Selection.near(tr.doc.resolve(pos), dir < 0 ? 1 : -1))
+      dispatch(tr.scrollIntoView())
+    }
+    return true
+  }
+}
+
 /** Deletes the selection, if not empty. */
 export const deleteSelection: Command = (state, dispatch) => {
   const sel = state.selection
   if (sel.empty) return false
   // Node, cell and all selections delete themselves (Selection.replace); text ranges must be deletable.
-  if (sel instanceof TextSelection && !canDelete(state, sel.from, sel.to)) return false
+  if (
+    sel instanceof TextSelection &&
+    !crossesIsolating(state.doc, sel.from, sel.to) && // that case deletes text on each side
+    !canDelete(state, sel.from, sel.to)
+  )
+    return false
   dispatch?.(state.tr.deleteSelection().scrollIntoView())
   return true
 }
@@ -54,25 +79,6 @@ function cursorAtBlockEdge(state: EditorState, edge: 'start' | 'end'): TextSelec
       ? $cursor.parentOffset === 0
       : $cursor.parentOffset === $cursor.parent.content.size
   return atEdge ? $cursor : null
-}
-
-/**
- * Which ends of [from, to] sit inside an isolating node (e.g. a table cell)
- * that the range leaves: joining across it would break the table apart.
- */
-function isolatingSides(
-  state: EditorState,
-  from: number,
-  to: number,
-): { from: boolean; to: boolean } {
-  const $from = state.doc.resolve(from)
-  const $to = state.doc.resolve(to)
-  const shared = $from.sharedDepth(to)
-  const inside = ($pos: typeof $from) => {
-    for (let d = shared + 1; d <= $pos.depth; d++) if ($pos.node(d).type.spec.isolating) return true
-    return false
-  }
-  return { from: inside($from), to: inside($to) }
 }
 
 /**
@@ -117,7 +123,7 @@ export const joinBackward: Command = (state, dispatch) => {
   if (!$cursor) return false
   const before = Selection.findFrom(state.doc.resolve($cursor.before()), -1)
   if (!before) return resetBlockType(state, dispatch, $cursor.before())
-  const sides = isolatingSides(state, before.from, $cursor.pos)
+  const sides = isolatingSides(state.doc, before.from, $cursor.pos)
   if (sides.from || sides.to)
     return atIsolatingBorder(state, dispatch, $cursor, before.head, sides.to, -1)
   if (before instanceof NodeSelection) {
@@ -140,7 +146,7 @@ export const joinForward: Command = (state, dispatch) => {
   if (!$cursor) return false
   const after = Selection.findFrom(state.doc.resolve($cursor.after()), 1)
   if (!after) return false
-  const sides = isolatingSides(state, $cursor.pos, after.to)
+  const sides = isolatingSides(state.doc, $cursor.pos, after.to)
   if (sides.from || sides.to)
     return atIsolatingBorder(state, dispatch, $cursor, after.head, sides.from, 1)
   if (after instanceof NodeSelection) {

@@ -9,8 +9,6 @@ let menuCount = 0
 
 /** Entry of a popup: a menu entry, optionally with its own action or a sub-menu. */
 export interface PopupEntry extends ToolbarMenuEntry {
-  /** Runs instead of `command` (e.g. opens another menu). */
-  run?: (view: EditorView) => void
   /** Shows a chevron and `aria-haspopup`. */
   hasPopup?: boolean
 }
@@ -26,9 +24,12 @@ export class MenuPopup {
   private readonly entries: { el: HTMLButtonElement; entry: PopupEntry }[] = []
   private index = 0
   private anchor: HTMLElement
+  /** Columns of a `size` picker (0 = not a picker). */
+  private readonly columns: number
+  private readonly sizeLabel: HTMLElement | null = null
 
   constructor(
-    menu: Pick<ToolbarMenu, 'label' | 'layout'> & { entries: PopupEntry[] },
+    menu: Pick<ToolbarMenu, 'label' | 'layout' | 'columns'> & { entries: PopupEntry[] },
     readonly button: HTMLButtonElement,
     t: Translate,
     private readonly getView: () => EditorView | null,
@@ -51,6 +52,17 @@ export class MenuPopup {
       grid.className = 'scriba-toolbar-menu-grid'
       this.el.appendChild(grid)
     }
+    this.columns = menu.layout === 'size' ? Math.max(1, menu.columns ?? 8) : 0
+    const picker = this.columns ? doc.createElement('div') : null
+    if (picker) {
+      picker.className = 'scriba-size-grid'
+      picker.style.gridTemplateColumns = `repeat(${this.columns}, auto)` // CSSOM
+      const label = doc.createElement('div')
+      label.className = 'scriba-size-label'
+      label.setAttribute('aria-hidden', 'true') // each cell has its own accessible name
+      this.el.append(picker, label)
+      this.sizeLabel = label
+    }
     for (const entry of menu.entries) {
       const el = doc.createElement('button')
       el.type = 'button'
@@ -62,7 +74,15 @@ export class MenuPopup {
       )
       el.setAttribute('aria-label', entry.label(t))
       const color = entry.swatch ? normalizeColor(entry.swatch) : null
-      if (grid && color) {
+      if (picker && entry.cell) {
+        // Size picker cell: hovering or focusing it highlights the area it stands for.
+        el.className = 'scriba-size-cell'
+        el.title = entry.label(t)
+        const cell = entry.cell
+        el.addEventListener('mouseenter', () => this.highlight(cell))
+        el.addEventListener('focus', () => this.highlight(cell))
+        picker.appendChild(el)
+      } else if (grid && color) {
         // Grid swatch: the name is the accessible label and the tooltip.
         el.className = 'scriba-toolbar-swatch'
         el.title = entry.label(t)
@@ -121,7 +141,7 @@ export class MenuPopup {
     const state = this.getView()?.state
     let active = -1
     this.entries.forEach(({ el, entry }, i) => {
-      const enabled = !!state && (entry.run ? true : entry.command(state))
+      const enabled = !!state && entry.command(state) // `run` entries are enabled by their command too
       el.setAttribute('aria-disabled', String(!enabled))
       if (entry.isActive) {
         const on = !!state && entry.isActive(state)
@@ -171,6 +191,33 @@ export class MenuPopup {
     this.el.style.top = `${top}px`
   }
 
+  /** Highlights the cells of a size picker up to (rows, columns). */
+  private highlight([rows, cols]: readonly [number, number]): void {
+    for (const { el, entry } of this.entries) {
+      if (!entry.cell) continue
+      el.classList.toggle('scriba-size-on', entry.cell[0] <= rows && entry.cell[1] <= cols)
+    }
+    if (this.sizeLabel) this.sizeLabel.textContent = `${rows} × ${cols}`
+  }
+
+  /** Arrow keys in a size picker move in two dimensions. */
+  private moveInPicker(key: string): boolean {
+    const current = this.entries[this.index]?.entry.cell
+    if (!this.columns || !current) return false
+    const cells = this.entries.filter((e) => e.entry.cell).length
+    const col = current[1] - 1
+    let next = this.index
+    if (key === 'ArrowRight' && col < this.columns - 1) next++
+    else if (key === 'ArrowLeft' && col > 0) next--
+    else if (key === 'ArrowDown') next += this.columns
+    else if (key === 'ArrowUp') next -= this.columns
+    else return key === 'ArrowRight' || key === 'ArrowLeft' // stay at the row edge
+    if (next < 0) return true
+    // below the last row: the first entry after the picker
+    this.focus(Math.min(next, next >= cells ? cells : next))
+    return true
+  }
+
   private focus(index: number): void {
     if (!this.entries.length) return
     this.index = (index + this.entries.length) % this.entries.length
@@ -203,6 +250,10 @@ export class MenuPopup {
     }
     if (event.key === 'Tab') {
       this.close(false)
+      return
+    }
+    if (event.key.startsWith('Arrow') && this.moveInPicker(event.key)) {
+      event.preventDefault()
       return
     }
     const action = keys[event.key]

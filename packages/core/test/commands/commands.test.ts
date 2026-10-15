@@ -18,6 +18,7 @@ import {
   liftEmptyOrFirstBlock,
   liftEmptyBlock,
   NodeSelection,
+  deleteSelectedBlock,
 } from '../../src/index.js'
 import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
 import { nodeStateAt, run, stateAt } from '../helpers/state.js'
@@ -97,6 +98,35 @@ describe('joinBackward / joinForward', () => {
       const r = run(stateAt(doc(p(), table(p('cd'))), 1), joinForward)!
       expect(r.doc.eq(doc(table(p('cd'))))).toBe(true)
       expect(r.selection.head).toBe(4)
+    })
+
+    it('a selection from outside into a cell deletes text on each side, never joins', () => {
+      // 0 <p>1 a b 3</p>4 <table>5 <row>6 <cell>7 <p>8 c d 10 ...
+      const d = doc(p('ab'), table(p('cd')), p('ef'))
+      const r = run(stateAt(d, 2, 9), deleteSelection)!
+      expect(r.doc.eq(doc(p('a'), table(p('d')), p('ef')))).toBe(true)
+      expect(r.selection.head).toBe(2)
+      // both ends outside the table: a normal delete (the table goes, the text joins)
+      const all = run(stateAt(d, 2, d.content.size - 2), deleteSelection)!
+      expect(all.doc.eq(doc(p('af')))).toBe(true)
+    })
+
+    it('typing over such a selection keeps the table', () => {
+      const d = doc(p('ab'), table(p('cd')), p('ef'))
+      const s = stateAt(d, 2, 9)
+      const r = s.apply(s.tr.insertText('X'))
+      expect(r.doc.eq(doc(p('aX'), table(p('d')), p('ef')))).toBe(true)
+    })
+
+    it('Backspace on a selected table deletes it, cursor after; Delete leaves it before', () => {
+      const d = doc(p('ab'), table(p('cd')), p('ef'))
+      const sel = nodeStateAt(d, 4)
+      const back = run(sel, deleteSelectedBlock(-1))!
+      expect(back.doc.eq(doc(p('ab'), p('ef')))).toBe(true)
+      expect(back.selection.head).toBe(5) // start of "ef"
+      const fwd = run(sel, deleteSelectedBlock(1))!
+      expect(fwd.selection.head).toBe(3) // end of "ab"
+      expect(run(stateAt(d, 1), deleteSelectedBlock(-1))).toBeNull()
     })
 
     it('Backspace at the start of a cell does not pull it out of the table', () => {

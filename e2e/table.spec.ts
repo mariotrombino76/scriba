@@ -25,8 +25,13 @@ test.afterEach(async ({ page }) => {
   ).toEqual([])
 })
 
+async function openSizeDialog(page: Page) {
+  await toolbar(page).getByRole('button', { name: 'Inserisci tabella', exact: true }).click()
+  await page.getByRole('menuitem', { name: 'Altre dimensioni…' }).click()
+}
+
 async function insertTable(page: Page, rows: string, cols: string, header = true) {
-  await toolbar(page).getByRole('button', { name: 'Inserisci tabella…' }).click()
+  await openSizeDialog(page)
   const dialog = page.getByRole('dialog', { name: 'Inserisci tabella' })
   await expect(dialog.getByLabel('Righe')).toBeFocused()
   await dialog.getByLabel('Righe').fill(rows)
@@ -66,7 +71,7 @@ test('insert from the dialog, type, Tab between cells', async ({ page }) => {
 })
 
 test('the dialog validates sizes', async ({ page }) => {
-  await toolbar(page).getByRole('button', { name: 'Inserisci tabella…' }).click()
+  await openSizeDialog(page)
   const dialog = page.getByRole('dialog', { name: 'Inserisci tabella' })
   await dialog.getByLabel('Colonne').fill('99')
   await dialog.getByRole('button', { name: 'Inserisci' }).click()
@@ -293,4 +298,98 @@ test('copy cells and paste them into another place of the table', async ({ page 
         '<tr><td><p>c</p></td><td><p>a</p></td><td><p>b</p></td></tr>',
     ),
   )
+})
+
+test('size picker: hover highlights the area, click inserts; keyboard works too', async ({
+  page,
+}) => {
+  await toolbar(page).getByRole('button', { name: 'Inserisci tabella', exact: true }).click()
+  const menu = page.getByRole('menu', { name: 'Inserisci tabella' })
+  await menu.getByRole('menuitem', { name: 'Tabella 2 × 3', exact: true }).hover()
+  await expect(menu.locator('.scriba-size-on')).toHaveCount(6)
+  await expect(menu.getByText('2 × 3')).toBeVisible()
+  await menu.getByRole('menuitem', { name: 'Tabella 2 × 3', exact: true }).click()
+  expect(await html(page)).toBe(
+    T(
+      '<tr><th><p></p></th><th><p></p></th><th><p></p></th></tr>' +
+        '<tr><td><p></p></td><td><p></p></td><td><p></p></td></tr>',
+    ),
+  )
+  // keyboard: below the table, open the picker and choose 2 × 2 with the arrows
+  await page.keyboard.press('Control+End')
+  const button = toolbar(page).getByRole('button', { name: 'Inserisci tabella', exact: true })
+  await button.focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(menu.getByRole('menuitem', { name: 'Tabella 1 × 1', exact: true })).toBeFocused()
+  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowDown')
+  await expect(menu.getByRole('menuitem', { name: 'Tabella 2 × 2', exact: true })).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(editor(page).locator('table')).toHaveCount(2)
+})
+
+test('cell properties: background, vertical alignment, border on the selected cells', async ({
+  page,
+}) => {
+  await fill2x2(page)
+  await page.keyboard.press('Shift+Tab') // c
+  await page.keyboard.press('Shift+ArrowRight')
+  await page.keyboard.press('Shift+ArrowRight') // c…d selected
+  await expect(page.locator('.scriba-selected-cell')).toHaveCount(2)
+  await tableMenu(page).click()
+  await page.getByRole('menuitem', { name: 'Proprietà cella…' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Proprietà cella' })
+  const bg = dialog.getByRole('group', { name: 'Colore di sfondo' })
+  await expect(bg.getByRole('radio', { name: 'Nessuno' })).toBeChecked()
+  await bg.getByRole('textbox', { name: 'Codice colore (#rrggbb)' }).fill('#ffee00')
+  await expect(bg.getByRole('radio', { name: 'Personalizzato' })).toBeChecked()
+  await dialog.getByRole('group', { name: 'Allineamento verticale' }).getByLabel('In basso').check()
+  await dialog.getByLabel('Spessore (px)').fill('2')
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect(dialog).toBeHidden()
+  const cell =
+    '<td style="background-color: #ffee00; vertical-align: bottom; border-width: 2px; border-style: solid">'
+  expect(await html(page)).toBe(
+    T(
+      '<tr><td><p>a</p></td><td><p>b</p></td></tr>' +
+        `<tr>${cell}<p>c</p></td>${cell}<p>d</p></td></tr>`,
+    ),
+  )
+  // invalid width: error, nothing changes
+  await tableMenu(page).click()
+  await page.getByRole('menuitem', { name: 'Proprietà cella…' }).click()
+  await dialog.getByLabel('Spessore (px)').fill('50')
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect(dialog.getByText('Usa uno spessore da 0 a 10 pixel')).toBeVisible()
+  await dialog.getByLabel('Spessore (px)').fill('2')
+  await bg.getByRole('textbox', { name: 'Codice colore (#rrggbb)' }).fill('url(x)')
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect(dialog.getByText('Colore non valido: usa il formato #rrggbb')).toBeVisible()
+  await bg.getByRole('radio', { name: 'Blu' }).check()
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect(dialog).toBeHidden()
+  expect(await html(page)).toContain('background-color: #dbeafe')
+})
+
+test('table properties: caption, alignment, border on table and cells', async ({ page }) => {
+  await insertTable(page, '1', '2', false)
+  await tableMenu(page).click()
+  await page.getByRole('menuitem', { name: 'Proprietà tabella…' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Proprietà tabella' })
+  await expect(dialog.getByLabel('Didascalia')).toBeFocused()
+  await dialog.getByLabel('Didascalia').fill('  Vendite <b>2026</b> ')
+  await dialog
+    .getByRole('group', { name: 'Allineamento', exact: true })
+    .getByLabel('Centro')
+    .check()
+  await dialog.getByLabel('Spessore (px)').fill('1')
+  await dialog.getByRole('group', { name: 'Stile' }).getByLabel('Tratteggiato').check()
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  const cell = '<td style="border-width: 1px; border-style: dashed"><p></p></td>'
+  expect(await html(page)).toBe(
+    '<table style="margin-left: auto; margin-right: auto; border-width: 1px; border-style: dashed">' +
+      '<caption>Vendite &lt;b&gt;2026&lt;/b&gt;</caption>' +
+      `<tbody><tr>${cell}${cell}</tr></tbody></table><p></p>`,
+  )
+  await expect(editor(page).locator('caption')).toHaveText('Vendite <b>2026</b>')
 })

@@ -13,11 +13,17 @@ const schema = new Schema({
 const sanitize = (html: string) => sanitizeHTML(schema, html)
 const inBrowser = (html: string) => serializeHTML(parseHTML(schema, dom(html)))
 
-const CELL_ATTRS = ['colspan', 'rowspan', 'width', 'data-colwidth']
+const CELL_ATTRS = ['colspan', 'rowspan', 'width', 'data-colwidth', 'style']
 const ALLOWED: Record<string, readonly string[]> = {
-  table: [], tbody: [], tr: [], td: CELL_ATTRS, th: CELL_ATTRS, p: [], h1: [], h2: [], h3: [],
+  table: ['style'], caption: [], tbody: [], tr: [], td: CELL_ATTRS, th: CELL_ATTRS, p: [], h1: [], h2: [], h3: [],
   h4: [], h5: [], h6: [], br: [], strong: [], em: [], u: [], s: [], code: [],
 } // prettier-ignore
+
+/** Only typed declarations: known properties, plain values (no url(), no extra declarations). */
+const DECL =
+  '(background-color|border-color): #[0-9a-f]{6}|vertical-align: (top|middle|bottom)|' +
+  'border-width: \\d{1,2}px|border-style: (solid|dashed|dotted|double|none)|margin-(left|right): auto'
+const SAFE_STYLE = new RegExp(`^(${DECL})(; (${DECL}))*$`)
 
 interface El {
   nodeType: number
@@ -36,7 +42,8 @@ function expectSafeTable(html: string): void {
       for (let j = 0; j < (child.attributes?.length ?? 0); j++) {
         const { name, value } = child.attributes![j]!
         expect(ALLOWED[tag], `attribute ${name} on <${tag}> in ${html}`).toContain(name)
-        expect(value, `value of ${name} in ${html}`).toMatch(/^\d+(,\d+)*$/)
+        if (name === 'style') expect(value, `style in ${html}`).toMatch(SAFE_STYLE)
+        else expect(value, `value of ${name} in ${html}`).toMatch(/^\d+(,\d+)*$/)
       }
       walk(child)
     }
@@ -55,6 +62,10 @@ const PAYLOADS = [
   '<td>orphan</td><tr><td>row</td></tr>',
   '<table><tr><td><table><tr><td>nested</td></tr></table></td></tr></table>',
   '<math><mtext><table><mglyph><style><img src=x onerror=alert(1)>',
+  '<table style="margin-left:auto;border:2px dashed url(javascript:alert(1));position:fixed"><tr><td style="background:url(x);vertical-align:super;border-width:99px">a</td></tr></table>',
+  '<table><tr><td bgcolor="javascript:alert(1)" valign="expression(alert(1))" style="border:1px solid red;behavior:url(x.htc)">a</td></tr></table>',
+  '<table><caption onclick="x"><b>Ti</b><img src=x onerror=alert(1)>tolo</caption><tr><td>a</td></tr></table>',
+  '<table><caption>"><script>alert(1)</script></caption><tr><td>a</td></tr></table>',
 ]
 
 describe('tables (server)', () => {
@@ -66,6 +77,16 @@ describe('tables (server)', () => {
 
   it.each(PAYLOADS.map((p) => [p]))('server and browser agree for %s', (payload) => {
     expect(sanitize(payload)).toBe(inBrowser(payload))
+  })
+
+  it('keeps typed cell and table properties', () => {
+    expect(
+      sanitize(
+        '<table align="center" border="1"><caption> Vendite <i>2026</i> </caption><tr><td bgcolor="#FF0000" valign="bottom" style="border:2px dotted #00f">a</td></tr></table>',
+      ),
+    ).toBe(
+      '<table style="margin-left: auto; margin-right: auto; border-width: 1px; border-style: solid"><caption>Vendite 2026</caption><tbody><tr><td style="background-color: #ff0000; vertical-align: bottom; border-width: 2px; border-style: dotted; border-color: #0000ff"><p>a</p></td></tr></tbody></table>',
+    )
   })
 
   it('keeps spans and widths', () => {
@@ -83,6 +104,11 @@ describe('tables (server)', () => {
       '<td colspan="3">',
       '<td rowspan="0">',
       '<td width="-5">',
+      '<td style="background:red;vertical-align:top">',
+      '<td style="border:3px solid url(x)">',
+      '<table style="margin-left:auto">',
+      '<caption>',
+      '</caption>',
       '<td data-colwidth="9,x">',
       '<th onclick=x>',
       '</td>',

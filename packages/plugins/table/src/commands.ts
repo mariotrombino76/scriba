@@ -449,3 +449,48 @@ export function pasteCells(state: EditorState, content: Fragment): Transaction |
   const width = Math.max(ctx.grid.width, right)
   return replaceTable(state, ctx, cells, height, width, [top, left])
 }
+
+/** Cell properties settable from the cell dialog (`null` removes one). */
+export interface CellProps {
+  background?: string | null
+  valign?: 'top' | 'middle' | 'bottom' | null
+  borderWidth?: number | null
+  borderStyle?: string | null
+  borderColor?: string | null
+}
+
+/** Table properties settable from the table dialog. */
+export interface TableProps extends Omit<CellProps, 'background' | 'valign'> {
+  caption?: string | null
+  align?: 'center' | 'right' | null
+}
+
+/** Sets properties on the selected cells (or the cell with the cursor). One undo step. */
+export function setCellProps(props: CellProps): Command {
+  return tableCommand((state, ctx) => {
+    const tr = state.tr
+    const start = ctx.pos + 1
+    for (const cell of ctx.grid.cellsIn(ctx.rect)) {
+      tr.setNodeAttrs(start + cell.pos, props as Record<string, unknown>)
+    }
+    return tr.docChanged ? tr : null
+  })
+}
+
+/**
+ * Sets table properties. A border also goes on every cell (as in word
+ * processors: the grid lines change with the outer border).
+ */
+export function setTableProps(props: TableProps): Command {
+  return tableCommand((state, ctx) => {
+    const tr = state.tr
+    tr.setNodeAttrs(ctx.pos, props as Record<string, unknown>)
+    const border: Record<string, unknown> = {}
+    for (const key of ['borderWidth', 'borderStyle', 'borderColor'] as const)
+      if (key in props) border[key] = props[key]
+    if (Object.keys(border).length) {
+      for (const cell of ctx.grid.cells) tr.setNodeAttrs(ctx.pos + 1 + cell.pos, border)
+    }
+    return tr.docChanged ? tr : null
+  })
+}

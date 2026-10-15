@@ -4,6 +4,7 @@ import type { Node } from '../model/node.js'
 import type { MarkType } from '../model/schema.js'
 import { Slice } from '../model/slice.js'
 import type { Step } from '../transform/step.js'
+import { crossesIsolating, deleteAcrossIsolating } from '../transform/isolating.js'
 import { Transform } from '../transform/transform.js'
 import { Selection, TextSelection } from './selection.js'
 import type { EditorState } from './state.js'
@@ -114,7 +115,8 @@ export class Transaction extends Transform {
     const $start = this.doc.resolve(start)
     let marks = this.storedMarks
     if (!marks) marks = start === end ? $start.marks() : ($start.nodeAfter?.marks ?? $start.marks())
-    this.delete(start, end)
+    if (crossesIsolating(this.doc, start, end)) deleteAcrossIsolating(this, start, end)
+    else this.delete(start, end)
     if (text) {
       const $pos = this.doc.resolve(start)
       const parent = $pos.parent

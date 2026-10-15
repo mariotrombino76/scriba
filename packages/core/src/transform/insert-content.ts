@@ -1,6 +1,7 @@
 import { Fragment } from '../model/fragment.js'
 import type { Node } from '../model/node.js'
 import { Slice } from '../model/slice.js'
+import { crossesIsolating, deleteAcrossIsolating } from './isolating.js'
 import { canReplace } from './structure.js'
 import { TransformError, type Transform } from './transform.js'
 
@@ -53,7 +54,10 @@ export function insertContent(
 ): number | null {
   if (from !== to) {
     const before = tr.steps.length
-    if (!tryStep(tr, () => tr.delete(from, to))) return null
+    const deleted = crossesIsolating(tr.doc, from, to)
+      ? tryStep(tr, () => deleteAcrossIsolating(tr, from, to)) // never join across a table border
+      : tryStep(tr, () => tr.delete(from, to))
+    if (!deleted) return null
     from = tr.mapping.slice(before).map(from)
   }
   if (!content.size) return from

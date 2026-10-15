@@ -92,7 +92,15 @@ const PROPERTIES: Readonly<Record<string, (value: string) => string | null>> = {
   float: (v) => enumerated(v, ['left', 'right']),
   display: (v) => enumerated(v, ['block']),
   'margin-right': (v) => (isAuto(v) ? 'auto' : null),
+  // Table and cell properties (enumerated or strictly validated; approved 2026-10-15)
+  'vertical-align': (v) => enumerated(v, ['top', 'middle', 'bottom']),
+  'border-width': (v) => normalizeLength(v, ['px'], 10),
+  'border-style': (v) => enumerated(v, BORDER_STYLES),
+  'border-color': normalizeColor,
 }
+
+/** Border styles allowed on tables and cells. */
+export const BORDER_STYLES = ['solid', 'dashed', 'dotted', 'double', 'none'] as const
 
 function enumerated(value: string, allowed: readonly string[]): string | null {
   const v = value.trim().toLowerCase()

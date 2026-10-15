@@ -2,6 +2,7 @@ import {
   chainCommands,
   deleteChar,
   deleteSelection,
+  deleteSelectedBlock,
   insertNode,
   joinBackward,
   joinForward,
@@ -23,12 +24,18 @@ import { someProp } from './plugin-hooks.js'
 import type { EditorView } from './view.js'
 
 const deleteBackward = chainCommands(
+  deleteSelectedBlock(-1),
   deleteSelection,
   liftEmptyOrFirstBlock,
   joinBackward,
   deleteChar(-1),
 )
-const deleteForward = chainCommands(deleteSelection, joinForward, deleteChar(1))
+const deleteForward = chainCommands(
+  deleteSelectedBlock(1),
+  deleteSelection,
+  joinForward,
+  deleteChar(1),
+)
 
 function lineBreak(view: EditorView): Command {
   const hardBreak = view.state.schema.nodes['hard_break']

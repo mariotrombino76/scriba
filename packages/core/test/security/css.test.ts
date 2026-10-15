@@ -81,6 +81,32 @@ describe('typed styles', () => {
     expect(() => safeStyleDecls({ position: 'absolute' })).toThrow()
   })
 
+  it('table and cell properties: enumerated values and small pixel borders only', () => {
+    expect(
+      safeStyleDecls({
+        'vertical-align': 'Middle',
+        'border-width': '2px',
+        'border-style': 'DASHED',
+        'border-color': '#ABC',
+      }),
+    ).toEqual([
+      ['vertical-align', 'middle'],
+      ['border-width', '2px'],
+      ['border-style', 'dashed'],
+      ['border-color', '#aabbcc'],
+    ])
+    expect(
+      safeStyleDecls({
+        'vertical-align': 'super',
+        'border-width': '11px',
+        'border-style': 'groove; background: url(x)',
+        'border-color': 'url(javascript:alert(1))',
+      }),
+    ).toEqual([])
+    expect(safeStyleDecls({ 'border-width': '2em' })).toEqual([])
+    expect(safeStyleDecls({ 'border-width': '1px solid red' })).toEqual([])
+  })
+
   it('refuses unknown properties and drops invalid values', () => {
     expect(() => safeStyleDecls({ position: 'fixed' })).toThrow(/position/)
     expect(() => safeStyleDecls({ behavior: 'url(x.htc)' })).toThrow()

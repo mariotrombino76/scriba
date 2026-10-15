@@ -667,3 +667,68 @@ scriba-toolbar {
 .scriba-column-guide[hidden] {
   display: none;
 }
+.scriba-editor caption {
+  caption-side: top;
+  padding: 0.25em 0.5em;
+  color: var(--scriba-muted);
+  font-style: italic;
+  text-align: start;
+}
+/* Cells without a visible border: a dashed guide while editing (not in the saved HTML) */
+.scriba-editor :is(td, th):is([style*='border-style: none'], [style*='border-width: 0px']) {
+  outline: 1px dashed var(--scriba-border);
+  outline-offset: -1px;
+}
+
+/* Insert-table size picker */
+.scriba-size-grid {
+  display: grid;
+  gap: 3px;
+  padding: 8px 10px 4px;
+}
+.scriba-size-cell {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--scriba-muted);
+  border-radius: 2px;
+  background: var(--scriba-bg);
+  cursor: pointer;
+}
+.scriba-size-cell.scriba-size-on {
+  border-color: var(--scriba-accent);
+  background: var(--scriba-accent-bg);
+}
+.scriba-size-cell:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+.scriba-size-label {
+  min-height: 1.4em;
+  padding: 0 10px 6px;
+  color: var(--scriba-muted);
+  font-size: 0.85em;
+  text-align: center;
+}
+/* Color fields in dialogs: radio swatches */
+.scriba-color-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.scriba-color-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+.scriba-color-option .scriba-swatch {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--scriba-muted);
+  border-radius: 3px;
+}
+.scriba-color-field input[type='text'] {
+  width: 7.5em;
+}
