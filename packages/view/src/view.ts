@@ -1,6 +1,7 @@
 import { Mark, NodeSelection, Selection, type EditorState, type Transaction } from '@scriba/core'
-import { renderContent, updateDesc } from './build.js'
-import { NodeViewDesc, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
+import { renderContent, updateDesc, type RenderContext } from './build.js'
+import { DecorationIndex, stateDecorations } from './decorations.js'
+import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
 import { attachInputHandlers } from './input.js'
 import { readDOMSelection, writeDOMSelection } from './selection.js'
@@ -31,6 +32,7 @@ export class EditorView {
   private readonly detach: () => void
   private destroyed = false
   private readonly listeners = new Set<(view: EditorView) => void>()
+  private decorations: DecorationIndex = DecorationIndex.empty
 
   constructor(
     place: HTMLElement,
@@ -50,8 +52,9 @@ export class EditorView {
     this.updateEditable()
     place.appendChild(this.dom)
 
+    this.decorations = stateDecorations(this.state)
     this.rootDesc = new NodeViewDesc(this.state.doc, this.dom, this.dom)
-    renderContent(doc, this.rootDesc)
+    renderContent(doc, this.rootDesc, 0, this.context)
 
     this.observer = new MutationObserver((records) => this.onDOMMutations(records))
     this.observer.observe(this.dom, { childList: true, characterData: true, subtree: true })
@@ -78,11 +81,16 @@ export class EditorView {
     const prev = this.state
     this.state = state
     this.updateEditable()
+    const prevDecorations = this.decorations
+    this.decorations = stateDecorations(state)
     if (prev.doc !== state.doc) {
       this.domChange(() => {
-        this.rootDesc = updateDesc(this.document, this.rootDesc, state.doc)
+        this.rootDesc = updateDesc(this.document, this.rootDesc, state.doc, 0, this.context)
       })
     }
+    // Blocks whose decorations changed while their node did not (e.g. search highlights).
+    if (!this.composing)
+      this.redrawDecorated(DecorationIndex.changedBlocks(prevDecorations, this.decorations))
     if (!this.composing && this.hasFocus()) this.syncSelectionToDOM()
     for (const listener of this.listeners) listener(this)
   }
@@ -215,7 +223,9 @@ export class EditorView {
     // Redraw the touched blocks from the model: removes whatever markup the browser added.
     this.domChange(() => {
       for (const { desc } of sorted) {
-        if (desc.parent && this.dom.contains(desc.dom)) renderContent(this.document, desc)
+        if (desc.parent && this.dom.contains(desc.dom)) {
+          renderContent(this.document, desc, desc.posAtContentStart(), this.context)
+        }
       }
     })
     if (this.hasFocus()) this.syncSelectionToDOM()
@@ -226,11 +236,28 @@ export class EditorView {
     return textblockDescOf(this.document.getSelection()?.anchorNode ?? null, this.rootDesc)
   }
 
+  /** @internal */
+  get context(): RenderContext {
+    return { decorations: this.decorations }
+  }
+
+  private redrawDecorated(starts: number[]): void {
+    if (!starts.length) return
+    this.domChange(() => {
+      for (const start of starts) {
+        const desc = descAt(this.rootDesc, start - 1)
+        if (desc?.node.isTextblock && desc.decoKey !== this.decorations.key(start)) {
+          renderContent(this.document, desc, start, this.context)
+        }
+      }
+    })
+  }
+
   /** @internal Re-renders everything from the model (after unexpected structural DOM edits). */
   redrawAll(): void {
     this.domChange(() => {
       this.rootDesc = new NodeViewDesc(this.state.doc, this.dom, this.dom)
-      renderContent(this.document, this.rootDesc)
+      renderContent(this.document, this.rootDesc, 0, this.context)
     })
     if (this.hasFocus()) this.syncSelectionToDOM()
   }

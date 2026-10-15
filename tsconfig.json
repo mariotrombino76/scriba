@@ -11,7 +11,8 @@
       "@scriba/plugin-list": ["./packages/plugins/list/src/index.ts"],
       "@scriba/plugin-blockquote": ["./packages/plugins/blockquote/src/index.ts"],
       "@scriba/plugin-text-style": ["./packages/plugins/text-style/src/index.ts"],
-      "@scriba/plugin-link": ["./packages/plugins/link/src/index.ts"]
+      "@scriba/plugin-link": ["./packages/plugins/link/src/index.ts"],
+      "@scriba/plugin-code-block": ["./packages/plugins/code-block/src/index.ts"]
     },
     "types": ["node"]
   },

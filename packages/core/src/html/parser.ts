@@ -180,6 +180,12 @@ class ParseRun {
     const match = this.parser.matchNode(tag, el)
     if (match) {
       if (match.type.isLeaf) {
+        // In code blocks, inline leaves (e.g. <br>) become their text equivalent.
+        const leafText = match.type.spec.leafText
+        if (match.type.isInline && this.top.type.spec.code && leafText) {
+          this.addText(leafText(match.type.create(match.attrs)))
+          return
+        }
         this.insertLeaf(match.type, match.attrs)
         if (tag === 'br') this.top.endsWithSpace = true
       } else {

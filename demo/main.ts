@@ -27,11 +27,23 @@ import {
   withBlockStyles,
 } from '@scriba/plugin-text-style'
 import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import {
+  codeBlockKeymap,
+  codeBlockNodes,
+  codeBlockToolbarItems,
+  codeHighlight,
+} from '@scriba/plugin-code-block'
+import { common, createLowlight } from 'lowlight'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
 const schema = new Schema({
-  nodes: withBlockStyles({ ...basicSchemaSpec.nodes, ...blockquoteNodes, ...listNodes }),
+  nodes: withBlockStyles({
+    ...basicSchemaSpec.nodes,
+    ...blockquoteNodes,
+    ...listNodes,
+    ...codeBlockNodes,
+  }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
 
@@ -44,6 +56,10 @@ ciò che lo schema non conosce viene <u>scartato</u>, mai eseguito.</p>
 <ul><li><p>Elenchi puntati e numerati: <code>Ctrl+Shift+8</code> / <code>Ctrl+Shift+7</code></p>
 <ul><li><p>Tab per rientrare, Shift+Tab per tornare indietro</p></li></ul></li>
 <li><p>Invio su un elemento vuoto per uscire dall'elenco</p></li></ul>
+<pre><code class="language-typescript">// Blocchi di codice: Ctrl+Alt+C, tre Invio o Ctrl+Invio per uscire
+function saluta(nome: string): string {
+  return \`Ciao, \${nome}!\`
+}</code></pre>
 <blockquote><p>Citazioni dal pulsante ❝ — Backspace all'inizio per uscirne.</p></blockquote>
 <p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>`
 
@@ -54,6 +70,8 @@ const state = EditorState.create({
   doc,
   plugins: [
     history(),
+    codeHighlight({ lowlight: createLowlight(common) }),
+    keymap(codeBlockKeymap(), { priority: 60 }),
     keymap(listKeymap(schema), { priority: 50 }),
     keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
     keymap(linkKeymap(t)),
@@ -89,6 +107,7 @@ toolbar.items = [
   { type: 'separator' },
   ...listToolbarItems(schema, { indent: false }),
   ...blockquoteToolbarItems(schema),
+  ...codeBlockToolbarItems(schema),
   ...linkToolbarItems(schema, t),
   { type: 'separator' },
   ...textStyleToolbarItems(schema, { indent: listIndentCommands(schema) }),

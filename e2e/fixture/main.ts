@@ -22,18 +22,32 @@ import {
   withBlockStyles,
 } from '@scriba/plugin-text-style'
 import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import {
+  codeBlockKeymap,
+  codeBlockNodes,
+  codeBlockToolbarItems,
+  codeHighlight,
+} from '@scriba/plugin-code-block'
+import { common, createLowlight } from 'lowlight'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
 const t = createTranslator('it')
 const schema = new Schema({
-  nodes: withBlockStyles({ ...basicSchemaSpec.nodes, ...blockquoteNodes, ...listNodes }),
+  nodes: withBlockStyles({
+    ...basicSchemaSpec.nodes,
+    ...blockquoteNodes,
+    ...listNodes,
+    ...codeBlockNodes,
+  }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
 const state = EditorState.create({
   schema,
   plugins: [
     history(),
+    codeHighlight({ lowlight: createLowlight(common) }),
+    keymap(codeBlockKeymap(), { priority: 60 }),
     keymap(listKeymap(schema), { priority: 50 }),
     keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
     keymap(linkKeymap(t)),
@@ -54,6 +68,7 @@ toolbar.items = [
   { type: 'separator' },
   ...listToolbarItems(schema, { indent: false }),
   ...blockquoteToolbarItems(schema),
+  ...codeBlockToolbarItems(schema),
   ...linkToolbarItems(schema, t),
   { type: 'separator' },
   ...textStyleToolbarItems(schema, { indent: listIndentCommands(schema) }),

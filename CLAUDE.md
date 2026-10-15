@@ -92,18 +92,18 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Serializzazione HTML ↔ documento
 
 ### Fase 2 — Parità TinyMCE
-- [ ] Liste puntate/numerate annidate, Tab/Shift+Tab
-- [ ] Link (dialog, apertura in nuova scheda, rimozione)
+- [x] Liste puntate/numerate annidate, Tab/Shift+Tab
+- [x] Link (dialog, apertura in nuova scheda, rimozione)
 - [ ] Immagini: upload con callback, drag&drop, ridimensionamento, testo alternativo, allineamento
 - [ ] Tabelle: inserimento, unione/divisione celle, righe/colonne, intestazioni, ridimensionamento colonne
-- [ ] Allineamento testo, rientro, colore testo/sfondo, font e dimensione
-- [ ] Blocchi citazione e blocchi codice con evidenziazione sintassi
+- [x] Allineamento testo, rientro, colore testo/sfondo, font e dimensione
+- [x] Blocchi citazione e blocchi codice con evidenziazione sintassi
 - [ ] Incolla pulito da Word / Google Docs / pagine web
 - [ ] Vista sorgente HTML
 - [ ] Trova e sostituisci (anche regex)
 - [ ] Schermo intero, conteggio parole/caratteri
 - [ ] Caratteri speciali ed emoji
-- [ ] i18n (it, en) e temi chiaro/scuro
+- [x] i18n (it, en) e temi chiaro/scuro
 
 ### Fase 3 — Superiore
 - [ ] Input rules Markdown + import/export Markdown

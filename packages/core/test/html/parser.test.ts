@@ -39,6 +39,10 @@ describe('HTMLParser', () => {
     same('<pre>  x\n  y</pre>', doc(pre('  x\n  y')))
   })
 
+  it('turns <br> inside code blocks into newlines', () => {
+    same('<pre>a<br>b</pre>', doc(pre('a\nb')))
+  })
+
   it('drops marks not allowed in the parent', () => {
     same('<pre><code><b>x</b></code></pre>', doc(pre('x')))
   })

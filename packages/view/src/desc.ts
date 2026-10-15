@@ -52,6 +52,9 @@ export abstract class ViewDesc {
 }
 
 export class NodeViewDesc extends ViewDesc {
+  /** Decorations this textblock was rendered with (see DecorationIndex.key). */
+  decoKey = ''
+
   constructor(
     public node: Node,
     dom: globalThis.Node,
@@ -76,6 +79,23 @@ export class MarkViewDesc extends ViewDesc {
     contentDOM: HTMLElement,
   ) {
     super(dom, contentDOM)
+  }
+
+  get size(): number {
+    let size = 0
+    for (const child of this.children) size += child.size
+    return size
+  }
+
+  get border(): number {
+    return 0
+  }
+}
+
+/** A decoration wrapper (`<span class>`) around part of a text node. Visual only. */
+export class DecoViewDesc extends ViewDesc {
+  constructor(dom: HTMLElement) {
+    super(dom, dom)
   }
 
   get size(): number {
@@ -172,7 +192,10 @@ export function domFromPos(root: ViewDesc, pos: number): { node: globalThis.Node
     let next: ViewDesc | null = null
     for (const child of desc.children) {
       const end = offset + child.size
-      const inline = child instanceof TextViewDesc || child instanceof MarkViewDesc
+      const inline =
+        child instanceof TextViewDesc ||
+        child instanceof MarkViewDesc ||
+        child instanceof DecoViewDesc
       if (inline ? rel <= end : rel < end && rel > offset) {
         next = child
         break

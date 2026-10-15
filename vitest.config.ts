@@ -22,6 +22,7 @@ export default defineConfig({
       '@scriba/plugin-blockquote': plugin('blockquote'),
       '@scriba/plugin-text-style': plugin('text-style'),
       '@scriba/plugin-link': plugin('link'),
+      '@scriba/plugin-code-block': plugin('code-block'),
     },
   },
   test: {

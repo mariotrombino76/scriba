@@ -15,6 +15,14 @@
   --scriba-error: #b91c1c;
   --scriba-radius: 8px;
   --scriba-font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --scriba-hl-keyword: #a3215f;
+  --scriba-hl-string: #1d6b2a;
+  --scriba-hl-number: #0b5c8f;
+  --scriba-hl-comment: #566070;
+  --scriba-hl-title: #6d28d9;
+  --scriba-hl-attr: #8a3c0a;
+  --scriba-hl-builtin: #0f5e6b;
+  --scriba-hl-meta: #566070;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +36,14 @@
     --scriba-focus: #9db5ff;
     --scriba-code-bg: #2a303b;
     --scriba-error: #fca5a5;
+    --scriba-hl-keyword: #ff8fc4;
+    --scriba-hl-string: #9be3a6;
+    --scriba-hl-number: #8cc8ff;
+    --scriba-hl-comment: #a6aebd;
+    --scriba-hl-title: #c9b3ff;
+    --scriba-hl-attr: #ffc48a;
+    --scriba-hl-builtin: #7ee0e0;
+    --scriba-hl-meta: #a6aebd;
   }
 }
 
@@ -41,6 +57,14 @@
   --scriba-focus: #9db5ff;
   --scriba-code-bg: #2a303b;
   --scriba-error: #fca5a5;
+  --scriba-hl-keyword: #ff8fc4;
+  --scriba-hl-string: #9be3a6;
+  --scriba-hl-number: #8cc8ff;
+  --scriba-hl-comment: #a6aebd;
+  --scriba-hl-title: #c9b3ff;
+  --scriba-hl-attr: #ffc48a;
+  --scriba-hl-builtin: #7ee0e0;
+  --scriba-hl-meta: #a6aebd;
 }
 
 /* Editing area */
@@ -259,4 +283,60 @@ scriba-toolbar {
 .scriba-dialog input:focus-visible {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
+}
+
+/* Code blocks and syntax highlighting (token classes from lowlight / highlight.js) */
+.scriba-editor pre {
+  margin: 0.75em 0;
+  padding: 0.75em 1em;
+  background: var(--scriba-code-bg);
+  border-radius: var(--scriba-radius);
+  overflow-x: auto;
+}
+.scriba-editor pre code {
+  padding: 0;
+  background: none;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+}
+.scriba-editor .hljs-keyword,
+.scriba-editor .hljs-selector-tag,
+.scriba-editor .hljs-literal {
+  color: var(--scriba-hl-keyword);
+}
+.scriba-editor .hljs-string,
+.scriba-editor .hljs-regexp,
+.scriba-editor .hljs-addition {
+  color: var(--scriba-hl-string);
+}
+.scriba-editor .hljs-number,
+.scriba-editor .hljs-symbol,
+.scriba-editor .hljs-variable,
+.scriba-editor .hljs-template-variable {
+  color: var(--scriba-hl-number);
+}
+.scriba-editor .hljs-comment,
+.scriba-editor .hljs-quote,
+.scriba-editor .hljs-deletion {
+  color: var(--scriba-hl-comment);
+  font-style: italic;
+}
+.scriba-editor .hljs-title,
+.scriba-editor .hljs-section,
+.scriba-editor .hljs-name {
+  color: var(--scriba-hl-title);
+}
+.scriba-editor .hljs-attr,
+.scriba-editor .hljs-attribute,
+.scriba-editor .hljs-property,
+.scriba-editor .hljs-selector-class,
+.scriba-editor .hljs-selector-id {
+  color: var(--scriba-hl-attr);
+}
+.scriba-editor .hljs-built_in,
+.scriba-editor .hljs-type,
+.scriba-editor .hljs-tag {
+  color: var(--scriba-hl-builtin);
+}
+.scriba-editor .hljs-meta {
+  color: var(--scriba-hl-meta);
 }

@@ -22,6 +22,13 @@ describe('rendering', () => {
     )
   })
 
+  it('keeps a trailing newline in code visible and reachable', () => {
+    const view = mount(doc(pre('a\n')), 3)
+    expect(view.dom.innerHTML).toBe('<pre><code>a\n<br class="scriba-trailing-break"></code></pre>')
+    const { node, offset } = view.domAtPos(3)
+    expect(view.posAtDOM(node, offset)).toBe(3)
+  })
+
   it('reuses the DOM of unchanged blocks', () => {
     const view = mount(doc(p('a'), p('b'), p('c')), 8)
     const [first, second, third] = Array.from(view.dom.children)
