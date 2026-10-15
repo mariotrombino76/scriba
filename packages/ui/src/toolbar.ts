@@ -61,6 +61,8 @@ export class ScribaToolbar extends Base {
   private focusIndex = 0
   /** Whether `Mod` shortcuts are shown as ⌘. Defaults to platform detection. */
   mac = isMac()
+  /** Accessible name (default: the translated "toolbar.label"), e.g. for a second toolbar. */
+  label: string | null = null
 
   get view(): EditorView | null {
     return this._view
@@ -154,7 +156,7 @@ export class ScribaToolbar extends Base {
     this.morePopup = null
     const doc = this.ownerDocument
     const t = this.translator
-    this.setAttribute('aria-label', t('toolbar.label'))
+    this.setAttribute('aria-label', this.label ?? t('toolbar.label'))
     if (this.view) this.setAttribute('aria-controls', this.view.dom.id || this.ensureEditorId())
     const items = this._items ?? (this.view ? defaultToolbarItems(this.view.state.schema) : [])
 

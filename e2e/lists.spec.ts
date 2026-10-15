@@ -3,7 +3,9 @@ import { expect, test, type Page } from '@playwright/test'
 const html = (page: Page) =>
   page.evaluate(() => (window as unknown as { scriba: { html(): string } }).scriba.html())
 const button = (page: Page, name: string) =>
-  page.getByRole('toolbar', { name: 'Formattazione' }).getByRole('button', { name, exact: true })
+  page
+    .getByRole('toolbar', { name: 'Formattazione', exact: true })
+    .getByRole('button', { name, exact: true })
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')

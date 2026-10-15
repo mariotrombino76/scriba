@@ -160,6 +160,41 @@ export class EditorView {
     return domFromPos(this.rootDesc, pos)
   }
 
+  /**
+   * Viewport rectangle of the position (a caret-sized box), e.g. to place a
+   * popup next to the cursor. Uses the character after the position when there
+   * is one (collapsed ranges have no box in some browsers).
+   */
+  coordsAtPos(pos: number): { left: number; right: number; top: number; bottom: number } {
+    const range = this.document.createRange()
+    const { node, offset } = this.domAtPos(pos)
+    let rect: DOMRect | null = null
+    if (node.nodeType === 3) {
+      const text = node.nodeValue ?? ''
+      if (offset < text.length) {
+        range.setStart(node, offset)
+        range.setEnd(node, offset + 1)
+        rect = range.getClientRects?.()[0] ?? null
+        if (rect) return { left: rect.left, right: rect.left, top: rect.top, bottom: rect.bottom }
+      }
+      if (offset > 0) {
+        range.setStart(node, offset - 1)
+        range.setEnd(node, offset)
+        rect = range.getClientRects?.()[0] ?? null
+        if (rect) return { left: rect.right, right: rect.right, top: rect.top, bottom: rect.bottom }
+      }
+    }
+    // empty block or element position: the block's own box
+    const el = (node.nodeType === 1 ? node : node.parentNode) as Element | null
+    const box = (el?.nodeType === 1 ? el : this.dom).getBoundingClientRect()
+    return {
+      left: box.left,
+      right: box.left,
+      top: box.top,
+      bottom: box.top + Math.min(box.height, 24),
+    }
+  }
+
   destroy(): void {
     if (this.destroyed) return
     this.destroyed = true

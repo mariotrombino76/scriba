@@ -24,8 +24,18 @@ import {
   markItems,
   toolbarGroup,
 } from '@scriba/ui'
-import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
-import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquote'
+import {
+  listIndentCommands,
+  listKeymap,
+  listNodes,
+  listToolbarItems,
+  toggleList,
+} from '@scriba/plugin-list'
+import {
+  blockquoteNodes,
+  blockquoteToolbarItems,
+  toggleBlockquote,
+} from '@scriba/plugin-blockquote'
 import {
   alignmentMenu,
   colorItems,
@@ -38,6 +48,7 @@ import {
 import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
 import {
   codeBlockKeymap,
+  toggleCodeBlock,
   codeBlockNodes,
   codeBlockToolbarItems,
   codeHighlight,
@@ -46,16 +57,25 @@ import { common, createLowlight } from 'lowlight'
 import { pasteClean } from '@scriba/plugin-paste-clean'
 import {
   imageKeymap,
+  openImageDialog,
   imageNodes,
   imagePlugins,
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
-import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
+import {
+  insertTable,
+  tableKeymap,
+  tableNodes,
+  tablePlugins,
+  tableToolbarItems,
+} from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
 import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
-import { charmapToolbarItem } from '@scriba/plugin-charmap'
+import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
+import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
+import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   findReplaceKeymap,
@@ -110,6 +130,60 @@ function saluta(nome: string): string {
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
 
 const doc = parseHTML(schema, parseInertHTML(SAMPLE).body)
+// Slash menu: blocks and actions from the plugins in use.
+const slashItems: SlashItem[] = [
+  ...basicSlashItems(schema),
+  {
+    id: 'bullet_list',
+    label: (tr) => tr('list.bullet'),
+    keywords: ['elenco', 'puntato', 'list', 'ul'],
+    icon: 'bulletList',
+    command: toggleList(schema.nodes['bullet_list']!, schema.nodes['list_item']!),
+  },
+  {
+    id: 'ordered_list',
+    label: (tr) => tr('list.ordered'),
+    keywords: ['elenco', 'numerato', 'list', 'ol'],
+    icon: 'orderedList',
+    command: toggleList(schema.nodes['ordered_list']!, schema.nodes['list_item']!),
+  },
+  {
+    id: 'quote',
+    label: (tr) => tr('block.blockquote'),
+    keywords: ['citazione', 'quote'],
+    icon: 'quote',
+    command: toggleBlockquote(schema),
+  },
+  {
+    id: 'code',
+    label: (tr) => tr('block.codeBlock'),
+    keywords: ['codice', 'code'],
+    icon: 'codeBlock',
+    command: toggleCodeBlock,
+  },
+  {
+    id: 'table',
+    label: (tr) => tr('table.label'),
+    keywords: ['tabella', 'table'],
+    icon: 'table',
+    command: insertTable(3, 3),
+  },
+  {
+    id: 'image',
+    label: (tr) => tr('image.label'),
+    keywords: ['immagine', 'foto', 'image'],
+    icon: 'image',
+    run: (v) => openImageDialog(v, t, images),
+  },
+  {
+    id: 'charmap',
+    label: (tr) => tr('charmap.button'),
+    keywords: ['emoji', 'simbolo', 'carattere', 'symbol'],
+    icon: 'smile',
+    run: (v) => openCharmapDialog(v, t),
+  },
+]
+
 // Fullscreen covers the editor container (toolbar, editing area, status bar).
 const fullscreen = new Fullscreen(document.querySelector<HTMLElement>('.editor-area')!)
 const state = EditorState.create({
@@ -119,6 +193,13 @@ const state = EditorState.create({
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
+    ...slashCommands(slashItems, t),
+    bubbleMenu({
+      items: [...markItems(schema), ...linkToolbarItems(schema, t)],
+      t,
+    }),
+    keymap(bubbleKeymap(), { priority: 80 }),
+    keymap(slashKeymap(slashItems, t), { priority: 110 }),
     ...markdownShortcuts(schema),
     keymap(findReplaceKeymap(t), { priority: 80 }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80 }),

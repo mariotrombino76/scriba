@@ -23,6 +23,8 @@ export default defineConfig({
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
       '@scriba/plugin-image': plugin('image'),
       '@scriba/plugin-table': plugin('table'),
+      '@scriba/plugin-bubble': plugin('bubble'),
+      '@scriba/plugin-slash': plugin('slash'),
       '@scriba/plugin-markdown': plugin('markdown'),
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-find-replace': plugin('find-replace'),

@@ -107,7 +107,7 @@ Pensa all'editor come a una **casa di LEGO**:
 
 ### Fase 3 — Superiore
 - [x] Input rules Markdown + import/export Markdown
-- [ ] Comandi slash e bubble menu
+- [x] Comandi slash e bubble menu
 - [ ] Collaborazione Yjs con cursori degli altri utenti
 - [ ] Commenti e suggerimenti (track changes)
 - [ ] Menzioni `@utente` con sorgente dati asincrona

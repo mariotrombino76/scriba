@@ -7,7 +7,7 @@ const png = { name: 'foto.png', mimeType: 'image/png', buffer: Buffer.from(PNG_B
 
 const html = (page: Page) =>
   page.evaluate(() => (window as unknown as { scriba: { html(): string } }).scriba.html())
-const toolbar = (page: Page) => page.getByRole('toolbar', { name: 'Formattazione' })
+const toolbar = (page: Page) => page.getByRole('toolbar', { name: 'Formattazione', exact: true })
 const editor = (page: Page) => page.getByRole('textbox', { name: 'Editor di prova' })
 
 test.beforeEach(async ({ page }) => {
