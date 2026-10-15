@@ -16,6 +16,8 @@
       "@scriba/plugin-paste-clean": ["./packages/plugins/paste-clean/src/index.ts"],
       "@scriba/plugin-image": ["./packages/plugins/image/src/index.ts"],
       "@scriba/plugin-table": ["./packages/plugins/table/src/index.ts"],
+      "@scriba/plugin-collab": ["./packages/plugins/collab/src/index.ts"],
+      "@scriba/collab-server": ["./packages/collab-server/src/index.ts"],
       "@scriba/plugin-bubble": ["./packages/plugins/bubble/src/index.ts"],
       "@scriba/plugin-slash": ["./packages/plugins/slash/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
