@@ -24,6 +24,7 @@ export default defineConfig({
       '@scriba/plugin-link': plugin('link'),
       '@scriba/plugin-code-block': plugin('code-block'),
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
+      '@scriba/plugin-image': plugin('image'),
     },
   },
   test: {

@@ -44,15 +44,36 @@ import {
 } from '@scriba/plugin-code-block'
 import { common, createLowlight } from 'lowlight'
 import { pasteClean } from '@scriba/plugin-paste-clean'
+import {
+  imageKeymap,
+  imageNodes,
+  imagePlugins,
+  imageToolbarItems,
+  type ImageUploadOptions,
+} from '@scriba/plugin-image'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
+
+// Demo upload: a real app sends the file to its server and returns the URL.
+// Here the file becomes a data: URL (allowed for PNG/JPEG/GIF/WebP within the size limit).
+const images: ImageUploadOptions = {
+  maxSize: 900_000,
+  upload: (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(String(reader.result))
+      reader.onerror = () => reject(reader.error)
+      reader.readAsDataURL(file)
+    }),
+}
 const schema = new Schema({
   nodes: withBlockStyles({
     ...basicSchemaSpec.nodes,
     ...blockquoteNodes,
     ...listNodes,
     ...codeBlockNodes,
+    ...imageNodes,
   }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
@@ -81,6 +102,8 @@ const state = EditorState.create({
   plugins: [
     history(),
     pasteClean(),
+    ...imagePlugins(t, images),
+    keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     keymap(listKeymap(schema), { priority: 50 }),
@@ -122,7 +145,12 @@ toolbar.items = [
   ]),
   toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
   toolbarGroup('colors', 'toolbar.group.colors', colorItems(schema)),
-  toolbarGroup('insert', 'toolbar.group.insert', linkToolbarItems(schema, t), 2),
+  toolbarGroup(
+    'insert',
+    'toolbar.group.insert',
+    [...linkToolbarItems(schema, t), ...imageToolbarItems(schema, t, images)],
+    2,
+  ),
   toolbarGroup('lists', 'toolbar.group.lists', [
     ...listToolbarItems(schema, { indent: false }).map((item) => ({ ...item, priority: 2 })),
     ...indentItems({ indent: listIndentCommands(schema) }),

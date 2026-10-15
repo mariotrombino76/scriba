@@ -87,7 +87,20 @@ const PROPERTIES: Readonly<Record<string, (value: string) => string | null>> = {
   'background-color': normalizeColor,
   'font-family': normalizeFontFamily,
   'font-size': (v) => normalizeLength(v, ['px', 'pt', 'em', 'rem', '%'], 400),
-  'margin-left': (v) => normalizeLength(v, ['em', 'rem', 'px'], 1000),
+  'margin-left': (v) => (isAuto(v) ? 'auto' : normalizeLength(v, ['em', 'rem', 'px'], 1000)),
+  // Image alignment (enumerated values only; approved 2026-10-15)
+  float: (v) => enumerated(v, ['left', 'right']),
+  display: (v) => enumerated(v, ['block']),
+  'margin-right': (v) => (isAuto(v) ? 'auto' : null),
+}
+
+function enumerated(value: string, allowed: readonly string[]): string | null {
+  const v = value.trim().toLowerCase()
+  return allowed.includes(v) ? v : null
+}
+
+function isAuto(value: string): boolean {
+  return value.trim().toLowerCase() === 'auto'
 }
 
 /** True when a property may appear in typed styles. */

@@ -59,6 +59,28 @@ describe('typed styles', () => {
     expect(normalizeFontFamily('Arial')).toBe('Arial')
   })
 
+  it('image alignment: only enumerated values', () => {
+    expect(
+      safeStyleDecls({
+        float: 'LEFT',
+        display: 'block',
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+      }),
+    ).toEqual([
+      ['float', 'left'],
+      ['display', 'block'],
+      ['margin-left', 'auto'],
+      ['margin-right', 'auto'],
+    ])
+    expect(
+      safeStyleDecls({ float: 'inline-start', display: 'contents', 'margin-right': '10px' }),
+    ).toEqual([])
+    expect(safeStyleDecls({ display: 'none' })).toEqual([])
+    expect(safeStyleDecls({ display: 'block; position: fixed' })).toEqual([])
+    expect(() => safeStyleDecls({ position: 'absolute' })).toThrow()
+  })
+
   it('refuses unknown properties and drops invalid values', () => {
     expect(() => safeStyleDecls({ position: 'fixed' })).toThrow(/position/)
     expect(() => safeStyleDecls({ behavior: 'url(x.htc)' })).toThrow()

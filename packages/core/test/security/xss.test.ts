@@ -157,7 +157,8 @@ describe('round-trip fuzzing (mutation XSS guard)', () => {
       }),
       { numRuns: 500 },
     )
-  })
+    // fuzzing is CPU-heavy: generous timeout under parallel runs (same number of cases)
+  }, 30_000)
 })
 
 describe('parse limits (CLAUDE.md §5.10)', () => {

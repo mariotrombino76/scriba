@@ -4,6 +4,7 @@ import { DecorationIndex, stateDecorations } from './decorations.js'
 import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
 import { attachInputHandlers } from './input.js'
+import type { PluginView, ViewPluginProps } from './plugin-hooks.js'
 import { readDOMSelection, writeDOMSelection } from './selection.js'
 
 export interface EditorViewOptions {
@@ -34,6 +35,7 @@ export class EditorView {
   private readonly listeners = new Set<(view: EditorView) => void>()
   private decorations: DecorationIndex = DecorationIndex.empty
   private plainPasteUntil = 0
+  private readonly pluginViews: PluginView[] = []
 
   constructor(
     place: HTMLElement,
@@ -60,6 +62,10 @@ export class EditorView {
     this.observer = new MutationObserver((records) => this.onDOMMutations(records))
     this.observer.observe(this.dom, { childList: true, characterData: true, subtree: true })
     this.detach = attachInputHandlers(this)
+    for (const plugin of this.state.plugins) {
+      const create = plugin.props['pluginView'] as ViewPluginProps['pluginView']
+      if (typeof create === 'function') this.pluginViews.push(create(this))
+    }
   }
 
   get document(): Document {
@@ -93,7 +99,37 @@ export class EditorView {
     if (!this.composing)
       this.redrawDecorated(DecorationIndex.changedBlocks(prevDecorations, this.decorations))
     if (!this.composing && this.hasFocus()) this.syncSelectionToDOM()
+    for (const pluginView of this.pluginViews) pluginView.update?.(this, prev)
     for (const listener of this.listeners) listener(this)
+  }
+
+  /**
+   * Document position at viewport coordinates (e.g. a drop point), or null
+   * when the point is not over the content.
+   */
+  posAtCoords(x: number, y: number): number | null {
+    const doc = this.document as Document & {
+      caretPositionFromPoint?: (
+        x: number,
+        y: number,
+      ) => { offsetNode: globalThis.Node; offset: number } | null
+      caretRangeFromPoint?: (x: number, y: number) => Range | null
+    }
+    let node: globalThis.Node | null = null
+    let offset = 0
+    const position = doc.caretPositionFromPoint?.(x, y)
+    if (position) {
+      node = position.offsetNode
+      offset = position.offset
+    } else {
+      const range = doc.caretRangeFromPoint?.(x, y)
+      if (range) {
+        node = range.startContainer
+        offset = range.startOffset
+      }
+    }
+    if (!node || !this.dom.contains(node)) return null
+    return this.posAtDOM(node, offset)
   }
 
   /**
@@ -127,6 +163,8 @@ export class EditorView {
   destroy(): void {
     if (this.destroyed) return
     this.destroyed = true
+    for (const pluginView of this.pluginViews) pluginView.destroy?.()
+    this.pluginViews.length = 0
     this.listeners.clear()
     this.detach()
     this.observer.disconnect()
@@ -141,22 +179,32 @@ export class EditorView {
       .querySelectorAll('.scriba-selected-node')
       .forEach((el) => el.classList.remove('scriba-selected-node'))
     if (sel instanceof NodeSelection) {
-      const { node, offset } = domFromPos(this.rootDesc, sel.from)
-      const el = node.childNodes[offset]
-      if (el && el.nodeType === 1) (el as HTMLElement).classList.add('scriba-selected-node')
+      const dom = descAt(this.rootDesc, sel.from)?.dom
+      if (dom && dom.nodeType === 1) (dom as HTMLElement).classList.add('scriba-selected-node')
     }
     writeDOMSelection(this.rootDesc, sel, domSel)
   }
 
   /** @internal Reads the DOM selection into the model (after clicks, arrow keys…). */
+  /**
+   * The DOM cannot show a node selection as such: it shows a range around the
+   * node (or a caret next to it). Reading that back must not replace the node selection.
+   */
+  private keepsNodeSelection(read: Selection): boolean {
+    const current = this.state.selection
+    if (!(current instanceof NodeSelection)) return false
+    return (
+      read.empty ||
+      (read.from <= current.from &&
+        read.to >= current.to &&
+        read.to - read.from <= current.to - current.from + 2)
+    )
+  }
+
   syncSelectionFromDOM(): void {
     if (this.composing || !this.hasFocus()) return
     const sel = readDOMSelection(this.rootDesc, this.state.doc, this.document.getSelection())
-    if (
-      sel &&
-      !sel.eq(this.state.selection) &&
-      !(this.state.selection instanceof NodeSelection && sel.empty)
-    ) {
+    if (sel && !sel.eq(this.state.selection) && !this.keepsNodeSelection(sel)) {
       this.dispatch(this.state.tr.setSelection(sel))
     }
   }

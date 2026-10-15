@@ -94,7 +94,7 @@ Pensa all'editor come a una **casa di LEGO**:
 ### Fase 2 — Parità TinyMCE
 - [x] Liste puntate/numerate annidate, Tab/Shift+Tab
 - [x] Link (dialog, apertura in nuova scheda, rimozione)
-- [ ] Immagini: upload con callback, drag&drop, ridimensionamento, testo alternativo, allineamento
+- [x] Immagini: upload con callback, drag&drop, ridimensionamento, testo alternativo, allineamento
 - [ ] Tabelle: inserimento, unione/divisione celle, righe/colonne, intestazioni, ridimensionamento colonne
 - [x] Allineamento testo, rientro, colore testo/sfondo, font e dimensione
 - [x] Blocchi citazione e blocchi codice con evidenziazione sintassi

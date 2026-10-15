@@ -138,12 +138,11 @@ function renderAttrs(tag: string, attrs: HTMLAttrs): string {
     .map(([p, v]) => `${p}: ${v}`)
     .join('; ')
   return (
-    (style ? ` style="${escapeAttr(style)}"` : '') +
     safeOutputAttrs(tag, attrs)
       .map(([name, value]) =>
         value === '' && attrs[name] === true ? ` ${name}` : ` ${name}="${escapeAttr(value)}"`,
       )
-      .join('')
+      .join('') + (style ? ` style="${escapeAttr(style)}"` : '')
   )
 }
 

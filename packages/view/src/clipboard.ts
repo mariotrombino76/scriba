@@ -7,6 +7,7 @@ import {
   parseHTML,
   type Node,
 } from '@scriba/core'
+import { someProp } from './plugin-hooks.js'
 import { parseInertHTML } from './trusted-types.js'
 import type { EditorView } from './view.js'
 
@@ -43,6 +44,9 @@ export type TransformPastedDOM = (body: HTMLElement, view: EditorView) => void
 export function handlePaste(view: EditorView, event: ClipboardEvent): void {
   event.preventDefault()
   if (!view.editable || !event.clipboardData) return
+  const files = [...(event.clipboardData.files ?? [])]
+  if (files.length && someProp(view.state, 'handlePasteFiles', (handle) => handle(view, files)))
+    return
   const plainOnly = view.consumePlainPaste()
   const html = plainOnly ? '' : event.clipboardData.getData('text/html')
   const text = event.clipboardData.getData('text/plain')

@@ -11,12 +11,15 @@ import {
   redo,
   runKeymaps,
   splitBlock,
+  NodeSelection,
   TextSelection,
   toggleMark,
   undo,
   type Command,
+  type Node,
 } from '@scriba/core'
 import { handleCopy, handlePaste } from './clipboard.js'
+import { someProp } from './plugin-hooks.js'
 import type { EditorView } from './view.js'
 
 const deleteBackward = chainCommands(
@@ -165,6 +168,46 @@ function onCompositionEnd(view: EditorView): void {
   }, 0)
 }
 
+/** Drops go to plugins (e.g. image files); anything else is refused. */
+function onDrop(view: EditorView, event: DragEvent): void {
+  event.preventDefault()
+  if (!view.editable) return
+  const pos = view.posAtCoords(event.clientX, event.clientY)
+  someProp(view.state, 'handleDrop', (handle) => handle(view, event, pos))
+}
+
+/** The atom node (image…) a DOM target belongs to, with its position. */
+function atomAt(view: EditorView, target: EventTarget | null): { pos: number; node: Node } | null {
+  if (!(target instanceof Element)) return null
+  const atom = target.closest('[contenteditable=false]')
+  if (!atom || !view.dom.contains(atom) || atom === view.dom) return null
+  const parent = atom.parentNode!
+  const index = Array.prototype.indexOf.call(parent.childNodes, atom) as number
+  const pos = view.posAtDOM(parent, index)
+  const node = pos === null ? null : view.state.doc.nodeAt(pos)
+  return pos !== null && node && node.isAtom ? { pos, node } : null
+}
+
+/** A click on an atom (image…) selects it as a node. */
+function onMouseDown(view: EditorView, event: MouseEvent): void {
+  if (event.button !== 0) return
+  const atom = atomAt(view, event.target)
+  if (!atom || !NodeSelection.isSelectable(atom.node)) return
+  event.preventDefault()
+  view.focus()
+  view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, atom.pos)))
+}
+
+function onDoubleClick(view: EditorView, event: MouseEvent): void {
+  const atom = atomAt(view, event.target)
+  if (!atom) return
+  if (
+    someProp(view.state, 'handleDoubleClickNode', (handle) => handle(view, atom.pos, atom.node))
+  ) {
+    event.preventDefault()
+  }
+}
+
 /** Wires DOM events to the view. Returns a function that removes them. */
 export function attachInputHandlers(view: EditorView): () => void {
   const dom = view.dom
@@ -178,8 +221,11 @@ export function attachInputHandlers(view: EditorView): () => void {
     [dom, 'cut', (e) => handleCopy(view, e as ClipboardEvent, true)],
     [dom, 'paste', (e) => handlePaste(view, e as ClipboardEvent)],
     // Drag and drop of content arrives in Phase 2 (images); until then the browser must not move DOM.
+    // Moving content by dragging is not supported yet: the browser must not move DOM itself.
     [dom, 'dragstart', (e) => e.preventDefault()],
-    [dom, 'drop', (e) => e.preventDefault()],
+    [dom, 'drop', (e) => onDrop(view, e as DragEvent)],
+    [dom, 'mousedown', (e) => onMouseDown(view, e as MouseEvent)],
+    [dom, 'dblclick', (e) => onDoubleClick(view, e as MouseEvent)],
     [dom, 'focus', () => view.syncSelectionToDOM()],
     [doc, 'selectionchange', () => view.syncSelectionFromDOM()],
   ]

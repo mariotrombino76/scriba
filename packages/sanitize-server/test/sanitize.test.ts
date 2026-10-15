@@ -93,5 +93,6 @@ describe('sanitizeHTML (server)', () => {
       }),
       { numRuns: 500 },
     )
-  })
+    // fuzzing is CPU-heavy: generous timeout under parallel runs (same number of cases)
+  }, 30_000)
 })

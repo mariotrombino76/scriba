@@ -7,15 +7,25 @@ export default defineConfig({
   // Firefox under WSL becomes unstable with many parallel browsers.
   workers: process.env['CI'] ? 2 : 3,
   reporter: 'list',
-  use: { baseURL: 'http://localhost:4173' },
+  // Wide enough for the whole toolbar; overflow tests set a narrower viewport themselves.
+  use: { baseURL: 'http://localhost:4173', viewport: { width: 1600, height: 900 } },
   webServer: {
     command: 'vite build --config e2e/vite.config.ts && vite preview --config e2e/vite.config.ts',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env['CI'],
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1600, height: 900 } },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'], viewport: { width: 1600, height: 900 } },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'], viewport: { width: 1600, height: 900 } },
+    },
   ],
 })
