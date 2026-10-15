@@ -127,9 +127,18 @@ function applyTransaction(
   return { done, undone: [], prevTime: tr.time, prevTyping: typing }
 }
 
-/** Plain text edits: replace steps with flat slices (typing, Backspace, Delete). */
+/**
+ * Plain text edits: replace steps inserting nothing or only inline content
+ * (typing, Backspace, Delete). Replacing blocks (a rebuilt table, a document
+ * loaded from the source view) is never typing: it gets its own undo step.
+ */
 function isTyping(tr: Transaction): boolean {
-  return tr.steps.every((s) => s instanceof ReplaceStep && !s.slice.openStart && !s.slice.openEnd)
+  return tr.steps.every((s) => {
+    if (!(s instanceof ReplaceStep) || s.slice.openStart || s.slice.openEnd) return false
+    let inline = true
+    s.slice.content.forEach((node) => (inline &&= node.isInline))
+    return inline
+  })
 }
 
 /** Undo/redo plugin with time-based grouping of changes. */

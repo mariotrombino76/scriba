@@ -105,6 +105,11 @@ test('the Table menu adds and deletes rows and columns', async ({ page }) => {
   expect(await html(page)).toBe(
     T('<tr><td><p>a</p></td><td><p>b</p></td></tr><tr><td><p>c</p></td><td><p>d</p></td></tr>'),
   )
+  // each structural change is its own undo step (never merged with the typing before it)
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toContain('<p>e</p>')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toContain('<td><p></p></td></tr></tbody>') // column back
 })
 
 test('the Table menu is only shown inside a table', async ({ page }) => {

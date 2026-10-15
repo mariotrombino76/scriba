@@ -41,6 +41,20 @@ describe('history', () => {
     expect(run(s, undo)!.doc.eq(doc(p('abc')))).toBe(true)
   })
 
+  it('never groups block replacements (a rebuilt table, a loaded source) with typing', () => {
+    let s = start()
+    s = type(s, 'abc', 1000)
+    const tr = s.tr.replaceWith(0, s.doc.content.size, doc(p('x'), p('y')).content)
+    tr.time = 1100
+    s = s.apply(tr)
+    expect(undoDepth(s)).toBe(2)
+    expect(run(s, undo)!.doc.eq(doc(p('abc')))).toBe(true)
+    // inline insertions (typing, pasting words) still group
+    s = type(s, 'z', 1200)
+    s = type(s, 'w', 1300)
+    expect(undoDepth(s)).toBe(3)
+  })
+
   it('splits groups after the delay', () => {
     let s = start()
     s = type(s, 'a', 1000)

@@ -99,7 +99,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Allineamento testo, rientro, colore testo/sfondo, font e dimensione
 - [x] Blocchi citazione e blocchi codice con evidenziazione sintassi
 - [x] Incolla pulito da Word / Google Docs / pagine web
-- [ ] Vista sorgente HTML
+- [x] Vista sorgente HTML
 - [ ] Trova e sostituisci (anche regex)
 - [x] Schermo intero, conteggio parole/caratteri
 - [ ] Caratteri speciali ed emoji

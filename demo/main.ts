@@ -54,6 +54,7 @@ import {
 import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
 import { createWordCountStatus } from '@scriba/plugin-word-count'
+import { sourceToolbarItem } from '@scriba/plugin-source'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
@@ -174,7 +175,10 @@ toolbar.items = [
     ...blockquoteToolbarItems(schema),
     ...codeBlockToolbarItems(schema),
   ]),
-  toolbarGroup('view', 'toolbar.group.view', [fullscreenToolbarItem(fullscreen)]),
+  toolbarGroup('view', 'toolbar.group.view', [
+    sourceToolbarItem(t),
+    fullscreenToolbarItem(fullscreen),
+  ]),
 ]
 toolbar.view = view
 status.before(createWordCountStatus(view, t).el)

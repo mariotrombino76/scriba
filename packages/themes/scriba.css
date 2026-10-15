@@ -786,3 +786,23 @@ html.scriba-fullscreen-open body {
   text-align: start;
   font-weight: normal;
 }
+
+/* HTML source dialog */
+.scriba-source {
+  display: block;
+  box-sizing: border-box;
+  width: min(80vw, 900px);
+  height: 55vh;
+  padding: 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+  background: var(--scriba-code-bg);
+  color: var(--scriba-text);
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+.scriba-source:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+}

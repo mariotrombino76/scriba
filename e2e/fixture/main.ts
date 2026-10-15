@@ -49,6 +49,7 @@ import {
 import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
 import { createWordCountStatus } from '@scriba/plugin-word-count'
+import { sourceToolbarItem } from '@scriba/plugin-source'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
@@ -134,7 +135,10 @@ toolbar.items = [
     ...blockquoteToolbarItems(schema),
     ...codeBlockToolbarItems(schema),
   ]),
-  toolbarGroup('view', 'toolbar.group.view', [fullscreenToolbarItem(fullscreen)]),
+  toolbarGroup('view', 'toolbar.group.view', [
+    sourceToolbarItem(t),
+    fullscreenToolbarItem(fullscreen),
+  ]),
 ]
 toolbar.view = view
 app.appendChild(createWordCountStatus(view, t, { delay: 50 }).el)
