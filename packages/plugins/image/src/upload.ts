@@ -38,7 +38,8 @@ export function validateImageFile(file: File, options: ImageUploadOptions): Mess
 
 export function formatSize(bytes: number): string {
   if (bytes >= 1024 * 1024) return `${Math.round((bytes / (1024 * 1024)) * 10) / 10} MB`
-  return `${Math.round(bytes / 1024)} KB`
+  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${bytes} B`
 }
 
 /** Pending uploads: their insertion positions follow the edits made meanwhile. */
