@@ -14,6 +14,8 @@ import type { EditorView } from './view.js'
 
 /** Copy/cut: HTML from the model's serializer (never from the DOM) plus plain text. */
 export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean): void {
+  // selectionchange is async: make sure the model has the selection the user sees
+  view.syncSelectionFromDOM()
   const sel = view.state.selection
   if (sel.empty || !event.clipboardData) return
   event.preventDefault()
@@ -46,6 +48,8 @@ export type TransformPastedDOM = (body: HTMLElement, view: EditorView) => void
 export function handlePaste(view: EditorView, event: ClipboardEvent): void {
   event.preventDefault()
   if (!view.editable || !event.clipboardData) return
+  // selectionchange is async: paste where the caret is now, not where it was a moment ago
+  view.syncSelectionFromDOM()
   const files = [...(event.clipboardData.files ?? [])]
   if (files.length && someProp(view.state, 'handlePasteFiles', (handle) => handle(view, files)))
     return

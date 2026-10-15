@@ -908,3 +908,66 @@ html.scriba-fullscreen-open body {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
 }
+
+/* Special characters and emoji dialog */
+.scriba-charmap-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 8px;
+}
+.scriba-charmap-tabs button {
+  padding: 3px 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 999px;
+  background: var(--scriba-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.scriba-charmap-tabs button[aria-selected='true'] {
+  border-color: var(--scriba-accent);
+  background: var(--scriba-accent-bg);
+  color: var(--scriba-accent);
+}
+.scriba-charmap-grid {
+  display: grid;
+  gap: 2px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.scriba-charmap-cell {
+  height: 2.4em;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+.scriba-charmap-cell:hover {
+  border-color: var(--scriba-border);
+  background: var(--scriba-code-bg);
+}
+.scriba-charmap-cell:focus-visible,
+.scriba-charmap-tabs button:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+.scriba-charmap-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 2.6em;
+  margin-top: 8px;
+  color: var(--scriba-muted);
+  font-size: 0.875rem;
+}
+.scriba-charmap-big {
+  min-width: 1.4em;
+  color: var(--scriba-text);
+  font-size: 2rem;
+  text-align: center;
+}

@@ -26,6 +26,7 @@ export default defineConfig({
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
       '@scriba/plugin-image': plugin('image'),
       '@scriba/plugin-table': plugin('table'),
+      '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-find-replace': plugin('find-replace'),
       '@scriba/plugin-source': plugin('source'),
       '@scriba/plugin-fullscreen': plugin('fullscreen'),

@@ -102,7 +102,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Vista sorgente HTML
 - [x] Trova e sostituisci (anche regex)
 - [x] Schermo intero, conteggio parole/caratteri
-- [ ] Caratteri speciali ed emoji
+- [x] Caratteri speciali ed emoji
 - [x] i18n (it, en) e temi chiaro/scuro
 
 ### Fase 3 — Superiore

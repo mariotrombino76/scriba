@@ -55,6 +55,7 @@ import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scrib
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
 import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
+import { charmapToolbarItem } from '@scriba/plugin-charmap'
 import {
   findReplaceKeymap,
   findReplacePlugins,
@@ -170,6 +171,7 @@ toolbar.items = [
       ...linkToolbarItems(schema, t),
       ...imageToolbarItems(schema, t, images),
       ...tableToolbarItems(schema, t),
+      charmapToolbarItem(t),
     ],
     2,
   ),
