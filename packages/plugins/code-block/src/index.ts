@@ -34,13 +34,14 @@ export const defaultCodeLanguages = [
 ]
 
 /**
- * Keys (higher priority than the base keymap): Mod+Alt+C toggles a code block,
+ * Keys (higher priority than the base keymap): Mod+Alt+Shift+C toggles a code block
+ * (not Mod+Alt+C: Chrome uses it for DevTools),
  * Mod+Enter / triple Enter leave it, Backspace in an empty one resets it.
  * Tab is NOT captured, so keyboard users can always leave the editor.
  */
 export function codeBlockKeymap(): KeyBindings {
   return {
-    'Mod-Alt-c': toggleCodeBlock,
+    'Shift-Mod-Alt-c': toggleCodeBlock,
     'Mod-Enter': exitCodeBlock,
     Enter: exitOnTripleEnter,
     Backspace: resetEmptyCodeBlock,
@@ -64,7 +65,7 @@ export function codeBlockToolbarItems(
       id: 'code_block',
       text: '{ }',
       label: (t) => t('block.codeBlock'),
-      shortcut: 'Mod-Alt-c',
+      shortcut: 'Shift-Mod-Alt-c',
       command: toggleCodeBlock,
       isActive: isInCodeBlock,
     },

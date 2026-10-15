@@ -58,8 +58,8 @@ test('Tab inside a code block does not trap the keyboard', async ({ page }) => {
   expect(await html(page)).toBe('<pre><code>x</code></pre>')
 })
 
-test('Ctrl+Enter leaves the code block', async ({ page }) => {
-  await page.keyboard.press('Control+Alt+c')
+test('Ctrl+Alt+Shift+C creates and Ctrl+Enter leaves a code block', async ({ page }) => {
+  await page.keyboard.press('Control+Alt+Shift+c')
   await page.keyboard.type('a')
   await page.keyboard.press('Control+Enter')
   await page.keyboard.type('b')

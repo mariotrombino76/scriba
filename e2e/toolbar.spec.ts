@@ -59,7 +59,7 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
 
 test('tooltips show the shortcut', async ({ page }) => {
   await expect(button(page, 'Grassetto')).toHaveAttribute('title', 'Grassetto (Ctrl+B)')
-  await expect(button(page, 'Titolo 1')).toHaveAttribute('title', 'Titolo 1 (Alt+Ctrl+1)')
+  await expect(button(page, 'Titolo 1')).toHaveAttribute('title', 'Titolo 1 (Ctrl+Alt+1)')
 })
 
 test('every toolbar control has a unique accessible name', async ({ page }) => {

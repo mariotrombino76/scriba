@@ -56,7 +56,7 @@ ciò che lo schema non conosce viene <u>scartato</u>, mai eseguito.</p>
 <ul><li><p>Elenchi puntati e numerati: <code>Ctrl+Shift+8</code> / <code>Ctrl+Shift+7</code></p>
 <ul><li><p>Tab per rientrare, Shift+Tab per tornare indietro</p></li></ul></li>
 <li><p>Invio su un elemento vuoto per uscire dall'elenco</p></li></ul>
-<pre><code class="language-typescript">// Blocchi di codice: Ctrl+Alt+C, tre Invio o Ctrl+Invio per uscire
+<pre><code class="language-typescript">// Blocchi di codice: Ctrl+Alt+Maiusc+C, tre Invio o Ctrl+Invio per uscire
 function saluta(nome: string): string {
   return \`Ciao, \${nome}!\`
 }</code></pre>

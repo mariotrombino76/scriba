@@ -14,7 +14,8 @@ export function formatShortcut(binding: string, t: Translate, mac = isMac()): st
   const parts = binding.split(/-(?!$)/)
   const key = parts.pop()!
   const names: string[] = []
-  const order = ['Alt', 'Shift', 'Mod']
+  // Windows/Linux convention: Ctrl+Alt+Shift+key; macOS: ⌥⇧⌘key.
+  const order = mac ? ['Alt', 'Shift', 'Mod'] : ['Mod', 'Alt', 'Shift']
   const mods = parts.map((p) =>
     /^(cmd|meta|mod)$/i.test(p) ? 'Mod' : p[0]!.toUpperCase() + p.slice(1).toLowerCase(),
   )

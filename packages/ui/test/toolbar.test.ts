@@ -101,8 +101,8 @@ describe('<scriba-toolbar>', () => {
 describe('formatShortcut', () => {
   const t = createTranslator('it')
   it('formats for PC and mac', () => {
-    expect(formatShortcut('Shift-Mod-z', t, false)).toBe('Maiusc+Ctrl+Z')
-    expect(formatShortcut('Mod-Alt-1', t, false)).toBe('Alt+Ctrl+1')
+    expect(formatShortcut('Shift-Mod-z', t, false)).toBe('Ctrl+Maiusc+Z')
+    expect(formatShortcut('Mod-Alt-1', t, false)).toBe('Ctrl+Alt+1')
     expect(formatShortcut('Shift-Mod-z', t, true)).toBe('⇧⌘Z')
     expect(schema).toBeTruthy()
   })
