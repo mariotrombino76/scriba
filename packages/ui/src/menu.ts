@@ -131,27 +131,52 @@ export class MenuPopup {
         if (on && active < 0) active = i
       }
     })
-    // Position under the anchor (CSSOM: no inline style attribute).
-    this.el.style.left = `${anchor.offsetLeft}px`
-    this.el.style.top = `${anchor.offsetTop + anchor.offsetHeight + 4}px`
     this.el.hidden = false
+    this.position(anchor)
     anchor.setAttribute('aria-expanded', 'true')
     this.focus(Math.max(0, active))
-    this.button.ownerDocument.addEventListener('mousedown', this.onOutside, true)
+    const doc = this.button.ownerDocument
+    doc.addEventListener('mousedown', this.onOutside, true)
+    doc.defaultView?.addEventListener('scroll', this.onViewportChange, true)
+    doc.defaultView?.addEventListener('resize', this.onViewportChange)
   }
 
   close(returnFocus = true): void {
     if (!this.isOpen) return
     this.el.hidden = true
     this.anchor.setAttribute('aria-expanded', 'false')
-    this.button.ownerDocument.removeEventListener('mousedown', this.onOutside, true)
-    if (returnFocus) this.anchor.focus()
+    const doc = this.button.ownerDocument
+    doc.removeEventListener('mousedown', this.onOutside, true)
+    doc.defaultView?.removeEventListener('scroll', this.onViewportChange, true)
+    doc.defaultView?.removeEventListener('resize', this.onViewportChange)
+    if (returnFocus) this.anchor.focus({ preventScroll: true })
+  }
+
+  /**
+   * Fixed positioning under the anchor, kept inside the viewport. Fixed: the
+   * toolbar clips its overflow (one-line layout), the menu must not be clipped.
+   * Set through CSSOM: no inline style attribute (strict CSP).
+   */
+  private position(anchor: HTMLElement): void {
+    const win = anchor.ownerDocument.defaultView
+    const rect = anchor.getBoundingClientRect()
+    const width = this.el.offsetWidth
+    const height = this.el.offsetHeight
+    const vw = win?.innerWidth ?? 0
+    const vh = win?.innerHeight ?? 0
+    let left = rect.left
+    if (vw && left + width > vw - 8) left = Math.max(8, vw - width - 8)
+    let top = rect.bottom + 4
+    // Not enough room below and more above: open upwards.
+    if (vh && top + height > vh - 8 && rect.top - height - 4 > 8) top = rect.top - height - 4
+    this.el.style.left = `${left}px`
+    this.el.style.top = `${top}px`
   }
 
   private focus(index: number): void {
     if (!this.entries.length) return
     this.index = (index + this.entries.length) % this.entries.length
-    this.entries[this.index]!.el.focus()
+    this.entries[this.index]!.el.focus({ preventScroll: true })
   }
 
   private choose(entry: PopupEntry, el: HTMLButtonElement): void {
@@ -186,6 +211,13 @@ export class MenuPopup {
     if (!action) return
     event.preventDefault()
     action()
+  }
+
+  /** Page scrolled or window resized: the menu would be misplaced, so it closes. */
+  private onViewportChange = (event: Event): void => {
+    const target = event.target as globalThis.Node | null
+    if (target && target !== this.button.ownerDocument && this.el.contains(target)) return // scrolling the menu itself
+    this.close(false)
   }
 
   private onOutside = (event: MouseEvent): void => {

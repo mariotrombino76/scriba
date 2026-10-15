@@ -123,3 +123,42 @@ test('every toolbar control has a unique accessible name', async ({ page }) => {
   expect(names.length).toBeGreaterThan(10)
   expect(new Set(names).size).toBe(names.length)
 })
+
+/** Every entry of an open menu is really visible and clickable (not clipped, not covered). */
+async function expectMenuFullyUsable(page: Page, name: string) {
+  const menu = page.getByRole('menu', { name })
+  await expect(menu).toBeVisible()
+  const ok = await menu.evaluate((el) =>
+    [...el.querySelectorAll<HTMLElement>('[role^=menuitem]')].map((item) => {
+      const r = item.getBoundingClientRect()
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+      return { label: item.getAttribute('aria-label'), ok: !!hit && item.contains(hit) }
+    }),
+  )
+  expect(ok.filter((i) => !i.ok)).toEqual([])
+  // the toolbar itself did not scroll away
+  expect(await toolbar(page).evaluate((el) => el.scrollTop)).toBe(0)
+}
+
+test('select-like menus open fully visible and usable', async ({ page }) => {
+  await toolbar(page)
+    .getByRole('button', { name: /^Stile paragrafo/ })
+    .click()
+  await expectMenuFullyUsable(page, 'Stile paragrafo')
+  await page.keyboard.press('Escape')
+  await toolbar(page)
+    .getByRole('button', { name: /^Carattere/ })
+    .click()
+  await expectMenuFullyUsable(page, 'Carattere')
+  await page.keyboard.press('Escape')
+  await toolbar(page)
+    .getByRole('button', { name: /^Dimensione carattere/ })
+    .click()
+  await expectMenuFullyUsable(page, 'Dimensione carattere')
+  await page.getByRole('menuitemradio', { name: '24pt' }).click()
+  await page.keyboard.type('grande')
+  expect(await html(page)).toBe('<p><span style="font-size: 24pt">grande</span></p>')
+  await expect(
+    toolbar(page).getByRole('button', { name: 'Dimensione carattere: 24pt' }),
+  ).toBeVisible()
+})

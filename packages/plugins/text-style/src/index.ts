@@ -237,6 +237,7 @@ export function fontItems(schema: Schema, options: TextStyleOptions = {}): Toolb
           id: 'default',
           label: (t) => t('font.default'),
           command: setMarkValue(font_family, null),
+          isActive: (state) => markValue(state, font_family, 'family') === null,
         },
         ...families.map((f): ToolbarMenuEntry => ({
           id: f.value,
@@ -255,7 +256,12 @@ export function fontItems(schema: Schema, options: TextStyleOptions = {}): Toolb
       valueLabel: (state, t) =>
         (markValue(state, font_size, 'size') as string | null) ?? t('font.sizeAuto'),
       entries: [
-        { id: 'default', label: (t) => t('font.default'), command: setMarkValue(font_size, null) },
+        {
+          id: 'default',
+          label: (t) => t('font.sizeAuto'),
+          command: setMarkValue(font_size, null),
+          isActive: (state) => markValue(state, font_size, 'size') === null,
+        },
         ...(options.fontSizes ?? defaultFontSizes).map((size): ToolbarMenuEntry => ({
           id: size,
           label: () => size,
