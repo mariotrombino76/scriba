@@ -27,6 +27,10 @@ describe('Selection', () => {
     expect(Selection.atEnd(d).head).toBe(13)
   })
 
+  it('shows its own anchor and head in the DOM by default', () => {
+    expect(TextSelection.create(d, 7, 2).domRange()).toEqual({ anchor: 7, head: 2 })
+  })
+
   it('maps through changes', () => {
     const sel = TextSelection.create(d, 2)
     const mapped = sel.map(d.replace(1, 1, d.slice(1, 2)), new Mapping([StepMap.replace(1, 1, 1)]))

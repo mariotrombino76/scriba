@@ -46,6 +46,7 @@ import {
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
+import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.
@@ -70,6 +71,7 @@ const schema = new Schema({
     ...listNodes,
     ...codeBlockNodes,
     ...imageNodes,
+    ...tableNodes,
   }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
@@ -82,6 +84,8 @@ const state = EditorState.create({
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
+    ...tablePlugins(),
+    keymap(tableKeymap(), { priority: 55 }),
     keymap(listKeymap(schema), { priority: 50 }),
     keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
     keymap(linkKeymap(t)),
@@ -109,7 +113,11 @@ toolbar.items = [
   toolbarGroup(
     'insert',
     'toolbar.group.insert',
-    [...linkToolbarItems(schema, t), ...imageToolbarItems(schema, t, images)],
+    [
+      ...linkToolbarItems(schema, t),
+      ...imageToolbarItems(schema, t, images),
+      ...tableToolbarItems(schema, t),
+    ],
     2,
   ),
   toolbarGroup('lists', 'toolbar.group.lists', [

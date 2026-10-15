@@ -32,6 +32,7 @@ export default defineConfig({
       '@scriba/plugin-code-block': plugin('code-block'),
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
       '@scriba/plugin-image': plugin('image'),
+      '@scriba/plugin-table': plugin('table'),
     },
   },
   build: {

@@ -47,6 +47,20 @@ export abstract class Selection {
   abstract eq(other: Selection): boolean
   abstract toJSON(): SelectionJSON
 
+  /**
+   * The DOM cannot show every kind of selection (a selected node, a block of
+   * table cells…). When the view reads the DOM selection back, it keeps this
+   * selection if this returns true for what it read.
+   */
+  preserves(_read: Selection): boolean {
+    return false
+  }
+
+  /** The positions the DOM selection shows (a cell selection shows a text range from cell to cell). */
+  domRange(): { anchor: number; head: number } {
+    return { anchor: this.anchor, head: this.head }
+  }
+
   /** The selected content. */
   content(): Slice {
     return this.$from.doc.slice(this.from, this.to)
@@ -203,6 +217,16 @@ export class NodeSelection extends Selection {
 
   static create(doc: Node, pos: number): NodeSelection {
     return new NodeSelection(doc.resolve(pos))
+  }
+
+  /** The DOM shows a node selection as a range around the node (or a caret next to it). */
+  override preserves(read: Selection): boolean {
+    return (
+      read.empty ||
+      (read.from <= this.from &&
+        read.to >= this.to &&
+        read.to - read.from <= this.to - this.from + 2)
+    )
   }
 
   static isSelectable(node: Node): boolean {

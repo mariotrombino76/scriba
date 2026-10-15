@@ -85,9 +85,11 @@ export function insertContent(
   // Blocks: first the natural way (open slice), e.g. paragraphs into paragraphs.
   const open = Slice.maxOpen(content)
   const steps = tr.steps.length
+  // (Isolating blocks such as tables are never opened: their cells would merge into the text.)
   if (
     $pos.parent.inlineContent &&
     $pos.parent.content.size &&
+    !content.content.some((n) => n.type.spec.isolating) &&
     tryStep(tr, () => tr.replace(from, from, open))
   ) {
     return tr.mapping.slice(steps).map(from, 1) // the end of what was inserted

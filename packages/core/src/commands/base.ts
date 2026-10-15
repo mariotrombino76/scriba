@@ -38,7 +38,8 @@ function canDelete(state: EditorState, from: number, to: number): boolean {
 export const deleteSelection: Command = (state, dispatch) => {
   const sel = state.selection
   if (sel.empty) return false
-  if (!(sel instanceof AllSelection) && !canDelete(state, sel.from, sel.to)) return false
+  // Node, cell and all selections delete themselves (Selection.replace); text ranges must be deletable.
+  if (sel instanceof TextSelection && !canDelete(state, sel.from, sel.to)) return false
   dispatch?.(state.tr.deleteSelection().scrollIntoView())
   return true
 }

@@ -13,8 +13,6 @@ export interface PopupEntry extends ToolbarMenuEntry {
   run?: (view: EditorView) => void
   /** Shows a chevron and `aria-haspopup`. */
   hasPopup?: boolean
-  /** With `isActive`: a toggle (`menuitemcheckbox`) instead of a choice (`menuitemradio`). */
-  toggle?: boolean
 }
 
 /**

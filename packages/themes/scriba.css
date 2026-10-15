@@ -614,3 +614,56 @@ scriba-toolbar {
   gap: 4px;
   font-size: 0.875rem;
 }
+
+/* Tables */
+.scriba-editor table {
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  max-width: 100%;
+}
+.scriba-editor td,
+.scriba-editor th {
+  position: relative;
+  min-width: 2em;
+  padding: 0.35em 0.5em;
+  border: 1px solid var(--scriba-border);
+  vertical-align: top;
+  text-align: start;
+}
+.scriba-editor th {
+  background: var(--scriba-code-bg);
+  font-weight: 600;
+}
+.scriba-editor td > :first-child,
+.scriba-editor th > :first-child {
+  margin-top: 0;
+}
+.scriba-editor td > :last-child,
+.scriba-editor th > :last-child {
+  margin-bottom: 0;
+}
+/* Cell selection: our own highlight replaces the browser's text highlight */
+.scriba-editor.scriba-cell-selection ::selection {
+  background: transparent;
+}
+.scriba-editor .scriba-selected-cell {
+  background: var(--scriba-accent-bg);
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: -2px;
+}
+/* Column resizing: border hover cursor and the guide line while dragging */
+.scriba-editor.scriba-column-resize,
+.scriba-editor.scriba-column-resize * {
+  cursor: col-resize;
+}
+.scriba-column-guide {
+  position: fixed;
+  z-index: 900;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--scriba-focus);
+  pointer-events: none;
+}
+.scriba-column-guide[hidden] {
+  display: none;
+}

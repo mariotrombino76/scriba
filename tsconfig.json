@@ -14,7 +14,8 @@
       "@scriba/plugin-link": ["./packages/plugins/link/src/index.ts"],
       "@scriba/plugin-code-block": ["./packages/plugins/code-block/src/index.ts"],
       "@scriba/plugin-paste-clean": ["./packages/plugins/paste-clean/src/index.ts"],
-      "@scriba/plugin-image": ["./packages/plugins/image/src/index.ts"]
+      "@scriba/plugin-image": ["./packages/plugins/image/src/index.ts"],
+      "@scriba/plugin-table": ["./packages/plugins/table/src/index.ts"]
     },
     "types": ["node"]
   },

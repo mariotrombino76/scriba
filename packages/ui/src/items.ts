@@ -53,6 +53,8 @@ export interface ToolbarMenuEntry {
   command: Command
   /** Marks the current choice (`aria-checked`). */
   isActive?: (state: EditorState) => boolean
+  /** With `isActive`: a toggle (`menuitemcheckbox`) instead of a choice (`menuitemradio`). */
+  toggle?: boolean
 }
 
 /** A button opening a popup menu (WAI-ARIA menu button pattern). */

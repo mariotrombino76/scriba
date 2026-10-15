@@ -186,25 +186,10 @@ export class EditorView {
   }
 
   /** @internal Reads the DOM selection into the model (after clicks, arrow keys…). */
-  /**
-   * The DOM cannot show a node selection as such: it shows a range around the
-   * node (or a caret next to it). Reading that back must not replace the node selection.
-   */
-  private keepsNodeSelection(read: Selection): boolean {
-    const current = this.state.selection
-    if (!(current instanceof NodeSelection)) return false
-    return (
-      read.empty ||
-      (read.from <= current.from &&
-        read.to >= current.to &&
-        read.to - read.from <= current.to - current.from + 2)
-    )
-  }
-
   syncSelectionFromDOM(): void {
     if (this.composing || !this.hasFocus()) return
     const sel = readDOMSelection(this.rootDesc, this.state.doc, this.document.getSelection())
-    if (sel && !sel.eq(this.state.selection) && !this.keepsNodeSelection(sel)) {
+    if (sel && !sel.eq(this.state.selection) && !this.state.selection.preserves(sel)) {
       this.dispatch(this.state.tr.setSelection(sel))
     }
   }

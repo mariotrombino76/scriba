@@ -87,6 +87,13 @@ const ICONS = {
     ['circle', 9, 9, 2],
     ['path', 'm21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21'],
   ],
+  table: [
+    ['path', 'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+    ['path', 'M3 9h18'],
+    ['path', 'M3 15h18'],
+    ['path', 'M9 3v18'],
+    ['path', 'M15 3v18'],
+  ],
   chevronDown: [['path', 'm6 9 6 6 6-6']],
   chevronRight: [['path', 'm9 18 6-6-6-6']],
   check: [['path', 'M20 6 9 17l-5-5']],

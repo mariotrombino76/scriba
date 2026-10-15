@@ -1,0 +1,362 @@
+import { describe, expect, it } from 'vitest'
+import {
+  EditorState,
+  Schema,
+  TextSelection,
+  basicSchemaSpec,
+  history,
+  parseHTML,
+  serializeHTML,
+  undo,
+  type Command,
+  type Node,
+} from '@scriba/core'
+import { JSDOM } from 'jsdom'
+import {
+  CellSelection,
+  TableGrid,
+  addColumn,
+  addRow,
+  changeColumnWidth,
+  deleteColumn,
+  deleteRow,
+  deleteTable,
+  goToCell,
+  insertTable,
+  mergeCells,
+  splitCell,
+  tableNodes,
+  tableNormalize,
+  toggleHeader,
+} from '../src/index.js'
+
+const schema = new Schema({
+  nodes: { ...basicSchemaSpec.nodes, ...tableNodes },
+  marks: basicSchemaSpec.marks,
+})
+const { window } = new JSDOM('')
+const parse = (html: string) =>
+  parseHTML(schema, new window.DOMParser().parseFromString(html, 'text/html').body)
+const html = (doc: Node) => serializeHTML(doc)
+const roundTrip = (s: string) => html(parse(s))
+
+/** A table's cell texts, row by row ("" for empty cells; spans shown as `text:rowspan×colspan`). */
+function cells(doc: Node): string[][] {
+  const rows: string[][] = []
+  doc.descendants((node) => {
+    if (node.type.name === 'table_row') {
+      const row: string[] = []
+      node.forEach((cell) => {
+        const span =
+          cell.attrs['rowspan'] !== 1 || cell.attrs['colspan'] !== 1
+            ? `:${cell.attrs['rowspan']}x${cell.attrs['colspan']}`
+            : ''
+        row.push((cell.type.name === 'table_header' ? 'H' : '') + cell.textContent + span)
+      })
+      rows.push(row)
+      return false
+    }
+    return true
+  })
+  return rows
+}
+
+const TABLE3 =
+  '<table><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></table>'
+
+/** State with the cursor in the cell containing `text` (first match). */
+function stateIn(source: string, text: string): EditorState {
+  const doc = parse(source)
+  let pos = -1
+  doc.descendants((node, p) => {
+    if (pos < 0 && node.isText && node.text === text) pos = p
+    return pos < 0
+  })
+  if (pos < 0) throw new Error(`no ${text}`)
+  return EditorState.create({
+    doc,
+    selection: TextSelection.create(doc, pos),
+    plugins: [history(), tableNormalize()],
+  })
+}
+
+/** Position before the cell containing `text`. */
+function cellPos(doc: Node, text: string): number {
+  let found = -1
+  doc.descendants((node, p) => {
+    if (
+      found < 0 &&
+      node.type.spec['tableRole']?.toString().includes('cell') &&
+      node.textContent === text
+    )
+      found = p
+    return found < 0
+  })
+  return found
+}
+
+function withCells(source: string, from: string, to: string): EditorState {
+  const state = stateIn(source, from)
+  const sel = CellSelection.create(state.doc, cellPos(state.doc, from), cellPos(state.doc, to))
+  return state.apply(state.tr.setSelection(sel))
+}
+
+function run(state: EditorState, cmd: Command): EditorState {
+  let next = state
+  const ok = cmd(state, (tr) => (next = state.apply(tr)))
+  if (!ok) throw new Error('command refused')
+  return next
+}
+
+/** Runs a command, then checks undo gives back the exact document. */
+function runAndUndo(state: EditorState, cmd: Command): EditorState {
+  const next = run(state, cmd)
+  let undone = next
+  undo(next, (tr) => (undone = next.apply(tr)))
+  expect(undone.doc.eq(state.doc)).toBe(true)
+  return next
+}
+
+describe('table nodes', () => {
+  it('round-trips spans and widths as plain attributes (no style)', () => {
+    expect(
+      roundTrip(
+        '<table><tr><th colspan="2" data-colwidth="100,120">a</th></tr><tr><td width="100">b</td><td>c</td></tr></table>',
+      ),
+    ).toBe(
+      '<table><tbody><tr><th colspan="2" width="220" data-colwidth="100,120"><p>a</p></th></tr><tr><td width="100"><p>b</p></td><td><p>c</p></td></tr></tbody></table>',
+    )
+  })
+
+  it('drops bad spans, widths, styles and handlers', () => {
+    expect(
+      roundTrip(
+        '<table><tr><td colspan="0" rowspan="-3" width="abc" style="background:url(x)" onclick="alert(1)">a</td></tr></table>',
+      ),
+    ).toBe('<table><tbody><tr><td><p>a</p></td></tr></tbody></table>')
+    expect(roundTrip('<table><tr><td colspan="999999">a</td></tr></table>')).toContain(
+      'colspan="100"',
+    )
+    expect(roundTrip('<table><tr><td width="5">a</td></tr></table>')).toBe(
+      '<table><tbody><tr><td><p>a</p></td></tr></tbody></table>',
+    )
+  })
+
+  it('round-trip is stable', () => {
+    const once = roundTrip(TABLE3)
+    expect(roundTrip(once)).toBe(once)
+  })
+})
+
+describe('TableGrid', () => {
+  it('maps merged cells onto the grid', () => {
+    const doc = parse('<table><tr><td rowspan="2">a</td><td>b</td></tr><tr><td>c</td></tr></table>')
+    const grid = TableGrid.of(doc.firstChild!)
+    expect([grid.width, grid.height]).toEqual([2, 2])
+    expect(grid.at(1, 0)?.node.textContent).toBe('a')
+    expect(grid.at(1, 1)?.node.textContent).toBe('c')
+    expect(grid.isRectangular).toBe(true)
+  })
+})
+
+describe('normalization', () => {
+  it('fills short rows so tables stay rectangular', () => {
+    const state = stateIn('<table><tr><td>a</td><td>b</td></tr><tr><td>c</td></tr></table>', 'a')
+    const next = state.apply(state.tr.insertText('x'))
+    expect(cells(next.doc)).toEqual([
+      ['xa', 'b'],
+      ['c', ''],
+    ])
+  })
+})
+
+describe('table commands', () => {
+  it('inserts a table with a header row and puts the cursor in the first cell', () => {
+    const doc = parse('<p>ab</p>')
+    const state = EditorState.create({ doc, selection: TextSelection.create(doc, 2) })
+    const next = run(state, insertTable(2, 3))
+    expect(cells(next.doc)).toEqual([
+      ['H', 'H', 'H'],
+      ['', '', ''],
+    ])
+    expect(html(next.doc)).toMatch(/^<p>a<\/p><table>.*<\/table><p>b<\/p>$/)
+    expect(next.selection.$head.parent.type.name).toBe('paragraph')
+    expect(next.selection.$head.node(-1).type.name).toBe('table_header')
+  })
+
+  it('refuses sizes out of range', () => {
+    const state = stateIn('<p>a</p>', 'a')
+    expect(insertTable(0, 2)(state)).toBe(false)
+    expect(insertTable(51, 2)(state)).toBe(false)
+    expect(insertTable(2, 21)(state)).toBe(false)
+  })
+
+  it('adds and deletes rows and columns (undoable)', () => {
+    const state = stateIn(TABLE3, 'e')
+    expect(cells(runAndUndo(state, addRow(true)).doc)[1]).toEqual(['', '', ''])
+    expect(cells(runAndUndo(state, addRow(false)).doc)[2]).toEqual(['', '', ''])
+    expect(cells(runAndUndo(state, addColumn(true)).doc)[1]).toEqual(['d', '', 'e', 'f'])
+    expect(cells(runAndUndo(state, addColumn(false)).doc)[1]).toEqual(['d', 'e', '', 'f'])
+    expect(cells(runAndUndo(state, deleteRow).doc)).toEqual([
+      ['a', 'b', 'c'],
+      ['g', 'h', 'i'],
+    ])
+    expect(cells(runAndUndo(state, deleteColumn).doc)).toEqual([
+      ['a', 'c'],
+      ['d', 'f'],
+      ['g', 'i'],
+    ])
+  })
+
+  it('keeps the cursor in the table after a structural change', () => {
+    const next = run(stateIn(TABLE3, 'e'), addRow(false))
+    expect(next.selection.$head.node(-1).type.name).toBe('table_cell')
+  })
+
+  it('deleting the last row deletes the table', () => {
+    const state = stateIn('<p>x</p><table><tr><td>a</td></tr></table>', 'a')
+    expect(html(run(state, deleteRow).doc)).toBe('<p>x</p>')
+    expect(html(run(state, deleteTable).doc)).toBe('<p>x</p>')
+  })
+
+  it('deleting the only block leaves an empty paragraph (the document stays valid)', () => {
+    const state = stateIn('<table><tr><td>a</td><td>b</td></tr></table>', 'a')
+    expect(html(run(state, deleteTable).doc)).toBe('<p></p>')
+    expect(html(run(state, deleteColumn).doc)).toContain('<td><p>b</p></td>')
+    expect(
+      html(
+        run(withCells('<table><tr><td>a</td><td>b</td></tr></table>', 'a', 'b'), deleteColumn).doc,
+      ),
+    ).toBe('<p></p>')
+  })
+
+  it('split is only enabled on merged cells (dry run does not rebuild)', () => {
+    expect(splitCell(stateIn(TABLE3, 'a'))).toBe(false)
+    expect(splitCell(stateIn('<table><tr><td colspan="2">a</td></tr></table>', 'a'))).toBe(true)
+  })
+
+  it('merges a rectangle of cells and splits it back', () => {
+    const state = withCells(TABLE3, 'a', 'e')
+    const merged = runAndUndo(state, mergeCells)
+    expect(cells(merged.doc)).toEqual([['abde:2x2', 'c'], ['f'], ['g', 'h', 'i']])
+    // fresh history: the merge and the split would be grouped into one undo step
+    const fresh = EditorState.create({
+      doc: merged.doc,
+      selection: merged.selection,
+      plugins: [history(), tableNormalize()],
+    })
+    const split = runAndUndo(fresh, splitCell)
+    expect(cells(split.doc)).toEqual([
+      ['abde', '', 'c'],
+      ['', '', 'f'],
+      ['g', 'h', 'i'],
+    ])
+  })
+
+  it('refuses to merge a single cell, or a rectangle cutting a merged cell', () => {
+    expect(mergeCells(stateIn(TABLE3, 'a'))).toBe(false)
+    const doc = '<table><tr><td colspan="2">a</td></tr><tr><td>b</td><td>c</td></tr></table>'
+    // a cell selection grows to include the whole merged cell, so the merge is valid
+    expect(mergeCells(withCells(doc, 'a', 'b'))).toBe(true)
+  })
+
+  it('adds a row next to a merged cell by extending its span', () => {
+    const state = stateIn(
+      '<table><tr><td rowspan="2">a</td><td>b</td></tr><tr><td>c</td></tr></table>',
+      'b',
+    )
+    expect(cells(run(state, addRow(false)).doc)).toEqual([['a:3x1', 'b'], [''], ['c']])
+  })
+
+  it('deleting a row shrinks the cells spanning it', () => {
+    const state = stateIn(
+      '<table><tr><td rowspan="2">a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td></tr></table>',
+      'c',
+    )
+    expect(cells(run(state, deleteRow).doc)).toEqual([
+      ['a', 'b'],
+      ['d', 'e'],
+    ])
+  })
+
+  it('toggles header row and column', () => {
+    const state = stateIn(TABLE3, 'e')
+    const rowOn = run(state, toggleHeader('row'))
+    expect(cells(rowOn.doc)[0]).toEqual(['Ha', 'Hb', 'Hc'])
+    expect(cells(run(rowOn, toggleHeader('row')).doc)[0]).toEqual(['a', 'b', 'c'])
+    expect(cells(run(state, toggleHeader('column')).doc).map((r) => r[0])).toEqual([
+      'Ha',
+      'Hd',
+      'Hg',
+    ])
+  })
+
+  it('header columns propagate to new rows', () => {
+    const state = run(stateIn(TABLE3, 'e'), toggleHeader('column'))
+    expect(cells(run(state, addRow(false)).doc)[2]).toEqual(['H', '', ''])
+  })
+
+  it('changes column widths within limits', () => {
+    const state = stateIn(TABLE3, 'e')
+    const wider = runAndUndo(state, changeColumnWidth(20))
+    expect(html(wider.doc)).toContain('<td width="140"><p>b</p>')
+    expect(html(wider.doc)).toContain('<td width="140"><p>e</p>')
+    let narrow = state
+    for (let i = 0; i < 20; i++) narrow = run(narrow, changeColumnWidth(-20))
+    expect(html(narrow.doc)).toContain('<td width="24"><p>e</p>')
+  })
+
+  it('Tab moves to the next cell, and stops at the last one (no keyboard trap)', () => {
+    const state = stateIn(TABLE3, 'c')
+    const next = run(state, goToCell(1))
+    expect(next.selection.$head.parent.textContent).toBe('d')
+    expect(goToCell(1)(stateIn(TABLE3, 'i'))).toBe(false)
+    expect(goToCell(-1)(stateIn(TABLE3, 'a'))).toBe(false)
+  })
+
+  it('commands are disabled outside tables', () => {
+    const state = stateIn('<p>a</p>', 'a')
+    for (const cmd of [
+      addRow(true),
+      addColumn(false),
+      deleteRow,
+      deleteColumn,
+      splitCell,
+      deleteTable,
+    ]) {
+      expect(cmd(state)).toBe(false)
+    }
+  })
+})
+
+describe('cell selection', () => {
+  it('a text selection across cells becomes a cell selection', () => {
+    const state = stateIn(TABLE3, 'a')
+    const head = cellPos(state.doc, 'e') + 2
+    const next = state.apply(
+      state.tr.setSelection(TextSelection.create(state.doc, state.selection.anchor, head)),
+    )
+    expect(next.selection).toBeInstanceOf(CellSelection)
+    const ctx = (next.selection as CellSelection).context()!
+    expect(ctx.cells.map((c) => c.node.textContent)).toEqual(['a', 'b', 'd', 'e'])
+  })
+
+  it('deleting a cell selection empties the cells and keeps the table', () => {
+    const state = withCells(TABLE3, 'a', 'e')
+    const next = state.apply(state.tr.deleteSelection())
+    expect(cells(next.doc)).toEqual([
+      ['', '', 'c'],
+      ['', '', 'f'],
+      ['g', 'h', 'i'],
+    ])
+  })
+
+  it('maps through changes and falls back when the table is gone', () => {
+    const state = withCells('<p>x</p>' + TABLE3, 'a', 'b')
+    const moved = state.apply(state.tr.insertText('yy', 1))
+    expect(moved.selection).toBeInstanceOf(CellSelection)
+    const table = cellPos(state.doc, 'a') - 2
+    const gone = state.apply(state.tr.delete(table, table + state.doc.child(1).nodeSize))
+    expect(gone.selection).not.toBeInstanceOf(CellSelection)
+  })
+})

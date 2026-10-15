@@ -64,6 +64,14 @@ describe('insertContent', () => {
     undoable(r, d)
   })
 
+  it('never opens an isolating block (a table) into the text around the cursor', () => {
+    const d = doc(p('ab'))
+    const r = paste(d, 2, [table(row(cell(p('c'))))])
+    expect(r.doc.eq(doc(p('a'), table(row(cell(p('c')))), p('b')))).toBe(true)
+    expect(r.end).toBe(3 + r.doc.child(1).nodeSize)
+    undoable(r, d)
+  })
+
   it('pastes plain text into code blocks', () => {
     const r = paste(doc(pre('ab')), 2, [h(1, 'T'), p('x', b('y'))])
     expect(r.doc.eq(doc(pre('aT\nxyb')))).toBe(true)

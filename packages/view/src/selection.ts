@@ -33,8 +33,9 @@ export function writeDOMSelection(
     anchor = { node: dom.parentNode, offset: index }
     head = { node: dom.parentNode, offset: index + 1 }
   } else {
-    anchor = domFromPos(root, selection.anchor)
-    head = selection.empty ? anchor : domFromPos(root, selection.head)
+    const range = selection.domRange()
+    anchor = domFromPos(root, range.anchor)
+    head = range.anchor === range.head ? anchor : domFromPos(root, range.head)
   }
   if (
     domSel.anchorNode === anchor.node &&

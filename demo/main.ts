@@ -51,6 +51,7 @@ import {
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
+import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scriba/plugin-table'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
@@ -74,6 +75,7 @@ const schema = new Schema({
     ...listNodes,
     ...codeBlockNodes,
     ...imageNodes,
+    ...tableNodes,
   }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
@@ -92,6 +94,7 @@ function saluta(nome: string): string {
   return \`Ciao, \${nome}!\`
 }</code></pre>
 <blockquote><p>Citazioni dal pulsante ❝ — Backspace all'inizio per uscirne.</p></blockquote>
+<table><tr><th><p>Funzione</p></th><th><p>Come</p></th></tr><tr><td><p>Tabelle</p></td><td><p>Tab per passare alla cella successiva, trascina per selezionare più celle, menu «Tabella» per righe, colonne, unione</p></td></tr><tr><td><p>Larghezza colonne</p></td><td><p>Trascina il bordo destro di una cella</p></td></tr></table>
 <p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>`
 
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
@@ -106,6 +109,8 @@ const state = EditorState.create({
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
+    ...tablePlugins(),
+    keymap(tableKeymap(), { priority: 55 }),
     keymap(listKeymap(schema), { priority: 50 }),
     keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
     keymap(linkKeymap(t)),
@@ -148,7 +153,11 @@ toolbar.items = [
   toolbarGroup(
     'insert',
     'toolbar.group.insert',
-    [...linkToolbarItems(schema, t), ...imageToolbarItems(schema, t, images)],
+    [
+      ...linkToolbarItems(schema, t),
+      ...imageToolbarItems(schema, t, images),
+      ...tableToolbarItems(schema, t),
+    ],
     2,
   ),
   toolbarGroup('lists', 'toolbar.group.lists', [

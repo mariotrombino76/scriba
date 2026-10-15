@@ -60,7 +60,12 @@ function insertText(
   range: { from: number; to: number } | null,
 ): void {
   const tr = view.state.tr
-  if (range && (range.from !== view.state.selection.from || range.to !== view.state.selection.to)) {
+  const sel = view.state.selection
+  if (!(sel instanceof TextSelection) && !sel.empty) {
+    // node and cell selections know how to delete themselves; then type at the new cursor
+    tr.deleteSelection()
+    tr.insertText(text)
+  } else if (range && (range.from !== sel.from || range.to !== sel.to)) {
     tr.insertText(text, range.from, range.to)
     tr.setSelection(TextSelection.create(tr.doc, range.from + text.length))
   } else {
