@@ -56,6 +56,7 @@ import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plu
 import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem } from '@scriba/plugin-charmap'
+import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   findReplaceKeymap,
   findReplacePlugins,
@@ -118,6 +119,7 @@ const state = EditorState.create({
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
+    ...markdownShortcuts(schema),
     keymap(findReplaceKeymap(t), { priority: 80 }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
     keymap(imageKeymap(t, images), { priority: 70 }),
@@ -137,6 +139,7 @@ const state = EditorState.create({
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 const outHTML = $('out-html')
 const outJSON = $('out-json')
+const outMd = $('out-md')
 const status = $('status')
 let readOnly = false
 
@@ -204,6 +207,7 @@ function refresh(): void {
   const s = view.state
   outHTML.textContent = serializeHTML(s.doc)
   outJSON.textContent = JSON.stringify(s.doc.toJSON(), null, 2)
+  outMd.textContent = serializeMarkdown(s.doc)
   status.textContent = `annulla: ${undoDepth(s)} · ripeti: ${redoDepth(s)}`
 }
 

@@ -66,8 +66,13 @@ function insertText(
   text: string,
   range: { from: number; to: number } | null,
 ): void {
-  const tr = view.state.tr
   const sel = view.state.selection
+  if (sel instanceof TextSelection) {
+    const from = range?.from ?? sel.from
+    const to = range?.to ?? sel.to
+    if (someProp(view.state, 'handleTextInput', (handle) => handle(view, from, to, text))) return
+  }
+  const tr = view.state.tr
   if (!(sel instanceof TextSelection) && !sel.empty) {
     // node and cell selections know how to delete themselves; then type at the new cursor
     tr.deleteSelection()

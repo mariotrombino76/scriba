@@ -18,6 +18,11 @@ export interface ViewPluginProps {
    * into a table fills its cells).
    */
   handlePasteContent?: (view: EditorView, content: Fragment) => boolean
+  /**
+   * Text typed by the user (not pasted, not IME) about to replace [from, to).
+   * Return true when handled (e.g. Markdown input rules: `# ` → heading).
+   */
+  handleTextInput?: (view: EditorView, from: number, to: number, text: string) => boolean
   /** A node (e.g. an image) was double-clicked. Return true if handled. */
   handleDoubleClickNode?: (view: EditorView, pos: number, node: Node) => boolean
 }

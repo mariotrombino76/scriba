@@ -51,6 +51,7 @@ import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plu
 import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem } from '@scriba/plugin-charmap'
+import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   findReplaceKeymap,
   findReplacePlugins,
@@ -93,6 +94,7 @@ const state = EditorState.create({
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
+    ...markdownShortcuts(schema),
     keymap(findReplaceKeymap(t), { priority: 80 }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
     keymap(imageKeymap(t, images), { priority: 70 }),
@@ -162,6 +164,7 @@ Object.assign(window, {
   scriba: {
     view,
     html: () => serializeHTML(view.state.doc),
+    markdown: () => serializeMarkdown(view.state.doc),
     json: () => view.state.doc.toJSON(),
     selection: () => ({ from: view.state.selection.from, to: view.state.selection.to }),
     cspViolations,

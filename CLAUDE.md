@@ -106,7 +106,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] i18n (it, en) e temi chiaro/scuro
 
 ### Fase 3 — Superiore
-- [ ] Input rules Markdown + import/export Markdown
+- [x] Input rules Markdown + import/export Markdown
 - [ ] Comandi slash e bubble menu
 - [ ] Collaborazione Yjs con cursori degli altri utenti
 - [ ] Commenti e suggerimenti (track changes)
