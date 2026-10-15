@@ -23,6 +23,8 @@
   --scriba-hl-attr: #8a3c0a;
   --scriba-hl-builtin: #0f5e6b;
   --scriba-hl-meta: #566070;
+  --scriba-find-bg: #fde68a;
+  --scriba-find-current: #fbbf24;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,6 +46,8 @@
     --scriba-hl-attr: #ffc48a;
     --scriba-hl-builtin: #7ee0e0;
     --scriba-hl-meta: #a6aebd;
+    --scriba-find-bg: #5c4a00;
+    --scriba-find-current: #7a5c00;
   }
 }
 
@@ -65,6 +69,8 @@
   --scriba-hl-attr: #ffc48a;
   --scriba-hl-builtin: #7ee0e0;
   --scriba-hl-meta: #a6aebd;
+  --scriba-find-bg: #5c4a00;
+  --scriba-find-current: #7a5c00;
 }
 
 /* Editing area */
@@ -805,4 +811,100 @@ html.scriba-fullscreen-open body {
 }
 .scriba-source:focus-visible {
   outline: 2px solid var(--scriba-focus);
+}
+
+/* Find and replace: highlights and the floating panel */
+.scriba-editor .scriba-find-match {
+  background: var(--scriba-find-bg);
+  border-radius: 2px;
+}
+.scriba-editor .scriba-find-current {
+  background: var(--scriba-find-current);
+  outline: 2px solid var(--scriba-focus);
+}
+.scriba-find-panel {
+  position: fixed;
+  inset: 12px 12px auto auto;
+  z-index: 950;
+  width: min(360px, calc(100vw - 24px));
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  font-family: var(--scriba-font);
+}
+.scriba-find-title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.scriba-find-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  padding: 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.scriba-find-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+}
+.scriba-find-field input {
+  padding: 4px 6px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-bg);
+  color: inherit;
+  font: inherit;
+}
+.scriba-find-field input[aria-invalid='true'] {
+  border-color: var(--scriba-error);
+}
+.scriba-find-status {
+  min-height: 1.3em;
+  margin: 0 0 6px;
+  color: var(--scriba-muted);
+  font-size: 0.8125rem;
+}
+.scriba-find-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
+}
+.scriba-find-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.scriba-find-actions button {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-code-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.scriba-find-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.scriba-find-panel button:focus-visible,
+.scriba-find-panel input:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
 }

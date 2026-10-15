@@ -16,6 +16,7 @@
       "@scriba/plugin-paste-clean": ["./packages/plugins/paste-clean/src/index.ts"],
       "@scriba/plugin-image": ["./packages/plugins/image/src/index.ts"],
       "@scriba/plugin-table": ["./packages/plugins/table/src/index.ts"],
+      "@scriba/plugin-find-replace": ["./packages/plugins/find-replace/src/index.ts"],
       "@scriba/plugin-source": ["./packages/plugins/source/src/index.ts"],
       "@scriba/plugin-fullscreen": ["./packages/plugins/fullscreen/src/index.ts"],
       "@scriba/plugin-word-count": ["./packages/plugins/word-count/src/index.ts"]

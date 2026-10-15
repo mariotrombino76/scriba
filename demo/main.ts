@@ -55,6 +55,11 @@ import { tableKeymap, tableNodes, tablePlugins, tableToolbarItems } from '@scrib
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
 import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
+import {
+  findReplaceKeymap,
+  findReplacePlugins,
+  findReplaceToolbarItem,
+} from '@scriba/plugin-find-replace'
 import '../packages/themes/scriba.css'
 
 const t = createTranslator('it')
@@ -111,6 +116,8 @@ const state = EditorState.create({
     history(),
     pasteClean(),
     ...imagePlugins(t, images),
+    ...findReplacePlugins(),
+    keymap(findReplaceKeymap(t), { priority: 80 }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
@@ -176,6 +183,7 @@ toolbar.items = [
     ...codeBlockToolbarItems(schema),
   ]),
   toolbarGroup('view', 'toolbar.group.view', [
+    findReplaceToolbarItem(t),
     sourceToolbarItem(t),
     fullscreenToolbarItem(fullscreen),
   ]),

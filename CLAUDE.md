@@ -100,7 +100,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Blocchi citazione e blocchi codice con evidenziazione sintassi
 - [x] Incolla pulito da Word / Google Docs / pagine web
 - [x] Vista sorgente HTML
-- [ ] Trova e sostituisci (anche regex)
+- [x] Trova e sostituisci (anche regex)
 - [x] Schermo intero, conteggio parole/caratteri
 - [ ] Caratteri speciali ed emoji
 - [x] i18n (it, en) e temi chiaro/scuro
