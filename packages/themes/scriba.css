@@ -1105,3 +1105,107 @@ scriba-toolbar.scriba-bubble {
 .scriba-collab-status[data-status='disconnected'] {
   color: var(--scriba-error);
 }
+
+/* AI assistant: pending answer, menu and control bar */
+.scriba-editor .scriba-ai-pending {
+  background: var(--scriba-accent-bg);
+  box-shadow: 0 1px 0 var(--scriba-accent);
+}
+.scriba-ai-menu,
+.scriba-ai-bar {
+  position: fixed;
+  z-index: 1000;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  font-family: var(--scriba-font);
+  font-size: 0.875rem;
+}
+.scriba-ai-menu {
+  width: min(340px, calc(100vw - 16px));
+  padding: 10px;
+}
+.scriba-ai-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+}
+.scriba-ai-bar[hidden] {
+  display: none;
+}
+.scriba-ai-title {
+  margin: 0 0 6px;
+  font-size: 0.9375rem;
+}
+.scriba-ai-menu form {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.scriba-ai-menu input {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-bg);
+  color: inherit;
+  font: inherit;
+}
+.scriba-ai-actions {
+  display: flex;
+  flex-direction: column;
+}
+.scriba-ai-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scriba-ai-actions button:hover:not(:disabled) {
+  background: var(--scriba-accent-bg);
+}
+.scriba-ai-actions button:disabled {
+  color: var(--scriba-muted);
+  cursor: not-allowed;
+}
+.scriba-ai-note {
+  margin: 8px 0 0;
+  color: var(--scriba-muted);
+  font-size: 0.75rem;
+}
+.scriba-ai-status {
+  margin-right: 6px;
+  color: var(--scriba-muted);
+}
+.scriba-ai-bar button,
+.scriba-ai-menu form button {
+  padding: 3px 10px;
+  border: 1px solid var(--scriba-border);
+  border-radius: 4px;
+  background: var(--scriba-code-bg);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.scriba-ai-bar .scriba-ai-primary {
+  border-color: var(--scriba-accent);
+  background: var(--scriba-accent);
+  color: var(--scriba-bg);
+}
+.scriba-ai-menu button:focus-visible,
+.scriba-ai-menu input:focus-visible,
+.scriba-ai-bar button:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}

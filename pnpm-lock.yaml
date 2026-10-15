@@ -101,6 +101,28 @@ importers:
 
   packages/i18n: {}
 
+  packages/plugins/ai:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+    devDependencies:
+      '@scriba/plugin-link':
+        specifier: workspace:*
+        version: link:../link
+      '@scriba/plugin-markdown':
+        specifier: workspace:*
+        version: link:../markdown
+
   packages/plugins/blockquote:
     dependencies:
       '@scriba/core':

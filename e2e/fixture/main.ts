@@ -72,7 +72,15 @@ import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabStatusElement } from '@scriba/plugin-collab'
-import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
+import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
+import {
+  aiAssistant,
+  aiKeymap,
+  aiToolbarItem,
+  openAiMenu,
+  type AiComplete,
+  type AiOptions,
+} from '@scriba/plugin-ai'
 import {
   findReplaceKeymap,
   findReplacePlugins,
@@ -106,6 +114,47 @@ const schema = new Schema({
   }),
   marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
 })
+// AI assistant with a FAKE backend (no network): a real app calls its own server here.
+const wait = (ms: number, signal: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(new Error('aborted'))
+    })
+  })
+const FAKE_ANSWERS: Record<string, string> = {
+  continue: ' e vissero tutti **felici** e contenti.',
+  improve: 'Un testo più chiaro e scorrevole',
+  fix: 'Testo corretto',
+  shorter: 'Più breve',
+  longer: 'Un testo più lungo, con qualche dettaglio in più',
+  summarize: 'In sintesi: il punto principale.',
+  translate: 'Text in English',
+}
+const fakeAi: AiComplete = (req) =>
+  (async function* () {
+    const text =
+      req.prompt === 'attacco'
+        ? 'Ok **fatto** [qui](javascript:alert(1)) <img src=x onerror=alert(1)><script>alert(1)</script>'
+        : req.prompt === 'errore'
+          ? (() => {
+              throw new Error('backend down')
+            })()
+          : req.prompt
+            ? `Risposta a: ${req.prompt}`
+            : (FAKE_ANSWERS[req.action] ?? 'Fatto.')
+    for (const word of text.split(/(?<= )/)) {
+      await wait(req.prompt === 'lento' ? 400 : 40, req.signal)
+      yield word
+    }
+  })()
+const aiOptions: AiOptions = {
+  complete: fakeAi,
+  parse: (text, s) => parseMarkdown(s, text).content,
+  t,
+}
+
 // Slash menu: blocks and actions from the plugins in use.
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
@@ -152,6 +201,13 @@ const slashItems: SlashItem[] = [
     run: (v) => openImageDialog(v, t, images),
   },
   {
+    id: 'ai',
+    label: (tr) => tr('ai.button'),
+    keywords: ['ai', 'intelligenza', 'assistente', 'scrivi'],
+    icon: 'sparkles',
+    run: (v) => openAiMenu(v, aiOptions),
+  },
+  {
     id: 'charmap',
     label: (tr) => tr('charmap.button'),
     keywords: ['emoji', 'simbolo', 'carattere', 'symbol'],
@@ -182,8 +238,10 @@ const state = EditorState.create({
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
     ...slashCommands(slashItems, t),
+    ...aiAssistant(aiOptions),
+    keymap(aiKeymap(aiOptions), { priority: 90 }),
     bubbleMenu({
-      items: [...markItems(schema), ...linkToolbarItems(schema, t)],
+      items: [...markItems(schema), ...linkToolbarItems(schema, t), aiToolbarItem(aiOptions)],
       t,
       mac: false,
     }),
@@ -238,6 +296,7 @@ toolbar.items = [
       ...imageToolbarItems(schema, t, images),
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
+      aiToolbarItem(aiOptions),
     ],
     2,
   ),

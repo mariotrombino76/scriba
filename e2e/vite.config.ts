@@ -34,6 +34,7 @@ export default defineConfig({
       '@scriba/plugin-paste-clean': plugin('paste-clean'),
       '@scriba/plugin-image': plugin('image'),
       '@scriba/plugin-table': plugin('table'),
+      '@scriba/plugin-ai': plugin('ai'),
       '@scriba/plugin-collab': plugin('collab'),
       '@scriba/plugin-bubble': plugin('bubble'),
       '@scriba/plugin-slash': plugin('slash'),
