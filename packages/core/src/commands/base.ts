@@ -57,6 +57,47 @@ function cursorAtBlockEdge(state: EditorState, edge: 'start' | 'end'): TextSelec
 }
 
 /**
+ * Which ends of [from, to] sit inside an isolating node (e.g. a table cell)
+ * that the range leaves: joining across it would break the table apart.
+ */
+function isolatingSides(
+  state: EditorState,
+  from: number,
+  to: number,
+): { from: boolean; to: boolean } {
+  const $from = state.doc.resolve(from)
+  const $to = state.doc.resolve(to)
+  const shared = $from.sharedDepth(to)
+  const inside = ($pos: typeof $from) => {
+    for (let d = shared + 1; d <= $pos.depth; d++) if ($pos.node(d).type.spec.isolating) return true
+    return false
+  }
+  return { from: inside($from), to: inside($to) }
+}
+
+/**
+ * At a table (isolating) border, Backspace/Delete never merge blocks: an empty
+ * textblock outside the table is removed, otherwise nothing happens.
+ */
+function atIsolatingBorder(
+  state: EditorState,
+  dispatch: ((tr: Transaction) => void) | undefined,
+  $cursor: NonNullable<TextSelection['$cursor']>,
+  other: number,
+  cursorInside: boolean,
+): boolean {
+  const block = $cursor.parent
+  if (cursorInside || block.content.size || !canDelete(state, $cursor.before(), $cursor.after()))
+    return true
+  if (dispatch) {
+    const tr = state.tr.delete($cursor.before(), $cursor.after())
+    const target = tr.mapping.map(other)
+    dispatch(tr.setSelection(TextSelection.create(tr.doc, target)).scrollIntoView())
+  }
+  return true
+}
+
+/**
  * Backspace at the start of a textblock: joins it with the previous textblock
  * (at any depth), or deletes a selectable block atom right before it.
  * At the start of the document, turns a non-default block (e.g. a heading) into the default one.
@@ -66,6 +107,9 @@ export const joinBackward: Command = (state, dispatch) => {
   if (!$cursor) return false
   const before = Selection.findFrom(state.doc.resolve($cursor.before()), -1)
   if (!before) return resetBlockType(state, dispatch, $cursor.before())
+  const sides = isolatingSides(state, before.from, $cursor.pos)
+  if (sides.from || sides.to)
+    return atIsolatingBorder(state, dispatch, $cursor, before.head, sides.to)
   if (before instanceof NodeSelection) {
     if (!canDelete(state, before.from, before.to)) return false
     dispatch?.(state.tr.delete(before.from, before.to).scrollIntoView())
@@ -86,6 +130,9 @@ export const joinForward: Command = (state, dispatch) => {
   if (!$cursor) return false
   const after = Selection.findFrom(state.doc.resolve($cursor.after()), 1)
   if (!after) return false
+  const sides = isolatingSides(state, $cursor.pos, after.to)
+  if (sides.from || sides.to)
+    return atIsolatingBorder(state, dispatch, $cursor, after.head, sides.from)
   if (after instanceof NodeSelection) {
     if (!canDelete(state, after.from, after.to)) return false
     dispatch?.(state.tr.delete(after.from, after.to).scrollIntoView())

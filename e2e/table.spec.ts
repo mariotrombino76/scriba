@@ -197,3 +197,22 @@ test('drag a cell border to resize the column; keyboard widen', async ({ page })
   await page.getByRole('menuitem', { name: 'Allarga colonna' }).click()
   await expect.poll(() => html(page)).toMatch(/<td width="\d+"><p>b<\/p>/)
 })
+
+test('Backspace/Delete at the table border never merge text into the table', async ({ page }) => {
+  await page.keyboard.type('dopo')
+  await page.keyboard.press('Home')
+  await insertTable(page, '1', '1', false)
+  await page.keyboard.type('x')
+  const before = T('<tr><td><p>x</p></td></tr>') + '<p>dopo</p>'
+  expect(await html(page)).toBe(before)
+  // Delete at the end of the cell
+  await page.keyboard.press('Delete')
+  expect(await html(page)).toBe(before)
+  // Backspace at the start of the paragraph after the table
+  await page.keyboard.press('Control+End')
+  await page.keyboard.press('Home')
+  await page.keyboard.press('Backspace')
+  expect(await html(page)).toBe(before)
+  await page.keyboard.type('!')
+  expect(await html(page)).toBe(T('<tr><td><p>x</p></td></tr>') + '<p>!dopo</p>')
+})

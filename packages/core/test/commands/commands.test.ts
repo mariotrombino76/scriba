@@ -66,6 +66,39 @@ describe('joinBackward / joinForward', () => {
     expect(run(stateAt(doc(p('ab'), p('cd')), 3), joinForward)!.doc.eq(doc(p('abcd')))).toBe(true)
     expect(run(stateAt(doc(p('ab')), 3), joinForward)).toBeNull()
   })
+
+  describe('never merge across a table border (isolating cells)', () => {
+    const cell = (...c: ReturnType<typeof p>[]) => schema.node('table_cell', null, c)
+    const table = (...c: ReturnType<typeof p>[]) =>
+      schema.node('table', null, [schema.node('table_row', null, [cell(...c)])])
+
+    it('Backspace after a table leaves the paragraph outside', () => {
+      const d = doc(table(p('ab')), p('cd'))
+      const r = run(stateAt(d, 11), joinBackward)!
+      expect(r.doc.eq(d)).toBe(true)
+    })
+
+    it('Backspace in an empty paragraph after a table removes it, cursor in the last cell', () => {
+      const r = run(stateAt(doc(table(p('ab')), p(), p('z')), 11), joinBackward)!
+      expect(r.doc.eq(doc(table(p('ab')), p('z')))).toBe(true)
+      expect(r.selection.head).toBe(6)
+    })
+
+    it('Delete before a table leaves the table alone', () => {
+      const d = doc(p('ab'), table(p('cd')))
+      expect(run(stateAt(d, 3), joinForward)!.doc.eq(d)).toBe(true)
+      const r = run(stateAt(doc(p(), table(p('cd'))), 1), joinForward)!
+      expect(r.doc.eq(doc(table(p('cd'))))).toBe(true)
+      expect(r.selection.head).toBe(4)
+    })
+
+    it('Backspace at the start of a cell does not pull it out of the table', () => {
+      const d = doc(p('x'), table(p('ab')))
+      expect(run(stateAt(d, 7), joinBackward)!.doc.eq(d)).toBe(true)
+      const empty = doc(p('x'), table(p()))
+      expect(run(stateAt(empty, 7), joinBackward)!.doc.eq(empty)).toBe(true)
+    })
+  })
 })
 
 describe('deleteChar', () => {
