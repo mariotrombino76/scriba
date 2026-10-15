@@ -1,5 +1,5 @@
 import type { Command, KeyBindings, Schema } from '@scriba/core'
-import type { ToolbarItem } from '@scriba/ui'
+import type { ToolbarControl } from '@scriba/ui'
 import {
   isInList,
   liftListItem,
@@ -54,16 +54,16 @@ export function listIndentCommands(schema: Schema): { more: Command; less: Comma
 export function listToolbarItems(
   schema: Schema,
   options: { indent?: boolean } = {},
-): ToolbarItem[] {
+): ToolbarControl[] {
   const t = types(schema)
-  const indent: ToolbarItem[] =
+  const indent: ToolbarControl[] =
     options.indent === false
       ? []
       : [
           {
             type: 'button',
             id: 'list_sink',
-            text: '→',
+            icon: 'indent',
             label: (tr) => tr('list.sink'),
             shortcut: 'Tab',
             command: sinkListItem(t.item),
@@ -71,7 +71,7 @@ export function listToolbarItems(
           {
             type: 'button',
             id: 'list_lift',
-            text: '←',
+            icon: 'outdent',
             label: (tr) => tr('list.lift'),
             shortcut: 'Shift-Tab',
             command: liftListItem(t.item),
@@ -81,7 +81,7 @@ export function listToolbarItems(
     {
       type: 'button',
       id: 'bullet_list',
-      text: '•≡',
+      icon: 'bulletList',
       label: (tr) => tr('list.bullet'),
       shortcut: 'Shift-Mod-8',
       command: toggleList(t.bullet, t.item),
@@ -90,7 +90,7 @@ export function listToolbarItems(
     {
       type: 'button',
       id: 'ordered_list',
-      text: '1≡',
+      icon: 'orderedList',
       label: (tr) => tr('list.ordered'),
       shortcut: 'Shift-Mod-7',
       command: toggleList(t.ordered, t.item),

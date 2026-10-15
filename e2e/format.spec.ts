@@ -28,9 +28,15 @@ test.afterEach(async ({ page }) => {
 
 test('alignment from the toolbar and indentation', async ({ page }) => {
   await page.keyboard.type('titolo')
-  await button(page, 'Centra').click()
+  await button(page, 'Allineamento').click()
+  await page.getByRole('menuitemradio', { name: 'Centra' }).click()
   expect(await html(page)).toBe('<p style="text-align: center">titolo</p>')
-  await expect(button(page, 'Centra')).toHaveAttribute('aria-pressed', 'true')
+  await button(page, 'Allineamento').click()
+  await expect(page.getByRole('menuitemradio', { name: 'Centra' })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  )
+  await page.keyboard.press('Escape')
   await expect(editor(page).locator('p')).toHaveCSS('text-align', 'center')
   await button(page, 'Aumenta rientro').click()
   expect(await html(page)).toBe('<p style="text-align: center; margin-left: 2em">titolo</p>')
@@ -40,8 +46,8 @@ test('text color through the menu, keyboard only', async ({ page }) => {
   await page.keyboard.type('rosso')
   await page.keyboard.press('Shift+Home')
   await page.keyboard.press('Shift+Tab') // into the toolbar
-  await page.keyboard.press('End')
-  for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowLeft') // Dimensione → Carattere → Evidenziazione → Colore testo
+  // Annulla, Ripeti, Stile, Carattere, Dimensione, B, I, U, S, codice → Colore testo
+  for (let i = 0; i < 10; i++) await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Colore testo')).toBeFocused()
   await page.keyboard.press('Enter')
   const menu = page.getByRole('menu', { name: 'Colore testo' })
@@ -56,11 +62,13 @@ test('text color through the menu, keyboard only', async ({ page }) => {
 })
 
 test('Escape closes a menu and returns focus to its button', async ({ page }) => {
-  await button(page, 'Carattere').click()
+  const font = toolbar(page).getByRole('button', { name: /^Carattere/ })
+  await expect(font).toHaveAccessibleName('Carattere: Predefinito')
+  await font.click()
   await expect(page.getByRole('menu', { name: 'Carattere' })).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('menu', { name: 'Carattere' })).toBeHidden()
-  await expect(button(page, 'Carattere')).toBeFocused()
+  await expect(font).toBeFocused()
 })
 
 test('link dialog: Ctrl+K, focus trap, invalid URL, save, edit, remove', async ({ page }) => {

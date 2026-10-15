@@ -106,21 +106,44 @@
   outline: 2px solid var(--scriba-focus);
 }
 
-/* Toolbar */
+/* Toolbar: one line of named groups; what does not fit goes into "More options" */
 scriba-toolbar {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 2px;
-  padding: 6px;
+  gap: 4px;
+  padding: 6px 8px;
+  overflow: hidden;
   background: var(--scriba-bg);
   border-bottom: 1px solid var(--scriba-border);
   font-family: var(--scriba-font);
 }
+.scriba-toolbar-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+.scriba-toolbar-group ~ .scriba-toolbar-group {
+  padding-left: 6px;
+  margin-left: 2px;
+  border-left: 1px solid var(--scriba-border);
+}
+.scriba-toolbar-group-empty,
+.scriba-toolbar-button.scriba-toolbar-overflow {
+  display: none;
+}
 .scriba-toolbar-button {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
   min-width: 2.25rem;
   height: 2.25rem; /* ≥ 24px target size (WCAG 2.5.8) */
-  padding: 0 0.5rem;
+  padding: 0 0.4rem;
   border: 1px solid transparent;
   border-radius: var(--scriba-radius);
   background: transparent;
@@ -129,6 +152,9 @@ scriba-toolbar {
   font-weight: 600;
   cursor: pointer;
 }
+.scriba-toolbar-button[hidden] {
+  display: none;
+}
 .scriba-toolbar-button:hover:not([aria-disabled='true']) {
   background: var(--scriba-accent-bg);
 }
@@ -136,7 +162,8 @@ scriba-toolbar {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
 }
-.scriba-toolbar-button[aria-pressed='true'] {
+.scriba-toolbar-button[aria-pressed='true'],
+.scriba-toolbar-button[aria-expanded='true'] {
   background: var(--scriba-accent-bg);
   border-color: var(--scriba-accent);
   color: var(--scriba-accent);
@@ -145,26 +172,72 @@ scriba-toolbar {
   color: var(--scriba-muted);
   cursor: default;
 }
-.scriba-toolbar-separator {
-  width: 1px;
-  height: 1.25rem;
-  margin: 0 4px;
-  background: var(--scriba-border);
+.scriba-toolbar-button[data-item='italic'] .scriba-toolbar-glyph {
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+.scriba-toolbar-button[data-item='underline'] .scriba-toolbar-glyph {
+  text-decoration: underline;
+}
+.scriba-toolbar-button[data-item='strike'] .scriba-toolbar-glyph {
+  text-decoration: line-through;
+}
+/* Menus that show their current value, like a select */
+.scriba-toolbar-select {
+  justify-content: space-between;
+  min-width: 4.5rem;
+  padding: 0 0.4rem 0 0.6rem;
+  border-color: var(--scriba-border);
+  font-weight: 500;
+}
+.scriba-toolbar-button[data-item='block-style'] {
+  min-width: 7.5rem;
+}
+.scriba-toolbar-value {
+  overflow: hidden;
+  max-width: 9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scriba-toolbar-indicator {
+  position: absolute;
+  left: 8px;
+  right: 20px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 2px;
+}
+.scriba-toolbar-indicator-empty {
+  box-shadow: inset 0 0 0 1px var(--scriba-border);
+}
+.scriba-toolbar-more {
+  margin-left: auto;
+}
+.scriba-toolbar-more[hidden] {
+  display: none;
 }
 
-/* Toolbar menus (colors, fonts…) */
-scriba-toolbar {
-  position: relative;
+/* Touch screens: 44px targets */
+@media (pointer: coarse) {
+  .scriba-toolbar-button {
+    min-width: 2.75rem;
+    height: 2.75rem;
+  }
+  .scriba-toolbar-menu-item {
+    min-height: 2.75rem;
+  }
 }
+
+/* Toolbar menus (styles, colors, fonts…) */
 .scriba-toolbar-menu {
   position: absolute;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  min-width: 11rem;
-  max-height: 20rem;
+  min-width: 13rem;
+  max-height: 22rem;
   overflow-y: auto;
-  padding: 4px;
+  padding: 6px;
   background: var(--scriba-bg);
   border: 1px solid var(--scriba-border);
   border-radius: var(--scriba-radius);
@@ -176,9 +249,9 @@ scriba-toolbar {
 .scriba-toolbar-menu-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 2rem;
-  padding: 0 0.6rem;
+  gap: 10px;
+  min-height: 2.25rem;
+  padding: 2px 0.6rem;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -199,9 +272,74 @@ scriba-toolbar {
   color: var(--scriba-accent);
   font-weight: 600;
 }
+.scriba-toolbar-menu-item .scriba-check-mark {
+  visibility: hidden;
+}
+.scriba-toolbar-menu-item[aria-checked='true'] .scriba-check-mark {
+  visibility: visible;
+}
 .scriba-toolbar-menu-item[aria-disabled='true'] {
   color: var(--scriba-muted);
   cursor: default;
+}
+.scriba-toolbar-menu-key {
+  margin-left: auto;
+  padding-left: 1rem;
+  color: var(--scriba-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+/* Paragraph style previews */
+.scriba-preview-paragraph {
+  font-size: 1rem;
+}
+.scriba-preview-h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.scriba-preview-h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.scriba-preview-h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+}
+.scriba-preview-h4,
+.scriba-preview-h5,
+.scriba-preview-h6 {
+  font-weight: 700;
+}
+/* Color grid */
+.scriba-toolbar-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px 6px 8px;
+}
+.scriba-toolbar-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgb(0 0 0 / 0.2);
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.scriba-toolbar-swatch .scriba-icon {
+  visibility: hidden;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.8));
+}
+.scriba-toolbar-swatch[aria-checked='true'] .scriba-icon {
+  visibility: visible;
+}
+.scriba-toolbar-swatch:focus-visible,
+.scriba-toolbar-swatch[aria-checked='true'] {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 2px;
 }
 .scriba-swatch {
   width: 1rem;

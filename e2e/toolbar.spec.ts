@@ -25,10 +25,14 @@ test('toolbar buttons format the selection and show their state', async ({ page 
   await button(page, 'Grassetto').click()
   expect(await html(page)).toBe('<p><strong>ciao</strong></p>')
   await expect(button(page, 'Grassetto')).toHaveAttribute('aria-pressed', 'true')
-  await button(page, 'Titolo 2').click()
+  await toolbar(page)
+    .getByRole('button', { name: /^Stile paragrafo/ })
+    .click()
+  await page.getByRole('menuitemradio', { name: 'Titolo 2' }).click()
   expect(await html(page)).toBe('<h2><strong>ciao</strong></h2>')
-  await expect(button(page, 'Titolo 2')).toHaveAttribute('aria-pressed', 'true')
-  await expect(button(page, 'Paragrafo')).toHaveAttribute('aria-pressed', 'false')
+  await expect(
+    toolbar(page).getByRole('button', { name: 'Stile paragrafo: Titolo 2' }),
+  ).toBeVisible()
   // the editor keeps the selection: typing replaces it
   await page.keyboard.type('X')
   expect(await html(page)).toBe('<h2><strong>X</strong></h2>')
@@ -41,13 +45,15 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
   await page.keyboard.press('Shift+ArrowLeft')
   // Shift+Tab from the editor reaches the toolbar's single tab stop
   await page.keyboard.press('Shift+Tab')
-  await expect(button(page, 'Grassetto')).toBeFocused()
+  await expect(button(page, 'Annulla')).toBeFocused()
   await page.keyboard.press('ArrowRight')
-  await expect(button(page, 'Corsivo')).toBeFocused()
+  await expect(button(page, 'Ripeti')).toBeFocused()
   await page.keyboard.press('End')
-  await expect(button(page, 'Dimensione carattere')).toBeFocused() // last control
+  // the code language menu is contextual: hidden outside code blocks, so it is skipped
+  await expect(button(page, 'Blocco di codice')).toBeFocused()
   await page.keyboard.press('Home')
-  await page.keyboard.press('ArrowRight')
+  for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight')
+  await expect(button(page, 'Corsivo')).toBeFocused()
   await page.keyboard.press('Enter')
   expect(await html(page)).toBe('<p>a<em>b</em></p>')
   await expect(button(page, 'Corsivo')).toBeFocused()
@@ -57,14 +63,62 @@ test('toolbar is keyboard accessible (one tab stop, arrows, Escape)', async ({ p
   expect(await html(page)).toBe('<p>a<em>c</em></p>')
 })
 
+test('controls are grouped and named', async ({ page }) => {
+  const groups = await toolbar(page)
+    .getByRole('group')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('aria-label')))
+  expect(groups).toEqual([
+    'Cronologia',
+    'Stile del testo',
+    'Formattazione carattere',
+    'Colori',
+    'Inserisci',
+    'Elenchi e rientro',
+    'Blocchi',
+  ])
+  await expect(toolbar(page).getByRole('button', { name: 'Altre opzioni' })).toBeHidden()
+})
+
+test('narrow toolbar: trailing groups move into "More options"', async ({ page }) => {
+  await page.setViewportSize({ width: 560, height: 800 })
+  await page.getByRole('textbox', { name: 'Editor di prova' }).click()
+  await page.keyboard.type('testo')
+  const more = toolbar(page).getByRole('button', { name: 'Altre opzioni' })
+  await expect(more).toBeVisible()
+  await expect(button(page, 'Citazione')).toBeHidden()
+  // the toolbar stays on one line
+  const height = await toolbar(page).evaluate((el) => el.getBoundingClientRect().height)
+  expect(height).toBeLessThan(70)
+  await more.click()
+  const menu = page.getByRole('menu', { name: 'Altre opzioni' })
+  await expect(menu).toBeVisible()
+  await expect(menu.getByRole('menuitemcheckbox', { name: 'Citazione' })).toHaveAttribute(
+    'aria-checked',
+    'false',
+  )
+  await menu.getByRole('menuitemcheckbox', { name: 'Citazione' }).click()
+  expect(await html(page)).toBe('<blockquote><p>testo</p></blockquote>')
+  // a menu inside "More options" opens as a sub-menu
+  await page.keyboard.press('Shift+Home')
+  await more.click()
+  await menu.getByRole('menuitem', { name: 'Colore testo' }).click()
+  await page
+    .getByRole('menu', { name: 'Colore testo' })
+    .getByRole('menuitemradio', { name: 'Blu' })
+    .click()
+  expect(await html(page)).toBe(
+    '<blockquote><p><span style="color: #1d4ed8">testo</span></p></blockquote>',
+  )
+})
+
 test('tooltips show the shortcut', async ({ page }) => {
   await expect(button(page, 'Grassetto')).toHaveAttribute('title', 'Grassetto (Ctrl+B)')
-  await expect(button(page, 'Titolo 1')).toHaveAttribute('title', 'Titolo 1 (Ctrl+Alt+1)')
+  await expect(button(page, 'Link')).toHaveAttribute('title', 'Link (Ctrl+K)')
 })
 
 test('every toolbar control has a unique accessible name', async ({ page }) => {
   const names = await toolbar(page)
-    .locator(':scope > button')
+    .locator(':scope > [role=group] > button')
     .evaluateAll((els) => els.map((el) => el.getAttribute('aria-label')))
   expect(names.length).toBeGreaterThan(10)
   expect(new Set(names).size).toBe(names.length)

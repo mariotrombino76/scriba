@@ -8,22 +8,29 @@ import {
   type EditorState,
   type Schema,
 } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
+import type { MessageKey, Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
+import type { IconName } from './icons.js'
 
 /** A toolbar button bound to a command. */
 export interface ToolbarButton {
   type: 'button'
   /** Stable id, also used as CSS hook (`data-item`). */
   id: string
-  /** Short visible content (glyph). Decorative: the accessible name is `label`. */
-  text: string
+  /** Icon (preferred) … */
+  icon?: IconName
+  /** … or a short glyph (e.g. `B`). Decorative: the accessible name is `label`. */
+  text?: string
   label: (t: Translate) => string
   /** Key binding shown in the tooltip, e.g. `"Mod-b"`. */
   shortcut?: string
   command: Command
   /** For toggle buttons: whether the format is active (sets `aria-pressed`). */
   isActive?: (state: EditorState) => boolean
+  /** Contextual items: hidden when this returns false (e.g. code language outside code). */
+  isVisible?: (state: EditorState) => boolean
+  /** When space is short, lower priorities move into "More options" first. Default: the group's. */
+  priority?: number
   /**
    * Custom action instead of running `command` (e.g. open a dialog).
    * `command` is still used to decide whether the button is enabled.
@@ -31,18 +38,18 @@ export interface ToolbarButton {
   run?: (view: EditorView) => void
 }
 
-export interface ToolbarSeparator {
-  type: 'separator'
-}
-
-/** One choice in a toolbar menu (a color, a font…). */
+/** One choice in a toolbar menu (a color, a font, a block style…). */
 export interface ToolbarMenuEntry {
   id: string
   label: (t: Translate) => string
   /** Visible text (defaults to the label). */
   text?: string
-  /** A color shown as a swatch next to the text (validated before use). */
+  icon?: IconName
+  /** A color shown as a swatch (validated before use). */
   swatch?: string
+  /** CSS class giving the entry a preview look (e.g. a heading size). */
+  preview?: string
+  shortcut?: string
   command: Command
   /** Marks the current choice (`aria-checked`). */
   isActive?: (state: EditorState) => boolean
@@ -52,82 +59,62 @@ export interface ToolbarMenuEntry {
 export interface ToolbarMenu {
   type: 'menu'
   id: string
-  text: string
   label: (t: Translate) => string
+  icon?: IconName
+  text?: string
+  /** Shows the current value on the button (e.g. "Titolo 2"), like a select. */
+  valueLabel?: (state: EditorState, t: Translate) => string
+  /** A color bar under the icon showing the current color. */
+  indicator?: (state: EditorState) => string | null
+  /** `grid`: color swatches in a grid, other entries as rows below. */
+  layout?: 'list' | 'grid'
   entries: ToolbarMenuEntry[]
+  isVisible?: (state: EditorState) => boolean
+  /** When space is short, lower priorities move into "More options" first. Default: the group's. */
+  priority?: number
 }
 
-export type ToolbarItem = ToolbarButton | ToolbarMenu | ToolbarSeparator
+/** A named group of controls (`role="group"`), visually separated from the next. */
+export interface ToolbarGroup {
+  type: 'group'
+  id: string
+  label: (t: Translate) => string
+  items: ToolbarControl[]
+  /** Default overflow priority of the group's controls (default 1; higher stays visible longer). */
+  priority?: number
+}
 
-const separator: ToolbarSeparator = { type: 'separator' }
+/** @deprecated Use groups: they are separated automatically. */
+export interface ToolbarSeparator {
+  type: 'separator'
+}
 
-/** Default toolbar for whatever node/mark types the schema has (Phase 1 set). */
-export function defaultToolbarItems(schema: Schema): ToolbarItem[] {
-  const { marks, nodes } = schema
-  const markButton = (name: string, text: string, shortcut: string): ToolbarButton[] => {
-    const type = marks[name]
-    if (!type) return []
-    return [
-      {
-        type: 'button',
-        id: name,
-        text,
-        label: (t) => t(`mark.${name}` as Parameters<Translate>[0]),
-        shortcut,
-        command: toggleMark(type),
-        isActive: (state) => isMarkActive(state, type),
-      },
-    ]
-  }
-  const blockActive =
-    (name: string, level?: number) =>
-    (state: EditorState): boolean => {
-      const { $from, $to } = state.selection
-      const parent = $from.parent
-      return (
-        $from.sameParent($to) &&
-        parent.type.name === name &&
-        (level === undefined || parent.attrs['level'] === level)
-      )
-    }
+export type ToolbarControl = ToolbarButton | ToolbarMenu
+export type ToolbarItem = ToolbarControl | ToolbarGroup | ToolbarSeparator
 
-  const items: ToolbarItem[] = [
-    ...markButton('bold', 'B', 'Mod-b'),
-    ...markButton('italic', 'I', 'Mod-i'),
-    ...markButton('underline', 'U', 'Mod-u'),
-    ...markButton('strike', 'S', 'Shift-Mod-s'),
-    ...markButton('code', '</>', 'Mod-e'),
-  ]
-  const blocks: ToolbarItem[] = []
-  if (nodes['paragraph']) {
-    blocks.push({
-      type: 'button',
-      id: 'paragraph',
-      text: '¶',
-      label: (t) => t('block.paragraph'),
-      shortcut: 'Mod-Alt-0',
-      command: setBlockType(nodes['paragraph']),
-      isActive: blockActive('paragraph'),
-    })
+/** Builds a group (empty groups are dropped by the toolbar). */
+export function toolbarGroup(
+  id: string,
+  label: MessageKey,
+  items: ToolbarControl[],
+  priority?: number,
+): ToolbarGroup {
+  return {
+    type: 'group',
+    id,
+    label: (t) => t(label),
+    items,
+    ...(priority !== undefined ? { priority } : {}),
   }
-  if (nodes['heading']) {
-    for (const level of [1, 2, 3]) {
-      blocks.push({
-        type: 'button',
-        id: `heading-${level}`,
-        text: `H${level}`,
-        label: (t) => t('block.heading', { level }),
-        shortcut: `Mod-Alt-${level}`,
-        command: setBlockType(nodes['heading'], { level }),
-        isActive: blockActive('heading', level),
-      })
-    }
-  }
-  const history: ToolbarItem[] = [
+}
+
+/** Undo / redo. */
+export function historyItems(): ToolbarButton[] {
+  return [
     {
       type: 'button',
       id: 'undo',
-      text: '↶',
+      icon: 'undo',
       label: (t) => t('history.undo'),
       shortcut: 'Mod-z',
       command: undo,
@@ -135,13 +122,107 @@ export function defaultToolbarItems(schema: Schema): ToolbarItem[] {
     {
       type: 'button',
       id: 'redo',
-      text: '↷',
+      icon: 'redo',
       label: (t) => t('history.redo'),
       shortcut: 'Mod-y',
       command: redo,
     },
   ]
-  return [items, blocks, history]
-    .filter((g) => g.length)
-    .flatMap((g, i) => (i ? [separator, ...g] : g))
+}
+
+/** Bold, italic, underline, strike, inline code — whichever the schema has. */
+export function markItems(schema: Schema): ToolbarButton[] {
+  const spec: [string, string | null, IconName | null, string][] = [
+    ['bold', 'B', null, 'Mod-b'],
+    ['italic', 'I', null, 'Mod-i'],
+    ['underline', 'U', null, 'Mod-u'],
+    ['strike', 'S', null, 'Shift-Mod-s'],
+    ['code', null, 'code', 'Mod-e'],
+  ]
+  const items: ToolbarButton[] = []
+  for (const [name, text, icon, shortcut] of spec) {
+    const type = schema.marks[name]
+    if (!type) continue
+    items.push({
+      type: 'button',
+      id: name,
+      ...(text ? { text } : {}),
+      ...(icon ? { icon } : {}),
+      label: (t) => t(`mark.${name}` as MessageKey),
+      shortcut,
+      // bold, italic, underline stay visible longest
+      priority: name === 'bold' || name === 'italic' || name === 'underline' ? 3 : 1,
+      command: toggleMark(type),
+      isActive: (state) => isMarkActive(state, type),
+    })
+  }
+  return items
+}
+
+/** Name of the block type at the selection, or null when the selection spans several kinds. */
+function currentBlock(state: EditorState): { name: string; level: number | null } | null {
+  const { $from, $to } = state.selection
+  if (!$from.sameParent($to) && $from.parent.type !== $to.parent.type) return null
+  const parent = $from.parent
+  return { name: parent.type.name, level: (parent.attrs['level'] as number | undefined) ?? null }
+}
+
+/**
+ * "Paragraph style" menu: paragraph and heading levels, each previewed in its
+ * own look, showing the current style on the button.
+ */
+export function blockStyleMenu(
+  schema: Schema,
+  levels: readonly number[] = [1, 2, 3],
+): ToolbarMenu | null {
+  const { paragraph, heading } = schema.nodes
+  if (!paragraph && !heading) return null
+  const entries: ToolbarMenuEntry[] = []
+  if (paragraph) {
+    entries.push({
+      id: 'paragraph',
+      label: (t) => t('block.paragraph'),
+      preview: 'scriba-preview-paragraph',
+      shortcut: 'Mod-Alt-0',
+      command: setBlockType(paragraph),
+      isActive: (state) => currentBlock(state)?.name === 'paragraph',
+    })
+  }
+  if (heading) {
+    for (const level of levels) {
+      entries.push({
+        id: `heading-${level}`,
+        label: (t) => t('block.heading', { level }),
+        preview: `scriba-preview-h${level}`,
+        shortcut: `Mod-Alt-${level}`,
+        command: setBlockType(heading, { level }),
+        isActive: (state) => {
+          const cur = currentBlock(state)
+          return cur?.name === 'heading' && cur.level === level
+        },
+      })
+    }
+  }
+  return {
+    type: 'menu',
+    id: 'block-style',
+    label: (t) => t('block.style'),
+    valueLabel: (state, t) => {
+      const cur = currentBlock(state)
+      if (cur?.name === 'paragraph') return t('block.paragraph')
+      if (cur?.name === 'heading' && cur.level) return t('block.heading', { level: cur.level })
+      return '—'
+    },
+    entries,
+  }
+}
+
+/** Default toolbar for the Phase 1 schema: history, paragraph style, character formatting. */
+export function defaultToolbarItems(schema: Schema): ToolbarItem[] {
+  const style = blockStyleMenu(schema)
+  return [
+    toolbarGroup('history', 'toolbar.group.history', historyItems(), 3),
+    toolbarGroup('text-style', 'toolbar.group.textStyle', style ? [style] : [], 3),
+    toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
+  ]
 }

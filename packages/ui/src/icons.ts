@@ -1,0 +1,132 @@
+/**
+ * Stroke icons (24×24 grid, `currentColor`). Built with `createElementNS`:
+ * no markup strings, so they work under a strict CSP / Trusted Types.
+ */
+
+type Shape = readonly ['path', string] | readonly ['circle', number, number, number]
+
+const ICONS = {
+  undo: [
+    ['path', 'M9 14 4 9l5-5'],
+    ['path', 'M4 9h10.5a5.5 5.5 0 0 1 0 11H11'],
+  ],
+  redo: [
+    ['path', 'm15 14 5-5-5-5'],
+    ['path', 'M20 9H9.5a5.5 5.5 0 0 0 0 11H13'],
+  ],
+  code: [
+    ['path', 'm16 18 6-6-6-6'],
+    ['path', 'm8 6-6 6 6 6'],
+  ],
+  link: [
+    ['path', 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'],
+    ['path', 'M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'],
+  ],
+  bulletList: [
+    ['path', 'M9 6h11'],
+    ['path', 'M9 12h11'],
+    ['path', 'M9 18h11'],
+    ['circle', 4.5, 6, 1],
+    ['circle', 4.5, 12, 1],
+    ['circle', 4.5, 18, 1],
+  ],
+  orderedList: [
+    ['path', 'M10 6h11'],
+    ['path', 'M10 12h11'],
+    ['path', 'M10 18h11'],
+    ['path', 'M4 6h1v4'],
+    ['path', 'M4 10h2'],
+    ['path', 'M6 18H4c0-1 2-2 2-3s-1-1.5-2-1'],
+  ],
+  outdent: [
+    ['path', 'M21 6H11'],
+    ['path', 'M21 12H11'],
+    ['path', 'M21 18H11'],
+    ['path', 'm7 8-4 4 4 4'],
+  ],
+  indent: [
+    ['path', 'M21 6H11'],
+    ['path', 'M21 12H11'],
+    ['path', 'M21 18H11'],
+    ['path', 'm3 8 4 4-4 4'],
+  ],
+  alignLeft: [
+    ['path', 'M3 6h18'],
+    ['path', 'M3 12h12'],
+    ['path', 'M3 18h16'],
+  ],
+  alignCenter: [
+    ['path', 'M3 6h18'],
+    ['path', 'M6 12h12'],
+    ['path', 'M4 18h16'],
+  ],
+  alignRight: [
+    ['path', 'M3 6h18'],
+    ['path', 'M9 12h12'],
+    ['path', 'M5 18h16'],
+  ],
+  alignJustify: [
+    ['path', 'M3 6h18'],
+    ['path', 'M3 12h18'],
+    ['path', 'M3 18h18'],
+  ],
+  quote: [
+    ['path', 'M3 21c3 0 7-1 7-8V5H3v7h4'],
+    ['path', 'M14 21c3 0 7-1 7-8V5h-7v7h4'],
+  ],
+  codeBlock: [
+    ['path', 'M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1'],
+    ['path', 'M16 21h1a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1'],
+  ],
+  highlight: [
+    ['path', 'm9 11-6 6v3h9l3-3'],
+    ['path', 'm22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4'],
+  ],
+  chevronDown: [['path', 'm6 9 6 6 6-6']],
+  chevronRight: [['path', 'm9 18 6-6-6-6']],
+  check: [['path', 'M20 6 9 17l-5-5']],
+  close: [
+    ['path', 'M18 6 6 18'],
+    ['path', 'm6 6 12 12'],
+  ],
+  more: [
+    ['circle', 5, 12, 1],
+    ['circle', 12, 12, 1],
+    ['circle', 19, 12, 1],
+  ],
+} satisfies Record<string, readonly Shape[]>
+
+export type IconName = keyof typeof ICONS
+
+const SVG = 'http://www.w3.org/2000/svg'
+
+/** Creates a decorative icon (`aria-hidden`); the button carries the accessible name. */
+export function createIcon(doc: Document, name: IconName, size = 18): SVGSVGElement {
+  const svg = doc.createElementNS(SVG, 'svg')
+  svg.setAttribute('width', String(size))
+  svg.setAttribute('height', String(size))
+  svg.setAttribute('viewBox', '0 0 24 24')
+  svg.setAttribute('fill', 'none')
+  svg.setAttribute('stroke', 'currentColor')
+  svg.setAttribute('stroke-width', '2')
+  svg.setAttribute('stroke-linecap', 'round')
+  svg.setAttribute('stroke-linejoin', 'round')
+  svg.setAttribute('aria-hidden', 'true')
+  svg.setAttribute('focusable', 'false')
+  svg.setAttribute('class', 'scriba-icon')
+  for (const shape of ICONS[name] as readonly Shape[]) {
+    if (shape[0] === 'path') {
+      const path = doc.createElementNS(SVG, 'path')
+      path.setAttribute('d', shape[1])
+      svg.appendChild(path)
+    } else {
+      const circle = doc.createElementNS(SVG, 'circle')
+      circle.setAttribute('cx', String(shape[1]))
+      circle.setAttribute('cy', String(shape[2]))
+      circle.setAttribute('r', String(shape[3]))
+      if (name === 'more') circle.setAttribute('fill', 'currentColor')
+      svg.appendChild(circle)
+    }
+  }
+  return svg
+}

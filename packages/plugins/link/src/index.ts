@@ -10,7 +10,7 @@ import {
   type Schema,
 } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
-import { openDialog, type ToolbarItem } from '@scriba/ui'
+import { openDialog, type ToolbarControl } from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
 
 /** The link mark. `href` is checked against the URL whitelist (§5.3) wherever it is created. */
@@ -235,13 +235,13 @@ export function linkKeymap(t: Translate): KeyBindings {
 }
 
 /** Toolbar button opening the dialog; pressed when the cursor is in a link. */
-export function linkToolbarItems(schema: Schema, t: Translate): ToolbarItem[] {
+export function linkToolbarItems(schema: Schema, t: Translate): ToolbarControl[] {
   const type = linkType(schema)
   return [
     {
       type: 'button',
       id: 'link',
-      text: '🔗',
+      icon: 'link',
       label: (tr) => tr('link.label'),
       shortcut: 'Mod-k',
       command: (state) => state.selection.$from.parent.type.allowsMarkType(type),

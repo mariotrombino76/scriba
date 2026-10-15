@@ -1,36 +1,63 @@
-import type { EditorView } from '@scriba/view'
+import { normalizeColor } from '@scriba/core'
 import { createTranslator, type Translate } from '@scriba/i18n'
+import type { EditorView } from '@scriba/view'
+import { createIcon } from './icons.js'
 import {
   defaultToolbarItems,
   type ToolbarButton,
+  type ToolbarControl,
   type ToolbarItem,
-  type ToolbarMenu,
 } from './items.js'
-import { MenuPopup } from './menu.js'
+import { MenuPopup, type PopupEntry } from './menu.js'
 import { formatShortcut, isMac } from './shortcut.js'
+
+const OVERFLOW = 'scriba-toolbar-overflow'
+const overflowed = (c: { el: HTMLElement }) => c.el.classList.contains(OVERFLOW)
 
 /** Base class: `HTMLElement` when available, so the module can be imported on the server. */
 const Base = (globalThis.HTMLElement ?? Object) as typeof HTMLElement
+
+interface Rendered {
+  el: HTMLButtonElement
+  item: ToolbarControl
+  group: HTMLElement
+  priority: number
+  order: number
+  popup?: MenuPopup
+  value?: HTMLElement
+  indicator?: HTMLElement
+}
+
+interface GroupSpec {
+  id: string
+  label: string | null
+  items: ToolbarControl[]
+  priority: number
+}
 
 /**
  * `<scriba-toolbar>`: formatting toolbar for an `EditorView`.
  *
  * Accessibility (WAI-ARIA toolbar pattern): one tab stop, arrow keys / Home / End
- * move between buttons (roving tabindex), toggles expose `aria-pressed`,
- * unavailable buttons stay focusable with `aria-disabled`, tooltips show shortcuts,
- * Escape returns to the editor. Light DOM (no shadow root): styles come from
- * `@scriba/themes`, so no inline `<style>` is needed under a strict CSP.
+ * move between controls (roving tabindex), named groups (`role="group"`),
+ * toggles expose `aria-pressed`, menus are menu buttons, unavailable controls
+ * stay focusable with `aria-disabled`, tooltips show shortcuts, Escape returns
+ * to the editor. When the toolbar is too narrow, trailing groups move into the
+ * "More options" menu instead of wrapping.
+ *
+ * Light DOM (no shadow root): styles come from `@scriba/themes`, so no inline
+ * `<style>` is needed under a strict CSP.
  */
 export class ScribaToolbar extends Base {
   private _view: EditorView | null = null
   private _items: ToolbarItem[] | null = null
   private _translate: Translate | null = null
   private unsubscribe: (() => void) | null = null
-  private buttons: {
-    el: HTMLButtonElement
-    item: ToolbarButton | ToolbarMenu
-    popup?: MenuPopup
-  }[] = []
+  private controls: Rendered[] = []
+  private groups: HTMLElement[] = []
+  private moreButton: HTMLButtonElement | null = null
+  private morePopup: MenuPopup | null = null
+  private resizeObserver: ResizeObserver | null = null
   private focusIndex = 0
   /** Whether `Mod` shortcuts are shown as ⌘. Defaults to platform detection. */
   mac = isMac()
@@ -72,95 +99,318 @@ export class ScribaToolbar extends Base {
     this.setAttribute('role', 'toolbar')
     this.addEventListener('keydown', this.onKeyDown)
     this.addEventListener('focusin', this.onFocusIn)
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.layout())
+      this.resizeObserver.observe(this)
+    }
     this.render()
   }
 
   disconnectedCallback(): void {
     this.removeEventListener('keydown', this.onKeyDown)
     this.removeEventListener('focusin', this.onFocusIn)
+    this.resizeObserver?.disconnect()
+    this.resizeObserver = null
   }
 
-  /** Builds the buttons. Only `createElement`/`textContent`: no markup strings. */
+  /** Normalizes items into groups (legacy separators split groups). */
+  private groupItems(items: ToolbarItem[]): GroupSpec[] {
+    const t = this.translator
+    const out: GroupSpec[] = []
+    let loose: ToolbarControl[] = []
+    const flush = () => {
+      if (loose.length)
+        out.push({ id: `group-${out.length}`, label: null, items: loose, priority: 1 })
+      loose = []
+    }
+    for (const item of items) {
+      if (item.type === 'group') {
+        flush()
+        if (item.items.length) {
+          out.push({
+            id: item.id,
+            label: item.label(t),
+            items: item.items,
+            priority: item.priority ?? 1,
+          })
+        }
+      } else if (item.type === 'separator') {
+        flush()
+      } else {
+        loose.push(item)
+      }
+    }
+    flush()
+    return out
+  }
+
+  /** Builds the controls. Only `createElement`/`textContent`/SVG nodes: no markup strings. */
   private render(): void {
     if (!this.isConnected) return
+    this.closeMenus()
     while (this.firstChild) this.removeChild(this.firstChild)
-    this.buttons = []
+    this.controls = []
+    this.groups = []
+    this.morePopup = null
+    const doc = this.ownerDocument
     const t = this.translator
     this.setAttribute('aria-label', t('toolbar.label'))
     if (this.view) this.setAttribute('aria-controls', this.view.dom.id || this.ensureEditorId())
     const items = this._items ?? (this.view ? defaultToolbarItems(this.view.state.schema) : [])
-    for (const item of items) {
-      if (item.type === 'separator') {
-        const sep = this.ownerDocument.createElement('span')
-        sep.className = 'scriba-toolbar-separator'
-        sep.setAttribute('role', 'separator')
-        sep.setAttribute('aria-orientation', 'vertical')
-        this.appendChild(sep)
-        continue
+
+    for (const group of this.groupItems(items)) {
+      const groupEl = doc.createElement('div')
+      groupEl.className = 'scriba-toolbar-group'
+      groupEl.dataset['group'] = group.id
+      groupEl.setAttribute('role', 'group')
+      if (group.label) groupEl.setAttribute('aria-label', group.label)
+      this.appendChild(groupEl)
+      this.groups.push(groupEl)
+      for (const item of group.items) {
+        this.controls.push(
+          this.renderControl(item, groupEl, item.priority ?? group.priority, this.controls.length),
+        )
       }
-      const el = this.ownerDocument.createElement('button')
-      el.type = 'button'
-      el.className = 'scriba-toolbar-button'
-      el.dataset['item'] = item.id
-      const label = item.label(t)
-      el.setAttribute('aria-label', label)
-      const shortcut = item.type === 'button' ? item.shortcut : undefined
-      el.title = shortcut
-        ? t('shortcut.hint', { label, shortcut: formatShortcut(shortcut, t, this.mac) })
-        : label
-      if (shortcut) el.setAttribute('aria-keyshortcuts', ariaShortcut(shortcut, this.mac))
-      const glyph = this.ownerDocument.createElement('span')
+    }
+
+    // "More options": receives the groups that do not fit.
+    const more = doc.createElement('button')
+    more.type = 'button'
+    more.className = 'scriba-toolbar-button scriba-toolbar-more'
+    more.setAttribute('aria-label', t('toolbar.more'))
+    more.title = t('toolbar.more')
+    more.setAttribute('aria-haspopup', 'menu')
+    more.setAttribute('aria-expanded', 'false')
+    more.appendChild(createIcon(doc, 'more'))
+    more.tabIndex = -1
+    more.hidden = true
+    more.addEventListener('mousedown', (e) => e.preventDefault())
+    more.addEventListener('click', () => this.toggleMore())
+    more.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' && !this.morePopup?.isOpen) {
+        e.preventDefault()
+        e.stopPropagation()
+        this.toggleMore()
+      }
+    })
+    this.appendChild(more)
+    this.moreButton = more
+
+    this.updateState()
+    this.layout()
+  }
+
+  private renderControl(
+    item: ToolbarControl,
+    groupEl: HTMLElement,
+    priority: number,
+    order: number,
+  ): Rendered {
+    const doc = this.ownerDocument
+    const t = this.translator
+    const el = doc.createElement('button')
+    el.type = 'button'
+    el.className = 'scriba-toolbar-button'
+    el.dataset['item'] = item.id
+    el.tabIndex = -1
+    const label = item.label(t)
+    el.setAttribute('aria-label', label)
+    const shortcut = item.type === 'button' ? item.shortcut : undefined
+    el.title = shortcut
+      ? t('shortcut.hint', { label, shortcut: formatShortcut(shortcut, t, this.mac) })
+      : label
+    if (shortcut) el.setAttribute('aria-keyshortcuts', ariaShortcut(shortcut, this.mac))
+    if (item.icon) el.appendChild(createIcon(doc, item.icon))
+    if (item.text) {
+      const glyph = doc.createElement('span')
+      glyph.className = 'scriba-toolbar-glyph'
       glyph.setAttribute('aria-hidden', 'true')
       glyph.textContent = item.text
       el.appendChild(glyph)
-      el.tabIndex = -1
-      // Keep the editor's selection when the button is pressed with the mouse.
-      el.addEventListener('mousedown', (e) => e.preventDefault())
-      this.appendChild(el)
-      if (item.type === 'menu') {
-        const popup = new MenuPopup(item, el, t, () => this.view)
-        el.addEventListener('click', () => this.toggleMenu(popup))
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowDown' && !popup.isOpen) {
-            e.preventDefault()
-            e.stopPropagation()
-            this.toggleMenu(popup)
-          }
-        })
-        this.appendChild(popup.el)
-        this.buttons.push({ el, item, popup })
-      } else {
-        el.addEventListener('click', () => this.run(item, el))
-        this.buttons.push({ el, item })
-      }
     }
-    this.focusIndex = Math.min(this.focusIndex, Math.max(0, this.buttons.length - 1))
-    this.updateState()
+    // Keep the editor's selection when the control is pressed with the mouse.
+    el.addEventListener('mousedown', (e) => e.preventDefault())
+    groupEl.appendChild(el)
+    const rendered: Rendered = { el, item, group: groupEl, priority, order }
+
+    if (item.type === 'menu') {
+      if (item.valueLabel) {
+        el.classList.add('scriba-toolbar-select')
+        const value = doc.createElement('span')
+        value.className = 'scriba-toolbar-value'
+        value.setAttribute('aria-hidden', 'true')
+        el.appendChild(value)
+        rendered.value = value
+      }
+      if (item.indicator) {
+        const bar = doc.createElement('span')
+        bar.className = 'scriba-toolbar-indicator'
+        bar.setAttribute('aria-hidden', 'true')
+        el.appendChild(bar)
+        rendered.indicator = bar
+      }
+      el.appendChild(createIcon(doc, 'chevronDown', 14))
+      const popup = new MenuPopup(item, el, t, () => this.view, this.mac)
+      el.addEventListener('click', () => this.toggleMenu(popup))
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' && !popup.isOpen) {
+          e.preventDefault()
+          e.stopPropagation()
+          this.toggleMenu(popup)
+        }
+      })
+      this.appendChild(popup.el)
+      rendered.popup = popup
+    } else {
+      el.addEventListener('click', () => this.run(item, el))
+    }
+    return rendered
   }
 
-  /** Refreshes pressed/disabled state from the editor state. */
+  /** Refreshes pressed/disabled/visible state and current values from the editor state. */
   updateState(): void {
     const view = this.view
-    this.buttons.forEach(({ el, item }, i) => {
-      el.tabIndex = i === this.focusIndex ? 0 : -1
-      if (item.type === 'menu') {
-        const enabled = !!view && view.editable && item.entries.some((e) => e.command(view.state))
-        el.setAttribute('aria-disabled', String(!enabled))
-        return
+    const state = view?.state
+    const t = this.translator
+    let visibilityChanged = false
+    for (const c of this.controls) {
+      const { el, item } = c
+      const hidden = !!state && !!item.isVisible && !item.isVisible(state)
+      if (hidden !== el.hidden) {
+        el.hidden = hidden
+        visibilityChanged = true
       }
-      const enabled =
-        !!view && view.editable && (item.command(view.state) || !!item.isActive?.(view.state))
+      let enabled: boolean
+      if (item.type === 'menu') {
+        enabled = !!state && view!.editable && item.entries.some((e) => e.command(state))
+        if (c.value) {
+          const value = state && item.valueLabel ? item.valueLabel(state, t) : ''
+          c.value.textContent = value
+          el.setAttribute('aria-label', value ? `${item.label(t)}: ${value}` : item.label(t))
+        }
+        if (c.indicator) {
+          const raw = state && item.indicator ? item.indicator(state) : null
+          const color = raw ? normalizeColor(raw) : null
+          c.indicator.style.backgroundColor = color ?? 'transparent' // CSSOM, validated color
+          c.indicator.classList.toggle('scriba-toolbar-indicator-empty', !color)
+        }
+      } else {
+        enabled = !!state && view!.editable && (item.command(state) || !!item.isActive?.(state))
+        if (item.isActive) el.setAttribute('aria-pressed', String(!!state && item.isActive(state)))
+      }
       el.setAttribute('aria-disabled', String(!enabled))
-      if (item.isActive)
-        el.setAttribute('aria-pressed', String(!!view && item.isActive(view.state)))
-    })
+    }
+    this.updateGroups()
+    // Measuring is costly: re-layout only when controls appeared or disappeared.
+    if (visibilityChanged) this.layout()
+    else this.updateTabStops()
   }
 
-  private toggleMenu(popup: MenuPopup): void {
-    if (popup.button.getAttribute('aria-disabled') === 'true') return
-    for (const b of this.buttons) if (b.popup && b.popup !== popup) b.popup.close(false)
+  /** Hides groups whose controls are all hidden or moved to "More options". */
+  private updateGroups(): void {
+    for (const group of this.groups) {
+      const shown = this.controls.some((c) => c.group === group && !c.el.hidden && !overflowed(c))
+      group.classList.toggle('scriba-toolbar-group-empty', !shown)
+    }
+  }
+
+  /**
+   * When the controls do not fit on one line, moves them into "More options",
+   * lowest priority first (rightmost first among equals), until the rest fits.
+   */
+  layout(): void {
+    const more = this.moreButton
+    if (!more) return
+    for (const c of this.controls) c.el.classList.remove(OVERFLOW)
+    more.hidden = true
+    this.updateGroups()
+    if (this.clientWidth && this.scrollWidth > this.clientWidth) {
+      more.hidden = false
+      const queue = this.controls
+        .filter((c) => !c.el.hidden)
+        .sort((a, b) => a.priority - b.priority || b.order - a.order)
+      for (const c of queue) {
+        if (this.scrollWidth <= this.clientWidth) break
+        c.el.classList.add(OVERFLOW)
+        this.updateGroups()
+      }
+    }
+    this.updateTabStops()
+  }
+
+  /** Controls reachable with the arrow keys (visible, not moved to the overflow menu). */
+  private navigable(): HTMLButtonElement[] {
+    const out = this.controls.filter((c) => !c.el.hidden && !overflowed(c)).map((c) => c.el)
+    if (this.moreButton && !this.moreButton.hidden) out.push(this.moreButton)
+    return out
+  }
+
+  private updateTabStops(): void {
+    const nav = this.navigable()
+    this.focusIndex = Math.min(this.focusIndex, Math.max(0, nav.length - 1))
+    for (const c of this.controls) c.el.tabIndex = -1
+    if (this.moreButton) this.moreButton.tabIndex = -1
+    const current = nav[this.focusIndex]
+    if (current) current.tabIndex = 0
+  }
+
+  private closeMenus(except?: MenuPopup): void {
+    for (const c of this.controls) if (c.popup && c.popup !== except) c.popup.close(false)
+    if (this.morePopup && this.morePopup !== except) this.morePopup.close(false)
+  }
+
+  private toggleMenu(popup: MenuPopup, anchor?: HTMLElement): void {
+    if (!anchor && popup.button.getAttribute('aria-disabled') === 'true') return
+    this.closeMenus(popup)
     if (popup.isOpen) popup.close(true)
-    else popup.open()
+    else popup.open(anchor)
+  }
+
+  /** Builds and opens the "More options" menu from the overflowed controls. */
+  private toggleMore(): void {
+    const more = this.moreButton!
+    if (this.morePopup?.isOpen) {
+      this.morePopup.close(true)
+      return
+    }
+    this.closeMenus()
+    this.morePopup?.el.remove()
+    const t = this.translator
+    const entries: PopupEntry[] = []
+    for (const c of this.controls) {
+      if (c.el.hidden || !overflowed(c)) continue
+      const item = c.item
+      if (item.type === 'menu') {
+        const popup = c.popup!
+        entries.push({
+          id: item.id,
+          label: item.label,
+          ...(item.icon ? { icon: item.icon } : {}),
+          command: (state) => item.entries.some((e) => e.command(state)),
+          hasPopup: true,
+          run: () => this.toggleMenu(popup, more),
+        })
+      } else {
+        entries.push({
+          id: item.id,
+          label: item.label,
+          ...(item.icon ? { icon: item.icon } : {}),
+          ...(item.shortcut ? { shortcut: item.shortcut } : {}),
+          ...(item.isActive ? { isActive: item.isActive, toggle: true } : {}),
+          command: item.command,
+          ...(item.run ? { run: item.run } : {}),
+        })
+      }
+    }
+    this.morePopup = new MenuPopup(
+      { label: () => t('toolbar.more'), entries },
+      more,
+      t,
+      () => this.view,
+      this.mac,
+    )
+    this.appendChild(this.morePopup.el)
+    this.morePopup.open()
   }
 
   private run(item: ToolbarButton, el: HTMLButtonElement): void {
@@ -170,16 +420,17 @@ export class ScribaToolbar extends Base {
       item.run(view)
       return
     }
-    item.command(view.state, (tr) => view.dispatch(tr))
+    item.command(view.state, (tr) => view.dispatch(tr), view)
     // Mouse users go back to typing; keyboard users stay in the toolbar.
     if (this.ownerDocument.activeElement !== el) view.focus()
   }
 
   private moveFocus(index: number): void {
-    if (!this.buttons.length) return
-    this.focusIndex = (index + this.buttons.length) % this.buttons.length
-    this.updateState()
-    this.buttons[this.focusIndex]!.el.focus()
+    const nav = this.navigable()
+    if (!nav.length) return
+    this.focusIndex = (index + nav.length) % nav.length
+    this.updateTabStops()
+    nav[this.focusIndex]!.focus()
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
@@ -189,7 +440,7 @@ export class ScribaToolbar extends Base {
       ArrowLeft: () => this.moveFocus(this.focusIndex - 1),
       ArrowUp: () => this.moveFocus(this.focusIndex - 1),
       Home: () => this.moveFocus(0),
-      End: () => this.moveFocus(this.buttons.length - 1),
+      End: () => this.moveFocus(this.navigable().length - 1),
       Escape: () => this.view?.focus(),
     }
     const action = keys[event.key]
@@ -199,10 +450,10 @@ export class ScribaToolbar extends Base {
   }
 
   private onFocusIn = (event: FocusEvent): void => {
-    const index = this.buttons.findIndex((b) => b.el === event.target)
+    const index = this.navigable().indexOf(event.target as HTMLButtonElement)
     if (index >= 0 && index !== this.focusIndex) {
       this.focusIndex = index
-      this.updateState()
+      this.updateTabStops()
     }
   }
 

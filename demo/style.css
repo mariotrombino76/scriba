@@ -69,6 +69,7 @@ main {
   border-bottom: 1px solid var(--border);
 }
 .toolbar-row #toolbar-slot {
+  min-width: 0;
   flex: 1;
 }
 .toolbar-row scriba-toolbar {

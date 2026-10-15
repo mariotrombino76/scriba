@@ -117,8 +117,7 @@ describe('text style marks', () => {
   it('builds toolbar items for what the schema has', () => {
     const ids = textStyleToolbarItems(schema).map((i) => (i.type === 'separator' ? '|' : i.id))
     expect(ids).toEqual([
-      'align-left', 'align-center', 'align-right', 'align-justify', 'indent-less', 'indent-more',
-      'text-color', 'background-color', 'font-family', 'font-size',
+      'align', 'indent-less', 'indent-more', 'text-color', 'background-color', 'font-family', 'font-size',
     ]) // prettier-ignore
   })
 })

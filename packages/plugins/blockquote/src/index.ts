@@ -1,5 +1,5 @@
 import { isInNode, toggleWrap, type Command, type NodeSpec, type Schema } from '@scriba/core'
-import type { ToolbarItem } from '@scriba/ui'
+import type { ToolbarControl } from '@scriba/ui'
 
 /** Node specs to add to a schema. Requires a `block` group. */
 export const blockquoteNodes = {
@@ -24,13 +24,13 @@ export function toggleBlockquote(schema: Schema): Command {
 }
 
 /** Toolbar button for the quote. */
-export function blockquoteToolbarItems(schema: Schema): ToolbarItem[] {
+export function blockquoteToolbarItems(schema: Schema): ToolbarControl[] {
   const type = quoteType(schema)
   return [
     {
       type: 'button',
       id: 'blockquote',
-      text: '❝',
+      icon: 'quote',
       label: (t) => t('block.blockquote'),
       command: toggleWrap(type),
       isActive: (state) => isInNode(state, type),

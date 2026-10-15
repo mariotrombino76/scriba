@@ -40,10 +40,14 @@ describe('toolbar menus', () => {
     expect(button.getAttribute('aria-expanded')).toBe('false')
     expect(menu.getAttribute('role')).toBe('menu')
     expect(menu.hidden).toBe(true)
-    const first = menu.querySelector('[role=menuitemradio]')!
+    const first = menu.querySelector<HTMLElement>('.scriba-toolbar-swatch')!
+    expect(first.getAttribute('role')).toBe('menuitemradio')
     expect(first.getAttribute('aria-label')).toBe('Nero')
-    const swatch = first.querySelector<HTMLElement>('.scriba-swatch')!
-    expect(swatch.style.backgroundColor).toBe('rgb(0, 0, 0)')
+    expect(first.title).toBe('Nero')
+    expect(first.style.backgroundColor).toBe('rgb(0, 0, 0)')
+    expect(menu.querySelector('[data-entry=none]')?.getAttribute('aria-label')).toBe(
+      'Rimuovi colore',
+    )
   })
 
   it('opens, navigates with arrows, chooses with Enter/click and closes', () => {
@@ -59,7 +63,9 @@ describe('toolbar menus', () => {
     ;(document.activeElement as HTMLButtonElement).click()
     expect(menu.hidden).toBe(true)
     expect(serializeHTML(view.state.doc)).toBe('<p><span style="color: #b91c1c">ab</span>c</p>')
-    // reopening marks the current color
+    // the button shows the current color, reopening marks it
+    const bar = button.querySelector<HTMLElement>('.scriba-toolbar-indicator')!
+    expect(bar.style.backgroundColor).toBe('rgb(185, 28, 28)')
     button.click()
     expect(menu.querySelector('[aria-checked=true]')?.getAttribute('aria-label')).toBe('Rosso')
   })

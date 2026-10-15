@@ -12,13 +12,22 @@ import {
 } from '@scriba/core'
 import { EditorView } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
-import { defaultToolbarItems, defineScribaToolbar } from '@scriba/ui'
+import {
+  blockStyleMenu,
+  defineScribaToolbar,
+  historyItems,
+  markItems,
+  toolbarGroup,
+} from '@scriba/ui'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquote'
 import {
+  alignmentMenu,
+  colorItems,
+  fontItems,
+  indentItems,
   textStyleKeymap,
   textStyleMarks,
-  textStyleToolbarItems,
   withBlockStyles,
 } from '@scriba/plugin-text-style'
 import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
@@ -63,15 +72,25 @@ app.appendChild(toolbar)
 const view = new EditorView(app, { state, label: 'Editor di prova' })
 toolbar.mac = false
 toolbar.translator = t
+const styleMenu = blockStyleMenu(schema)
 toolbar.items = [
-  ...defaultToolbarItems(schema),
-  { type: 'separator' },
-  ...listToolbarItems(schema, { indent: false }),
-  ...blockquoteToolbarItems(schema),
-  ...codeBlockToolbarItems(schema),
-  ...linkToolbarItems(schema, t),
-  { type: 'separator' },
-  ...textStyleToolbarItems(schema, { indent: listIndentCommands(schema) }),
+  toolbarGroup('history', 'toolbar.group.history', historyItems(), 3),
+  toolbarGroup('text-style', 'toolbar.group.textStyle', [
+    ...(styleMenu ? [{ ...styleMenu, priority: 3 }] : []),
+    ...fontItems(schema),
+  ]),
+  toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
+  toolbarGroup('colors', 'toolbar.group.colors', colorItems(schema)),
+  toolbarGroup('insert', 'toolbar.group.insert', linkToolbarItems(schema, t), 2),
+  toolbarGroup('lists', 'toolbar.group.lists', [
+    ...listToolbarItems(schema, { indent: false }).map((item) => ({ ...item, priority: 2 })),
+    ...indentItems({ indent: listIndentCommands(schema) }),
+    alignmentMenu(),
+  ]),
+  toolbarGroup('blocks', 'toolbar.group.blocks', [
+    ...blockquoteToolbarItems(schema),
+    ...codeBlockToolbarItems(schema),
+  ]),
 ]
 toolbar.view = view
 

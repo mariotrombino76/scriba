@@ -1,5 +1,5 @@
 import type { KeyBindings, Schema } from '@scriba/core'
-import type { ToolbarItem, ToolbarMenuEntry } from '@scriba/ui'
+import type { ToolbarControl, ToolbarMenuEntry } from '@scriba/ui'
 import {
   exitCodeBlock,
   exitOnTripleEnter,
@@ -52,7 +52,7 @@ export function codeBlockKeymap(): KeyBindings {
 export function codeBlockToolbarItems(
   schema: Schema,
   languages: { id: string; label: string }[] = defaultCodeLanguages,
-): ToolbarItem[] {
+): ToolbarControl[] {
   if (!schema.nodes['code_block'])
     throw new RangeError('The schema has no "code_block" node (add codeBlockNodes)')
   const language = (state: Parameters<typeof isInCodeBlock>[0]) =>
@@ -63,7 +63,7 @@ export function codeBlockToolbarItems(
     {
       type: 'button',
       id: 'code_block',
-      text: '{ }',
+      icon: 'codeBlock',
       label: (t) => t('block.codeBlock'),
       shortcut: 'Shift-Mod-Alt-c',
       command: toggleCodeBlock,
@@ -72,8 +72,13 @@ export function codeBlockToolbarItems(
     {
       type: 'menu',
       id: 'code_language',
-      text: '</>▾',
       label: (t) => t('code.language'),
+      // Contextual: only inside a code block, showing the current language.
+      isVisible: isInCodeBlock,
+      valueLabel: (state, t) => {
+        const id = language(state)
+        return languages.find((l) => l.id === id)?.label ?? t('code.plain')
+      },
       entries: [
         {
           id: 'plain',

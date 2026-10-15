@@ -1,6 +1,18 @@
-import { chainCommands, type Command, type KeyBindings, type Schema } from '@scriba/core'
+import {
+  chainCommands,
+  type Command,
+  type KeyBindings,
+  type MarkType,
+  type Schema,
+} from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
-import type { ToolbarItem, ToolbarMenuEntry } from '@scriba/ui'
+import type {
+  IconName,
+  ToolbarButton,
+  ToolbarItem,
+  ToolbarMenu,
+  ToolbarMenuEntry,
+} from '@scriba/ui'
 import { changeIndent, isAligned, setTextAlign, type TextAlign } from './blocks.js'
 import { markValue, setMarkValue } from './marks.js'
 
@@ -94,36 +106,39 @@ function indentCommands(options: Pick<TextStyleOptions, 'indent'>): {
   }
 }
 
-/** Toolbar items: alignment buttons, indentation, color/highlight/font/size menus. */
-export function textStyleToolbarItems(
-  schema: Schema,
-  options: TextStyleOptions = {},
-): ToolbarItem[] {
-  const items: ToolbarItem[] = []
+const ALIGNMENTS: { value: TextAlign; icon: IconName; key: MessageKey; shortcut: string }[] = [
+  { value: 'left', icon: 'alignLeft', key: 'align.left', shortcut: 'Shift-Mod-l' },
+  { value: 'center', icon: 'alignCenter', key: 'align.center', shortcut: 'Shift-Mod-e' },
+  { value: 'right', icon: 'alignRight', key: 'align.right', shortcut: 'Shift-Mod-r' },
+  { value: 'justify', icon: 'alignJustify', key: 'align.justify', shortcut: 'Shift-Mod-j' },
+]
+
+/** One "Alignment" menu (icon, name and shortcut per entry). */
+export function alignmentMenu(): ToolbarMenu {
+  return {
+    type: 'menu',
+    id: 'align',
+    icon: 'alignLeft',
+    label: (t) => t('align.menu'),
+    entries: ALIGNMENTS.map((a) => ({
+      id: `align-${a.value}`,
+      icon: a.icon,
+      label: (t) => t(a.key),
+      shortcut: a.shortcut,
+      command: setTextAlign(a.value),
+      isActive: (state) => isAligned(state, a.value),
+    })),
+  }
+}
+
+/** Decrease / increase indentation (combined with list nesting when `options.indent` is set). */
+export function indentItems(options: Pick<TextStyleOptions, 'indent'> = {}): ToolbarButton[] {
   const indent = indentCommands(options)
-  const align = (
-    value: TextAlign,
-    text: string,
-    key: MessageKey,
-    shortcut: string,
-  ): ToolbarItem => ({
-    type: 'button',
-    id: `align-${value}`,
-    text,
-    label: (t) => t(key),
-    shortcut,
-    command: setTextAlign(value),
-    isActive: (state) => isAligned(state, value),
-  })
-  items.push(
-    align('left', '⇤', 'align.left', 'Shift-Mod-l'),
-    align('center', '↔', 'align.center', 'Shift-Mod-e'),
-    align('right', '⇥', 'align.right', 'Shift-Mod-r'),
-    align('justify', '☰', 'align.justify', 'Shift-Mod-j'),
+  return [
     {
       type: 'button',
       id: 'indent-less',
-      text: '⇠',
+      icon: 'outdent',
       label: (t) => t('indent.less'),
       shortcut: 'Mod-[',
       command: indent.less,
@@ -131,24 +146,28 @@ export function textStyleToolbarItems(
     {
       type: 'button',
       id: 'indent-more',
-      text: '⇢',
+      icon: 'indent',
       label: (t) => t('indent.more'),
       shortcut: 'Mod-]',
       command: indent.more,
     },
-  )
-  const { text_color, background_color, font_family, font_size } = schema.marks
-  const colorMenu = (
-    id: string,
-    text: string,
-    label: MessageKey,
-    type: NonNullable<typeof text_color>,
-    colors: ColorOption[],
-  ): ToolbarItem => ({
+  ]
+}
+
+function colorMenu(
+  id: string,
+  label: MessageKey,
+  look: { icon?: IconName; text?: string },
+  type: MarkType,
+  colors: ColorOption[],
+): ToolbarMenu {
+  return {
     type: 'menu',
     id,
-    text,
+    ...look,
     label: (t) => t(label),
+    layout: 'grid',
+    indicator: (state) => (markValue(state, type, 'color') as string | null) ?? null,
     entries: [
       ...colors.map((c): ToolbarMenuEntry => ({
         id: c.value,
@@ -157,43 +176,69 @@ export function textStyleToolbarItems(
         command: setMarkValue(type, { color: c.value }),
         isActive: (state) => markValue(state, type, 'color') === c.value,
       })),
-      { id: 'none', label: (t) => t('color.remove'), command: setMarkValue(type, null) },
+      {
+        id: 'none',
+        icon: 'close',
+        label: (t) => t('color.remove'),
+        command: setMarkValue(type, null),
+      },
     ],
-  })
-  if (text_color)
+  }
+}
+
+/** Text color and highlight menus (color grid, current color shown under the icon). */
+export function colorItems(schema: Schema, options: TextStyleOptions = {}): ToolbarMenu[] {
+  const { text_color, background_color } = schema.marks
+  const items: ToolbarMenu[] = []
+  if (text_color) {
     items.push(
       colorMenu(
         'text-color',
-        'A',
         'color.text',
+        { text: 'A' },
         text_color,
         options.textColors ?? defaultTextColors,
       ),
     )
+  }
   if (background_color) {
     items.push(
       colorMenu(
         'background-color',
-        '▇',
         'color.background',
+        { icon: 'highlight' },
         background_color,
         options.backgroundColors ?? defaultBackgroundColors,
       ),
     )
   }
+  return items
+}
+
+/** Font family and size menus, showing the current value like a select. */
+export function fontItems(schema: Schema, options: TextStyleOptions = {}): ToolbarMenu[] {
+  const { font_family, font_size } = schema.marks
+  const items: ToolbarMenu[] = []
   if (font_family) {
+    const families = options.fontFamilies ?? defaultFontFamilies
     items.push({
       type: 'menu',
       id: 'font-family',
-      text: 'Aa',
       label: (t) => t('font.family'),
+      valueLabel: (state, t) => {
+        const value = markValue(state, font_family, 'family')
+        return (
+          families.find((f) => f.value === value)?.label ??
+          (value ? String(value) : t('font.default'))
+        )
+      },
       entries: [
         {
           id: 'default',
           label: (t) => t('font.default'),
           command: setMarkValue(font_family, null),
         },
-        ...(options.fontFamilies ?? defaultFontFamilies).map((f): ToolbarMenuEntry => ({
+        ...families.map((f): ToolbarMenuEntry => ({
           id: f.value,
           label: () => f.label,
           command: setMarkValue(font_family, { family: f.value }),
@@ -206,8 +251,9 @@ export function textStyleToolbarItems(
     items.push({
       type: 'menu',
       id: 'font-size',
-      text: '↕A',
       label: (t) => t('font.size'),
+      valueLabel: (state, t) =>
+        (markValue(state, font_size, 'size') as string | null) ?? t('font.sizeAuto'),
       entries: [
         { id: 'default', label: (t) => t('font.default'), command: setMarkValue(font_size, null) },
         ...(options.fontSizes ?? defaultFontSizes).map((size): ToolbarMenuEntry => ({
@@ -220,4 +266,17 @@ export function textStyleToolbarItems(
     })
   }
   return items
+}
+
+/** All text-style controls, flat (compose them into groups with `toolbarGroup`). */
+export function textStyleToolbarItems(
+  schema: Schema,
+  options: TextStyleOptions = {},
+): ToolbarItem[] {
+  return [
+    alignmentMenu(),
+    ...indentItems(options),
+    ...colorItems(schema, options),
+    ...fontItems(schema, options),
+  ]
 }
