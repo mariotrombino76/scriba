@@ -3,6 +3,7 @@ node_modules
 pnpm-lock.yaml
 CLAUDE.md
 e2e/.dist
+e2e/.collab
 test-results
 playwright-report
 .vitest

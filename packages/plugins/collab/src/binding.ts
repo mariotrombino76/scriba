@@ -8,6 +8,12 @@ export interface YBindingOptions {
   ydoc: Y.Doc
   /** Name of the shared XML fragment (default "scriba"). */
   field?: string
+  /**
+   * With a server: resolves when the first sync is done (`provider.synced`).
+   * Until then nothing is written to Yjs (the server's content wins); then the
+   * editor's own content is shared only if the server's document is empty.
+   */
+  synced?: Promise<unknown>
 }
 
 /** Meta on transactions that come from other users (not undoable here, not sent back). */
@@ -49,7 +55,10 @@ export function remoteTransaction(view: EditorView, next: Node): Transaction | n
   return tr.setMeta(ADD_TO_HISTORY, false).setMeta(REMOTE_META, true)
 }
 
-function bindingView(view: EditorView, { ydoc, field = 'scriba' }: YBindingOptions): PluginView {
+function bindingView(
+  view: EditorView,
+  { ydoc, field = 'scriba', synced }: YBindingOptions,
+): PluginView {
   const fragment = ydoc.getXmlFragment(field)
   const origin = { binding: true } // our own Yjs transactions
   let applying = false
@@ -69,17 +78,23 @@ function bindingView(view: EditorView, { ydoc, field = 'scriba' }: YBindingOptio
       ydoc.transact(() => updateFragment(fragment, next, view.state.doc), origin)
   }
 
-  if (fragment.length === 0) ydoc.transact(() => writeDoc(fragment, view.state.doc), origin)
-  else applyRemote()
+  let ready = !synced
+  const start = () => {
+    ready = true
+    if (fragment.length === 0) ydoc.transact(() => writeDoc(fragment, view.state.doc), origin)
+    else applyRemote()
+  }
+  if (synced) void synced.then(start)
+  else start()
 
   const observer = (_events: unknown, transaction: Y.Transaction) => {
-    if (transaction.origin !== origin) applyRemote()
+    if (transaction.origin !== origin && ready) applyRemote()
   }
   fragment.observeDeep(observer)
 
   return {
     update(v, prev) {
-      if (applying || prev.doc === v.state.doc) return
+      if (applying || !ready || prev.doc === v.state.doc) return
       ydoc.transact(() => updateFragment(fragment, prev.doc, v.state.doc), origin)
     },
     destroy() {

@@ -11,6 +11,7 @@ export default tseslint.config(
       '**/.nuxt/**',
       '**/.output/**',
       'e2e/.dist/**',
+      'e2e/.collab/**',
       'test-results/**',
       'playwright-report/**',
     ],

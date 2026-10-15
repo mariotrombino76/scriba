@@ -126,6 +126,30 @@ describe('Yjs binding', () => {
   })
 })
 
+describe('joining a document that already exists on the server', () => {
+  it('waits for the first sync: the server content wins, nothing is duplicated', async () => {
+    const server = new Y.Doc()
+    const seed = editor(server, '<p>dal server</p>') // writes the server's document
+    void seed
+    const ydoc = new Y.Doc()
+    let done!: () => void
+    const synced = new Promise<void>((r) => (done = r))
+    const view = new EditorView(document.createElement('div'), {
+      state: EditorState.create({
+        doc: parse('<p>mio</p>'),
+        plugins: [yBinding({ ydoc, synced })],
+      }),
+    })
+    expect(ydoc.getXmlFragment('scriba').length).toBe(0) // nothing written before the sync
+    Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(server))
+    done()
+    await synced
+    await Promise.resolve()
+    expect(serializeHTML(view.state.doc)).toBe('<p>dal server</p>')
+    expect(ydoc.getXmlFragment('scriba').length).toBe(1)
+  })
+})
+
 describe('remote content is untrusted (§5.8)', () => {
   it('unknown nodes, unsafe URLs and invalid attributes are dropped', () => {
     const { A, ydocs } = pair('<p>ok</p>')

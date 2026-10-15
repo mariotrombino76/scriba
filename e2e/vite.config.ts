@@ -12,6 +12,7 @@ const CSP = [
   "script-src 'self'",
   "style-src 'self'",
   "img-src 'self' data: https:",
+  "connect-src 'self' ws://localhost:4174",
   "object-src 'none'",
   "base-uri 'none'",
   "require-trusted-types-for 'script'",

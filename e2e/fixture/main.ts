@@ -71,6 +71,7 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
+import { collab, collabStatusElement } from '@scriba/plugin-collab'
 import { markdownShortcuts, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
   findReplaceKeymap,
@@ -161,10 +162,22 @@ const slashItems: SlashItem[] = [
 
 // Fullscreen covers the editor container (toolbar, editing area, status bar).
 const fullscreen = new Fullscreen(document.getElementById('app')!)
+// Collaboration (e2e only): ?collab=<document>&token=<token> joins the test server.
+const params = new URLSearchParams(location.search)
+const collabDoc = params.get('collab')
+const shared = collabDoc
+  ? collab({
+      url: 'ws://localhost:4174',
+      documentName: collabDoc,
+      token: params.get('token') ?? '',
+    })
+  : null
+
 const state = EditorState.create({
   schema,
   plugins: [
     history(),
+    ...(shared?.plugins ?? []),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -196,7 +209,16 @@ defineScribaToolbar()
 const app = document.getElementById('app')!
 const toolbar = document.createElement('scriba-toolbar')
 app.appendChild(toolbar)
-const view = new EditorView(app, { state, label: 'Editor di prova' })
+const view = new EditorView(app, {
+  state,
+  label: 'Editor di prova',
+  // collaborative: editable only once the server allows writing
+  editable: () => !shared || (shared.provider.status === 'connected' && shared.provider.canWrite),
+})
+if (shared) {
+  app.appendChild(collabStatusElement(document, shared.provider, t))
+  shared.provider.onStatus(() => view.updateState(view.state))
+}
 toolbar.mac = false
 toolbar.translator = t
 const styleMenu = blockStyleMenu(schema)

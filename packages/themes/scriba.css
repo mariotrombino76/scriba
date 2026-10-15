@@ -1095,3 +1095,13 @@ scriba-toolbar.scriba-bubble {
 .scriba-editor .scriba-collab-sel.scriba-collab-c7 {
   background: rgb(77 124 15 / 22%);
 }
+.scriba-collab-status {
+  margin: 0;
+  padding: 2px 8px;
+  color: var(--scriba-muted);
+  font-size: 0.8125rem;
+}
+.scriba-collab-status[data-status='denied'],
+.scriba-collab-status[data-status='disconnected'] {
+  color: var(--scriba-error);
+}

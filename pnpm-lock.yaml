@@ -74,6 +74,12 @@ importers:
       '@scriba/core':
         specifier: workspace:*
         version: link:../core
+      '@scriba/plugin-collab':
+        specifier: workspace:*
+        version: link:../plugins/collab
+      lib0:
+        specifier: 0.2.119
+        version: 0.2.119
       ws:
         specifier: 8.22.0
         version: 8.22.0
@@ -167,6 +173,9 @@ importers:
       '@scriba/view':
         specifier: workspace:*
         version: link:../../view
+      lib0:
+        specifier: 0.2.119
+        version: 0.2.119
       y-protocols:
         specifier: 1.0.7
         version: 1.0.7(yjs@13.6.33)
