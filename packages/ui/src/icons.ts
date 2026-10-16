@@ -134,6 +134,10 @@ const ICONS = {
   chevronDown: [['path', 'm6 9 6 6 6-6']],
   chevronRight: [['path', 'm9 18 6-6-6-6']],
   check: [['path', 'M20 6 9 17l-5-5']],
+  file: [
+    ['path', 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'],
+    ['path', 'M14 3v5h5'],
+  ],
   callout: [
     ['path', 'M4 4h16v16H4z'],
     ['path', 'M8 9h8'],

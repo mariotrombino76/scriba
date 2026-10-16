@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Fragment, Mark } from '../../src/index.js'
+import { Fragment, Mark, Schema, basicSchemaSpec } from '../../src/index.js'
 import { b, bi, br, doc, h, i, img, p, quote, schema } from '../helpers/schema.js'
 
 describe('Node sizes and positions', () => {
@@ -23,6 +23,22 @@ describe('Node sizes and positions', () => {
     expect(d.textBetween(0, d.content.size, '\n')).toBe('ab\ncd')
     expect(d.textBetween(2, 6, '|')).toBe('b|c')
     expect(doc(p('a', br(), 'b')).textContent).toBe('a\nb')
+  })
+
+  it('atomic blocks are separated like other blocks', () => {
+    const atomic = new Schema({
+      nodes: {
+        ...basicSchemaSpec.nodes,
+        task: { group: 'block', atom: true, leafText: () => '[ ] x', toHTML: () => ['div'] },
+      },
+      marks: basicSchemaSpec.marks,
+    })
+    const d2 = atomic.node('doc', null, [
+      atomic.node('paragraph', null, [atomic.text('a')]),
+      atomic.nodes['task']!.create(),
+      atomic.node('paragraph', null, [atomic.text('b')]),
+    ])
+    expect(d2.textBetween(0, d2.content.size, '\n')).toBe('a\n[ ] x\nb')
   })
 
   it('walks nodesBetween with positions', () => {

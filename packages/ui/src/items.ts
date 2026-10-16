@@ -2,6 +2,7 @@ import {
   isAnnotationOnly,
   isMarkActive,
   redo,
+  selectAll,
   setBlockType,
   toggleMark,
   undo,
@@ -130,6 +131,48 @@ export function toolbarGroup(
     label: (t) => t(label),
     items,
     ...(priority !== undefined ? { priority } : {}),
+  }
+}
+
+/**
+ * Removes inline formatting (bold, colors, fonts…) from the selection, like
+ * TinyMCE's "Remove format"; links and annotations (comments) stay.
+ */
+export const clearFormatting: Command = (state, dispatch) => {
+  const { from, to, empty } = state.selection
+  if (empty) return false
+  const types = Object.values(state.schema.marks).filter(
+    (type) =>
+      type.name !== 'link' && type.spec.annotation !== true && type.spec.serialize !== false,
+  )
+  if (!types.some((type) => state.doc.rangeHasMark(from, to, type))) return false
+  if (dispatch) {
+    const tr = state.tr
+    for (const type of types) tr.removeMark(from, to, type)
+    dispatch(tr.scrollIntoView())
+  }
+  return true
+}
+
+/** Menu entry / button: remove formatting. */
+export function clearFormatItem(): ToolbarButton {
+  return {
+    type: 'button',
+    id: 'clear-format',
+    label: (t) => t('format.clear'),
+    command: clearFormatting,
+  }
+}
+
+/** Select all (also in read-only: selecting changes nothing). */
+export function selectAllItem(): ToolbarButton {
+  return {
+    type: 'button',
+    id: 'select-all',
+    label: (t) => t('edit.selectAll'),
+    shortcut: 'Mod-a',
+    command: selectAll,
+    readOnly: true,
   }
 }
 

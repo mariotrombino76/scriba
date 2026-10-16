@@ -1,8 +1,12 @@
 export { ScribaToolbar, defineScribaToolbar } from './toolbar.js'
+export { ScribaMenubar, defineScribaMenubar, type MenubarMenu } from './menubar.js'
 export {
   defaultToolbarItems,
   toolbarGroup,
   historyItems,
+  clearFormatItem,
+  clearFormatting,
+  selectAllItem,
   markItems,
   blockStyleMenu,
   type ToolbarItem,

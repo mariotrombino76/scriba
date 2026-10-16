@@ -16,6 +16,8 @@ let menuCount = 0
 export interface PopupEntry extends ToolbarMenuEntry {
   /** Shows a chevron and `aria-haspopup`. */
   hasPopup?: boolean
+  /** A separator line before this entry (groups of a menu bar menu). */
+  separatorBefore?: boolean
 }
 
 /**
@@ -39,6 +41,8 @@ export class MenuPopup {
     t: Translate,
     private readonly getView: () => EditorView | null,
     mac = false,
+    /** In a menu bar: Left/Right go to the previous/next menu (WAI-ARIA menubar). */
+    private readonly onHorizontal?: (dir: 1 | -1) => void,
   ) {
     const doc = button.ownerDocument
     this.anchor = button
@@ -126,6 +130,12 @@ export class MenuPopup {
           const chevron = createIcon(doc, 'chevronRight', 16)
           chevron.classList.add('scriba-toolbar-menu-key')
           el.appendChild(chevron)
+        }
+        if (entry.separatorBefore) {
+          const line = doc.createElement('div')
+          line.setAttribute('role', 'separator')
+          line.className = 'scriba-toolbar-menu-separator'
+          this.el.appendChild(line)
         }
         this.el.appendChild(el)
       }
@@ -261,6 +271,14 @@ export class MenuPopup {
     }
     if (event.key.startsWith('Arrow') && this.moveInPicker(event.key)) {
       event.preventDefault()
+      return
+    }
+    if (this.onHorizontal && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+      event.preventDefault()
+      const current = this.entries[this.index]
+      // Right on an entry with a sub-menu opens it; otherwise the next menu of the bar
+      if (event.key === 'ArrowRight' && current?.entry.hasPopup) current.el.click()
+      else this.onHorizontal(event.key === 'ArrowRight' ? 1 : -1)
       return
     }
     const action = keys[event.key]

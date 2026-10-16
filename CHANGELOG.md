@@ -115,9 +115,21 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - Node view con contenuto modificabile: la node view fornisce `contentDOM`, dove l'editor
     disegna e modifica il contenuto del nodo come altrove; il resto resta del componente
     (`contenteditable="false"`). In Vue: `<NodeViewContent />`.
-  - `@scriba/plugin-callout`: riquadro (`<aside class="scriba-callout" data-callout>`, tipi
-    info, consiglio, avviso, pericolo), `toggleCallout`, voce toolbar e voce slash; componente
-    d'esempio `CalloutView` in `@scriba/vue`, con il tipo scelto da un gruppo di pulsanti radio.
+  - `@scriba/ui`: barra dei menu `<scriba-menubar>` sopra la toolbar, come TinyMCE (File, Modifica,
+    Visualizza, Inserisci, Formato, Strumenti, Tabella). Pattern WAI-ARIA menubar; riusa i controlli
+    della toolbar (i menu diventano sottomenu, stessi permessi); `'|'` separa i gruppi. Nuove voci
+    `clearFormatItem` (rimuovi formattazione, link e commenti restano) e `selectAllItem`.
+- `@scriba/plugin-file`: menu "File" come in TinyMCE, tutto nel browser.
+  - Apri (.docx, .html, .md, .txt), anche trascinando il file; prima chiede conferma se ci sono
+    modifiche non salvate.
+  - Scarica come HTML, Word (.docx), Markdown e testo; anteprima e stampa (da cui il PDF).
+  - Nuovo documento; Ctrl/Cmd+O, Ctrl/Cmd+S, Ctrl/Cmd+P.
+  - Dipendenze nuove solo del plugin, caricate quando servono: `mammoth` 1.13.0 (lettura .docx),
+    `docx` 9.8.1 (scrittura .docx), `jszip` 3.10.2. Override `mammoth>argparse` 2.0.1: argparse
+    serve solo alla riga di comando di mammoth e toglie `sprintf-js` (GHSA-hp3w-g68c-fv3c).
+- `@scriba/plugin-callout`: riquadro (`<aside class="scriba-callout" data-callout>`, tipi
+  info, consiglio, avviso, pericolo), `toggleCallout`, voce toolbar e voce slash; componente
+  d'esempio `CalloutView` in `@scriba/vue`, con il tipo scelto da un gruppo di pulsanti radio.
   - `@scriba/plugin-task`: nodo `task` (titolo, fatto, scadenza), `insertTask`, `taskKeymap`
     (Invio entra nei campi, Spazio segna fatto), voce toolbar e voce slash.
 - `@scriba/core`: `arrowAtom` nella `baseKeymap`. Con le frecce si entra in un blocco atomico
@@ -148,6 +160,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - `@scriba/view`: l'area resta raggiungibile con Tab (`tabindex="0"`).
   - Da registrare con `readOnly: true`: `findReplaceKeymap` e `fullscreenKeymap`.
 - `@scriba/plugin-markdown`: le foglie inline con `leafText` (es. menzioni) escono come testo.
+- `@scriba/core`: `textBetween` separa anche i blocchi atomici (es. attività) dal testo vicino.
 - `@scriba/core`, cronologia: le transazioni aggiunte dai plugin (`appendTransaction`) fanno
   parte dello stesso passo di annulla della transazione che le ha generate. Esempio: una
   battitura trasformata in proposta si annulla con un solo Ctrl+Z.
@@ -196,6 +209,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Regex di trova e sostituisci eseguite in un Web Worker interrotto dopo 1 s.
 - Collaborazione: identità, autore di commenti e proposte assegnati dal server; aggiornamenti
   remoti validati contro lo schema; limiti su messaggi, frequenza e dimensione del documento.
+- File aperti: input non fidato. HTML e Word passano da documento inerte e parser dello schema con
+  limiti; i .docx vengono controllati prima di decomprimerli (dimensione dichiarata, numero di voci)
+  e `mammoth` non legge mai file collegati (`externalFileAccess: false`).
 - Riquadri: diventa riquadro solo un `<aside>` con `data-callout`; il tipo viene da una lista
   chiusa (un valore sconosciuto diventa `info`) e il contenuto passa dallo schema.
 - Attività: titolo su una riga (niente caratteri di controllo), data `AAAA-MM-GG` reale, stato

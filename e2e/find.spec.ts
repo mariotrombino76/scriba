@@ -92,13 +92,20 @@ test('regular expressions with groups; invalid expressions are reported', async 
   await expect(find).toHaveAttribute('aria-invalid', 'true')
 })
 
-test('a catastrophic regex is stopped and the page stays responsive (§5.10)', async ({ page }) => {
+test('a catastrophic regex is stopped and the page stays responsive (§5.10)', async ({
+  page,
+  browserName,
+}) => {
   await page.keyboard.type('a'.repeat(40) + 'b')
   await page.keyboard.press('Control+f')
   await panel(page).getByLabel('Espressione regolare').check()
   await panel(page).getByRole('textbox', { name: 'Trova' }).fill('(a+)+$')
+  // V8 and SpiderMonkey would hang: the worker is stopped after 1 s. WebKit's engine has
+  // its own backtracking limit and gives up by itself in ~0.5 s (no match): fine as well.
   await expect(panel(page).getByRole('status')).toHaveText(
-    'L’espressione è troppo lenta ed è stata interrotta: semplificala',
+    browserName === 'webkit'
+      ? /troppo lenta ed è stata interrotta|Nessun risultato/
+      : 'L’espressione è troppo lenta ed è stata interrotta: semplificala',
     { timeout: 4000 },
   )
   // the main thread was never blocked

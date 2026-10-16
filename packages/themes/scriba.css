@@ -1177,6 +1177,105 @@ html.scriba-fullscreen-open body {
   margin-bottom: 0;
 }
 
+/* File: preview dialog and printing only the document */
+.scriba-preview-dialog {
+  width: min(900px, calc(100vw - 32px));
+}
+.scriba-preview {
+  max-height: 65vh;
+  overflow: auto;
+  padding: 24px 32px;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  font-family: var(--scriba-font);
+  line-height: 1.5;
+}
+.scriba-preview:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+}
+.scriba-preview img,
+.scriba-print img {
+  max-width: 100%;
+  height: auto;
+}
+.scriba-preview table,
+.scriba-print table {
+  border-collapse: collapse;
+}
+.scriba-preview td,
+.scriba-preview th,
+.scriba-print td,
+.scriba-print th {
+  padding: 4px 8px;
+  border: 1px solid var(--scriba-border);
+}
+.scriba-preview .scriba-callout,
+.scriba-print .scriba-callout {
+  margin: 0.75em 0;
+  padding: 8px 12px;
+  border-left: 4px solid var(--scriba-callout-info);
+  background: var(--scriba-callout-info-bg);
+}
+.scriba-print {
+  display: none;
+}
+@media print {
+  html.scriba-printing body > :not(.scriba-print) {
+    display: none !important;
+  }
+  html.scriba-printing .scriba-print {
+    display: block;
+    color: #000;
+    font-family: var(--scriba-font);
+    line-height: 1.5;
+  }
+}
+
+/* Separator between groups of a menu (menu bar) */
+.scriba-toolbar-menu-separator {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--scriba-border);
+}
+
+/* Menu bar (File, Edit, View…) above the toolbar */
+scriba-menubar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px 4px;
+  border-bottom: 1px solid var(--scriba-border);
+  background: var(--scriba-bg);
+  font-family: var(--scriba-font);
+  font-size: 0.875rem;
+}
+.scriba-menubar-item {
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--scriba-text);
+  font: inherit;
+  cursor: pointer;
+}
+.scriba-menubar-item:hover,
+.scriba-menubar-item[aria-expanded='true'] {
+  background: var(--scriba-accent-bg);
+  color: var(--scriba-accent);
+}
+.scriba-menubar-item:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: -2px;
+}
+@media (pointer: coarse) {
+  .scriba-menubar-item {
+    min-height: 44px;
+  }
+}
+
 /* Bubble menu: a compact toolbar over the selected text */
 scriba-toolbar[hidden] {
   display: none;

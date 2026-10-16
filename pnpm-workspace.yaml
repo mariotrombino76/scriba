@@ -8,3 +8,7 @@ minimumReleaseAgeExclude:
   - '@playwright/test@1.64.1'
   - playwright-core@1.64.1
   - playwright@1.64.1
+overrides:
+  # argparse is used only by mammoth's command line (bin/mammoth), never in the browser;
+  # argparse 2 drops sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed version published yet)
+  'mammoth>argparse': 2.0.1

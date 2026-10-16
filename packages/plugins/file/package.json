@@ -1,0 +1,39 @@
+{
+  "name": "@scriba/plugin-file",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
+  },
+  "license": "MIT",
+  "description": "File menu for the Scriba editor: new, open (.docx, .html, .md, .txt), download (.html, .md, .txt, .docx), preview and print.",
+  "dependencies": {
+    "@scriba/core": "workspace:*",
+    "@scriba/i18n": "workspace:*",
+    "@scriba/ui": "workspace:*",
+    "@scriba/view": "workspace:*",
+    "@scriba/plugin-markdown": "workspace:*",
+    "mammoth": "1.13.0",
+    "docx": "9.8.1",
+    "jszip": "3.10.2"
+  },
+  "devDependencies": {
+    "@scriba/plugin-list": "workspace:*",
+    "@scriba/plugin-blockquote": "workspace:*",
+    "@scriba/plugin-link": "workspace:*",
+    "@scriba/plugin-table": "workspace:*",
+    "@scriba/plugin-image": "workspace:*"
+  }
+}

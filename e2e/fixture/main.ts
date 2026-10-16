@@ -15,8 +15,12 @@ import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
 import {
   blockStyleMenu,
+  defineScribaMenubar,
   defineScribaToolbar,
   historyItems,
+  clearFormatItem,
+  selectAllItem,
+  type ToolbarButton,
   markItems,
   toolbarGroup,
 } from '@scriba/ui'
@@ -67,14 +71,15 @@ import {
   tableToolbarItems,
 } from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
-import { createWordCountStatus } from '@scriba/plugin-word-count'
+import { createWordCountStatus, openWordCountDialog } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
-import { taskKeymap, taskNodes, taskSlashItem } from '@scriba/plugin-task'
-import { calloutNodes, calloutSlashItem } from '@scriba/plugin-callout'
+import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
+import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
 import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
@@ -138,6 +143,8 @@ const searchPeople: MentionSearch = (query, signal) =>
       reject(signal.reason)
     })
   })
+// File menu: open .docx/.html/.md/.txt, download, preview, print (all in the browser)
+const fileOptions: FileOptions = { t }
 const schema = new Schema({
   nodes: withBlockIds(
     withBlockStyles({
@@ -287,6 +294,8 @@ const state = EditorState.create({
   schema,
   plugins: [
     history(),
+    filePlugin(fileOptions),
+    keymap(fileKeymap(fileOptions), { priority: 80, readOnly: true }),
     // protected blocks: ids starting with "lock" (a real app asks its server)
     ...blockPermissions({ canEdit: (id) => !id.startsWith('lock'), t }),
     ...(shared?.plugins ?? []),
@@ -331,7 +340,10 @@ const state = EditorState.create({
   ],
 })
 defineScribaToolbar()
+defineScribaMenubar()
 const app = document.getElementById('app')!
+const menubar = document.createElement('scriba-menubar')
+app.appendChild(menubar)
 const toolbar = document.createElement('scriba-toolbar')
 app.appendChild(toolbar)
 // read-only mode: ?readonly in the URL or window.scriba.setReadOnly()
@@ -397,6 +409,91 @@ toolbar.items = [
     fullscreenToolbarItem(fullscreen),
   ]),
 ]
+// --- Menu bar like TinyMCE's (file edit view insert format tools table), '|' between groups ---
+menubar.translator = t
+const fileEntries = fileMenu(fileOptions).entries
+const fileEntry = (id: string) => fileEntries.find((e) => e.id === id)!
+const wordCountItem: ToolbarButton = {
+  type: 'button',
+  id: 'wordcount',
+  label: (tr) => tr('wordcount.title'),
+  command: () => true,
+  readOnly: true,
+  run: (v) => void openWordCountDialog(v, t),
+}
+menubar.menus = [
+  {
+    id: 'file',
+    label: 'menu.file',
+    items: [
+      fileEntry('new'),
+      fileEntry('open'),
+      '|',
+      fileEntry('preview'),
+      '|',
+      fileEntry('save-html'),
+      fileEntry('save-docx'),
+      fileEntry('save-markdown'),
+      fileEntry('save-text'),
+      '|',
+      fileEntry('print'),
+    ],
+  },
+  {
+    id: 'edit',
+    label: 'menu.edit',
+    items: [...historyItems(), '|', selectAllItem(), '|', findReplaceToolbarItem(t)],
+  },
+  {
+    id: 'view',
+    label: 'menu.view',
+    items: [
+      sourceToolbarItem(t),
+      suggestToolbarItem(),
+      '|',
+      fileEntry('preview'),
+      fullscreenToolbarItem(fullscreen),
+    ],
+  },
+  {
+    id: 'insert',
+    label: 'menu.insert',
+    items: [
+      ...imageToolbarItems(schema, t, images),
+      ...linkToolbarItems(schema, t),
+      commentToolbarItem(comments, t),
+      ...codeBlockToolbarItems(schema),
+      '|',
+      charmapToolbarItem(t),
+      '|',
+      taskToolbarItem(schema),
+      calloutToolbarItem(schema),
+      ...blockquoteToolbarItems(schema),
+    ],
+  },
+  {
+    id: 'format',
+    label: 'menu.format',
+    items: [
+      ...markItems(schema),
+      '|',
+      ...(styleMenu ? [styleMenu] : []),
+      ...fontItems(schema),
+      alignmentMenu(),
+      '|',
+      ...colorItems(schema),
+      '|',
+      clearFormatItem(),
+    ],
+  },
+  {
+    id: 'tools',
+    label: 'menu.tools',
+    items: [aiToolbarItem(aiOptions), '|', wordCountItem],
+  },
+  { id: 'table', label: 'menu.table', items: tableToolbarItems(schema, t) },
+]
+menubar.view = view
 toolbar.view = view
 const sidebar = document.createElement('aside')
 sidebar.className = 'comments-sidebar'

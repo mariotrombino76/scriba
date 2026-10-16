@@ -135,6 +135,8 @@ export class Fragment {
       if (node.isText) {
         text += node.text.slice(Math.max(from, pos) - pos, to - pos)
       } else if (node.isLeaf) {
+        // an atomic block (e.g. a task) is a block of its own: separated like the others
+        if (node.isBlock && !first) text += blockSeparator
         text += node.type.spec.leafText ? node.type.spec.leafText(node) : leafText
       } else if (node.isBlock && !first) {
         text += blockSeparator

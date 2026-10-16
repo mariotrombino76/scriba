@@ -26,6 +26,7 @@
       "@scriba/plugin-permissions": ["./packages/plugins/permissions/src/index.ts"],
       "@scriba/plugin-task": ["./packages/plugins/task/src/index.ts"],
       "@scriba/plugin-callout": ["./packages/plugins/callout/src/index.ts"],
+      "@scriba/plugin-file": ["./packages/plugins/file/src/index.ts"],
       "@scriba/vue": ["./packages/vue/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
