@@ -153,7 +153,9 @@ function block(node: Node): string {
     case 'table':
       return table(node)
     default:
-      // unknown blocks: their text content (never lost)
+      // unknown blocks: their text content (never lost); atoms: their leafText
+      if (node.isAtom && node.type.spec.leafText)
+        return escapeLineStart(escapeText(node.type.spec.leafText(node)))
       return node.isTextblock ? inline(node) : blocks(node)
   }
 }

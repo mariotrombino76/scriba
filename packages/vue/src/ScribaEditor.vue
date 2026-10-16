@@ -2,6 +2,7 @@
 import type { NodeJSON, Plugin, Schema } from '@scriba/core'
 import { createTranslator, type Messages } from '@scriba/i18n'
 import { defineScribaToolbar, type ScribaToolbar } from '@scriba/ui'
+import type { NodeViewFactory } from '@scriba/view'
 import { computed, onMounted, ref, watch } from 'vue'
 import { sameContent, type Content, type ContentFormat } from './content.js'
 import { useScriba } from './useScriba.js'
@@ -19,6 +20,8 @@ const props = withDefaults(
     /** UI language (`'it'`, `'en'`…) or a message object. */
     locale?: string | Messages
     toolbar?: boolean
+    /** Custom views of atomic nodes, e.g. `{ task: vueNodeView(TaskView, { t }) }`. */
+    nodeViews?: Readonly<Record<string, NodeViewFactory>>
   }>(),
   { modelValue: null, format: 'html', editable: true, toolbar: true, locale: 'it' },
 )
@@ -37,6 +40,7 @@ let lastEmitted: Content | null = props.modelValue ?? null
 const scriba = useScriba(editorEl, {
   ...(props.schema ? { schema: props.schema } : {}),
   ...(props.plugins ? { plugins: props.plugins } : {}),
+  ...(props.nodeViews ? { nodeViews: props.nodeViews } : {}),
   content: props.modelValue,
   format: props.format,
   editable: () => props.editable,

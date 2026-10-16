@@ -28,5 +28,8 @@
     "@scriba/i18n": "workspace:*",
     "@scriba/ui": "workspace:*",
     "@scriba/view": "workspace:*"
+  },
+  "devDependencies": {
+    "@scriba/plugin-task": "workspace:*"
   }
 }

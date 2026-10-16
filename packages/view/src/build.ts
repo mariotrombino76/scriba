@@ -8,11 +8,16 @@ import {
   TRAILING_BREAK_CLASS,
   type ViewDesc,
 } from './desc.js'
+import { NODE_VIEW_ATTR, type NodeView } from './node-view.js'
 import { renderSpec } from './render.js'
 
-/** What rendering needs besides the node: the decorations to show. */
+/** What rendering needs besides the node: the decorations to show, custom node views. */
 export interface RenderContext {
   readonly decorations: DecorationIndex
+  /** Creates the custom view of an atomic node, if one is configured for its type. */
+  readonly nodeView?: (node: Node, getPos: () => number | null) => NodeView | null
+  /** Keeps track of created node views (to destroy them once removed). */
+  readonly register?: (desc: NodeViewDesc) => void
 }
 
 export const emptyContext: RenderContext = { decorations: DecorationIndex.empty }
@@ -24,6 +29,20 @@ export function renderNode(
   pos: number,
   ctx: RenderContext,
 ): NodeViewDesc {
+  if (node.isAtom && ctx.nodeView) {
+    let desc: NodeViewDesc | null = null
+    const custom = ctx.nodeView(node, () =>
+      desc && !desc.gone && desc.parent ? desc.posBefore() : null,
+    )
+    if (custom) {
+      custom.dom.setAttribute('contenteditable', 'false')
+      custom.dom.setAttribute(NODE_VIEW_ATTR, '')
+      desc = new NodeViewDesc(node, custom.dom, null)
+      desc.custom = custom
+      ctx.register?.(desc)
+      return desc
+    }
+  }
   const toHTML = node.type.spec.toHTML
   if (!toHTML) throw new RangeError(`Node type "${node.type.name}" has no toHTML spec`)
   const { dom, contentDOM } = renderSpec(doc, toHTML(node))
@@ -182,6 +201,11 @@ export function updateDesc(
   ctx: RenderContext,
 ): NodeViewDesc {
   if (desc.node === node) return desc
+  // a custom node view may show the new version itself (e.g. changed attributes)
+  if (desc.custom && desc.node.type === node.type && desc.custom.update?.(node)) {
+    desc.node = node
+    return desc
+  }
   if (!desc.node.sameMarkup(node) || node.isLeaf || !desc.contentDOM) {
     return renderNode(doc, node, contentStart - 1, ctx)
   }
@@ -219,7 +243,8 @@ export function updateDesc(
       candidate &&
       !used.has(candidate) &&
       !upcoming.has(candidate.node) &&
-      candidate.node.sameMarkup(child)
+      (candidate.node.sameMarkup(child) ||
+        (!!candidate.custom && candidate.node.type === child.type))
     ) {
       used.add(candidate)
       next.push(updateDesc(doc, candidate, child, childStart, ctx))

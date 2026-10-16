@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
 const plugin = (name: string) =>
@@ -19,6 +20,7 @@ const CSP = [
 ].join('; ')
 
 export default defineConfig({
+  plugins: [vue()],
   root: fileURLToPath(new URL('./fixture', import.meta.url)),
   resolve: {
     alias: {
@@ -26,6 +28,7 @@ export default defineConfig({
       '@scriba/view': src('view'),
       '@scriba/i18n': src('i18n'),
       '@scriba/ui': src('ui'),
+      '@scriba/vue': src('vue'),
       '@scriba/plugin-list': plugin('list'),
       '@scriba/plugin-blockquote': plugin('blockquote'),
       '@scriba/plugin-text-style': plugin('text-style'),
@@ -41,6 +44,7 @@ export default defineConfig({
       '@scriba/plugin-slash': plugin('slash'),
       '@scriba/plugin-mention': plugin('mention'),
       '@scriba/plugin-permissions': plugin('permissions'),
+      '@scriba/plugin-task': plugin('task'),
       '@scriba/plugin-markdown': plugin('markdown'),
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-find-replace': plugin('find-replace'),

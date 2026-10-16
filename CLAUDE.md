@@ -113,7 +113,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Menzioni `@utente` con sorgente dati asincrona
 - [x] API per assistente AI (stream di testo inserito come transazioni annullabili)
 - [x] Modalità sola lettura e permessi per blocco
-- [ ] Plugin di esempio Vue (componente Vue renderizzato come nodo)
+- [x] Plugin di esempio Vue (componente Vue renderizzato come nodo)
 
 ---
 

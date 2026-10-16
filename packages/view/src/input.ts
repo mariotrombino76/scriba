@@ -264,6 +264,12 @@ export function attachInputHandlers(view: EditorView): () => void {
     [dom, 'focus', () => !pointerDown && view.syncSelectionToDOM()],
     [doc, 'selectionchange', () => view.syncSelectionFromDOM()],
   ]
+  // events from form controls inside node views belong to them, not to the editor
+  for (const entry of listeners) {
+    const [target, type, fn] = entry
+    if (target === dom && type !== 'focus')
+      entry[2] = (e) => void (view.eventInNodeView(e) || fn(e))
+  }
   for (const [target, type, fn] of listeners) target.addEventListener(type, fn)
   return () => {
     for (const [target, type, fn] of listeners) target.removeEventListener(type, fn)

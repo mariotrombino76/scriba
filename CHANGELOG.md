@@ -106,6 +106,16 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     collaborazione passano.
   - Gli id incollati vengono tolti; quando un blocco viene diviso, l'id resta a un solo pezzo.
   - `checkBlockEdits(prima, dopo, regole)` per il server, `transactionAllowed(tr, regole)`.
+- Node view (nodi disegnati da un componente):
+  - `@scriba/view`: opzione `nodeViews` per i nodi atomici (`dom`, `update`, `selectNode`,
+    `deselectNode`, `stopEvent`, `destroy`) e `view.nodeDOM(pos)`. Mutazioni ed eventi dei
+    controlli interni restano al componente. L'HTML esce sempre da `toHTML`.
+  - `@scriba/vue`: `vueNodeView(Componente, { t, appContext })`, opzione `nodeViews` di
+    `useScriba` e di `<ScribaEditor>`, componente d'esempio `TaskView`.
+  - `@scriba/plugin-task`: nodo `task` (titolo, fatto, scadenza), `insertTask`, `taskKeymap`
+    (Invio entra nei campi, Spazio segna fatto), voce toolbar e voce slash.
+- `@scriba/core`: `arrowAtom` nella `baseKeymap`. Con le frecce si entra in un blocco atomico
+  (viene selezionato) e se ne esce verso il testo vicino, invece di saltarlo.
 - `@scriba/collab-server`: `canEditBlock` in `AuthResult` e opzioni `schema`/`field`. Un
   aggiornamento che tocca un blocco protetto viene annullato per tutti, mittente compreso
   (`applyGuardedUpdate`).
@@ -159,6 +169,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Regex di trova e sostituisci eseguite in un Web Worker interrotto dopo 1 s.
 - Collaborazione: identità, autore di commenti e proposte assegnati dal server; aggiornamenti
   remoti validati contro lo schema; limiti su messaggi, frequenza e dimensione del documento.
+- Attività: titolo su una riga (niente caratteri di controllo), data `AAAA-MM-GG` reale, stato
+  booleano; nell'HTML solo testo e tre attributi `data-` di forma fissa.
 - Blocchi protetti: la regola vale nell'editor ma va ripetuta sul server con `checkBlockEdits`
   (il client non è fidato). Un blocco nuovo non può prendere un id protetto.
 - Menzioni: id e nome validati (lunghezza, niente spazi nell'id, niente caratteri di controllo

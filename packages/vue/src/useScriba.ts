@@ -10,7 +10,7 @@ import {
   type Plugin,
   type Schema,
 } from '@scriba/core'
-import { EditorView } from '@scriba/view'
+import { EditorView, type NodeViewFactory } from '@scriba/view'
 import {
   onBeforeUnmount,
   onMounted,
@@ -39,6 +39,8 @@ export interface UseScribaOptions {
   label?: MaybeRefOrGetter<string | undefined>
   /** Called after every document change with the serialized content. */
   onChange?: (content: Content) => void
+  /** Custom views of atomic nodes (e.g. `{ task: vueNodeView(TaskView, { t }) }`). */
+  nodeViews?: Readonly<Record<string, NodeViewFactory>>
 }
 
 export interface UseScriba {
@@ -84,6 +86,7 @@ export function useScriba(
     const instance: EditorView = new EditorView(place, {
       state: editorState,
       ...(label ? { label } : {}),
+      ...(options.nodeViews ? { nodeViews: options.nodeViews } : {}),
       editable: () => toValue(options.editable) ?? true,
       dispatchTransaction(tr) {
         const next = instance.state.apply(tr)

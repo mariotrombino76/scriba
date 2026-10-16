@@ -1,4 +1,5 @@
 import type { Mark, Node } from '@scriba/core'
+import type { NodeView } from './node-view.js'
 
 /** DOM node → its descriptor. */
 const descOf = new WeakMap<globalThis.Node, ViewDesc>()
@@ -54,6 +55,10 @@ export abstract class ViewDesc {
 export class NodeViewDesc extends ViewDesc {
   /** Decorations this textblock was rendered with (see DecorationIndex.key). */
   decoKey = ''
+  /** Custom rendering of an atomic node (see `nodeViews`). */
+  custom: NodeView | null = null
+  /** The node view was destroyed: its position is no longer known. */
+  gone = false
 
   constructor(
     public node: Node,

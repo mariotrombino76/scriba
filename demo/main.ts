@@ -77,6 +77,8 @@ import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
+import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
+import { TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -147,6 +149,7 @@ const schema = new Schema({
       ...codeBlockNodes,
       ...imageNodes,
       ...mentionNodes,
+      ...taskNodes,
       ...tableNodes,
     }),
   ),
@@ -224,6 +227,7 @@ const aiOptions: AiOptions = {
 // Slash menu: blocks and actions from the plugins in use.
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
+  taskSlashItem(schema),
   {
     id: 'bullet_list',
     label: (tr) => tr('list.bullet'),
@@ -335,6 +339,7 @@ const state = EditorState.create({
     keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
     keymap(imageKeymap(t, images), { priority: 70 }),
+    keymap(taskKeymap(), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     ...tablePlugins(),
@@ -358,6 +363,8 @@ let readOnly = false
 const view: EditorView = new EditorView($('editor'), {
   state,
   label: 'Testo del documento',
+  // example node view: tasks drawn by a Vue component
+  nodeViews: { task: vueNodeView(TaskView, { t }) },
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
   dispatchTransaction(tr) {
@@ -388,6 +395,7 @@ toolbar.items = [
       ...imageToolbarItems(schema, t, images),
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
+      taskToolbarItem(schema),
       commentToolbarItem(comments, t),
       aiToolbarItem(aiOptions),
     ],

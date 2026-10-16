@@ -77,6 +77,7 @@ export {
   isInNode,
 } from './commands/structure.js'
 export { baseKeymap, historyKeymap, formatKeymap } from './commands/base-keymap.js'
+export { arrowAtom, type ArrowDirection } from './commands/arrows.js'
 export {
   keymap,
   runKeymaps,

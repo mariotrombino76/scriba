@@ -1,4 +1,5 @@
 import type { Schema } from '../model/schema.js'
+import { arrowAtom } from './arrows.js'
 import { redo, undo } from '../history.js'
 import type { KeyBindings } from '../keymap.js'
 import {
@@ -31,6 +32,10 @@ export const baseKeymap: KeyBindings = {
   Delete: chainCommands(deleteSelectedBlock(1), deleteSelection, joinForward, deleteChar(1)),
   'Mod-Delete': chainCommands(deleteSelection, joinForward),
   'Mod-a': selectAll,
+  ArrowLeft: arrowAtom('left'),
+  ArrowRight: arrowAtom('right'),
+  ArrowUp: arrowAtom('up'),
+  ArrowDown: arrowAtom('down'),
 }
 
 /** History keys: Mod-z undo, Mod-y / Shift-Mod-z redo. */

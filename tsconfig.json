@@ -24,6 +24,8 @@
       "@scriba/plugin-slash": ["./packages/plugins/slash/src/index.ts"],
       "@scriba/plugin-mention": ["./packages/plugins/mention/src/index.ts"],
       "@scriba/plugin-permissions": ["./packages/plugins/permissions/src/index.ts"],
+      "@scriba/plugin-task": ["./packages/plugins/task/src/index.ts"],
+      "@scriba/vue": ["./packages/vue/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
       "@scriba/plugin-find-replace": ["./packages/plugins/find-replace/src/index.ts"],
@@ -41,5 +43,7 @@
     "packages/plugins/*/src",
     "packages/plugins/*/test"
   ],
-  "exclude": ["packages/vue/**"]
+  "exclude": ["packages/vue/**"],
+  // .vue modules imported by the e2e fixture and the demo (checked by vue-tsc in packages/vue)
+  "files": ["packages/vue/src/shims.d.ts"]
 }

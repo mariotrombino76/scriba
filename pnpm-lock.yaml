@@ -409,6 +409,25 @@ importers:
         specifier: workspace:*
         version: link:../../view
 
+  packages/plugins/task:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+    devDependencies:
+      '@scriba/plugin-markdown':
+        specifier: workspace:*
+        version: link:../markdown
+
   packages/plugins/text-style:
     dependencies:
       '@scriba/core':
@@ -486,6 +505,10 @@ importers:
       vue:
         specifier: ^3.5.0
         version: 3.5.44(typescript@7.0.2)
+    devDependencies:
+      '@scriba/plugin-task':
+        specifier: workspace:*
+        version: link:../plugins/task
 
 packages:
 

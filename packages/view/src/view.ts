@@ -4,6 +4,7 @@ import { DecorationIndex, stateDecorations } from './decorations.js'
 import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
 import { attachInputHandlers } from './input.js'
+import { NODE_VIEW_ATTR, defaultStopEvent, type NodeViewFactory } from './node-view.js'
 import type { PluginView, ViewPluginProps } from './plugin-hooks.js'
 import { readDOMSelection, writeDOMSelection } from './selection.js'
 
@@ -15,6 +16,11 @@ export interface EditorViewOptions {
   editable?: (state: EditorState) => boolean
   /** Accessible name of the editing area (`aria-label`). */
   label?: string
+  /**
+   * Custom views of atomic node types, by type name (e.g. a Vue component,
+   * see `vueNodeView` in `@scriba/vue`). Other node types use `toHTML`.
+   */
+  nodeViews?: Readonly<Record<string, NodeViewFactory>>
 }
 
 /**
@@ -36,6 +42,8 @@ export class EditorView {
   private decorations: DecorationIndex = DecorationIndex.empty
   private plainPasteUntil = 0
   private readonly pluginViews: PluginView[] = []
+  private readonly customViews = new Set<NodeViewDesc>()
+  private selectedCustom: NodeViewDesc | null = null
 
   constructor(
     place: HTMLElement,
@@ -99,6 +107,7 @@ export class EditorView {
     if (!this.composing)
       this.redrawDecorated(DecorationIndex.changedBlocks(prevDecorations, this.decorations))
     if (!this.composing && this.hasFocus()) this.syncSelectionToDOM()
+    this.updateSelectedCustom()
     for (const pluginView of this.pluginViews) pluginView.update?.(this, prev)
     for (const listener of this.listeners) listener(this)
   }
@@ -203,6 +212,7 @@ export class EditorView {
     this.listeners.clear()
     this.detach()
     this.observer.disconnect()
+    for (const desc of this.customViews) this.dropCustom(desc)
     this.dom.remove()
   }
 
@@ -233,6 +243,46 @@ export class EditorView {
   domChange(f: () => void): void {
     f()
     this.observer.takeRecords()
+    // node views no longer in the document are destroyed
+    for (const desc of this.customViews) if (!this.dom.contains(desc.dom)) this.dropCustom(desc)
+  }
+
+  private dropCustom(desc: NodeViewDesc): void {
+    this.customViews.delete(desc)
+    if (this.selectedCustom === desc) this.selectedCustom = null
+    desc.gone = true
+    desc.custom?.destroy?.()
+  }
+
+  /** Tells node views when they become (or stop being) the selected node. */
+  private updateSelectedCustom(): void {
+    const sel = this.state.selection
+    const desc = sel instanceof NodeSelection ? descAt(this.rootDesc, sel.from) : null
+    const next = desc?.custom ? desc : null
+    if (next === this.selectedCustom) return
+    this.selectedCustom?.custom?.deselectNode?.()
+    this.selectedCustom = next
+    next?.custom?.selectNode?.()
+  }
+
+  /** The DOM element of the node at `pos` (a block, an atom…), or null. */
+  nodeDOM(pos: number): HTMLElement | null {
+    const dom = descAt(this.rootDesc, pos)?.dom
+    return dom && dom.nodeType === 1 ? (dom as HTMLElement) : null
+  }
+
+  /** @internal Whether an event comes from inside a node view and must be left alone. */
+  eventInNodeView(event: Event): boolean {
+    const target = event.target
+    if (!(target instanceof Element) || target === this.dom) return false
+    const el = target.closest(`[${NODE_VIEW_ATTR}]`)
+    if (!el || !this.dom.contains(el)) return false
+    for (const desc of this.customViews) {
+      if (desc.dom !== el) continue
+      const custom = desc.custom!
+      return custom.stopEvent ? custom.stopEvent(event) : defaultStopEvent(event, el as HTMLElement)
+    }
+    return false
   }
 
   /**
@@ -245,10 +295,15 @@ export class EditorView {
     const blocks = new Set<NodeViewDesc>()
     let structural = false
     for (const record of records) {
+      // what happens inside a node view is its own business
+      const target =
+        record.target.nodeType === 1 ? (record.target as Element) : record.target.parentElement
+      if (target?.closest(`[${NODE_VIEW_ATTR}]`) && target !== this.dom) continue
       const block = textblockDescOf(record.target, this.rootDesc)
       if (block) blocks.add(block)
       else structural = true
     }
+    if (!blocks.size && !structural) return
     this.readDOMChanges([...blocks])
     if (structural) this.redrawAll()
   }
@@ -319,7 +374,13 @@ export class EditorView {
 
   /** @internal */
   get context(): RenderContext {
-    return { decorations: this.decorations }
+    const factories = this.options.nodeViews
+    if (!factories) return { decorations: this.decorations }
+    return {
+      decorations: this.decorations,
+      nodeView: (node, getPos) => factories[node.type.name]?.(node, this, getPos) ?? null,
+      register: (desc) => this.customViews.add(desc),
+    }
   }
 
   private redrawDecorated(starts: number[]): void {
