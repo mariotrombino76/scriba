@@ -26,7 +26,8 @@
     "yjs": "13.6.33",
     "@scriba/plugin-collab": "workspace:*",
     "lib0": "0.2.119",
-    "@scriba/plugin-comments": "workspace:*"
+    "@scriba/plugin-comments": "workspace:*",
+    "@scriba/plugin-permissions": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

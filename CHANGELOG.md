@@ -106,6 +106,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     collaborazione passano.
   - Gli id incollati vengono tolti; quando un blocco viene diviso, l'id resta a un solo pezzo.
   - `checkBlockEdits(prima, dopo, regole)` per il server, `transactionAllowed(tr, regole)`.
+- `@scriba/collab-server`: `canEditBlock` in `AuthResult` e opzioni `schema`/`field`. Un
+  aggiornamento che tocca un blocco protetto viene annullato per tutti, mittente compreso
+  (`applyGuardedUpdate`).
 
 ### Modificato
 

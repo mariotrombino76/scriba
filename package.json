@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "typecheck": "node ./node_modules/typescript7/bin/tsc -p tsconfig.json --noEmit && pnpm --filter @scriba/vue typecheck",
     "bench": "vitest bench --run",
-    "test:security": "vitest run packages/core/test/security packages/sanitize-server/test packages/plugins/permissions/test",
+    "test:security": "vitest run packages/core/test/security packages/sanitize-server/test packages/plugins/permissions/test packages/collab-server/test/blocks.test.ts",
     "audit": "pnpm audit",
     "test:e2e": "playwright test",
     "demo": "vite --config demo/vite.config.ts",

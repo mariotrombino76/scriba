@@ -80,6 +80,9 @@ importers:
       '@scriba/plugin-comments':
         specifier: workspace:*
         version: link:../plugins/comments
+      '@scriba/plugin-permissions':
+        specifier: workspace:*
+        version: link:../plugins/permissions
       lib0:
         specifier: 0.2.119
         version: 0.2.119

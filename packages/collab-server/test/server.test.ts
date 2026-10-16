@@ -4,7 +4,8 @@ import * as Y from 'yjs'
 import * as encoding from 'lib0/encoding'
 import { Awareness } from 'y-protocols/awareness'
 import { Schema, basicSchemaSpec, serializeHTML } from '@scriba/core'
-import { CollabProvider, writeDoc } from '@scriba/plugin-collab'
+import { CollabProvider, docFromY, updateFragment, writeDoc } from '@scriba/plugin-collab'
+import { withBlockIds } from '@scriba/plugin-permissions'
 import {
   CLOSE,
   MESSAGE_AUTH,
@@ -121,6 +122,65 @@ describe('collab server', () => {
     g.ydoc.getText('t').insert(0, 'XXX')
     await new Promise((r) => setTimeout(r, 200))
     expect(a.text()).toBe('da Anna')
+  })
+
+  it('protected blocks: an update touching one is undone for everyone, the sender included', async () => {
+    const blockSchema = new Schema({
+      nodes: withBlockIds(basicSchemaSpec.nodes),
+      marks: basicSchemaSpec.marks,
+    })
+    const para = (id: string, text: string) =>
+      blockSchema.node('paragraph', { blockId: id }, [blockSchema.text(text)])
+    const doc = (...blocks: ReturnType<typeof para>[]) => blockSchema.node('doc', null, blocks)
+    const { url } = await start({
+      schema: blockSchema,
+      authenticate: (token) => {
+        const u = USERS[token]
+        if (!u) return null
+        // Bruno may not edit "lock-…" blocks
+        return {
+          user: { id: u.id, name: u.name },
+          canWrite: true,
+          ...(token === 'tok-bruno'
+            ? { canEditBlock: (id: string) => !id.startsWith('lock') }
+            : {}),
+        }
+      },
+    })
+    const a = client(url, 'tok-anna')
+    const b = client(url, 'tok-bruno')
+    await until(() => a.provider.status === 'connected' && b.provider.status === 'connected')
+    const html = (c: { ydoc: Y.Doc }) =>
+      serializeHTML(docFromY(blockSchema, c.ydoc.getXmlFragment('scriba')))
+    const start0 = doc(para('free-1', 'libero'), para('lock-1', 'fisso'))
+    writeDoc(a.ydoc.getXmlFragment('scriba'), start0)
+    const expected = serializeHTML(start0)
+    await until(() => html(b) === expected)
+    // Bruno (a modified client) changes the protected block: undone, everywhere
+    const fb = b.ydoc.getXmlFragment('scriba')
+    updateFragment(
+      fb,
+      docFromY(blockSchema, fb),
+      doc(para('free-1', 'libero'), para('lock-1', 'falso')),
+    )
+    await until(() => html(b) === expected)
+    await new Promise((r) => setTimeout(r, 100))
+    expect(html(a)).toBe(expected)
+    // his edits elsewhere go through
+    updateFragment(
+      fb,
+      docFromY(blockSchema, fb),
+      doc(para('free-1', 'libero!'), para('lock-1', 'fisso')),
+    )
+    await until(() => html(a).includes('libero!'))
+    // Anna may edit it
+    const fa = a.ydoc.getXmlFragment('scriba')
+    updateFragment(
+      fa,
+      docFromY(blockSchema, fa),
+      doc(para('free-1', 'libero!'), para('lock-1', 'nuovo')),
+    )
+    await until(() => html(b).includes('nuovo'))
   })
 
   it('auth must come first and in time; bad names are refused', async () => {

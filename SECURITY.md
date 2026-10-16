@@ -59,6 +59,12 @@ parser dello schema.
 Anche la validazione dei file caricati (tipo reale, dimensione, eventuale antivirus)
 spetta al tuo server.
 
+I **blocchi protetti** (`@scriba/plugin-permissions`) bloccano solo l'editor. Quando salvi un
+documento, confronta la versione precedente e quella nuova con `checkBlockEdits` e rifiuta il
+salvataggio se restituisce degli id. In collaborazione passa `canEditBlock` da `authenticate` e
+lo `schema` al server: gli aggiornamenti che toccano un blocco protetto vengono annullati per
+tutti. Il nome mostrato nelle menzioni è solo testo: risolvi sempre l'id sul server.
+
 ---
 
 ## English

@@ -5,6 +5,8 @@ import * as decoding from 'lib0/decoding'
 import * as syncProtocol from 'y-protocols/sync'
 import * as awarenessProtocol from 'y-protocols/awareness'
 import { WebSocketServer, type WebSocket } from 'ws'
+import type { Schema } from '@scriba/core'
+import { applyGuardedUpdate } from './blocks.js'
 import { MESSAGE_COMMENTS, applyCommentOp, publicThreads, type StoredThread } from './comments.js'
 
 /** Message types (y-websocket compatible, plus our auth message from the client). */
@@ -34,6 +36,12 @@ export interface AuthResult {
   user: CollabUserInfo
   /** False: the user can follow the document but every change is refused. */
   canWrite: boolean
+  /**
+   * Protected blocks (see `@scriba/plugin-permissions`): whether this user may
+   * change the block with this id. Updates touching a block they may not edit
+   * are undone. Needs the `schema` option.
+   */
+  canEditBlock?: (id: string) => boolean
 }
 
 export interface CollabLimits {
@@ -70,6 +78,10 @@ export interface CollabServerOptions {
   /** Stores the comment threads (with the documents, same timing). */
   storeComments?(documentName: string, threads: StoredThread[]): Promise<void> | void
   limits?: CollabLimits
+  /** The editor's schema (with `withBlockIds`): needed for `canEditBlock`. */
+  schema?: Schema
+  /** Name of the shared XML fragment (default `"scriba"`, as in the client). */
+  field?: string
 }
 
 const DOC_NAME = /^[\w.-]{1,128}$/
@@ -335,7 +347,18 @@ export class CollabServer {
           const size = Y.encodeStateAsUpdate(shared.ydoc).byteLength
           if (size + update.byteLength > this.limits.maxDocumentBytes)
             return conn.ws.close(CLOSE.tooLarge, 'document too large')
-          Y.applyUpdate(shared.ydoc, update, conn)
+          const canEdit = conn.auth.canEditBlock
+          if (!canEdit) Y.applyUpdate(shared.ydoc, update, conn)
+          // misconfigured (rules without a schema): refuse rather than accept unchecked
+          else if (this.options.schema)
+            applyGuardedUpdate(
+              shared.ydoc,
+              update,
+              conn,
+              this.options.schema,
+              { canEdit },
+              this.options.field,
+            )
         }
       } else if (type === MESSAGE_COMMENTS) {
         const request = JSON.parse(decoding.readVarString(decoder)) as { ref?: unknown }
