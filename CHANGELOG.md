@@ -130,6 +130,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- `@scriba/core`: `lift` (e quindi `toggleWrap`/`toggleBlockquote`) andava in `TypeError` con
+  una selezione tra due blocchi; ora usa i limiti dell'intervallo.
 - Firefox: il primo clic in un editor senza focus metteva il cursore nella posizione
   precedente invece che nel punto cliccato.
 - In sola lettura le voci del menu "Altre opzioni" (toolbar stretta) erano attive e

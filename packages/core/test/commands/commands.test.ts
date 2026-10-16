@@ -238,6 +238,15 @@ describe('structure commands', () => {
     expect(off.doc.eq(doc(p('a')))).toBe(true)
   })
 
+  it('toggling a wrapper never throws, even from a position between blocks', () => {
+    // found by fuzzing: wrap from between two blocks, then toggle at a block boundary
+    const bq = schema.nodes.blockquote
+    const once = run(stateAt(doc(p('uno due'), quote(p('citata'))), 9, 10), toggleWrap(bq))
+    const start = once ?? stateAt(doc(p('uno due'), quote(p('citata'))), 9, 10)
+    for (let pos = 0; pos <= start.doc.content.size; pos++)
+      expect(() => run(stateAt(start.doc, pos), toggleWrap(bq)), `pos ${pos}`).not.toThrow()
+  })
+
   it('Backspace at the start of the first quoted block lifts it out', () => {
     const r = run(stateAt(doc(p('x'), quote(p('a'), p('b'))), 5), liftEmptyOrFirstBlock)!
     expect(r.doc.eq(doc(p('x'), p('a'), quote(p('b'))))).toBe(true)

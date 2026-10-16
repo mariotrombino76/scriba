@@ -163,8 +163,9 @@ export function liftTarget(range: NodeRange): number | null {
  */
 export function lift(tr: Transform, range: NodeRange, target: number): void {
   const { $from, $to, depth } = range
-  const gapStart = $from.before(depth + 1)
-  const gapEnd = $to.after(depth + 1)
+  // range.start/end also work when $from/$to sit between blocks at `depth`
+  const gapStart = range.start
+  const gapEnd = range.end
   let start = gapStart
   let end = gapEnd
 
@@ -182,7 +183,7 @@ export function lift(tr: Transform, range: NodeRange, target: number): void {
   let after = Fragment.empty
   let openEnd = 0
   for (let d = depth, splitting = false; d > target; d--) {
-    if (splitting || $to.after(d + 1) < $to.end(d)) {
+    if (splitting || (d === depth ? gapEnd : $to.after(d + 1)) < $to.end(d)) {
       splitting = true
       after = Fragment.from($to.node(d).copy(after))
       openEnd++
