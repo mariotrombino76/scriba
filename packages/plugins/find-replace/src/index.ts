@@ -42,7 +42,10 @@ export function findReplacePlugins(): Plugin[] {
   return [findPlugin()]
 }
 
-/** Ctrl/Cmd+F opens the panel (instead of the browser's search, which cannot replace). */
+/**
+ * Ctrl/Cmd+F opens the panel (instead of the browser's search, which cannot
+ * replace). Register with `readOnly: true`: searching works in read-only too.
+ */
 export function findReplaceKeymap(t: Translate, options: FindReplaceOptions = {}): KeyBindings {
   const open: Command = (_state, dispatch, view) => {
     if (!view) return false
@@ -64,5 +67,6 @@ export function findReplaceToolbarItem(
     shortcut: 'Mod-f',
     command: () => true,
     run: (view) => openFindPanel(view, t, options),
+    readOnly: true, // replacing stays disabled in read-only
   }
 }

@@ -64,4 +64,33 @@ describe('keymaps', () => {
     expect(s.doc.eq(doc(p('a'), p('d')))).toBe(true)
     expect(press(s, { key: 'q', ctrlKey: true }).handled).toBe(false)
   })
+
+  it('read-only: only keymaps marked readOnly run, and never change the document', () => {
+    const state = stateAt(doc(p('ab')), 2)
+    let ran = ''
+    const change = (name: string) => (s: EditorState, dispatch?: (tr: never) => void) => {
+      ran += name
+      ;(dispatch as ((tr: unknown) => void) | undefined)?.(s.tr.insertText('x'))
+      return true
+    }
+    const withPlugins = state.reconfigure({
+      plugins: [
+        keymap({ 'Mod-f': change('find') }, { readOnly: true, mac: false }),
+        keymap({ 'Mod-b': change('bold') }, { mac: false }),
+      ],
+    })
+    let next = withPlugins
+    const send = (tr: Parameters<typeof withPlugins.apply>[0]) => (next = next.apply(tr))
+    expect(
+      runKeymaps(withPlugins, send, { key: 'b', ctrlKey: true }, undefined, { readOnly: true }),
+    ).toBe(false)
+    expect(
+      runKeymaps(withPlugins, send, { key: 'f', ctrlKey: true }, undefined, { readOnly: true }),
+    ).toBe(true)
+    expect(ran).toBe('find')
+    expect(next.doc.textContent).toBe('ab')
+    // editable: both run as usual
+    expect(runKeymaps(withPlugins, send, { key: 'b', ctrlKey: true })).toBe(true)
+    expect(next.doc.textContent).toBe('axb')
+  })
 })

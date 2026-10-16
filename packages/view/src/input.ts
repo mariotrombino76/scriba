@@ -159,7 +159,13 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
 
 function onKeyDown(view: EditorView, event: KeyboardEvent): void {
   if (view.composing || event.isComposing || event.keyCode === 229) return
-  if (!view.editable) return
+  if (!view.editable) {
+    // read-only: only keymaps meant for it (find, full screen…), never a change
+    view.syncSelectionFromDOM()
+    if (runKeymaps(view.state, (tr) => view.dispatch(tr), event, view, { readOnly: true }))
+      event.preventDefault()
+    return
+  }
   // Ctrl/Cmd+Shift+V: let the browser paste, but as plain text.
   if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'v') {
     view.requestPlainPaste()

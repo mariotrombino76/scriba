@@ -141,7 +141,9 @@ export class MenuPopup {
     const state = this.getView()?.state
     let active = -1
     this.entries.forEach(({ el, entry }, i) => {
-      const enabled = !!state && entry.command(state) // `run` entries are enabled by their command too
+      const view = this.getView()
+      // `run` entries are enabled by their command too; read-only editors only allow read-only entries
+      const enabled = !!state && (!!view?.editable || !!entry.readOnly) && entry.command(state)
       el.setAttribute('aria-disabled', String(!enabled))
       if (entry.isActive) {
         const on = !!state && entry.isActive(state)
@@ -232,7 +234,7 @@ export class MenuPopup {
       entry.run(view)
       return
     }
-    entry.command(view.state, (tr) => view.dispatch(tr), view)
+    entry.command(view.state, (tr) => (view.editable || !tr.docChanged) && view.dispatch(tr), view)
     this.close(false)
     view.focus()
   }

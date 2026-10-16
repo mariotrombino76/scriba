@@ -40,7 +40,7 @@ export class Fullscreen {
   }
 }
 
-/** Ctrl/Cmd+Shift+F switches fullscreen; Escape leaves it. */
+/** Ctrl/Cmd+Shift+F switches fullscreen; Escape leaves it. Register with `readOnly: true`. */
 export function fullscreenKeymap(fs: Fullscreen): KeyBindings {
   const toggle: Command = (_state, dispatch, view) => {
     if (!view) return false
@@ -66,5 +66,6 @@ export function fullscreenToolbarItem(fs: Fullscreen): ToolbarButton {
     command: () => true,
     isActive: () => fs.active,
     run: (view) => fs.toggle(view),
+    readOnly: true,
   }
 }

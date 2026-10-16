@@ -301,8 +301,8 @@ const state = EditorState.create({
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
-    keymap(findReplaceKeymap(t), { priority: 80 }),
-    keymap(fullscreenKeymap(fullscreen), { priority: 80 }),
+    keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
+    keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
@@ -320,11 +320,14 @@ defineScribaToolbar()
 const app = document.getElementById('app')!
 const toolbar = document.createElement('scriba-toolbar')
 app.appendChild(toolbar)
+// read-only mode: ?readonly in the URL or window.scriba.setReadOnly()
+let readOnly = new URLSearchParams(location.search).has('readonly')
 const view = new EditorView(app, {
   state,
   label: 'Editor di prova',
   // collaborative: editable only once the server allows writing
-  editable: () => !shared || (shared.provider.status === 'connected' && shared.provider.canWrite),
+  editable: () =>
+    !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
 })
 if (shared) {
   app.appendChild(collabStatusElement(document, shared.provider, t))
@@ -390,5 +393,9 @@ Object.assign(window, {
     json: () => view.state.doc.toJSON(),
     selection: () => ({ from: view.state.selection.from, to: view.state.selection.to }),
     cspViolations,
+    setReadOnly(on: boolean) {
+      readOnly = on
+      view.updateState(view.state)
+    },
   },
 })

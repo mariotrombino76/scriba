@@ -101,6 +101,13 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Modificato
 
+- Sola lettura (`editable: () => false`):
+  - `@scriba/core`: opzione `readOnly` di `keymap()` e di `runKeymaps()`. In sola lettura girano
+    solo le keymap marcate `readOnly: true`, e nessuna transazione che cambia il documento.
+  - `@scriba/ui`: voci `readOnly` per pulsanti e menu (trova, schermo intero, sorgente),
+    attive anche in sola lettura.
+  - `@scriba/view`: l'area resta raggiungibile con Tab (`tabindex="0"`).
+  - Da registrare con `readOnly: true`: `findReplaceKeymap` e `fullscreenKeymap`.
 - `@scriba/plugin-markdown`: le foglie inline con `leafText` (es. menzioni) escono come testo.
 - `@scriba/core`, cronologia: le transazioni aggiunte dai plugin (`appendTransaction`) fanno
   parte dello stesso passo di annulla della transazione che le ha generate. Esempio: una
@@ -112,6 +119,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- In sola lettura le voci del menu "Altre opzioni" (toolbar stretta) erano attive e
+  modificavano il documento.
 - Backspace e Canc non uniscono più il testo attraverso il bordo di una tabella; una
   selezione che entra in una cella non sposta testo dentro o fuori dalla tabella.
 - Invio su un blocco vuoto dentro una citazione la chiude.

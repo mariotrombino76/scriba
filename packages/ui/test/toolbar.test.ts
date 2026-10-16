@@ -127,6 +127,35 @@ describe('<scriba-toolbar>', () => {
     expect(control('block-style').getAttribute('aria-disabled')).toBe('true')
   })
 
+  it('read-only: items marked readOnly stay usable but can never change the document', () => {
+    const { toolbar, view, control } = setup(doc(p('abc')), 1, 3)
+    let opened = 0
+    toolbar.items = [
+      {
+        type: 'button',
+        id: 'sneaky',
+        label: () => 'Sneaky',
+        readOnly: true,
+        command: (state, dispatch) => {
+          dispatch?.(state.tr.insertText('x', 1))
+          return true
+        },
+      },
+      { type: 'button', id: 'find', label: () => 'Find', readOnly: true, command: () => true, run: () => opened++ },
+      { type: 'button', id: 'edit', label: () => 'Edit', command: () => true, run: () => opened++ },
+    ] // prettier-ignore
+    view.options.editable = () => false
+    view.updateState(view.state)
+    expect(control('sneaky').getAttribute('aria-disabled')).toBe('false')
+    expect(control('find').getAttribute('aria-disabled')).toBe('false')
+    expect(control('edit').getAttribute('aria-disabled')).toBe('true')
+    control('sneaky').click()
+    control('find').click()
+    control('edit').click()
+    expect(view.state.doc.textContent).toBe('abc')
+    expect(opened).toBe(1)
+  })
+
   it('uses the translator and English fallback', () => {
     const { toolbar, control } = setup(doc(p('a')), 1, 1, 'en')
     expect(control('bold').getAttribute('aria-label')).toBe('Bold')

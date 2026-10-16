@@ -36,6 +36,11 @@ export interface ToolbarButton {
    * `command` is still used to decide whether the button is enabled.
    */
   run?: (view: EditorView) => void
+  /**
+   * Also usable when the editor is read-only (find, full screen…): only for
+   * actions that never change the document.
+   */
+  readOnly?: boolean
 }
 
 /** One choice in a toolbar menu (a color, a font, a block style…). */
@@ -59,6 +64,8 @@ export interface ToolbarMenuEntry {
   run?: (view: EditorView) => void
   /** In a `size` menu: the (row, column) this entry stands for, 1-based (e.g. a table size). */
   cell?: readonly [number, number]
+  /** Also usable when the editor is read-only (never changes the document). */
+  readOnly?: boolean
 }
 
 /** A button opening a popup menu (WAI-ARIA menu button pattern). */

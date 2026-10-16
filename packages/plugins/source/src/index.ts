@@ -120,5 +120,6 @@ export function sourceToolbarItem(t: Translate, options: SourceOptions = {}): To
     label: (tr) => tr('source.button'),
     command: () => true,
     run: (view) => openSourceDialog(view, t, options),
+    readOnly: true, // shows the HTML; saving is disabled in read-only
   }
 }

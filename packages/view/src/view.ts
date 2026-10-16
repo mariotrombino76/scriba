@@ -347,6 +347,8 @@ export class EditorView {
     const editable = this.editable
     this.dom.setAttribute('contenteditable', editable ? 'true' : 'false')
     this.dom.setAttribute('aria-readonly', editable ? 'false' : 'true')
+    // read-only content stays reachable with Tab (find, reading, selecting to copy)
+    if (!this.dom.hasAttribute('tabindex')) this.dom.tabIndex = 0
   }
 }
 

@@ -85,6 +85,7 @@ export {
   type KeyInput,
   type KeyBindings,
   type KeymapOptions,
+  type RunKeymapsOptions,
 } from './keymap.js'
 export {
   history,

@@ -19,10 +19,17 @@ export interface KeymapOptions {
   priority?: number
   /** Whether `Mod` means Cmd (mac) or Ctrl. Detected from `navigator` when omitted. */
   mac?: boolean
+  /**
+   * Also active when the editor is read-only (find, full screen…). Only for
+   * bindings that never change the document: in read-only mode transactions
+   * changing it are dropped anyway.
+   */
+  readOnly?: boolean
 }
 
 export interface KeymapProps {
   keymapPriority: number
+  keymapReadOnly?: boolean
   handleKey(
     state: EditorState,
     dispatch: ((tr: Transaction) => void) | undefined,
@@ -93,6 +100,7 @@ export function keymap(bindings: KeyBindings, options: KeymapOptions = {}): Plug
   for (const [name, cmd] of Object.entries(bindings)) map.set(normalizeKeyName(name, mac), cmd)
   const props: KeymapProps = {
     keymapPriority: options.priority ?? 0,
+    keymapReadOnly: options.readOnly ?? false,
     handleKey: (state, dispatch, input, view) => {
       const cmd = map.get(keyInputName(input))
       return !!cmd && cmd(state, dispatch, view)
@@ -101,16 +109,29 @@ export function keymap(bindings: KeyBindings, options: KeymapOptions = {}): Plug
   return new Plugin({ props: { ...props } })
 }
 
+export interface RunKeymapsOptions {
+  /**
+   * The editor is read-only: only keymaps created with `readOnly: true` run,
+   * and transactions changing the document are dropped.
+   */
+  readOnly?: boolean
+}
+
 /** Runs the keymaps of all plugins, highest priority first. Returns true if one handled the key. */
 export function runKeymaps(
   state: EditorState,
   dispatch: ((tr: Transaction) => void) | undefined,
   input: KeyInput,
   view?: CommandView,
+  options: RunKeymapsOptions = {},
 ): boolean {
+  const readOnly = !!options.readOnly
   const keymaps = state.plugins
     .map((p, i) => ({ props: p.props as Partial<KeymapProps>, i }))
     .filter((k) => typeof k.props.handleKey === 'function')
+    .filter((k) => !readOnly || k.props.keymapReadOnly === true)
     .sort((a, b) => (b.props.keymapPriority ?? 0) - (a.props.keymapPriority ?? 0) || a.i - b.i)
-  return keymaps.some((k) => k.props.handleKey!(state, dispatch, input, view))
+  const send =
+    readOnly && dispatch ? (tr: Transaction) => void (tr.docChanged || dispatch(tr)) : dispatch
+  return keymaps.some((k) => k.props.handleKey!(state, send, input, view))
 }
