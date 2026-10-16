@@ -34,6 +34,7 @@ export default defineConfig({
       '@scriba/plugin-mention': plugin('mention'),
       '@scriba/plugin-permissions': plugin('permissions'),
       '@scriba/plugin-task': plugin('task'),
+      '@scriba/plugin-callout': plugin('callout'),
       '@scriba/plugin-markdown': plugin('markdown'),
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-find-replace': plugin('find-replace'),

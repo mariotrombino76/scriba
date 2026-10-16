@@ -1,5 +1,10 @@
 export { EditorView, type EditorViewOptions } from './view.js'
-export { NODE_VIEW_ATTR, type NodeView, type NodeViewFactory } from './node-view.js'
+export {
+  NODE_VIEW_ATTR,
+  NODE_CONTENT_ATTR,
+  type NodeView,
+  type NodeViewFactory,
+} from './node-view.js'
 export { renderSpec, type RenderedSpec } from './render.js'
 export { TRUSTED_TYPES_POLICY, parseInertHTML } from './trusted-types.js'
 export {

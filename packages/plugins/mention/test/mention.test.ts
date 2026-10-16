@@ -330,4 +330,17 @@ describe('mentions', () => {
     await settle()
     expect(calls.map((c) => c.query)).toEqual([''])
   })
+
+  it('" @" read together (two quick compositions) still opens the list', async () => {
+    const { view, type } = setup()
+    type('Ciao')
+    const p = view.dom.querySelector('p')!
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    p.firstChild!.textContent = 'Ciao @'
+    window.getSelection()!.setBaseAndExtent(p.firstChild!, 6, p.firstChild!, 6)
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: ' @' }))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(getMentionState(view.state).active).toBe(true)
+    expect(getMentionState(view.state).from).toBe(6)
+  })
 })

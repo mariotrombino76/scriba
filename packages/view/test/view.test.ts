@@ -165,13 +165,20 @@ describe('input', () => {
     await tick()
     expect(seen).toEqual(['3:c'])
     expect(view.state.doc.eq(doc(p('abc')))).toBe(true)
-    // caret elsewhere (the diff cannot tell where the text went): just read it
+    // DOM caret not updated yet, but the model caret was where the text went: handled
+    const late = view.dom.querySelector('p')!.firstChild as Text
+    late.data = 'abcd'
+    window.getSelection()!.setBaseAndExtent(late, 0, late, 0)
+    await tick()
+    expect(seen).toEqual(['3:c', '4:d'])
+    // both carets elsewhere (the diff cannot tell where the text went): just read it
+    view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, 1)))
     const again = view.dom.querySelector('p')!.firstChild as Text
-    again.data = 'abcd'
+    again.data = 'abcde'
     window.getSelection()!.setBaseAndExtent(again, 0, again, 0)
     await tick()
-    expect(seen).toEqual(['3:c'])
-    expect(view.state.doc.eq(doc(p('abcd')))).toBe(true)
+    expect(seen).toEqual(['3:c', '4:d'])
+    expect(view.state.doc.eq(doc(p('abcde')))).toBe(true)
   })
 
   it('a composition starting right after another one is not interrupted', async () => {

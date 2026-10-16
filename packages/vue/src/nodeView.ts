@@ -1,7 +1,16 @@
 import { NodeSelection, type Node } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import type { EditorView, NodeView, NodeViewFactory } from '@scriba/view'
-import { defineComponent, h, render, shallowReactive, type AppContext, type Component } from 'vue'
+import {
+  defineComponent,
+  h,
+  provide,
+  render,
+  shallowReactive,
+  type AppContext,
+  type Component,
+} from 'vue'
+import { CONTENT } from './NodeViewContent.js'
 
 /** Props a component shown by `vueNodeView` receives. */
 export interface NodeViewProps {
@@ -37,7 +46,10 @@ export interface VueNodeViewOptions {
 }
 
 /**
- * Shows atomic nodes of a type with a Vue component (see `NodeViewProps`).
+ * Shows nodes of a type with a Vue component (see `NodeViewProps`). Atomic
+ * nodes are drawn entirely by it; nodes with content need a
+ * `<NodeViewContent />` in the template, where the editor shows and edits the
+ * content (mark the rest `contenteditable="false"`).
  * The component only draws the node and changes its attributes through
  * `updateAttrs`: the document stays the source of truth, and the HTML output
  * still comes from the node's `toHTML` (never from the component's DOM).
@@ -53,6 +65,11 @@ export function vueNodeView(
   return (node: Node, view: EditorView, getPos: () => number | null): NodeView => {
     const dom = view.document.createElement(options.as ?? (node.isInline ? 'span' : 'div'))
     dom.className = 'scriba-node-view'
+    // nodes with content: the editor renders it here, placed by <NodeViewContent>
+    const contentDOM = node.isLeaf
+      ? null
+      : view.document.createElement(node.isInline ? 'span' : 'div')
+    contentDOM?.classList.add('scriba-node-view-content')
     const state = shallowReactive({ node, selected: false, editable: view.editable })
 
     const updateAttrs = (attrs: Record<string, unknown>): boolean => {
@@ -76,6 +93,7 @@ export function vueNodeView(
     }
 
     const Root = defineComponent({
+      setup: () => provide(CONTENT, contentDOM),
       render: () =>
         h(component, {
           node: state.node,
@@ -96,6 +114,7 @@ export function vueNodeView(
 
     return {
       dom,
+      contentDOM,
       update(next) {
         if (next.type !== state.node.type) return false
         state.node = next

@@ -1,10 +1,22 @@
-import { Mark, NodeSelection, Selection, type EditorState, type Transaction } from '@scriba/core'
+import {
+  Mark,
+  NodeSelection,
+  Selection,
+  TextSelection,
+  type EditorState,
+  type Transaction,
+} from '@scriba/core'
 import { renderContent, updateDesc, type RenderContext } from './build.js'
 import { DecorationIndex, stateDecorations } from './decorations.js'
 import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
 import { attachInputHandlers } from './input.js'
-import { NODE_VIEW_ATTR, defaultStopEvent, type NodeViewFactory } from './node-view.js'
+import {
+  NODE_VIEW_ATTR,
+  defaultStopEvent,
+  inNodeViewChrome,
+  type NodeViewFactory,
+} from './node-view.js'
 import { someProp, type PluginView, type ViewPluginProps } from './plugin-hooks.js'
 import { readDOMSelection, writeDOMSelection } from './selection.js'
 
@@ -276,9 +288,9 @@ export class EditorView {
   /** @internal Whether an event comes from inside a node view and must be left alone. */
   eventInNodeView(event: Event): boolean {
     const target = event.target
-    if (!(target instanceof Element) || target === this.dom) return false
+    if (!(target instanceof Element) || !inNodeViewChrome(target, this.dom)) return false
     const el = target.closest(`[${NODE_VIEW_ATTR}]`)
-    if (!el || !this.dom.contains(el)) return false
+    if (!el) return false
     for (const desc of this.customViews) {
       if (desc.dom !== el) continue
       const custom = desc.custom!
@@ -297,10 +309,10 @@ export class EditorView {
     const blocks = new Set<NodeViewDesc>()
     let structural = false
     for (const record of records) {
-      // what happens inside a node view is its own business
+      // what happens inside a node view is its own business (except in its content element)
       const target =
         record.target.nodeType === 1 ? (record.target as Element) : record.target.parentElement
-      if (target?.closest(`[${NODE_VIEW_ATTR}]`) && target !== this.dom) continue
+      if (inNodeViewChrome(target, this.dom)) continue
       const block = textblockDescOf(record.target, this.rootDesc)
       if (block) blocks.add(block)
       else structural = true
@@ -378,8 +390,37 @@ export class EditorView {
     if (!diff || diff.endA !== diff.start || diff.endB === diff.start) return false
     const text = after.text.slice(diff.start, diff.endB)
     if (text.includes(LEAF_CHAR) || /[\r\n]/.test(text)) return false
-    // the caret the user sees must be right after the new text (else the diff guessed
-    // wrong, e.g. "aa" + "a"): count the DOM text from the block start to the caret
+    const from = start + diff.start
+    // The text must have gone where the caret is (else the diff guessed wrong, e.g.
+    // "aa" + "a"): the model caret was there, or the DOM caret is right after it
+    // (counting the DOM text from the block start; browsers may update it late).
+    const sel = this.state.selection
+    if (!(sel.empty && sel.from === from) && !this.domCaretAfter(desc, after.text, diff.endB))
+      return false
+    const chars = [...text]
+    if (chars.length === 1)
+      return someProp(this.state, 'handleTextInput', (handle) => handle(this, from, from, text))
+    // Several characters at once (compositions read together, e.g. " " then "@" on a
+    // fast keyboard): one at a time, as if typed, so each can trigger its rule or menu.
+    this.dispatch(this.state.tr.setSelection(TextSelection.create(this.state.doc, from)))
+    const stored = this.state.storedMarks
+    let offset = diff.start
+    for (const ch of chars) {
+      const pos = this.state.selection.from
+      if (!someProp(this.state, 'handleTextInput', (handle) => handle(this, pos, pos, ch))) {
+        const parent = this.state.doc.resolve(pos).parent
+        const marks = (stored ?? after.marks[offset]!).filter((m) =>
+          parent.type.allowsMarkType(m.type),
+        )
+        this.dispatch(this.state.tr.replaceWith(pos, pos, this.state.schema.text(ch, marks)))
+      }
+      offset += ch.length
+    }
+    return true
+  }
+
+  /** The DOM caret sits right after the first `end` chars of the block's DOM text. */
+  private domCaretAfter(desc: NodeViewDesc, text: string, end: number): boolean {
     const domSel = this.document.getSelection()
     const content = desc.contentDOM
     if (!domSel?.isCollapsed || !domSel.focusNode || !content?.contains(domSel.focusNode))
@@ -387,10 +428,7 @@ export class EditorView {
     const range = this.document.createRange()
     range.setStart(content, 0)
     range.setEnd(domSel.focusNode, domSel.focusOffset)
-    const upToCaret = after.text.slice(0, diff.endB).split(LEAF_CHAR).join('')
-    if (range.toString() !== upToCaret) return false
-    const from = start + diff.start
-    return someProp(this.state, 'handleTextInput', (handle) => handle(this, from, from, text))
+    return range.toString() === text.slice(0, end).split(LEAF_CHAR).join('')
   }
 
   /** @internal Textblock containing the DOM selection anchor (e.g. the one being composed). */

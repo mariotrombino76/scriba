@@ -29,6 +29,14 @@
   --scriba-comment-active: #fcd34d;
   --scriba-suggest-insert: #166534;
   --scriba-suggest-delete: #b91c1c;
+  --scriba-callout-info-bg: #e5ecfc;
+  --scriba-callout-info: #2549b8;
+  --scriba-callout-tip-bg: #dcfce7;
+  --scriba-callout-tip: #166534;
+  --scriba-callout-warning-bg: #fef3c7;
+  --scriba-callout-warning: #92400e;
+  --scriba-callout-danger-bg: #fee2e2;
+  --scriba-callout-danger: #b91c1c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,6 +64,14 @@
     --scriba-comment-active: #6b5414;
     --scriba-suggest-insert: #86efac;
     --scriba-suggest-delete: #fca5a5;
+    --scriba-callout-info-bg: #1e2a44;
+    --scriba-callout-info: #9db5ff;
+    --scriba-callout-tip-bg: #14301f;
+    --scriba-callout-tip: #86efac;
+    --scriba-callout-warning-bg: #3d2f0b;
+    --scriba-callout-warning: #fcd34d;
+    --scriba-callout-danger-bg: #3f1616;
+    --scriba-callout-danger: #fca5a5;
   }
 }
 
@@ -83,6 +99,14 @@
   --scriba-comment-active: #6b5414;
   --scriba-suggest-insert: #86efac;
   --scriba-suggest-delete: #fca5a5;
+  --scriba-callout-info-bg: #1e2a44;
+  --scriba-callout-info: #9db5ff;
+  --scriba-callout-tip-bg: #14301f;
+  --scriba-callout-tip: #86efac;
+  --scriba-callout-warning-bg: #3d2f0b;
+  --scriba-callout-warning: #fcd34d;
+  --scriba-callout-danger-bg: #3f1616;
+  --scriba-callout-danger: #fca5a5;
 }
 
 /* Editing area */
@@ -1091,6 +1115,66 @@ html.scriba-fullscreen-open body {
 .scriba-task-error {
   color: var(--scriba-error);
   font-size: 0.875rem;
+}
+
+/* Callout node view (example Vue component with editable content) */
+.scriba-callout-view {
+  margin: 0.75em 0;
+  padding: 8px 12px;
+  border-left: 4px solid var(--scriba-callout-info);
+  border-radius: var(--scriba-radius);
+  background: var(--scriba-callout-info-bg);
+  color: var(--scriba-text);
+}
+.scriba-callout-view[data-callout='tip'] {
+  border-left-color: var(--scriba-callout-tip);
+  background: var(--scriba-callout-tip-bg);
+}
+.scriba-callout-view[data-callout='warning'] {
+  border-left-color: var(--scriba-callout-warning);
+  background: var(--scriba-callout-warning-bg);
+}
+.scriba-callout-view[data-callout='danger'] {
+  border-left-color: var(--scriba-callout-danger);
+  background: var(--scriba-callout-danger-bg);
+}
+.scriba-callout-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-family: var(--scriba-font);
+  font-size: 0.875rem;
+  user-select: none;
+}
+.scriba-callout-kind {
+  min-height: 28px;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--scriba-text);
+  font: inherit;
+  cursor: pointer;
+}
+.scriba-callout-kind[aria-checked='true'] {
+  border-color: var(--scriba-text);
+  background: var(--scriba-bg);
+  font-weight: 600;
+}
+.scriba-callout-kind:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+.scriba-callout-kind:disabled {
+  cursor: default;
+}
+.scriba-callout-body > :first-child {
+  margin-top: 0;
+}
+.scriba-callout-body > :last-child {
+  margin-bottom: 0;
 }
 
 /* Bubble menu: a compact toolbar over the selected text */

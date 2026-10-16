@@ -134,6 +134,11 @@ const ICONS = {
   chevronDown: [['path', 'm6 9 6 6 6-6']],
   chevronRight: [['path', 'm9 18 6-6-6-6']],
   check: [['path', 'M20 6 9 17l-5-5']],
+  callout: [
+    ['path', 'M4 4h16v16H4z'],
+    ['path', 'M8 9h8'],
+    ['path', 'M8 13h6'],
+  ],
   task: [
     ['path', 'm9 11 3 3L22 4'],
     ['path', 'M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'],

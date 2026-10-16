@@ -78,7 +78,8 @@ import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@sc
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
-import { TaskView, vueNodeView } from '@scriba/vue'
+import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -150,6 +151,7 @@ const schema = new Schema({
       ...imageNodes,
       ...mentionNodes,
       ...taskNodes,
+      ...calloutNodes,
       ...tableNodes,
     }),
   ),
@@ -178,6 +180,7 @@ function saluta(nome: string): string {
 <blockquote><p>Citazioni dal pulsante ❝ — Backspace all'inizio per uscirne.</p></blockquote>
 <table><tr><th><p>Funzione</p></th><th><p>Come</p></th></tr><tr><td><p>Tabelle</p></td><td><p>Tab per passare alla cella successiva, trascina per selezionare più celle, menu «Tabella» per righe, colonne, unione</p></td></tr><tr><td><p>Larghezza colonne</p></td><td><p>Trascina il bordo destro di una cella</p></td></tr></table>
 <p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>
+<aside data-callout="tip"><p>Riquadro disegnato da un componente Vue: scegli il tipo in alto, il testo qui dentro si modifica come il resto.</p></aside>
 <p data-block-id="lock-clausola">Blocco protetto: si legge, si commenta, ma non si modifica (data-block-id con permesso negato).</p>`
 
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
@@ -228,6 +231,7 @@ const aiOptions: AiOptions = {
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
+  calloutSlashItem(schema),
   {
     id: 'bullet_list',
     label: (tr) => tr('list.bullet'),
@@ -364,7 +368,10 @@ const view: EditorView = new EditorView($('editor'), {
   state,
   label: 'Testo del documento',
   // example node view: tasks drawn by a Vue component
-  nodeViews: { task: vueNodeView(TaskView, { t }) },
+  nodeViews: {
+    task: vueNodeView(TaskView, { t }),
+    callout: vueNodeView(CalloutView, { t }),
+  },
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
   dispatchTransaction(tr) {
@@ -396,6 +403,7 @@ toolbar.items = [
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
       taskToolbarItem(schema),
+      calloutToolbarItem(schema),
       commentToolbarItem(comments, t),
       aiToolbarItem(aiOptions),
     ],

@@ -48,6 +48,11 @@ describe.each(Object.entries(themes))('%s theme contrast', (_name, v) => {
     ['focus', 'find-current', 3],
     ['focus', 'bg', 3],
     ['accent', 'bg', 3],
+    ...(['info', 'tip', 'warning', 'danger'] as const).flatMap((k) => [
+      ['text', `callout-${k}-bg`, 4.5] as const,
+      ['muted', `callout-${k}-bg`, 4.5] as const,
+      [`callout-${k}`, `callout-${k}-bg`, 3] as const,
+    ]),
   ] as const)('%s on %s ≥ %s:1', (fg, bg, min) => {
     expect(v[fg], `missing --scriba-${fg}`).toBeDefined()
     expect(ratio(v[fg]!, v[bg]!)).toBeGreaterThanOrEqual(min)

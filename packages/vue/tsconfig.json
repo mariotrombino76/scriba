@@ -9,7 +9,8 @@
       "@scriba/view": ["../view/src/index.ts"],
       "@scriba/ui": ["../ui/src/index.ts"],
       "@scriba/i18n": ["../i18n/src/index.ts"],
-      "@scriba/plugin-task": ["../plugins/task/src/index.ts"]
+      "@scriba/plugin-task": ["../plugins/task/src/index.ts"],
+      "@scriba/plugin-callout": ["../plugins/callout/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts"]

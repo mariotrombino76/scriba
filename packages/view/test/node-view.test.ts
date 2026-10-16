@@ -139,3 +139,104 @@ describe('node views', () => {
     expect(log.at(-1)).toBe('destroy')
   })
 })
+
+describe('node views with content', () => {
+  const boxNodes = {
+    box: {
+      group: 'block',
+      content: 'block+',
+      attrs: { kind: { default: 'info', validate: (v) => v === 'info' || v === 'warning' } },
+      parseHTML: [{ tag: 'aside' }],
+      toHTML: (node) => ['aside', { 'data-kind': node.attrs['kind'] as string }, 0],
+    },
+  } satisfies Record<string, NodeSpec>
+  const boxSchema = new Schema({
+    nodes: { ...basicSchemaSpec.nodes, ...boxNodes },
+    marks: basicSchemaSpec.marks,
+  })
+  const bp = (text: string) => boxSchema.node('paragraph', null, text ? [boxSchema.text(text)] : [])
+
+  function setupBox(withContent = true) {
+    const log: string[] = []
+    let header: HTMLElement | null = null
+    const place = document.createElement('div')
+    document.body.appendChild(place)
+    const view = new EditorView(place, {
+      state: EditorState.create({
+        schema: boxSchema,
+        doc: boxSchema.node('doc', null, [
+          bp('a'),
+          boxSchema.nodes['box']!.create({ kind: 'info' }, [bp('in')]),
+        ]),
+      }),
+      nodeViews: {
+        box: (node) => {
+          const dom = document.createElement('div')
+          header = document.createElement('div')
+          header.setAttribute('contenteditable', 'false')
+          header.textContent = String(node.attrs['kind'])
+          header.append(document.createElement('button'))
+          const contentDOM = document.createElement('div')
+          dom.append(header, contentDOM)
+          log.push('create')
+          return {
+            dom,
+            contentDOM: withContent ? contentDOM : null,
+            update(next) {
+              log.push(`update ${next.attrs['kind']}`)
+              header!.firstChild!.textContent = String(next.attrs['kind'])
+              return true
+            },
+          }
+        },
+      },
+    })
+    return { view, log, header: () => header! }
+  }
+
+  it('the editor renders the content inside contentDOM; HTML from toHTML', () => {
+    const { view } = setupBox()
+    const content = view.dom.querySelector('[data-scriba-node-content]')!
+    expect(content.innerHTML).toBe('<p>in</p>')
+    expect(view.dom.querySelector('[data-scriba-node-view]')!.hasAttribute('contenteditable')).toBe(
+      false,
+    )
+    expect(serializeHTML(view.state.doc)).toBe('<p>a</p><aside data-kind="info"><p>in</p></aside>')
+  })
+
+  it('content edits and attribute changes keep the node view', () => {
+    const { view, log } = setupBox()
+    const dom = view.dom.querySelector('[data-scriba-node-view]')
+    view.dispatch(view.state.tr.insertText('X', 6))
+    view.dispatch(view.state.tr.setNodeAttrs(3, { kind: 'warning' }))
+    expect(view.dom.querySelector('[data-scriba-node-view]')).toBe(dom)
+    expect(view.dom.querySelector('[data-scriba-node-content]')!.innerHTML).toBe('<p>iXn</p>')
+    expect(log).toEqual(['create', 'update info', 'update warning'])
+  })
+
+  it('text the browser writes inside the content is read; the header is left alone', async () => {
+    const { view, header } = setupBox()
+    const text = view.dom.querySelector('[data-scriba-node-content] p')!.firstChild as Text
+    text.data = 'inn'
+    header().append(document.createElement('span'))
+    await new Promise((r) => setTimeout(r, 0))
+    expect(view.state.doc.child(1).textContent).toBe('inn')
+    expect(header().querySelector('span')).not.toBeNull()
+    // typing inside the content is the editor's, a click on the header button is not
+    const typed = new InputEvent('beforeinput', {
+      inputType: 'insertText',
+      data: 'z',
+      bubbles: true,
+      cancelable: true,
+    })
+    view.dom.querySelector('[data-scriba-node-content] p')!.dispatchEvent(typed)
+    expect(typed.defaultPrevented).toBe(true)
+    const press = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    header().querySelector('button')!.dispatchEvent(press)
+    expect(press.defaultPrevented).toBe(false)
+  })
+
+  it('a node view of a node with content must give a contentDOM', () => {
+    expect(() => setupBox(false)).toThrow(/needs a contentDOM/)
+  })
+})

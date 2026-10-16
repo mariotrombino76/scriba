@@ -30,6 +30,7 @@
     "@scriba/view": "workspace:*"
   },
   "devDependencies": {
-    "@scriba/plugin-task": "workspace:*"
+    "@scriba/plugin-task": "workspace:*",
+    "@scriba/plugin-callout": "workspace:*"
   }
 }

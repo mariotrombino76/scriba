@@ -112,6 +112,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     controlli interni restano al componente. L'HTML esce sempre da `toHTML`.
   - `@scriba/vue`: `vueNodeView(Componente, { t, appContext })`, opzione `nodeViews` di
     `useScriba` e di `<ScribaEditor>`, componente d'esempio `TaskView`.
+  - Node view con contenuto modificabile: la node view fornisce `contentDOM`, dove l'editor
+    disegna e modifica il contenuto del nodo come altrove; il resto resta del componente
+    (`contenteditable="false"`). In Vue: `<NodeViewContent />`.
+  - `@scriba/plugin-callout`: riquadro (`<aside class="scriba-callout" data-callout>`, tipi
+    info, consiglio, avviso, pericolo), `toggleCallout`, voce toolbar e voce slash; componente
+    d'esempio `CalloutView` in `@scriba/vue`, con il tipo scelto da un gruppo di pulsanti radio.
   - `@scriba/plugin-task`: nodo `task` (titolo, fatto, scadenza), `insertTask`, `taskKeymap`
     (Invio entra nei campi, Spazio segna fatto), voce toolbar e voce slash.
 - `@scriba/core`: `arrowAtom` nella `baseKeymap`. Con le frecce si entra in un blocco atomico
@@ -142,6 +148,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 - Scorciatoie Markdown, `/` e `@` non funzionavano con l'IME e con le tastiere Android, che
   scrivono il testo da sole. Ora quel testo passa da `handleTextInput` come quello digitato.
+- IME: più caratteri letti insieme (due composizioni ravvicinate, per esempio `" @"`) passano
+  da `handleTextInput` uno alla volta, come se fossero digitati.
 - IME: una composizione che iniziava subito dopo un'altra (spazio, poi una lettera) veniva
   interrotta. La view rileggeva e ridisegnava il blocco mentre l'IME ci stava ancora scrivendo.
 - `@scriba/core`: `lift` (e quindi `toggleWrap`/`toggleBlockquote`) andava in `TypeError` con
@@ -173,6 +181,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Regex di trova e sostituisci eseguite in un Web Worker interrotto dopo 1 s.
 - Collaborazione: identità, autore di commenti e proposte assegnati dal server; aggiornamenti
   remoti validati contro lo schema; limiti su messaggi, frequenza e dimensione del documento.
+- Riquadri: diventa riquadro solo un `<aside>` con `data-callout`; il tipo viene da una lista
+  chiusa (un valore sconosciuto diventa `info`) e il contenuto passa dallo schema.
 - Attività: titolo su una riga (niente caratteri di controllo), data `AAAA-MM-GG` reale, stato
   booleano; nell'HTML solo testo e tre attributi `data-` di forma fissa.
 - Blocchi protetti: la regola vale nell'editor ma va ripetuta sul server con `checkBlockEdits`

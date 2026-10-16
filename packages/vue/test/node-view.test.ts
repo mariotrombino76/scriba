@@ -14,7 +14,8 @@ import {
 import { createTranslator } from '@scriba/i18n'
 import { EditorView } from '@scriba/view'
 import { taskNodes } from '@scriba/plugin-task'
-import { TaskView, vueNodeView } from '../src/index.js'
+import { calloutNodes } from '@scriba/plugin-callout'
+import { CalloutView, TaskView, vueNodeView } from '../src/index.js'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...taskNodes },
@@ -103,5 +104,54 @@ describe('vueNodeView + TaskView', () => {
     view.dispatch(view.state.tr.delete(0, 1))
     await nextTick()
     expect(el.childElementCount).toBe(0) // render(null): component unmounted
+  })
+})
+
+describe('vueNodeView with content: CalloutView', () => {
+  const calloutSchema = new Schema({
+    nodes: { ...basicSchemaSpec.nodes, ...calloutNodes },
+    marks: basicSchemaSpec.marks,
+  })
+  function setupCallout() {
+    const place = document.createElement('div')
+    document.body.appendChild(place)
+    const doc = parseHTML(
+      calloutSchema,
+      new DOMParser().parseFromString(
+        '<p>a</p><aside data-callout="info"><p>dentro</p></aside>',
+        'text/html',
+      ).body,
+    )
+    const view = new EditorView(place, {
+      state: EditorState.create({ schema: calloutSchema, doc, plugins: [history()] }),
+      nodeViews: { callout: vueNodeView(CalloutView, { t }) },
+    })
+    return { view, q: <E extends Element>(s: string) => view.dom.querySelector<E>(s)! }
+  }
+
+  it('the editor shows the content inside the component; the header is not editable', () => {
+    const { q } = setupCallout()
+    expect(q('.scriba-callout-view').getAttribute('aria-label')).toBe('Riquadro: Informazione')
+    expect(q('.scriba-callout-head').getAttribute('contenteditable')).toBe('false')
+    expect(q('.scriba-callout-body [data-scriba-node-content]').innerHTML).toBe('<p>dentro</p>')
+  })
+
+  it('choosing a kind changes the attribute (undoable); typing inside keeps the component', async () => {
+    const { view, q } = setupCallout()
+    const head = q('.scriba-callout-head')
+    q<HTMLButtonElement>('[role=radio]:nth-child(3)').click()
+    await nextTick()
+    expect(view.state.doc.child(1).attrs['kind']).toBe('warning')
+    expect(q('.scriba-callout-view').getAttribute('data-callout')).toBe('warning')
+    view.dispatch(view.state.tr.insertText('!', 11))
+    await nextTick()
+    expect(q('.scriba-callout-head')).toBe(head) // not re-created
+    expect(serializeHTML(view.state.doc)).toBe(
+      '<p>a</p><aside class="scriba-callout" data-callout="warning"><p>dentro!</p></aside>',
+    )
+    undo(view.state, (tr) => view.dispatch(tr))
+    undo(view.state, (tr) => view.dispatch(tr))
+    await nextTick()
+    expect(q('.scriba-callout-view').getAttribute('data-callout')).toBe('info')
   })
 })

@@ -8,7 +8,7 @@ import {
   TRAILING_BREAK_CLASS,
   type ViewDesc,
 } from './desc.js'
-import { NODE_VIEW_ATTR, type NodeView } from './node-view.js'
+import { NODE_CONTENT_ATTR, NODE_VIEW_ATTR, type NodeView } from './node-view.js'
 import { renderSpec } from './render.js'
 
 /** What rendering needs besides the node: the decorations to show, custom node views. */
@@ -29,17 +29,22 @@ export function renderNode(
   pos: number,
   ctx: RenderContext,
 ): NodeViewDesc {
-  if (node.isAtom && ctx.nodeView) {
+  if (ctx.nodeView && !node.isText) {
     let desc: NodeViewDesc | null = null
     const custom = ctx.nodeView(node, () =>
       desc && !desc.gone && desc.parent ? desc.posBefore() : null,
     )
     if (custom) {
-      custom.dom.setAttribute('contenteditable', 'false')
+      const contentDOM = node.isLeaf ? null : (custom.contentDOM ?? null)
+      if (!node.isLeaf && !contentDOM)
+        throw new RangeError(`The node view of "${node.type.name}" needs a contentDOM`)
       custom.dom.setAttribute(NODE_VIEW_ATTR, '')
-      desc = new NodeViewDesc(node, custom.dom, null)
+      if (contentDOM) contentDOM.setAttribute(NODE_CONTENT_ATTR, '')
+      else custom.dom.setAttribute('contenteditable', 'false')
+      desc = new NodeViewDesc(node, custom.dom, contentDOM)
       desc.custom = custom
       ctx.register?.(desc)
+      if (contentDOM) renderContent(doc, desc, pos + 1, ctx)
       return desc
     }
   }
@@ -201,12 +206,16 @@ export function updateDesc(
   ctx: RenderContext,
 ): NodeViewDesc {
   if (desc.node === node) return desc
-  // a custom node view may show the new version itself (e.g. changed attributes)
-  if (desc.custom && desc.node.type === node.type && desc.custom.update?.(node)) {
-    desc.node = node
-    return desc
-  }
-  if (!desc.node.sameMarkup(node) || node.isLeaf || !desc.contentDOM) {
+  if (desc.custom) {
+    // a custom node view may show the new version itself (e.g. changed attributes)
+    if (desc.node.type !== node.type || !desc.custom.update?.(node))
+      return renderNode(doc, node, contentStart - 1, ctx)
+    if (!desc.contentDOM) {
+      desc.node = node
+      return desc
+    }
+    // its content is reconciled below, like any other node's
+  } else if (!desc.node.sameMarkup(node) || node.isLeaf || !desc.contentDOM) {
     return renderNode(doc, node, contentStart - 1, ctx)
   }
   desc.node = node

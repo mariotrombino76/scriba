@@ -173,4 +173,16 @@ describe('IME and keyboards that write the DOM themselves (Android)', () => {
     await tick()
     expect(html()).toBe('<p>ciao mondo</p>')
   })
+
+  it('several characters composed at once still trigger rules ("# Titolo")', async () => {
+    const { view, html } = mounted('')
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    const para = view.dom.querySelector('p')!
+    para.textContent = '# Titolo' // the browser replaces the empty line's <br>
+    window.getSelection()!.setBaseAndExtent(para.firstChild!, 8, para.firstChild!, 8)
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: '# Titolo' }))
+    await tick()
+    await tick()
+    expect(html()).toBe('<h1>Titolo</h1>')
+  })
 })

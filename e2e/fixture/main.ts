@@ -74,7 +74,8 @@ import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@sc
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { taskKeymap, taskNodes, taskSlashItem } from '@scriba/plugin-task'
-import { TaskView, vueNodeView } from '@scriba/vue'
+import { calloutNodes, calloutSlashItem } from '@scriba/plugin-callout'
+import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -147,6 +148,7 @@ const schema = new Schema({
       ...imageNodes,
       ...mentionNodes,
       ...taskNodes,
+      ...calloutNodes,
       ...tableNodes,
     }),
   ),
@@ -203,6 +205,7 @@ const aiOptions: AiOptions = {
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
+  calloutSlashItem(schema),
   {
     id: 'bullet_list',
     label: (tr) => tr('list.bullet'),
@@ -337,7 +340,10 @@ const view = new EditorView(app, {
   state,
   label: 'Editor di prova',
   // example node view: tasks drawn by a Vue component
-  nodeViews: { task: vueNodeView(TaskView, { t }) },
+  nodeViews: {
+    task: vueNodeView(TaskView, { t }),
+    callout: vueNodeView(CalloutView, { t }),
+  },
   // collaborative: editable only once the server allows writing
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
