@@ -183,4 +183,21 @@ describe('selection', () => {
     view.syncSelectionFromDOM()
     expect(view.state.selection.head).toBe(7)
   })
+
+  it('focus by click keeps the clicked caret; keyboard focus restores the model selection', () => {
+    const view = mount(doc(p('abc'), p('de')))
+    view.dom.blur()
+    const domSel = window.getSelection()!
+    const text = view.dom.querySelectorAll('p')[1]!.firstChild!
+    // Firefox order: mousedown, the browser places the caret, then focus
+    view.dom.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    domSel.setBaseAndExtent(text, 1, text, 1)
+    view.dom.dispatchEvent(new FocusEvent('focus'))
+    view.document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+    expect(view.posAtDOM(domSel.focusNode!, domSel.focusOffset)).toBe(7)
+    // keyboard (Tab): the model selection comes back
+    domSel.removeAllRanges()
+    view.dom.dispatchEvent(new FocusEvent('focus'))
+    expect(domSel.rangeCount).toBe(1)
+  })
 })

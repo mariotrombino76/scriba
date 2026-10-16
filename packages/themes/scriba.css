@@ -1041,6 +1041,12 @@ html.scriba-fullscreen-open body {
   display: none;
 }
 
+/* Protected blocks (plugin-permissions): readable, visibly not editable */
+.scriba-locked {
+  border-left: 3px solid var(--scriba-muted);
+  padding-left: 8px;
+}
+
 /* Bubble menu: a compact toolbar over the selected text */
 scriba-toolbar[hidden] {
   display: none;

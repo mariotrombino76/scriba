@@ -10,6 +10,15 @@ const setReadOnly = (page: Page, on: boolean) =>
       ),
     on,
   )
+/** Synthetic paste (Firefox drops data of synthetic ClipboardEvents). */
+const paste = (page: Page, data: Record<string, string>) =>
+  page.evaluate((data) => {
+    const event = new Event('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(event, 'clipboardData', {
+      value: { getData: (t: string) => data[t] ?? '' },
+    })
+    document.querySelector('[role=textbox]')!.dispatchEvent(event)
+  }, data)
 const editor = (page: Page) => page.getByRole('textbox', { name: 'Editor di prova' })
 const toolbar = (page: Page) => page.getByRole('toolbar', { name: 'Formattazione', exact: true })
 const panel = (page: Page) => page.getByRole('dialog', { name: 'Trova e sostituisci' })
@@ -44,10 +53,10 @@ test('typing, deleting, shortcuts, undo, paste and drop change nothing', async (
     await page.keyboard.press(key)
   await page.keyboard.type('/tab @an')
   await expect(page.getByRole('listbox')).toHaveCount(0)
+  await paste(page, { 'text/html': '<p>incollato</p>', 'text/plain': 'incollato' })
   await editor(page).evaluate((el) => {
     const data = new DataTransfer()
     data.setData('text/html', '<p>incollato</p>')
-    el.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true }))
     el.dispatchEvent(new DragEvent('drop', { dataTransfer: data, bubbles: true }))
   })
   expect(await html(page)).toBe(TEXT)

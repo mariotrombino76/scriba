@@ -76,6 +76,7 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
+import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -138,15 +139,17 @@ const searchPeople: MentionSearch = (query, signal) =>
     })
   })
 const schema = new Schema({
-  nodes: withBlockStyles({
-    ...basicSchemaSpec.nodes,
-    ...blockquoteNodes,
-    ...listNodes,
-    ...codeBlockNodes,
-    ...imageNodes,
-    ...mentionNodes,
-    ...tableNodes,
-  }),
+  nodes: withBlockIds(
+    withBlockStyles({
+      ...basicSchemaSpec.nodes,
+      ...blockquoteNodes,
+      ...listNodes,
+      ...codeBlockNodes,
+      ...imageNodes,
+      ...mentionNodes,
+      ...tableNodes,
+    }),
+  ),
   marks: {
     ...linkMarks,
     ...basicSchemaSpec.marks,
@@ -171,7 +174,8 @@ function saluta(nome: string): string {
 }</code></pre>
 <blockquote><p>Citazioni dal pulsante ❝ — Backspace all'inizio per uscirne.</p></blockquote>
 <table><tr><th><p>Funzione</p></th><th><p>Come</p></th></tr><tr><td><p>Tabelle</p></td><td><p>Tab per passare alla cella successiva, trascina per selezionare più celle, menu «Tabella» per righe, colonne, unione</p></td></tr><tr><td><p>Larghezza colonne</p></td><td><p>Trascina il bordo destro di una cella</p></td></tr></table>
-<p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>`
+<p>Incolla del testo da Word o Google Docs e guarda l'HTML a destra.</p>
+<p data-block-id="lock-clausola">Blocco protetto: si legge, si commenta, ma non si modifica (data-block-id con permesso negato).</p>`
 
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
 
@@ -302,6 +306,8 @@ const state = EditorState.create({
   doc,
   plugins: [
     history(),
+    // protected blocks: ids starting with "lock" (a real app asks its server)
+    ...blockPermissions({ canEdit: (id) => !id.startsWith('lock'), t }),
     ...(shared?.plugins ?? []),
     commentsPlugin(comments),
     suggestionsPlugin({ store: comments, t }),

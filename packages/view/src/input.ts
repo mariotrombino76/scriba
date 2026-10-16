@@ -235,6 +235,10 @@ function onDoubleClick(view: EditorView, event: MouseEvent): void {
 export function attachInputHandlers(view: EditorView): () => void {
   const dom = view.dom
   const doc = view.document
+  // A click focuses the editor and places the caret itself; Firefox fires
+  // `focus` after placing it, so restoring the model selection there would
+  // move the caret away from the click. Only keyboard focus restores it.
+  let pointerDown = false
   const listeners: [EventTarget, string, (e: Event) => void][] = [
     [dom, 'beforeinput', (e) => onBeforeInput(view, e as InputEvent)],
     [dom, 'keydown', (e) => onKeyDown(view, e as KeyboardEvent)],
@@ -247,9 +251,17 @@ export function attachInputHandlers(view: EditorView): () => void {
     // Moving content by dragging is not supported yet: the browser must not move DOM itself.
     [dom, 'dragstart', (e) => e.preventDefault()],
     [dom, 'drop', (e) => onDrop(view, e as DragEvent)],
-    [dom, 'mousedown', (e) => onMouseDown(view, e as MouseEvent)],
+    [
+      dom,
+      'mousedown',
+      (e) => {
+        pointerDown = true
+        onMouseDown(view, e as MouseEvent)
+      },
+    ],
+    [doc, 'mouseup', () => (pointerDown = false)],
     [dom, 'dblclick', (e) => onDoubleClick(view, e as MouseEvent)],
-    [dom, 'focus', () => view.syncSelectionToDOM()],
+    [dom, 'focus', () => !pointerDown && view.syncSelectionToDOM()],
     [doc, 'selectionchange', () => view.syncSelectionFromDOM()],
   ]
   for (const [target, type, fn] of listeners) target.addEventListener(type, fn)

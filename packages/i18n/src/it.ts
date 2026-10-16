@@ -211,6 +211,7 @@ export const it: Messages = {
   'mention.loading': 'Ricerca…',
   'mention.none': 'Nessuna persona trovata',
   'mention.error': 'Ricerca non riuscita',
+  'permissions.locked': 'Questo blocco è protetto: non puoi modificarlo',
   'bubble.label': 'Formattazione della selezione',
   'collab.connecting': 'Connessione…',
   'collab.connected': 'Online',

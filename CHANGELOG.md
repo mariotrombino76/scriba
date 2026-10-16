@@ -98,6 +98,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     riga o dopo uno spazio apre l'elenco; `search(query, signal)` è dell'integratore, una
     ricerca più recente annulla la precedente e le risposte in ritardo vengono ignorate.
   - Scegliere una menzione è un passo di annulla a sé.
+- `@scriba/plugin-permissions`: blocchi protetti.
+  - `withBlockIds`: id opzionale dei blocchi (`data-block-id`), assegnato dall'integratore.
+  - `blockPermissions({ canEdit, t, allowMarks, trusted, onRefused })`: un blocco con
+    `canEdit(id) === false` non si modifica, non si cancella e non si duplica. Restano possibili
+    lettura, selezione e commenti. Avviso letto dagli screen reader; le modifiche remote della
+    collaborazione passano.
+  - Gli id incollati vengono tolti; quando un blocco viene diviso, l'id resta a un solo pezzo.
+  - `checkBlockEdits(prima, dopo, regole)` per il server, `transactionAllowed(tr, regole)`.
 
 ### Modificato
 
@@ -119,6 +127,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- Firefox: il primo clic in un editor senza focus metteva il cursore nella posizione
+  precedente invece che nel punto cliccato.
 - In sola lettura le voci del menu "Altre opzioni" (toolbar stretta) erano attive e
   modificavano il documento.
 - Backspace e Canc non uniscono più il testo attraverso il bordo di una tabella; una
@@ -144,6 +154,8 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Regex di trova e sostituisci eseguite in un Web Worker interrotto dopo 1 s.
 - Collaborazione: identità, autore di commenti e proposte assegnati dal server; aggiornamenti
   remoti validati contro lo schema; limiti su messaggi, frequenza e dimensione del documento.
+- Blocchi protetti: la regola vale nell'editor ma va ripetuta sul server con `checkBlockEdits`
+  (il client non è fidato). Un blocco nuovo non può prendere un id protetto.
 - Menzioni: id e nome validati (lunghezza, niente spazi nell'id, niente caratteri di controllo
   o di direzione); risultati della ricerca filtrati e mostrati solo come testo. Il nome è solo
   testo visibile: va risolto l'id sul server (nome attuale, permessi, notifiche).

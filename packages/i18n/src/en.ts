@@ -209,6 +209,7 @@ export const en = {
   'mention.loading': 'Searching…',
   'mention.none': 'No one found',
   'mention.error': 'Search failed',
+  'permissions.locked': 'This block is protected: you cannot edit it',
   'bubble.label': 'Selection formatting',
   'collab.connecting': 'Connecting…',
   'collab.connected': 'Online',

@@ -9,8 +9,9 @@ import {
   historyKeymap,
   keymap,
   serializeHTML,
+  parseHTML,
 } from '@scriba/core'
-import { EditorView } from '@scriba/view'
+import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
 import {
   blockStyleMenu,
@@ -71,6 +72,7 @@ import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
 import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
+import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -134,15 +136,17 @@ const searchPeople: MentionSearch = (query, signal) =>
     })
   })
 const schema = new Schema({
-  nodes: withBlockStyles({
-    ...basicSchemaSpec.nodes,
-    ...blockquoteNodes,
-    ...listNodes,
-    ...codeBlockNodes,
-    ...imageNodes,
-    ...mentionNodes,
-    ...tableNodes,
-  }),
+  nodes: withBlockIds(
+    withBlockStyles({
+      ...basicSchemaSpec.nodes,
+      ...blockquoteNodes,
+      ...listNodes,
+      ...codeBlockNodes,
+      ...imageNodes,
+      ...mentionNodes,
+      ...tableNodes,
+    }),
+  ),
   marks: {
     ...linkMarks,
     ...basicSchemaSpec.marks,
@@ -276,6 +280,8 @@ const state = EditorState.create({
   schema,
   plugins: [
     history(),
+    // protected blocks: ids starting with "lock" (a real app asks its server)
+    ...blockPermissions({ canEdit: (id) => !id.startsWith('lock'), t }),
     ...(shared?.plugins ?? []),
     commentsPlugin(comments),
     suggestionsPlugin({ store: comments, t }),
@@ -393,6 +399,11 @@ Object.assign(window, {
     json: () => view.state.doc.toJSON(),
     selection: () => ({ from: view.state.selection.from, to: view.state.selection.to }),
     cspViolations,
+    /** Loads HTML as the integrator would (setContent): ids included. */
+    setHTML(source: string) {
+      const doc = parseHTML(schema, parseInertHTML(source).body)
+      view.updateState(EditorState.create({ schema, doc, plugins: view.state.plugins }))
+    },
     setReadOnly(on: boolean) {
       readOnly = on
       view.updateState(view.state)

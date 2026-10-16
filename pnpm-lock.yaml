@@ -345,6 +345,22 @@ importers:
         specifier: workspace:*
         version: link:../text-style
 
+  packages/plugins/permissions:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+    devDependencies:
+      '@scriba/plugin-blockquote':
+        specifier: workspace:*
+        version: link:../blockquote
+
   packages/plugins/slash:
     dependencies:
       '@scriba/core':
