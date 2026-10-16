@@ -16,7 +16,7 @@ export {
   type AuthResult,
   type CollabUserInfo,
 } from './server.js'
-export { applyGuardedUpdate } from './blocks.js'
+export { applyAnnotationUpdate, applyGuardedUpdate } from './blocks.js'
 export {
   MESSAGE_COMMENTS,
   MAX_THREADS,

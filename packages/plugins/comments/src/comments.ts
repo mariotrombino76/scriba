@@ -23,6 +23,7 @@ export const commentMarks = {
     excludes: '', // several comments may cover the same text
     inclusive: false,
     serialize: false,
+    annotation: true, // commenters (read-only) may add and remove it
     toHTML: (mark: Mark) => [
       'span',
       { class: 'scriba-comment-anchor', 'data-comment': mark.attrs['id'] as string },

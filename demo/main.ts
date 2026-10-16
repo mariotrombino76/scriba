@@ -319,7 +319,7 @@ const state = EditorState.create({
     ...(shared?.plugins ?? []),
     commentsPlugin(comments),
     suggestionsPlugin({ store: comments, t }),
-    keymap(commentsKeymap(comments, t), { priority: 80 }),
+    keymap(commentsKeymap(comments, t), { priority: 80, readOnly: true }),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -336,7 +336,7 @@ const state = EditorState.create({
       ],
       t,
     }),
-    keymap(bubbleKeymap(), { priority: 80 }),
+    keymap(bubbleKeymap(), { priority: 80, readOnly: true }),
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
@@ -363,6 +363,7 @@ const outJSON = $('out-json')
 const outMd = $('out-md')
 const status = $('status')
 let readOnly = false
+let canComment = false
 
 const view: EditorView = new EditorView($('editor'), {
   state,
@@ -374,6 +375,10 @@ const view: EditorView = new EditorView($('editor'), {
   },
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
+  // commenters: read-only but may comment (locally with ?comment, or as the server says)
+  canAnnotate: () =>
+    canComment ||
+    (!!shared && shared.provider.status === 'connected' && shared.provider.canComment),
   dispatchTransaction(tr) {
     view.updateState(view.state.apply(tr))
     refresh()
@@ -438,6 +443,11 @@ checkbox.addEventListener('change', () => {
   readOnly = checkbox.checked
   view.updateState(view.state)
   refresh()
+})
+const commentBox = $<HTMLInputElement>('comment')
+commentBox.addEventListener('change', () => {
+  canComment = commentBox.checked
+  view.updateState(view.state)
 })
 
 function refresh(): void {

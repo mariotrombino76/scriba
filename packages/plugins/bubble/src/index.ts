@@ -53,7 +53,8 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
 
   const wanted = (): boolean => {
     const sel = view.state.selection
-    if (!view.editable || selecting || !(sel instanceof TextSelection) || sel.empty) return false
+    // commenters (read-only) get it too: only the controls they may use are enabled
+    if (!view.canAnnotate || selecting || !(sel instanceof TextSelection) || sel.empty) return false
     if (sel.$from.parent.type.spec.code || dismissed === sel) return false
     const active = doc.activeElement
     return view.hasFocus() || (!!active && bar.contains(active))

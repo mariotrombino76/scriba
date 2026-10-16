@@ -232,6 +232,7 @@ export const en = {
   'collab.connecting': 'Connecting…',
   'collab.connected': 'Online',
   'collab.readOnly': 'Read only',
+  'collab.commentOnly': 'Comment only',
   'collab.disconnected': 'Offline: changes will be sent when the connection returns',
   'collab.denied': 'Access denied',
   'ai.button': 'AI assistant',

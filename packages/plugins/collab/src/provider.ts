@@ -36,6 +36,8 @@ export class CollabProvider {
   status: CollabStatus = 'connecting'
   /** Granted by the server (read-only users can follow but not edit). */
   canWrite = false
+  /** Granted by the server: may comment (editors, and read-only commenters). */
+  canComment = false
   private ws: WebSocket | null = null
   private attempts = 0
   private retry: ReturnType<typeof setTimeout> | undefined
@@ -117,6 +119,7 @@ export class CollabProvider {
       const scope = decoding.readVarString(decoder)
       if (!granted) return // the server closes the connection next
       this.canWrite = scope === 'read-write'
+      this.canComment = scope === 'read-write' || scope === 'comment'
       this.ready = true
       this.attempts = 0
       // now sync: our state vector, and our cursor
@@ -221,6 +224,7 @@ export function collabStatusElement(
       | 'collab.connecting'
       | 'collab.connected'
       | 'collab.readOnly'
+      | 'collab.commentOnly'
       | 'collab.disconnected'
       | 'collab.denied',
   ) => string,
@@ -232,7 +236,13 @@ export function collabStatusElement(
     el.dataset['status'] = status
     el.textContent =
       status === 'connected'
-        ? t(provider.canWrite ? 'collab.connected' : 'collab.readOnly')
+        ? t(
+            provider.canWrite
+              ? 'collab.connected'
+              : provider.canComment
+                ? 'collab.commentOnly'
+                : 'collab.readOnly',
+          )
         : t(`collab.${status}` as 'collab.connecting')
   }
   render(provider.status)

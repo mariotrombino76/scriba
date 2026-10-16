@@ -234,6 +234,7 @@ export const it: Messages = {
   'collab.connecting': 'Connessione…',
   'collab.connected': 'Online',
   'collab.readOnly': 'Sola lettura',
+  'collab.commentOnly': 'Solo commenti',
   'collab.disconnected': 'Offline: le modifiche saranno inviate quando torna la connessione',
   'collab.denied': 'Accesso negato',
   'ai.button': 'Assistente AI',

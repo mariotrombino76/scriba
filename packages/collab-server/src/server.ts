@@ -6,7 +6,7 @@ import * as syncProtocol from 'y-protocols/sync'
 import * as awarenessProtocol from 'y-protocols/awareness'
 import { WebSocketServer, type WebSocket } from 'ws'
 import type { Schema } from '@scriba/core'
-import { applyGuardedUpdate } from './blocks.js'
+import { applyAnnotationUpdate, applyGuardedUpdate } from './blocks.js'
 import { MESSAGE_COMMENTS, applyCommentOp, publicThreads, type StoredThread } from './comments.js'
 
 /** Message types (y-websocket compatible, plus our auth message from the client). */
@@ -42,6 +42,12 @@ export interface AuthResult {
    * are undone. Needs the `schema` option.
    */
   canEditBlock?: (id: string) => boolean
+  /**
+   * With `canWrite: false`: the user may still comment (comment threads, and
+   * comment anchors in the text: updates changing anything else are undone).
+   * Needs the `schema` option.
+   */
+  canComment?: boolean
 }
 
 export interface CollabLimits {
@@ -284,7 +290,14 @@ export class CollabServer {
     const ok = encoding.createEncoder()
     encoding.writeVarUint(ok, MESSAGE_AUTH)
     encoding.writeVarUint(ok, 1) // authorized
-    encoding.writeVarString(ok, auth.canWrite ? 'read-write' : 'read-only')
+    encoding.writeVarString(
+      ok,
+      auth.canWrite
+        ? 'read-write'
+        : auth.canComment && this.options.schema
+          ? 'comment'
+          : 'read-only',
+    )
     send(ws, encoding.toUint8Array(ok))
     const step1 = encoding.createEncoder()
     encoding.writeVarUint(step1, MESSAGE_SYNC)
@@ -342,13 +355,22 @@ export class CollabServer {
           sub === syncProtocol.messageYjsSyncStep2 ||
           sub === syncProtocol.messageYjsUpdate
         ) {
-          if (!conn.auth.canWrite) return // read-only: changes refused
+          const commenter = !conn.auth.canWrite && !!conn.auth.canComment && !!this.options.schema
+          if (!conn.auth.canWrite && !commenter) return // read-only: changes refused
           const update = decoding.readVarUint8Array(decoder)
           const size = Y.encodeStateAsUpdate(shared.ydoc).byteLength
           if (size + update.byteLength > this.limits.maxDocumentBytes)
             return conn.ws.close(CLOSE.tooLarge, 'document too large')
           const canEdit = conn.auth.canEditBlock
-          if (!canEdit) Y.applyUpdate(shared.ydoc, update, conn)
+          if (commenter)
+            applyAnnotationUpdate(
+              shared.ydoc,
+              update,
+              conn,
+              this.options.schema!,
+              this.options.field,
+            )
+          else if (!canEdit) Y.applyUpdate(shared.ydoc, update, conn)
           // misconfigured (rules without a schema): refuse rather than accept unchecked
           else if (this.options.schema)
             applyGuardedUpdate(
@@ -363,7 +385,12 @@ export class CollabServer {
       } else if (type === MESSAGE_COMMENTS) {
         const request = JSON.parse(decoding.readVarString(decoder)) as { ref?: unknown }
         const ref = typeof request.ref === 'number' ? request.ref : 0
-        const result = applyCommentOp(shared.threads, request, conn.auth.user, conn.auth.canWrite)
+        const result = applyCommentOp(
+          shared.threads,
+          request,
+          conn.auth.user,
+          conn.auth.canWrite || (!!conn.auth.canComment && !!this.options.schema),
+        )
         if ('error' in result) {
           this.sendComments(conn, shared, { type: 'result', ref, ok: false, error: result.error })
           return

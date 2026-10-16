@@ -2,7 +2,12 @@ import { normalizeColor } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
 import { createIcon } from './icons.js'
-import type { ToolbarMenu, ToolbarMenuEntry } from './items.js'
+import {
+  controlUsable,
+  transactionAllowed,
+  type ToolbarMenu,
+  type ToolbarMenuEntry,
+} from './items.js'
 import { formatShortcut } from './shortcut.js'
 
 let menuCount = 0
@@ -143,7 +148,7 @@ export class MenuPopup {
     this.entries.forEach(({ el, entry }, i) => {
       const view = this.getView()
       // `run` entries are enabled by their command too; read-only editors only allow read-only entries
-      const enabled = !!state && (!!view?.editable || !!entry.readOnly) && entry.command(state)
+      const enabled = !!state && !!view && controlUsable(view, entry) && entry.command(state)
       el.setAttribute('aria-disabled', String(!enabled))
       if (entry.isActive) {
         const on = !!state && entry.isActive(state)
@@ -234,7 +239,7 @@ export class MenuPopup {
       entry.run(view)
       return
     }
-    entry.command(view.state, (tr) => (view.editable || !tr.docChanged) && view.dispatch(tr), view)
+    entry.command(view.state, (tr) => transactionAllowed(view, tr) && view.dispatch(tr), view)
     this.close(false)
     view.focus()
   }

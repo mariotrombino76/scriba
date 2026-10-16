@@ -3,7 +3,9 @@ import { createTranslator, type Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
 import { createIcon } from './icons.js'
 import {
+  controlUsable,
   defaultToolbarItems,
+  transactionAllowed,
   type ToolbarButton,
   type ToolbarControl,
   type ToolbarItem,
@@ -284,8 +286,7 @@ export class ScribaToolbar extends Base {
       }
       let enabled: boolean
       if (item.type === 'menu') {
-        enabled =
-          !!state && item.entries.some((e) => (view!.editable || !!e.readOnly) && e.command(state))
+        enabled = !!state && item.entries.some((e) => controlUsable(view!, e) && e.command(state))
         if (c.value) {
           const value = state && item.valueLabel ? item.valueLabel(state, t) : ''
           c.value.textContent = value
@@ -299,9 +300,7 @@ export class ScribaToolbar extends Base {
         }
       } else {
         enabled =
-          !!state &&
-          (view!.editable || !!item.readOnly) &&
-          (item.command(state) || !!item.isActive?.(state))
+          !!state && controlUsable(view!, item) && (item.command(state) || !!item.isActive?.(state))
         if (item.isActive) el.setAttribute('aria-pressed', String(!!state && item.isActive(state)))
       }
       el.setAttribute('aria-disabled', String(!enabled))
@@ -406,6 +405,7 @@ export class ScribaToolbar extends Base {
           command: item.command,
           ...(item.run ? { run: item.run } : {}),
           ...(item.readOnly ? { readOnly: true } : {}),
+          ...(item.annotates ? { annotates: true } : {}),
         })
       }
     }
@@ -427,7 +427,7 @@ export class ScribaToolbar extends Base {
       item.run(view)
       return
     }
-    item.command(view.state, (tr) => (view.editable || !tr.docChanged) && view.dispatch(tr), view)
+    item.command(view.state, (tr) => transactionAllowed(view, tr) && view.dispatch(tr), view)
     // Mouse users go back to typing; keyboard users stay in the toolbar.
     if (this.ownerDocument.activeElement !== el) view.focus()
   }

@@ -1,4 +1,5 @@
 import {
+  isAnnotationOnly,
   isMarkActive,
   redo,
   setBlockType,
@@ -7,6 +8,7 @@ import {
   type Command,
   type EditorState,
   type Schema,
+  type Transaction,
 } from '@scriba/core'
 import type { MessageKey, Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
@@ -41,6 +43,8 @@ export interface ToolbarButton {
    * actions that never change the document.
    */
   readOnly?: boolean
+  /** Also usable by people who may only comment (it only adds or removes annotations). */
+  annotates?: boolean
 }
 
 /** One choice in a toolbar menu (a color, a font, a block style…). */
@@ -66,6 +70,8 @@ export interface ToolbarMenuEntry {
   cell?: readonly [number, number]
   /** Also usable when the editor is read-only (never changes the document). */
   readOnly?: boolean
+  /** Also usable by people who may only comment (it only adds or removes annotations). */
+  annotates?: boolean
 }
 
 /** A button opening a popup menu (WAI-ARIA menu button pattern). */
@@ -244,4 +250,23 @@ export function defaultToolbarItems(schema: Schema): ToolbarItem[] {
     toolbarGroup('text-style', 'toolbar.group.textStyle', style ? [style] : [], 3),
     toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
   ]
+}
+
+/** The view a control needs to decide whether it can be used. */
+interface PermissionView {
+  readonly editable: boolean
+  readonly canAnnotate: boolean
+}
+
+/** Whether a control can be used now: editable, or meant for read-only / commenting. */
+export function controlUsable(
+  view: PermissionView,
+  item: { readOnly?: boolean; annotates?: boolean },
+): boolean {
+  return view.editable || !!item.readOnly || (!!item.annotates && view.canAnnotate)
+}
+
+/** Whether a control's transaction may be applied (read-only: no change; commenters: annotations). */
+export function transactionAllowed(view: PermissionView, tr: Transaction): boolean {
+  return view.editable || !tr.docChanged || (view.canAnnotate && isAnnotationOnly(tr))
 }

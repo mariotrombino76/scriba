@@ -292,7 +292,7 @@ const state = EditorState.create({
     ...(shared?.plugins ?? []),
     commentsPlugin(comments),
     suggestionsPlugin({ store: comments, t }),
-    keymap(commentsKeymap(comments, t), { priority: 80 }),
+    keymap(commentsKeymap(comments, t), { priority: 80, readOnly: true }),
     pasteClean(),
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
@@ -310,7 +310,7 @@ const state = EditorState.create({
       t,
       mac: false,
     }),
-    keymap(bubbleKeymap(), { priority: 80 }),
+    keymap(bubbleKeymap(), { priority: 80, readOnly: true }),
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
@@ -336,6 +336,7 @@ const toolbar = document.createElement('scriba-toolbar')
 app.appendChild(toolbar)
 // read-only mode: ?readonly in the URL or window.scriba.setReadOnly()
 let readOnly = new URLSearchParams(location.search).has('readonly')
+let canComment = new URLSearchParams(location.search).has('comment')
 const view = new EditorView(app, {
   state,
   label: 'Editor di prova',
@@ -347,6 +348,10 @@ const view = new EditorView(app, {
   // collaborative: editable only once the server allows writing
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
+  // commenters: read-only but may comment (locally with ?comment, or as the server says)
+  canAnnotate: () =>
+    canComment ||
+    (!!shared && shared.provider.status === 'connected' && shared.provider.canComment),
 })
 if (shared) {
   app.appendChild(collabStatusElement(document, shared.provider, t))
@@ -416,6 +421,10 @@ Object.assign(window, {
     setHTML(source: string) {
       const doc = parseHTML(schema, parseInertHTML(source).body)
       view.updateState(EditorState.create({ schema, doc, plugins: view.state.plugins }))
+    },
+    setCanComment(on: boolean) {
+      canComment = on
+      view.updateState(view.state)
     },
     setReadOnly(on: boolean) {
       readOnly = on

@@ -183,6 +183,45 @@ describe('collab server', () => {
     await until(() => html(b).includes('nuovo'))
   })
 
+  it('commenters: told "comment", their anchors stay, their text changes are undone', async () => {
+    const cSchema = new Schema({
+      nodes: basicSchemaSpec.nodes,
+      marks: {
+        ...basicSchemaSpec.marks,
+        comment: { attrs: { id: {} }, excludes: '', annotation: true, toHTML: () => ['span', 0] },
+      },
+    })
+    const { url } = await start({
+      schema: cSchema,
+      authenticate: (token) => {
+        const u = USERS[token]
+        if (!u) return null
+        return token === 'tok-guest'
+          ? { user: { id: u.id, name: u.name }, canWrite: false, canComment: true }
+          : { user: { id: u.id, name: u.name }, canWrite: true }
+      },
+    })
+    const a = client(url, 'tok-anna')
+    const c = client(url, 'tok-guest')
+    await until(() => a.provider.status === 'connected' && c.provider.status === 'connected')
+    expect(c.provider.canWrite).toBe(false)
+    expect(c.provider.canComment).toBe(true)
+    const para = (...nodes: ReturnType<typeof cSchema.text>[]) =>
+      cSchema.node('doc', null, [cSchema.node('paragraph', null, nodes)])
+    const html = (x: { ydoc: Y.Doc }) =>
+      JSON.stringify(docFromY(cSchema, x.ydoc.getXmlFragment('scriba')).toJSON())
+    writeDoc(a.ydoc.getXmlFragment('scriba'), para(cSchema.text('ciao')))
+    await until(() => html(c).includes('ciao'))
+    const fc = c.ydoc.getXmlFragment('scriba')
+    const mark = cSchema.marks['comment']!.create({ id: 'c1' })
+    updateFragment(fc, docFromY(cSchema, fc), para(cSchema.text('ci'), cSchema.text('ao', [mark])))
+    await until(() => html(a).includes('"comment"'))
+    updateFragment(fc, docFromY(cSchema, fc), para(cSchema.text('ci'), cSchema.text('ao!', [mark])))
+    await until(() => !html(c).includes('ao!'))
+    await new Promise((r) => setTimeout(r, 100))
+    expect(html(a)).not.toContain('ao!')
+  })
+
   it('auth must come first and in time; bad names are refused', async () => {
     const { url } = await start({ limits: { authTimeoutMs: 100 } })
     const silent = await raw(`${url}/doc-1`)

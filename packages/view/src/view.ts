@@ -26,6 +26,12 @@ export interface EditorViewOptions {
   dispatchTransaction?: (this: EditorView, tr: Transaction) => void
   /** Whether the content can be edited. Default: always. */
   editable?: (state: EditorState) => boolean
+  /**
+   * When not editable: whether the user may still comment (add or remove
+   * annotation marks, see `isAnnotationOnly`). The caret then moves through
+   * the text so selections can be made with the keyboard. Default: never.
+   */
+  canAnnotate?: (state: EditorState) => boolean
   /** Accessible name of the editing area (`aria-label`). */
   label?: string
   /**
@@ -96,6 +102,11 @@ export class EditorView {
 
   get editable(): boolean {
     return this.options.editable ? this.options.editable(this.state) : true
+  }
+
+  /** Editable, or read-only but allowed to comment. */
+  get canAnnotate(): boolean {
+    return this.editable || (this.options.canAnnotate?.(this.state) ?? false)
   }
 
   /** Applies a transaction through `dispatchTransaction`. */
@@ -324,6 +335,11 @@ export class EditorView {
 
   /** @internal */
   readDOMChanges(blocks: NodeViewDesc[]): void {
+    if (!this.editable) {
+      // read-only (e.g. a commenter's IME or spellchecker): never a change, just redraw
+      this.redrawBlocks(blocks.filter((b) => b.parent).map((desc) => ({ desc })))
+      return
+    }
     const tr = this.state.tr
     const schema = this.state.schema
     const stored = this.state.storedMarks
@@ -482,7 +498,8 @@ export class EditorView {
 
   private updateEditable(): void {
     const editable = this.editable
-    this.dom.setAttribute('contenteditable', editable ? 'true' : 'false')
+    // commenters get a caret (keyboard selections) but every edit is refused
+    this.dom.setAttribute('contenteditable', editable || this.canAnnotate ? 'true' : 'false')
     this.dom.setAttribute('aria-readonly', editable ? 'false' : 'true')
     // read-only content stays reachable with Tab (find, reading, selecting to copy)
     if (!this.dom.hasAttribute('tabindex')) this.dom.tabIndex = 0

@@ -31,7 +31,7 @@ export function openCommentDialog(
   store: CommentStore,
   t: Translate,
 ): DialogHandle | null {
-  if (view.state.selection.empty) return null
+  if (view.state.selection.empty || !view.canAnnotate) return null
   return openDialog(view.document, {
     title: t('comments.new'),
     returnFocus: () => view.focus(),
@@ -130,11 +130,14 @@ export function commentsPanel(
   sList.className = 'scriba-suggestion-list'
   suggestions.append(sTitle, all, sList)
   const settle = (id: string | null, accept: boolean) => {
+    if (!view.editable) return // accepting or rejecting changes the text
     const ids = id ? [id] : listSuggestions(view.state.doc).map((x) => x.id)
     resolveSuggestion(view, id, accept)
     for (const x of ids) void store.setResolved(x, true).catch(() => undefined) // keep the record
     view.focus()
   }
+  acceptAll.classList.add('scriba-needs-edit')
+  rejectAll.classList.add('scriba-needs-edit')
   acceptAll.addEventListener('click', () => settle(null, true))
   rejectAll.addEventListener('click', () => settle(null, false))
   el.append(title, filter, empty, list, suggestions)
@@ -179,6 +182,8 @@ export function commentsPanel(
       reject.addEventListener('click', () => settle(sug.id, false))
       const actions = doc.createElement('div')
       actions.className = 'scriba-thread-actions'
+      accept.classList.add('scriba-needs-edit')
+      reject.classList.add('scriba-needs-edit')
       actions.append(accept, reject)
       li.append(who, ' ', what, actions)
       sList.appendChild(li)
@@ -238,7 +243,7 @@ export function commentsPanel(
       if (store.userId && c.author.id === store.userId && thread.comments.length > 1) {
         const del = doc.createElement('button')
         del.type = 'button'
-        del.className = 'scriba-comment-delete'
+        del.className = 'scriba-comment-delete scriba-needs-comment'
         del.textContent = t('comments.deleteOne')
         del.addEventListener('click', () => void store.deleteComment(thread.id, c.id).catch(fail))
         entry.appendChild(del)
@@ -257,10 +262,12 @@ export function commentsPanel(
     const send = doc.createElement('button')
     send.type = 'submit'
     send.textContent = t('comments.send')
+    area.classList.add('scriba-needs-comment')
+    send.classList.add('scriba-needs-comment')
     form.append(area, send)
     form.addEventListener('submit', (e) => {
       e.preventDefault()
-      if (!area.value.trim()) return
+      if (!area.value.trim() || !view.canAnnotate) return
       const text = area.value
       area.value = ''
       void store.reply(thread.id, text).catch(() => {
@@ -281,6 +288,8 @@ export function commentsPanel(
     remove.type = 'button'
     remove.textContent = t('comments.delete')
     remove.addEventListener('click', () => void deleteThread(view, store, thread.id).catch(fail))
+    resolve.classList.add('scriba-needs-comment')
+    remove.classList.add('scriba-needs-comment')
     actions.append(resolve, remove)
     article.append(form, actions)
     li.appendChild(article)
@@ -333,6 +342,19 @@ export function commentsPanel(
     }
     empty.hidden = shown.length > 0
     renderSuggestions()
+    applyPermissions()
+  }
+
+  /** Readers see everything; commenters may comment; only editors accept or reject changes. */
+  const applyPermissions = () => {
+    for (const b of el.querySelectorAll<HTMLButtonElement | HTMLTextAreaElement>(
+      '.scriba-needs-edit',
+    ))
+      b.disabled = !view.editable
+    for (const b of el.querySelectorAll<HTMLButtonElement | HTMLTextAreaElement>(
+      '.scriba-needs-comment',
+    ))
+      b.disabled = !view.canAnnotate
   }
 
   let lastState: unknown = null
@@ -345,6 +367,7 @@ export function commentsPanel(
     render()
   }
   const unsubscribe = view.subscribe(() => {
+    applyPermissions() // e.g. the editor became read-only
     const s = getComments(view.state)
     if (s === lastState) {
       // the text changed: quotes and order follow, once per frame

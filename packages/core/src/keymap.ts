@@ -1,6 +1,7 @@
 import type { Command, CommandView } from './commands/base.js'
 import { Plugin } from './state/plugin.js'
 import type { EditorState } from './state/state.js'
+import { isAnnotationOnly } from './state/annotation.js'
 import type { Transaction } from './state/transaction.js'
 
 /** The parts of a keyboard event a keymap needs (a DOM `KeyboardEvent` fits). */
@@ -115,6 +116,8 @@ export interface RunKeymapsOptions {
    * and transactions changing the document are dropped.
    */
   readOnly?: boolean
+  /** Read-only but allowed to comment: annotation-only transactions go through. */
+  canAnnotate?: boolean
 }
 
 /** Runs the keymaps of all plugins, highest priority first. Returns true if one handled the key. */
@@ -131,7 +134,9 @@ export function runKeymaps(
     .filter((k) => typeof k.props.handleKey === 'function')
     .filter((k) => !readOnly || k.props.keymapReadOnly === true)
     .sort((a, b) => (b.props.keymapPriority ?? 0) - (a.props.keymapPriority ?? 0) || a.i - b.i)
+  const allowed = (tr: Transaction) =>
+    !tr.docChanged || (!!options.canAnnotate && isAnnotationOnly(tr))
   const send =
-    readOnly && dispatch ? (tr: Transaction) => void (tr.docChanged || dispatch(tr)) : dispatch
+    readOnly && dispatch ? (tr: Transaction) => void (allowed(tr) && dispatch(tr)) : dispatch
   return keymaps.some((k) => k.props.handleKey!(state, send, input, view))
 }

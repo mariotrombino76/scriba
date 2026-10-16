@@ -162,7 +162,12 @@ function onKeyDown(view: EditorView, event: KeyboardEvent): void {
   if (!view.editable) {
     // read-only: only keymaps meant for it (find, full screen…), never a change
     view.syncSelectionFromDOM()
-    if (runKeymaps(view.state, (tr) => view.dispatch(tr), event, view, { readOnly: true }))
+    if (
+      runKeymaps(view.state, (tr) => view.dispatch(tr), event, view, {
+        readOnly: true,
+        canAnnotate: view.canAnnotate,
+      })
+    )
       event.preventDefault()
     return
   }

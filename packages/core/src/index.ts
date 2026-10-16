@@ -78,6 +78,7 @@ export {
 } from './commands/structure.js'
 export { baseKeymap, historyKeymap, formatKeymap } from './commands/base-keymap.js'
 export { arrowAtom, type ArrowDirection } from './commands/arrows.js'
+export { isAnnotationOnly } from './state/annotation.js'
 export {
   keymap,
   runKeymaps,

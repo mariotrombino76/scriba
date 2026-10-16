@@ -65,6 +65,11 @@ salvataggio se restituisce degli id. In collaborazione passa `canEditBlock` da `
 lo `schema` al server: gli aggiornamenti che toccano un blocco protetto vengono annullati per
 tutti. Il nome mostrato nelle menzioni è solo testo: risolvi sempre l'id sul server.
 
+Chi è in **sola lettura ma può commentare** (`canComment`) può solo aggiungere o togliere le
+ancore dei commenti: il server di collaborazione annulla ogni altro cambiamento. Se salvi i
+documenti con una tua API, applica la stessa regola: confronta prima e dopo ignorando i mark di
+annotazione e rifiuta il salvataggio se il resto è cambiato.
+
 ---
 
 ## English

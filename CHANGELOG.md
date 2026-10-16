@@ -128,6 +128,18 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Modificato
 
+- Ruolo "commentatore" (sola lettura, ma può commentare):
+  - `@scriba/core`: opzione `annotation` dei mark (il mark commento la usa), `isAnnotationOnly(tr)`,
+    `runKeymaps(..., { readOnly, canAnnotate })`.
+  - `@scriba/view`: opzione `canAnnotate`. I commentatori hanno il cursore (selezione da tastiera)
+    con `aria-readonly`; in sola lettura nessun testo scritto dal browser (IME, correttore) cambia
+    il documento.
+  - `@scriba/ui`: voci `annotates`, attive per i commentatori; passano solo transazioni che
+    toccano annotazioni.
+  - `@scriba/collab-server`: `canComment` in `AuthResult`; livello `comment` comunicato al client
+    (`provider.canComment`); aggiornamenti dei commentatori accettati solo se toccano annotazioni
+    (`applyAnnotationUpdate`), altrimenti annullati per tutti; canale commenti aperto ai
+    commentatori.
 - Sola lettura (`editable: () => false`):
   - `@scriba/core`: opzione `readOnly` di `keymap()` e di `runKeymaps()`. In sola lettura girano
     solo le keymap marcate `readOnly: true`, e nessuna transazione che cambia il documento.
@@ -146,6 +158,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- In sola lettura il pannello commenti permetteva di accettare o rifiutare le modifiche proposte ed
+  eliminare discussioni. Ora accetta e rifiuta richiedono la modifica, le azioni sui commenti il
+  permesso di commentare.
 - Scorciatoie Markdown, `/` e `@` non funzionavano con l'IME e con le tastiere Android, che
   scrivono il testo da sole. Ora quel testo passa da `handleTextInput` come quello digitato.
 - IME: più caratteri letti insieme (due composizioni ravvicinate, per esempio `" @"`) passano

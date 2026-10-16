@@ -51,6 +51,12 @@ export interface MarkSpec {
    * HTML (only its text is written), e.g. comment anchors and suggestions.
    */
   serialize?: boolean
+  /**
+   * An annotation (e.g. a comment anchor): adding or removing it does not
+   * change the content, so people who may only comment can do it
+   * (see `isAnnotationOnly`).
+   */
+  annotation?: boolean
   [key: string]: unknown
 }
 

@@ -31,10 +31,13 @@ export {
 } from './comments.js'
 export { commentsPanel, openCommentDialog, type CommentsPanelOptions } from './panel.js'
 
-/** Ctrl/Cmd+Alt+M: comment on the selection. */
+/**
+ * Ctrl/Cmd+Alt+M: comment on the selection. Register with `readOnly: true`
+ * so commenters (read-only, `canAnnotate`) can use it too.
+ */
 export function commentsKeymap(store: CommentStore, t: Translate): KeyBindings {
   const add: Command = (state, dispatch, view) => {
-    if (!view || state.selection.empty) return false
+    if (!view || state.selection.empty || !(view as EditorView).canAnnotate) return false
     if (dispatch) openCommentDialog(view as EditorView, store, t)
     return true
   }
@@ -50,6 +53,7 @@ export function commentToolbarItem(store: CommentStore, t: Translate): ToolbarBu
     shortcut: 'Mod-Alt-m',
     command: (state) => !state.selection.empty && !!state.schema.marks['comment'],
     run: (view) => openCommentDialog(view, store, t),
+    annotates: true,
   }
 }
 export {

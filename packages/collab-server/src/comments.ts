@@ -28,9 +28,10 @@ export function applyCommentOp(
   threads: readonly StoredThread[],
   raw: unknown,
   user: { id: string; name: string },
-  canWrite: boolean,
+  /** Editors and commenters: may add, reply, resolve, delete. */
+  canComment: boolean,
 ): { threads: StoredThread[]; threadId?: string } | { error: string } {
-  if (!canWrite) return { error: 'read-only' }
+  if (!canComment) return { error: 'read-only' }
   if (!raw || typeof raw !== 'object') return { error: 'bad-request' }
   const op = raw as Record<string, unknown>
   const name = String(user.name).replace(/\s+/g, ' ').trim().slice(0, 60)

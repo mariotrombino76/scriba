@@ -159,3 +159,60 @@ describe('comments panel', () => {
     ).toEqual(['<img src=x onerror=alert(1)> occhio', 'bozza'])
   })
 })
+
+describe('readers, commenters, editors', () => {
+  function roles(role: 'reader' | 'commenter' | 'editor') {
+    const place = document.createElement('div')
+    document.body.appendChild(place)
+    const store = createMemoryCommentStore({ id: 'u1', name: 'Anna' })
+    const view = new EditorView(place, {
+      state: EditorState.create({
+        doc: parse('<p>uno due tre</p>'),
+        plugins: [commentsPlugin(store)],
+      }),
+      editable: () => role === 'editor',
+      canAnnotate: () => role === 'commenter',
+    })
+    const panel = commentsPanel(view, { store, t, container: place })
+    return { view, store, place, panel }
+  }
+
+  it('the view: commenters get a caret but are read-only; readers get no caret', () => {
+    expect(roles('commenter').view.dom.getAttribute('contenteditable')).toBe('true')
+    expect(roles('commenter').view.dom.getAttribute('aria-readonly')).toBe('true')
+    expect(roles('reader').view.dom.getAttribute('contenteditable')).toBe('false')
+  })
+
+  it('commenters add comments (anchor = annotation); readers cannot', async () => {
+    const c = roles('commenter')
+    c.view.dispatch(c.view.state.tr.setSelection(TextSelection.create(c.view.state.doc, 5, 8)))
+    const thread = await addComment(c.view, c.store, 'Ok')
+    expect(threadRange(c.view.state.doc, thread!.id)).toEqual({ from: 5, to: 8 })
+    // the panel: commenting controls enabled
+    await tick()
+    expect(c.place.querySelector<HTMLButtonElement>('.scriba-comment-reply button')!.disabled).toBe(
+      false,
+    )
+    const r = roles('reader')
+    r.view.dispatch(r.view.state.tr.setSelection(TextSelection.create(r.view.state.doc, 5, 8)))
+    const { openCommentDialog } = await import('../src/index.js')
+    expect(openCommentDialog(r.view, r.store, t)).toBeNull()
+  })
+
+  it('a commenter cannot type: input and text written by the browser are refused', async () => {
+    const { view } = roles('commenter')
+    const typed = new InputEvent('beforeinput', {
+      inputType: 'insertText',
+      data: 'x',
+      bubbles: true,
+      cancelable: true,
+    })
+    view.dom.querySelector('p')!.dispatchEvent(typed)
+    expect(typed.defaultPrevented).toBe(true)
+    const text = view.dom.querySelector('p')!.firstChild as Text
+    text.data = 'uno due tre!!' // e.g. an IME or a spellchecker
+    await tick()
+    expect(view.state.doc.textContent).toBe('uno due tre')
+    expect(view.dom.querySelector('p')!.textContent).toBe('uno due tre')
+  })
+})
