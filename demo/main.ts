@@ -75,6 +75,7 @@ import { createWordCountStatus } from '@scriba/plugin-word-count'
 import { sourceToolbarItem } from '@scriba/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
 import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
+import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
 import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
 import {
@@ -118,6 +119,24 @@ const images: ImageUploadOptions = {
       reader.readAsDataURL(file)
     }),
 }
+// Demo people: a real app asks its server (with the user's session) and returns the matches.
+const people = [
+  { id: 'u-anna', label: 'Anna Rossi', detail: 'Redazione' },
+  { id: 'u-bruno', label: 'Bruno Bianchi', detail: 'Grafica' },
+  { id: 'u-carla', label: 'Carla Verdi' },
+  { id: 'u-dario', label: 'Dario Neri', detail: 'Revisione' },
+]
+const searchPeople: MentionSearch = (query, signal) =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      const q = query.toLowerCase()
+      resolve(people.filter((p) => p.label.toLowerCase().includes(q)))
+    }, 80)
+    signal.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    })
+  })
 const schema = new Schema({
   nodes: withBlockStyles({
     ...basicSchemaSpec.nodes,
@@ -125,6 +144,7 @@ const schema = new Schema({
     ...listNodes,
     ...codeBlockNodes,
     ...imageNodes,
+    ...mentionNodes,
     ...tableNodes,
   }),
   marks: {
@@ -290,6 +310,7 @@ const state = EditorState.create({
     ...imagePlugins(t, images),
     ...findReplacePlugins(),
     ...slashCommands(slashItems, t),
+    ...mentions({ search: searchPeople, t }),
     ...aiAssistant(aiOptions),
     keymap(aiKeymap(aiOptions), { priority: 90 }),
     bubbleMenu({
@@ -303,6 +324,7 @@ const state = EditorState.create({
     }),
     keymap(bubbleKeymap(), { priority: 80 }),
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
+    keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
     keymap(findReplaceKeymap(t), { priority: 80 }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80 }),

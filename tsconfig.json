@@ -22,6 +22,7 @@
       "@scriba/collab-server": ["./packages/collab-server/src/index.ts"],
       "@scriba/plugin-bubble": ["./packages/plugins/bubble/src/index.ts"],
       "@scriba/plugin-slash": ["./packages/plugins/slash/src/index.ts"],
+      "@scriba/plugin-mention": ["./packages/plugins/mention/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
       "@scriba/plugin-find-replace": ["./packages/plugins/find-replace/src/index.ts"],

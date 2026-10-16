@@ -31,6 +31,7 @@ export default defineConfig({
       '@scriba/plugin-collab': plugin('collab'),
       '@scriba/plugin-bubble': plugin('bubble'),
       '@scriba/plugin-slash': plugin('slash'),
+      '@scriba/plugin-mention': plugin('mention'),
       '@scriba/plugin-markdown': plugin('markdown'),
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-find-replace': plugin('find-replace'),

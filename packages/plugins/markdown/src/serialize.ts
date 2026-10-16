@@ -105,6 +105,10 @@ function inline(block: Node): string {
     } else if (child.type.name === 'image') {
       const alt = escapeText((child.attrs['alt'] as string) ?? '')
       out += `![${alt}](${linkTarget(child.attrs['src'] as string)})`
+    } else {
+      // other inline leaves (e.g. mentions): their plain text
+      const leafText = child.type.spec.leafText
+      if (leafText) out += escapeText(leafText(child))
     }
   })
   closeFrom(0)

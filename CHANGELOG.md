@@ -91,9 +91,17 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - `CommentStore` e `createMemoryCommentStore`.
   - Modifiche proposte (track changes): `suggestionMarks`, `suggestionsPlugin`,
     `resolveSuggestion`, `resolveAllSuggestions`.
+- `@scriba/plugin-mention`: menzioni `@persona` con sorgente dati asincrona.
+  - Nodo `mention` (`mentionNodes`) inline e atomico, con `id` e `label`; in HTML
+    `<span class="scriba-mention" data-mention-id="…">@Nome</span>`, in Markdown `@Nome`.
+  - `mentions({ search, t, debounce, maxResults, timeout })` e `mentionKeymap()`: "@" a inizio
+    riga o dopo uno spazio apre l'elenco; `search(query, signal)` è dell'integratore, una
+    ricerca più recente annulla la precedente e le risposte in ritardo vengono ignorate.
+  - Scegliere una menzione è un passo di annulla a sé.
 
 ### Modificato
 
+- `@scriba/plugin-markdown`: le foglie inline con `leafText` (es. menzioni) escono come testo.
 - `@scriba/core`, cronologia: le transazioni aggiunte dai plugin (`appendTransaction`) fanno
   parte dello stesso passo di annulla della transazione che le ha generate. Esempio: una
   battitura trasformata in proposta si annulla con un solo Ctrl+Z.
@@ -127,6 +135,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Regex di trova e sostituisci eseguite in un Web Worker interrotto dopo 1 s.
 - Collaborazione: identità, autore di commenti e proposte assegnati dal server; aggiornamenti
   remoti validati contro lo schema; limiti su messaggi, frequenza e dimensione del documento.
+- Menzioni: id e nome validati (lunghezza, niente spazi nell'id, niente caratteri di controllo
+  o di direzione); risultati della ricerca filtrati e mostrati solo come testo. Il nome è solo
+  testo visibile: va risolto l'id sul server (nome attuale, permessi, notifiche).
 - I mark di commento e di proposta non finiscono nell'HTML esportato e non si creano con un
   incolla.
 - Suite di sicurezza: payload XSS noti, round-trip, fuzzing con `fast-check`, parità tra

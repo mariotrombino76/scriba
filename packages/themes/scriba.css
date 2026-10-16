@@ -1020,6 +1020,27 @@ html.scriba-fullscreen-open body {
   color: var(--scriba-muted);
 }
 
+/* Mentions: the node in the text and the extra line in the list */
+.scriba-mention {
+  padding: 0 2px;
+  border-radius: 4px;
+  background: var(--scriba-accent-bg);
+  color: var(--scriba-accent);
+  white-space: nowrap;
+}
+.scriba-mention-detail {
+  margin-left: auto;
+  padding-left: 12px;
+  color: var(--scriba-muted);
+  font-size: 0.8125rem;
+}
+.scriba-slash-item[aria-selected='true'] .scriba-mention-detail {
+  color: inherit;
+}
+.scriba-mention-menu .scriba-slash-empty[hidden] {
+  display: none;
+}
+
 /* Bubble menu: a compact toolbar over the selected text */
 scriba-toolbar[hidden] {
   display: none;

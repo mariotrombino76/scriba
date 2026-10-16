@@ -110,7 +110,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - [x] Comandi slash e bubble menu
 - [x] Collaborazione Yjs con cursori degli altri utenti
 - [x] Commenti e suggerimenti (track changes)
-- [ ] Menzioni `@utente` con sorgente dati asincrona
+- [x] Menzioni `@utente` con sorgente dati asincrona
 - [x] API per assistente AI (stream di testo inserito come transazioni annullabili)
 - [ ] Modalità sola lettura e permessi per blocco
 - [ ] Plugin di esempio Vue (componente Vue renderizzato come nodo)
