@@ -140,6 +140,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- Scorciatoie Markdown, `/` e `@` non funzionavano con l'IME e con le tastiere Android, che
+  scrivono il testo da sole. Ora quel testo passa da `handleTextInput` come quello digitato.
+- IME: una composizione che iniziava subito dopo un'altra (spazio, poi una lettera) veniva
+  interrotta. La view rileggeva e ridisegnava il blocco mentre l'IME ci stava ancora scrivendo.
 - `@scriba/core`: `lift` (e quindi `toggleWrap`/`toggleBlockquote`) andava in `TypeError` con
   una selezione tra due blocchi; ora usa i limiti dell'intervallo.
 - Firefox: il primo clic in un editor senza focus metteva il cursore nella posizione

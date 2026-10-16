@@ -316,4 +316,18 @@ describe('mentions', () => {
     expect(undo(view.state, (tr) => view.dispatch(tr))).toBe(true)
     expect(html()).toBe('<p>Ciao @car</p>')
   })
+
+  it('"@" composed by an IME (Android keyboards) opens the list too', async () => {
+    const { view, settle, calls } = setup()
+    const text = view.dom.querySelector('p')!
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    text.textContent = '@'
+    const node = text.firstChild!
+    window.getSelection()!.setBaseAndExtent(node, 1, node, 1)
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: '@' }))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(getMentionState(view.state).active).toBe(true)
+    await settle()
+    expect(calls.map((c) => c.query)).toEqual([''])
+  })
 })

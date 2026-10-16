@@ -180,11 +180,16 @@ function onCompositionStart(view: EditorView): void {
   // A selection across blocks would be mangled by the browser: delete it first.
   if (!empty && !$from.sameParent($to)) run(view, deleteSelection)
   view.composing = true
+  view.compositionId++
 }
 
 function onCompositionEnd(view: EditorView): void {
   // Some browsers fire the last input after compositionend: read the DOM on the next task.
+  // A new composition may start before then (fast keyboards, Android): it reads at its own end,
+  // and touching the DOM now would break it.
+  const id = view.compositionId
   setTimeout(() => {
+    if (view.compositionId !== id) return
     view.composing = false
     const block = view.textblockDescAtDOMSelection()
     view.readDOMChanges(block ? [block] : [])

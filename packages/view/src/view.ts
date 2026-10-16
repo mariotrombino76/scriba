@@ -5,7 +5,7 @@ import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from '.
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
 import { attachInputHandlers } from './input.js'
 import { NODE_VIEW_ATTR, defaultStopEvent, type NodeViewFactory } from './node-view.js'
-import type { PluginView, ViewPluginProps } from './plugin-hooks.js'
+import { someProp, type PluginView, type ViewPluginProps } from './plugin-hooks.js'
 import { readDOMSelection, writeDOMSelection } from './selection.js'
 
 export interface EditorViewOptions {
@@ -34,6 +34,8 @@ export class EditorView {
   state: EditorState
   /** True while an IME composition is in progress. @internal */
   composing = false
+  /** Counts compositions, so a late compositionend does not end a newer one. @internal */
+  compositionId = 0
   private rootDesc: NodeViewDesc
   private readonly observer: MutationObserver
   private readonly detach: () => void
@@ -317,6 +319,10 @@ export class EditorView {
       .filter((b) => b.parent && this.dom.contains(b.dom))
       .map((b) => ({ desc: b, start: b.posAtContentStart() }))
       .sort((a, b) => b.start - a.start)
+    if (sorted.length === 1 && this.textInputFromDOM(sorted[0]!.desc, sorted[0]!.start)) {
+      this.redrawBlocks(sorted)
+      return
+    }
     let caret: number | null = null
     for (const { desc, start } of sorted) {
       const before = modelChars(desc.node)
@@ -344,15 +350,47 @@ export class EditorView {
       if (caret !== null && (!sel || sel.empty)) tr.setSelection(selectionNear(tr, caret))
       this.dispatch(tr)
     }
-    // Redraw the touched blocks from the model: removes whatever markup the browser added.
+    this.redrawBlocks(sorted)
+  }
+
+  /** Redraws touched blocks from the model: removes whatever markup the browser added. */
+  private redrawBlocks(blocks: readonly { desc: NodeViewDesc }[]): void {
     this.domChange(() => {
-      for (const { desc } of sorted) {
+      for (const { desc } of blocks) {
         if (desc.parent && this.dom.contains(desc.dom)) {
           renderContent(this.document, desc, desc.posAtContentStart(), this.context)
         }
       }
     })
     if (this.hasFocus()) this.syncSelectionToDOM()
+  }
+
+  /**
+   * Text the browser wrote itself (IME composition, Android keyboards whose
+   * input events cannot be cancelled) goes through `handleTextInput` like
+   * typed text, so input rules, "/" and "@" work there too. Only a plain
+   * insertion with the caret right after it; returns true when a plugin
+   * handled it.
+   */
+  private textInputFromDOM(desc: NodeViewDesc, start: number): boolean {
+    const after = domChars(desc, this.rootDesc)
+    const diff = charsDiff(modelChars(desc.node), after)
+    if (!diff || diff.endA !== diff.start || diff.endB === diff.start) return false
+    const text = after.text.slice(diff.start, diff.endB)
+    if (text.includes(LEAF_CHAR) || /[\r\n]/.test(text)) return false
+    // the caret the user sees must be right after the new text (else the diff guessed
+    // wrong, e.g. "aa" + "a"): count the DOM text from the block start to the caret
+    const domSel = this.document.getSelection()
+    const content = desc.contentDOM
+    if (!domSel?.isCollapsed || !domSel.focusNode || !content?.contains(domSel.focusNode))
+      return false
+    const range = this.document.createRange()
+    range.setStart(content, 0)
+    range.setEnd(domSel.focusNode, domSel.focusOffset)
+    const upToCaret = after.text.slice(0, diff.endB).split(LEAF_CHAR).join('')
+    if (range.toString() !== upToCaret) return false
+    const from = start + diff.start
+    return someProp(this.state, 'handleTextInput', (handle) => handle(this, from, from, text))
   }
 
   /** @internal Textblock containing the DOM selection anchor (e.g. the one being composed). */

@@ -125,3 +125,52 @@ describe('undo', () => {
     expect(html()).toBe('<p>**b**</p>')
   })
 })
+
+describe('IME and keyboards that write the DOM themselves (Android)', () => {
+  const tick = () => new Promise((r) => setTimeout(r, 0))
+  function mounted(initial: string) {
+    document.body.textContent = ''
+    const place = document.createElement('div')
+    document.body.appendChild(place)
+    const view = new EditorView(place, {
+      state: EditorState.create({ schema, plugins: [history(), ...markdownShortcuts(schema)] }),
+    })
+    view.dispatch(view.state.tr.insertText(initial))
+    view.focus()
+    const text = () => view.dom.querySelector('p')!.firstChild as Text
+    /** The browser writes `data` itself and puts the caret after it. */
+    const browserWrites = (data: string) => {
+      const node = text()
+      node.data = data
+      window.getSelection()!.setBaseAndExtent(node, data.length, node, data.length)
+    }
+    return { view, browserWrites, html: () => serializeHTML(view.state.doc) }
+  }
+
+  it('composition ending with "# " makes a heading', async () => {
+    const { view, browserWrites, html } = mounted('#')
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    browserWrites('# ')
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: ' ' }))
+    await tick()
+    await tick()
+    expect(html()).toBe('<h1></h1>')
+  })
+
+  it('a keyboard writing the DOM without beforeinput: "**bold**" becomes bold', async () => {
+    const { browserWrites, html } = mounted('**bold*')
+    browserWrites('**bold**')
+    await tick()
+    expect(html()).toBe('<p><strong>bold</strong></p>')
+  })
+
+  it('plain composed text is just text (no rule)', async () => {
+    const { view, browserWrites, html } = mounted('ciao')
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    browserWrites('ciao mondo')
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: ' mondo' }))
+    await tick()
+    await tick()
+    expect(html()).toBe('<p>ciao mondo</p>')
+  })
+})

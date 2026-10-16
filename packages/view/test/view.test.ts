@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { TextSelection } from '@scriba/core'
+import { Plugin, TextSelection } from '@scriba/core'
 import { b, beforeInput, br, doc, h, img, mount, p, pre, quote, schema, tick } from './helpers.js'
 
 describe('rendering', () => {
@@ -139,6 +139,62 @@ describe('input', () => {
     await tick()
     await tick()
     expect(view.state.doc.eq(doc(p('a漢')))).toBe(true)
+  })
+
+  it('text the browser wrote goes through handleTextInput only with the caret right after it', async () => {
+    const seen: string[] = []
+    const view = mount(doc(p('ab')), 3)
+    view.updateState(
+      view.state.reconfigure({
+        plugins: [
+          ...view.state.plugins,
+          new Plugin({
+            props: {
+              handleTextInput: (_v: unknown, from: number, _to: number, text: string) => {
+                seen.push(`${from}:${text}`)
+                return false // not handled: the view reads it as usual
+              },
+            },
+          }),
+        ],
+      }),
+    )
+    const text = view.dom.querySelector('p')!.firstChild as Text
+    text.data = 'abc'
+    window.getSelection()!.setBaseAndExtent(text, 3, text, 3)
+    await tick()
+    expect(seen).toEqual(['3:c'])
+    expect(view.state.doc.eq(doc(p('abc')))).toBe(true)
+    // caret elsewhere (the diff cannot tell where the text went): just read it
+    const again = view.dom.querySelector('p')!.firstChild as Text
+    again.data = 'abcd'
+    window.getSelection()!.setBaseAndExtent(again, 0, again, 0)
+    await tick()
+    expect(seen).toEqual(['3:c'])
+    expect(view.state.doc.eq(doc(p('abcd')))).toBe(true)
+  })
+
+  it('a composition starting right after another one is not interrupted', async () => {
+    const view = mount(doc(p('a')), 2)
+    const text = view.dom.querySelector('p')!.firstChild as Text
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    text.data = 'a '
+    window.getSelection()!.setBaseAndExtent(text, 2, text, 2)
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: ' ' }))
+    // the next one starts before the first end is processed
+    view.dom.dispatchEvent(new CompositionEvent('compositionstart'))
+    text.data = 'a @'
+    await tick()
+    await tick()
+    expect(view.composing).toBe(true)
+    expect(view.state.doc.eq(doc(p('a')))).toBe(true) // nothing read mid-composition
+    expect(view.dom.querySelector('p')!.firstChild).toBe(text) // DOM left to the IME
+    window.getSelection()!.setBaseAndExtent(text, 3, text, 3)
+    view.dom.dispatchEvent(new CompositionEvent('compositionend', { data: '@' }))
+    await tick()
+    await tick()
+    expect(view.composing).toBe(false)
+    expect(view.state.doc.eq(doc(p('a @')))).toBe(true)
   })
 
   it('applies stored marks to composed text', async () => {
