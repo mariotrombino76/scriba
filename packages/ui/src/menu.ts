@@ -24,7 +24,8 @@ export interface PopupEntry extends ToolbarMenuEntry {
  * Popup of a toolbar menu button (WAI-ARIA menu pattern): opens on click or
  * Enter/Space/ArrowDown, arrows move between entries, Enter/Space choose,
  * Escape closes and returns focus to the button (or the anchor it was opened
- * from), Tab closes.
+ * from), Tab closes. Without a button (`owner` is another element, e.g. the
+ * editor for the context menu) it opens at a point with `openAt`.
  */
 export class MenuPopup {
   readonly el: HTMLDivElement
@@ -37,7 +38,8 @@ export class MenuPopup {
 
   constructor(
     menu: Pick<ToolbarMenu, 'label' | 'layout' | 'columns'> & { entries: PopupEntry[] },
-    readonly button: HTMLButtonElement,
+    /** The menu button, or the element the menu belongs to (no `aria-*` set on it then). */
+    readonly button: HTMLElement,
     t: Translate,
     private readonly getView: () => EditorView | null,
     mac = false,
@@ -52,9 +54,11 @@ export class MenuPopup {
     this.el.setAttribute('role', 'menu')
     this.el.setAttribute('aria-label', menu.label(t))
     this.el.hidden = true
-    button.setAttribute('aria-haspopup', 'menu')
-    button.setAttribute('aria-expanded', 'false')
-    button.setAttribute('aria-controls', this.el.id)
+    if (isButton(button)) {
+      button.setAttribute('aria-haspopup', 'menu')
+      button.setAttribute('aria-expanded', 'false')
+      button.setAttribute('aria-controls', this.el.id)
+    }
 
     const grid = menu.layout === 'grid' ? doc.createElement('div') : null
     if (grid) {
@@ -152,6 +156,15 @@ export class MenuPopup {
 
   /** Opens under `anchor` (default: the menu's own button); focus returns there on Escape. */
   open(anchor: HTMLElement = this.button): void {
+    this.show(anchor, () => this.position(anchor))
+  }
+
+  /** Opens at a viewport point (a right click); focus returns to `anchor` on Escape. */
+  openAt(x: number, y: number, anchor: HTMLElement = this.button): void {
+    this.show(anchor, () => this.place(x, y, y))
+  }
+
+  private show(anchor: HTMLElement, position: () => void): void {
     this.anchor = anchor
     const state = this.getView()?.state
     let active = -1
@@ -167,8 +180,8 @@ export class MenuPopup {
       }
     })
     this.el.hidden = false
-    this.position(anchor)
-    anchor.setAttribute('aria-expanded', 'true')
+    position()
+    if (isButton(anchor)) anchor.setAttribute('aria-expanded', 'true')
     this.focus(Math.max(0, active))
     const doc = this.button.ownerDocument
     doc.addEventListener('mousedown', this.onOutside, true)
@@ -179,7 +192,7 @@ export class MenuPopup {
   close(returnFocus = true): void {
     if (!this.isOpen) return
     this.el.hidden = true
-    this.anchor.setAttribute('aria-expanded', 'false')
+    if (isButton(this.anchor)) this.anchor.setAttribute('aria-expanded', 'false')
     const doc = this.button.ownerDocument
     doc.removeEventListener('mousedown', this.onOutside, true)
     doc.defaultView?.removeEventListener('scroll', this.onViewportChange, true)
@@ -193,17 +206,21 @@ export class MenuPopup {
    * Set through CSSOM: no inline style attribute (strict CSP).
    */
   private position(anchor: HTMLElement): void {
-    const win = anchor.ownerDocument.defaultView
     const rect = anchor.getBoundingClientRect()
+    this.place(rect.left, rect.bottom + 4, rect.top - 4)
+  }
+
+  /** Top-left at (left, top), or ending at `above` when there is no room below. */
+  private place(left: number, top: number, above: number): void {
+    const win = this.button.ownerDocument.defaultView
     const width = this.el.offsetWidth
     const height = this.el.offsetHeight
     const vw = win?.innerWidth ?? 0
     const vh = win?.innerHeight ?? 0
-    let left = rect.left
     if (vw && left + width > vw - 8) left = Math.max(8, vw - width - 8)
-    let top = rect.bottom + 4
     // Not enough room below and more above: open upwards.
-    if (vh && top + height > vh - 8 && rect.top - height - 4 > 8) top = rect.top - height - 4
+    if (vh && top + height > vh - 8 && above - height > 8) top = above - height
+    else if (vh && top + height > vh - 8) top = Math.max(8, vh - height - 8)
     this.el.style.left = `${left}px`
     this.el.style.top = `${top}px`
   }
@@ -296,7 +313,14 @@ export class MenuPopup {
 
   private onOutside = (event: MouseEvent): void => {
     const target = event.target as globalThis.Node | null
-    if (target && (this.el.contains(target) || this.anchor.contains(target))) return
+    // a menu button toggles its menu itself; any other click (in the editor too) closes it
+    if (
+      target &&
+      (this.el.contains(target) || (isButton(this.anchor) && this.anchor.contains(target)))
+    )
+      return
     this.close(false)
   }
 }
+
+const isButton = (el: HTMLElement): boolean => el.localName === 'button'

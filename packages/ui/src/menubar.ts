@@ -1,7 +1,8 @@
 import { createTranslator, type MessageKey, type Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
-import type { ToolbarControl, ToolbarMenu, ToolbarMenuEntry } from './items.js'
-import { MenuPopup, type PopupEntry } from './menu.js'
+import type { ToolbarMenu } from './items.js'
+import { MenuPopup } from './menu.js'
+import { popupEntries, type MenuItem } from './popup-entries.js'
 import { isMac } from './shortcut.js'
 
 /** Base class: `HTMLElement` when available, so the module can be imported on the server. */
@@ -14,11 +15,8 @@ const Base = (globalThis.HTMLElement ?? Object) as typeof HTMLElement
 export interface MenubarMenu {
   id: string
   label: MessageKey | ((t: Translate) => string)
-  items: (ToolbarControl | ToolbarMenuEntry | '|')[]
+  items: MenuItem[]
 }
-
-const isControl = (x: ToolbarControl | ToolbarMenuEntry): x is ToolbarControl =>
-  'type' in x && (x.type === 'button' || x.type === 'menu')
 
 /**
  * `<scriba-menubar>`: a menu bar above the toolbar, like TinyMCE's (File,
@@ -79,51 +77,6 @@ export class ScribaMenubar extends Base {
       : this.translator(menu.label)
   }
 
-  /** Entries of a menu: buttons as entries, toolbar menus as sub-menus (opened under the bar item). */
-  private entries(menu: MenubarMenu, index: number): PopupEntry[] {
-    const out: PopupEntry[] = []
-    let separate = false
-    for (const item of menu.items) {
-      if (item === '|') {
-        separate = out.length > 0
-        continue
-      }
-      out.push({ ...this.entry(item, index), ...(separate ? { separatorBefore: true } : {}) })
-      separate = false
-    }
-    return out
-  }
-
-  private entry(item: ToolbarControl | ToolbarMenuEntry, index: number): PopupEntry {
-    if (!isControl(item)) return item
-    if (item.type === 'menu') {
-      let popup: MenuPopup | null = null
-      return {
-        id: item.id,
-        label: item.label,
-        ...(item.icon ? { icon: item.icon } : {}),
-        command: (state) => item.entries.some((e) => e.command(state)),
-        hasPopup: true,
-        run: () => {
-          popup ??= this.createSubmenu(item, index)
-          this.sub = popup
-          popup.open(this.buttons[index]!)
-        },
-      }
-    }
-    return {
-      id: item.id,
-      label: item.label,
-      ...(item.icon ? { icon: item.icon } : {}),
-      ...(item.shortcut ? { shortcut: item.shortcut } : {}),
-      ...(item.isActive ? { isActive: item.isActive, toggle: true } : {}),
-      command: item.command,
-      ...(item.run ? { run: item.run } : {}),
-      ...(item.readOnly ? { readOnly: true } : {}),
-      ...(item.annotates ? { annotates: true } : {}),
-    }
-  }
-
   private createSubmenu(menu: ToolbarMenu, index: number): MenuPopup {
     const popup = new MenuPopup(
       menu,
@@ -153,8 +106,15 @@ export class ScribaMenubar extends Base {
       button.setAttribute('role', 'menuitem')
       button.textContent = this.label(menu)
       button.tabIndex = i === this.focusIndex ? 0 : -1
+      const submenus = new Map<ToolbarMenu, MenuPopup>()
+      const entries = popupEntries(menu.items, (sub) => {
+        let popup = submenus.get(sub)
+        if (!popup) submenus.set(sub, (popup = this.createSubmenu(sub, i)))
+        this.sub = popup
+        popup.open(this.buttons[i]!)
+      })
       const popup = new MenuPopup(
-        { label: () => this.label(menu), entries: this.entries(menu, i) },
+        { label: () => this.label(menu), entries },
         button,
         this.translator,
         () => this._view,
@@ -176,7 +136,8 @@ export class ScribaMenubar extends Base {
   private openIndex(): number {
     const i = this.popups.findIndex((p) => p.isOpen)
     if (i >= 0 || !this.sub?.isOpen) return i
-    return this.buttons.indexOf(this.sub.button)
+    const sub = this.sub
+    return this.buttons.findIndex((b) => b === sub.button)
   }
 
   private openAt(index: number): void {

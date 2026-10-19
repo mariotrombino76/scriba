@@ -9,7 +9,17 @@ import {
   type Command,
 } from '@scriba/core'
 import { JSDOM } from 'jsdom'
-import { linkMarks, linkRange, normalizeLinkInput, removeLink, setLink } from '../src/index.js'
+import { createTranslator } from '@scriba/i18n'
+import type { MenuItem, ToolbarButton } from '@scriba/ui'
+import type { EditorView } from '@scriba/view'
+import {
+  linkContextMenu,
+  linkMarks,
+  linkRange,
+  normalizeLinkInput,
+  removeLink,
+  setLink,
+} from '../src/index.js'
 
 const schema = new Schema({
   nodes: basicSchemaSpec.nodes,
@@ -98,5 +108,41 @@ describe('link plugin', () => {
         parse('<p><a href="javascript:alert(1)">x</a> <a href="https://ok.it">y</a></p>'),
       ),
     ).toBe('<p>x <a href="https://ok.it">y</a></p>')
+  })
+})
+
+describe('link context menu', () => {
+  const button = (i: MenuItem): ToolbarButton => {
+    if (i === '|' || !('type' in i) || i.type !== 'button') throw new Error('not a button')
+    return i
+  }
+
+  it('applies on a link: edit, remove, open (also read-only)', () => {
+    const section = linkContextMenu(schema, createTranslator('it'))
+    const doc = parse('<p>a <a href="https://example.com">link</a></p>')
+    const at = (pos: number) =>
+      EditorState.create({ doc, selection: TextSelection.create(doc, pos) })
+    expect(section.isVisible(at(1))).toBe(false)
+    expect(section.isVisible(at(5))).toBe(true)
+    const buttons = section.items.map(button)
+    expect(buttons.map((b) => b.id)).toEqual(['link', 'unlink', 'open_link'])
+    expect(buttons.some((b) => b.isActive)).toBe(false) // an action here, not a pressed toggle
+    expect(buttons[2]!.readOnly).toBe(true)
+  })
+
+  it('"Open link" opens in a new tab without access to the page', () => {
+    const open = button(linkContextMenu(schema, createTranslator('it')).items[2]!)
+    const calls: unknown[][] = []
+    const doc = schema.node('doc', null, [
+      schema.node('paragraph', null, [
+        schema.text('x', [schema.mark('link', { href: 'https://example.com/a' })]),
+      ]),
+    ])
+    const view = {
+      state: EditorState.create({ doc, selection: TextSelection.create(doc, 1) }),
+      document: { defaultView: { open: (...a: unknown[]) => calls.push(a) } },
+    }
+    open.run!(view as unknown as EditorView)
+    expect(calls).toEqual([['https://example.com/a', '_blank', 'noopener,noreferrer']])
   })
 })

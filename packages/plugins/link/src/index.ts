@@ -10,7 +10,12 @@ import {
   type Schema,
 } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
-import { openDialog, type ToolbarControl } from '@scriba/ui'
+import {
+  openDialog,
+  withoutPressed,
+  type ContextMenuSection,
+  type ToolbarControl,
+} from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
 
 /** The link mark. `href` is checked against the URL whitelist (§5.3) wherever it is created. */
@@ -249,4 +254,39 @@ export function linkToolbarItems(schema: Schema, t: Translate): ToolbarControl[]
       run: (view) => openLinkDialog(view, t),
     },
   ]
+}
+
+/**
+ * Context menu section on a link (like TinyMCE's): edit, remove, open. Opening
+ * also works read-only, in a new tab without access to this page (`noopener`).
+ */
+export function linkContextMenu(schema: Schema, t: Translate): ContextMenuSection {
+  const type = linkType(schema)
+  const inLink = (state: EditorState) => !!linkRange(state, type)
+  return {
+    id: 'link',
+    isVisible: inLink,
+    items: [
+      // an action here, not a pressed toggle
+      ...linkToolbarItems(schema, t).map(withoutPressed),
+      {
+        type: 'button',
+        id: 'unlink',
+        label: (tr) => tr('link.remove'),
+        command: removeLink(schema),
+      },
+      {
+        type: 'button',
+        id: 'open_link',
+        label: (tr) => tr('link.open'),
+        command: inLink,
+        readOnly: true,
+        run: (view) => {
+          const range = linkRange(view.state, type)
+          const href = range && sanitizeUrl(range.href, { kind: 'link' })
+          if (href) view.document.defaultView?.open(href, '_blank', 'noopener,noreferrer')
+        },
+      },
+    ],
+  }
 }

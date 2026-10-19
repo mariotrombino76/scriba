@@ -482,3 +482,29 @@ describe('cell selection', () => {
     expect(gone.selection).not.toBeInstanceOf(CellSelection)
   })
 })
+
+describe('table context menu', () => {
+  it('applies in a table: Cell, Row and Column sub-menus, then properties and delete', async () => {
+    const { tableContextMenu } = await import('../src/index.js')
+    const { createTranslator } = await import('@scriba/i18n')
+    const section = tableContextMenu(schema, createTranslator('it'))
+    const doc = parse(`<p>x</p>${TABLE3}`)
+    const at = (pos: number) =>
+      EditorState.create({ doc, selection: TextSelection.create(doc, pos) })
+    expect(section.isVisible(at(1))).toBe(false)
+    expect(section.isVisible(at(6))).toBe(true)
+    const ids = section.items.map((i) => (i === '|' ? '|' : i.id))
+    expect(ids).toEqual([
+      'table_cell',
+      'table_row',
+      'table_column',
+      '|',
+      'table_props',
+      'delete_table',
+    ])
+    const row = section.items[1]!
+    expect(
+      row !== '|' && 'type' in row && row.type === 'menu' && row.entries.map((e) => e.id),
+    ).toEqual(['row_before', 'row_after', 'delete_row', 'header_row'])
+  })
+})

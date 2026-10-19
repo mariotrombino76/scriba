@@ -15,6 +15,7 @@ import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
 import {
   blockStyleMenu,
+  contextMenu,
   defineScribaMenubar,
   defineScribaToolbar,
   historyItems,
@@ -45,7 +46,7 @@ import {
   textStyleMarks,
   withBlockStyles,
 } from '@scriba/plugin-text-style'
-import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import { linkContextMenu, linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
 import {
   codeBlockKeymap,
   toggleCodeBlock,
@@ -60,6 +61,7 @@ import {
   openImageDialog,
   imageNodes,
   imagePlugins,
+  imageContextMenu,
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
@@ -68,6 +70,7 @@ import {
   tableKeymap,
   tableNodes,
   tablePlugins,
+  tableContextMenu,
   tableToolbarItems,
 } from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
@@ -494,6 +497,16 @@ menubar.menus = [
   { id: 'table', label: 'menu.table', items: tableToolbarItems(schema, t) },
 ]
 menubar.view = view
+// right click on a link, an image or a table (elsewhere: the browser's menu), like TinyMCE
+contextMenu(view, {
+  translator: t,
+  mac: false,
+  sections: [
+    linkContextMenu(schema, t),
+    imageContextMenu(schema, t, images),
+    tableContextMenu(schema, t),
+  ],
+})
 toolbar.view = view
 const sidebar = document.createElement('aside')
 sidebar.className = 'comments-sidebar'

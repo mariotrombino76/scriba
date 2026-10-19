@@ -20,4 +20,11 @@ export {
 export { createIcon, type IconName } from './icons.js'
 export { formatShortcut, isMac } from './shortcut.js'
 export { MenuPopup, type PopupEntry } from './menu.js'
+export { popupEntries, withoutPressed, type MenuItem } from './popup-entries.js'
+export {
+  contextMenu,
+  type ContextMenu,
+  type ContextMenuOptions,
+  type ContextMenuSection,
+} from './context-menu.js'
 export { openDialog, type DialogHandle } from './dialog.js'

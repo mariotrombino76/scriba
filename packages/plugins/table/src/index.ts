@@ -1,6 +1,6 @@
 import { Plugin, type Schema } from '@scriba/core'
 import type { MessageKey, Translate } from '@scriba/i18n'
-import type { ToolbarControl, ToolbarMenuEntry } from '@scriba/ui'
+import type { ContextMenuSection, ToolbarControl, ToolbarMenu, ToolbarMenuEntry } from '@scriba/ui'
 import type { ViewPluginProps } from '@scriba/view'
 import {
   addColumn,
@@ -89,10 +89,8 @@ const GRID_COLS = 10
 
 const inTable = (state: Parameters<Command>[0]) => !!selectedRect(state)
 
-/** Toolbar: "Insert table" (size picker + dialog) and a contextual "Table" menu with the structure commands. */
-export function tableToolbarItems(schema: Schema, t: Translate): ToolbarControl[] {
-  const type = schema.nodes['table']
-  if (!type) throw new RangeError('The schema has no "table" node (add tableNodes)')
+/** The structure commands of a table, by id (toolbar menu and context menu). */
+function tableEntries(t: Translate) {
   const entry = (
     id: string,
     label: MessageKey,
@@ -104,6 +102,44 @@ export function tableToolbarItems(schema: Schema, t: Translate): ToolbarControl[
     command,
     ...(isActive ? { isActive, toggle: true } : {}),
   })
+  return {
+    rowBefore: entry('row_before', 'table.rowBefore', addRow(true)),
+    rowAfter: entry('row_after', 'table.rowAfter', addRow(false)),
+    colBefore: entry('col_before', 'table.colBefore', addColumn(true)),
+    colAfter: entry('col_after', 'table.colAfter', addColumn(false)),
+    deleteRow: entry('delete_row', 'table.deleteRow', deleteRow),
+    deleteCol: entry('delete_col', 'table.deleteCol', deleteColumn),
+    merge: entry('merge', 'table.merge', mergeCells),
+    split: entry('split', 'table.split', splitCell),
+    headerRow: entry('header_row', 'table.toggleHeaderRow', toggleHeader('row'), (s) =>
+      isHeaderOn(s, 'row'),
+    ),
+    headerCol: entry('header_col', 'table.toggleHeaderCol', toggleHeader('column'), (s) =>
+      isHeaderOn(s, 'column'),
+    ),
+    widen: entry('widen', 'table.widen', changeColumnWidth(20)),
+    narrow: entry('narrow', 'table.narrow', changeColumnWidth(-20)),
+    tableProps: {
+      id: 'table_props',
+      label: (tr) => tr('table.props'),
+      command: (state) => inTable(state),
+      run: (view) => openTablePropsDialog(view, t),
+    } satisfies ToolbarMenuEntry,
+    cellProps: {
+      id: 'cell_props',
+      label: (tr) => tr('table.cellProps'),
+      command: (state) => inTable(state),
+      run: (view) => openCellDialog(view, t),
+    } satisfies ToolbarMenuEntry,
+    deleteTable: entry('delete_table', 'table.delete', deleteTable),
+  }
+}
+
+/** Toolbar: "Insert table" (size picker + dialog) and a contextual "Table" menu with the structure commands. */
+export function tableToolbarItems(schema: Schema, t: Translate): ToolbarControl[] {
+  const type = schema.nodes['table']
+  if (!type) throw new RangeError('The schema has no "table" node (add tableNodes)')
+  const e = tableEntries(t)
   // Size picker: hovering 3×4 highlights a 3×4 area; "More sizes…" opens the dialog.
   const sizes: ToolbarMenuEntry[] = []
   for (let r = 1; r <= GRID_ROWS; r++) {
@@ -141,36 +177,57 @@ export function tableToolbarItems(schema: Schema, t: Translate): ToolbarControl[
       text: t('table.label'),
       isVisible: inTable,
       entries: [
-        entry('row_before', 'table.rowBefore', addRow(true)),
-        entry('row_after', 'table.rowAfter', addRow(false)),
-        entry('col_before', 'table.colBefore', addColumn(true)),
-        entry('col_after', 'table.colAfter', addColumn(false)),
-        entry('delete_row', 'table.deleteRow', deleteRow),
-        entry('delete_col', 'table.deleteCol', deleteColumn),
-        entry('merge', 'table.merge', mergeCells),
-        entry('split', 'table.split', splitCell),
-        entry('header_row', 'table.toggleHeaderRow', toggleHeader('row'), (s) =>
-          isHeaderOn(s, 'row'),
-        ),
-        entry('header_col', 'table.toggleHeaderCol', toggleHeader('column'), (s) =>
-          isHeaderOn(s, 'column'),
-        ),
-        entry('widen', 'table.widen', changeColumnWidth(20)),
-        entry('narrow', 'table.narrow', changeColumnWidth(-20)),
-        {
-          id: 'table_props',
-          label: (tr) => tr('table.props'),
-          command: (state) => inTable(state),
-          run: (view) => openTablePropsDialog(view, t),
-        },
-        {
-          id: 'cell_props',
-          label: (tr) => tr('table.cellProps'),
-          command: (state) => inTable(state),
-          run: (view) => openCellDialog(view, t),
-        },
-        entry('delete_table', 'table.delete', deleteTable),
+        e.rowBefore,
+        e.rowAfter,
+        e.colBefore,
+        e.colAfter,
+        e.deleteRow,
+        e.deleteCol,
+        e.merge,
+        e.split,
+        e.headerRow,
+        e.headerCol,
+        e.widen,
+        e.narrow,
+        e.tableProps,
+        e.cellProps,
+        e.deleteTable,
       ],
     },
   ]
+}
+
+/**
+ * Context menu section in a table, like TinyMCE's: Cell, Row and Column
+ * sub-menus, then table properties and delete.
+ */
+export function tableContextMenu(schema: Schema, t: Translate): ContextMenuSection {
+  if (!schema.nodes['table'])
+    throw new RangeError('The schema has no "table" node (add tableNodes)')
+  const e = tableEntries(t)
+  const sub = (id: string, label: MessageKey, entries: ToolbarMenuEntry[]): ToolbarMenu => ({
+    type: 'menu',
+    id,
+    label: (tr) => tr(label),
+    entries,
+  })
+  return {
+    id: 'table',
+    isVisible: inTable,
+    items: [
+      sub('table_cell', 'table.cell', [e.cellProps, e.merge, e.split]),
+      sub('table_row', 'table.row', [e.rowBefore, e.rowAfter, e.deleteRow, e.headerRow]),
+      sub('table_column', 'table.column', [
+        e.colBefore,
+        e.colAfter,
+        e.deleteCol,
+        e.headerCol,
+        e.widen,
+        e.narrow,
+      ]),
+      '|',
+      e.tableProps,
+      e.deleteTable,
+    ],
+  }
 }

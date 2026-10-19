@@ -19,6 +19,7 @@ import { EditorView, parseInertHTML } from '@scriba/view'
 import { createTranslator } from '@scriba/i18n'
 import {
   blockStyleMenu,
+  contextMenu,
   defineScribaMenubar,
   defineScribaToolbar,
   historyItems,
@@ -49,7 +50,7 @@ import {
   textStyleMarks,
   withBlockStyles,
 } from '@scriba/plugin-text-style'
-import { linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import { linkContextMenu, linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
 import {
   codeBlockKeymap,
   toggleCodeBlock,
@@ -64,6 +65,7 @@ import {
   openImageDialog,
   imageNodes,
   imagePlugins,
+  imageContextMenu,
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
@@ -72,6 +74,7 @@ import {
   tableKeymap,
   tableNodes,
   tablePlugins,
+  tableContextMenu,
   tableToolbarItems,
 } from '@scriba/plugin-table'
 import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
@@ -527,6 +530,15 @@ menubar.menus = [
   { id: 'table', label: 'menu.table', items: tableToolbarItems(schema, t) },
 ]
 menubar.view = view
+// right click on a link, an image or a table (elsewhere: the browser's menu), like TinyMCE
+contextMenu(view, {
+  translator: t,
+  sections: [
+    linkContextMenu(schema, t),
+    imageContextMenu(schema, t, images),
+    tableContextMenu(schema, t),
+  ],
+})
 toolbar.view = view
 commentsPanel(view, { store: comments, t, container: $('comments') })
 status.before(createWordCountStatus(view, t).el)
@@ -535,16 +547,13 @@ if (shared) {
   shared.provider.onStatus(() => view.updateState(view.state))
 }
 
-const checkbox = $<HTMLInputElement>('readonly')
-checkbox.addEventListener('change', () => {
-  readOnly = checkbox.checked
+// demo: the role to try (editor, commenter = read-only but may comment, reader)
+document.querySelector('.role-switch')!.addEventListener('change', (event) => {
+  const role = (event.target as HTMLInputElement).value
+  readOnly = role !== 'edit'
+  canComment = role === 'comment'
   view.updateState(view.state)
   refresh()
-})
-const commentBox = $<HTMLInputElement>('comment')
-commentBox.addEventListener('change', () => {
-  canComment = commentBox.checked
-  view.updateState(view.state)
 })
 
 function refresh(): void {

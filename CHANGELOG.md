@@ -119,6 +119,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     Visualizza, Inserisci, Formato, Strumenti, Tabella). Pattern WAI-ARIA menubar; riusa i controlli
     della toolbar (i menu diventano sottomenu, stessi permessi); `'|'` separa i gruppi. Nuove voci
     `clearFormatItem` (rimuovi formattazione, link e commenti restano) e `selectAllItem`.
+  - Menu del tasto destro come TinyMCE: `contextMenu(view, { sections })` in `@scriba/ui`,
+    sezioni `linkContextMenu` (modifica, rimuovi, apri in nuova scheda con `noopener`),
+    `imageContextMenu` (il clic destro seleziona l'immagine) e `tableContextMenu` (sottomenu
+    Cella, Riga, Colonna; proprietà ed elimina tabella). Dove nessuna sezione si applica, e con
+    Ctrl (Cmd su macOS), resta il menu del browser; tasto menu e Maiusc+F10 lo aprono al cursore.
+    `MenuPopup.openAt(x, y)`, `popupEntries`, `withoutPressed`.
 - `@scriba/plugin-file`: menu "File" come in TinyMCE, tutto nel browser.
   - Apri (.docx, .html, .md, .txt), anche trascinando il file; prima chiede conferma se ci sono
     modifiche non salvate.

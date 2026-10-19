@@ -1,6 +1,6 @@
 import { NodeSelection, Plugin, type Command, type KeyBindings, type Schema } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
-import type { ToolbarControl } from '@scriba/ui'
+import { withoutPressed, type ContextMenuSection, type ToolbarControl } from '@scriba/ui'
 import type { EditorView, ViewPluginProps } from '@scriba/view'
 import { openImageDialog } from './dialog.js'
 import { resizeView } from './resize.js'
@@ -76,4 +76,19 @@ export function imageToolbarItems(
       run: (view) => openImageDialog(view, t, options),
     },
   ]
+}
+
+/** Context menu section on an image (a right click selects it): edit it in the dialog. */
+export function imageContextMenu(
+  schema: Schema,
+  t: Translate,
+  options: ImageUploadOptions = {},
+): ContextMenuSection {
+  return {
+    id: 'image',
+    isVisible: (state) =>
+      state.selection instanceof NodeSelection && state.selection.node.type.name === 'image',
+    // an action here, not a pressed toggle
+    items: imageToolbarItems(schema, t, options).map(withoutPressed),
+  }
 }
