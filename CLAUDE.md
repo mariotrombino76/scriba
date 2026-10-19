@@ -32,7 +32,7 @@ Costruire un editor rich text:
 - **Test:** Vitest (unità) + Playwright (end-to-end su Chromium, Firefox, WebKit).
 - **Lint/format:** ESLint + Prettier.
 - **Collaborazione:** Yjs + y-websocket (pacchetto opzionale).
-- **Docs/playground:** Nuxt 4 + PrimeVue 4 (coerente con gli altri progetti).
+- **Docs/playground:** documentazione in Markdown in `/docs`; playground = demo Vite senza framework in `/demo` (`pnpm dev`). Niente Nuxt/PrimeVue (decisione del 2026-10-19: PrimeVue 5 è a licenza commerciale e Nuxt portava avvisi di sicurezza senza correzione).
 
 ```
 /packages
@@ -41,12 +41,14 @@ Costruire un editor rich text:
   /ui            # toolbar, menu, dialog, bubble menu — Web Components vanilla
   /plugins       # un sotto-pacchetto per plugin: table, image, link, list, code-block, markdown, slash, find-replace, paste-clean, collab…
   /vue           # wrapper Vue 3: <ScribaEditor v-model="..."> + composable useScriba()
+  /react         # wrapper React 18/19: <ScribaEditor value onChange> + hook useScriba()
+  /browser       # script per qualsiasi pagina (CDN, globale Scriba) e modulo ES, senza build
+  /collab-server # server WebSocket di collaborazione (Node): autenticazione, permessi, limiti
   /sanitize-server # sanificazione lato server (Node) con lo stesso schema del core — OBBLIGATORIA per chi salva HTML
   /i18n          # file di traduzione (it, en per primi)
   /themes        # temi CSS (variabili CSS custom)
-/apps
-  /playground    # app Nuxt per provare tutto a mano
-  /docs          # documentazione
+/demo            # playground: tutte le funzioni, per provare a mano (pnpm dev)
+/docs            # documentazione (Markdown, in italiano)
 /e2e             # test Playwright
 ```
 
@@ -158,7 +160,7 @@ Pensa all'editor come a una **casa di LEGO**:
 - L'editor deve funzionare con una CSP rigida: `script-src 'self'` senza `unsafe-inline`/`unsafe-eval`.
 - Gli stili dinamici si impostano via CSSOM (`el.style.width = ...`), non con `setAttribute('style', ...)` o tag `<style>` iniettati, così da non richiedere `style-src 'unsafe-inline'`.
 - Compatibile con `require-trusted-types-for 'script'`: dove serve inserire markup, usare una policy Trusted Types dedicata e documentata.
-- Test e2e eseguiti con CSP rigida attiva nel playground.
+- Test e2e eseguiti con CSP rigida attiva (pagine della fixture `/e2e/fixture`).
 
 ### 5.8 Collaborazione in tempo reale (Yjs)
 - Gli aggiornamenti in arrivo dagli altri utenti sono **input non fidato**: dopo l'applicazione, il documento va validato contro lo schema; nodi o attributi non validi vengono scartati.
@@ -227,7 +229,7 @@ Pensa all'editor come a una **casa di LEGO**:
 
 ```bash
 pnpm install
-pnpm dev            # avvia il playground Nuxt
+pnpm dev            # avvia il playground (demo Vite)
 pnpm build          # build di tutti i pacchetti
 pnpm test           # Vitest
 pnpm test:e2e       # Playwright
