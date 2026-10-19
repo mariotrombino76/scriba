@@ -292,3 +292,13 @@ export function linkContextMenu(schema: Schema, t: Translate): ContextMenuSectio
 }
 
 export { autolink, addressBefore } from './autolink.js'
+export {
+  ANCHOR_PREFIX,
+  anchorName,
+  anchorsIn,
+  anchorToolbarItem,
+  isAnchorName,
+  openAnchorDialog,
+  setAnchor,
+  withAnchors,
+} from './anchors.js'

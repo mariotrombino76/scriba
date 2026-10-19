@@ -402,6 +402,15 @@ export const en = {
   'pagebreak.label': 'Page break',
   'datetime.label': 'Date/time',
   'autosave.restore': 'Restore last draft',
+  'anchor.label': 'Anchor',
+  'anchor.title': 'Anchor',
+  'anchor.name': 'Name of the anchor',
+  'anchor.hint': 'Links to it: {link}',
+  'anchor.save': 'Save',
+  'anchor.cancel': 'Cancel',
+  'anchor.remove': 'Remove',
+  'anchor.invalid': 'Write a name (letters or digits)',
+  'anchor.taken': 'Another block already has this anchor',
 } as const
 
 export type MessageKey = keyof typeof en

@@ -152,6 +152,11 @@ const ICONS = {
     ['path', 'm6 6 12 12'],
   ],
   hr: [['path', 'M4 12h16']],
+  anchor: [
+    ['circle', 12, 5, 3],
+    ['path', 'M12 22V8'],
+    ['path', 'M5 12H2a10 10 0 0 0 20 0h-3'],
+  ],
   lineHeight: [
     ['path', 'M11 6h10'],
     ['path', 'M11 12h10'],

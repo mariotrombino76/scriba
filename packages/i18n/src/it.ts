@@ -405,4 +405,13 @@ export const it: Messages = {
   'pagebreak.label': 'Interruzione di pagina',
   'datetime.label': 'Data/ora',
   'autosave.restore': "Ripristina l'ultima bozza",
+  'anchor.label': 'Ancora',
+  'anchor.title': 'Ancora',
+  'anchor.name': "Nome dell'ancora",
+  'anchor.hint': 'Per collegarla: {link}',
+  'anchor.save': 'Salva',
+  'anchor.cancel': 'Annulla',
+  'anchor.remove': 'Rimuovi',
+  'anchor.invalid': 'Scrivi un nome (lettere o cifre)',
+  'anchor.taken': 'Un altro blocco ha già questa ancora',
 }

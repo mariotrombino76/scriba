@@ -161,3 +161,24 @@ test('after selecting a line, a click in the text moves the caret there', async 
   await page.keyboard.type('x')
   await expect.poll(() => html(page)).toMatch(/^<p>a<\/p><hr><p>(xbb|bxb|bbx)<\/p>$/)
 })
+
+test('Inserisci ▸ Ancora names the block; a link can point to it', async ({ page }) => {
+  await setHTML(page, '<h2>Introduzione al corso</h2><p>testo</p>')
+  await editor(page).getByRole('heading', { name: 'Introduzione al corso' }).click()
+  await insertMenu(page, 'Ancora')
+  const dialog = page.getByRole('dialog', { name: 'Ancora' })
+  await dialog.getByRole('textbox', { name: "Nome dell'ancora" }).fill('Introduzione al corso')
+  await expect(dialog).toContainText('#anchor-introduzione-al-corso')
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect
+    .poll(() => html(page))
+    .toBe('<h2 id="anchor-introduzione-al-corso">Introduzione al corso</h2><p>testo</p>')
+  // the same name on another block is refused
+  await editor(page).getByText('testo').click()
+  await insertMenu(page, 'Ancora')
+  await dialog.getByRole('textbox', { name: "Nome dell'ancora" }).fill('introduzione al corso')
+  await dialog.getByRole('button', { name: 'Salva' }).click()
+  await expect(dialog.getByRole('alert')).toHaveText('Un altro blocco ha già questa ancora')
+  await dialog.getByRole('button', { name: 'Annulla' }).click()
+  await expect(dialog).toHaveCount(0)
+})

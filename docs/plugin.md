@@ -28,13 +28,13 @@ L'esempio completo, con tutti i plugin insieme, è `demo/main.ts` (`pnpm dev`).
 
 ## Contenuti
 
-| Pacchetto            | A cosa serve                                                                               | Esportazioni principali                                                                   |
-| -------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| `plugin-link`        | Link con dialog accessibile; apri, rimuovi                                                 | `linkMarks`, `linkKeymap`, `linkToolbarItems`, `linkContextMenu`, `setLink`, `removeLink` |
-| `plugin-image`       | Immagini: upload tramite tua funzione, trascina e incolla, ridimensiona, testo alternativo | `imageNodes`, `imagePlugins`, `imageKeymap`, `imageToolbarItems`, `imageContextMenu`      |
-| `plugin-table`       | Tabelle: righe/colonne, unisci/dividi, intestazioni, larghezze, selezione di celle         | `tableNodes`, `tablePlugins`, `tableKeymap`, `tableToolbarItems`, `tableContextMenu`      |
-| `plugin-mention`     | Menzioni `@persona` con ricerca asincrona                                                  | `mentionNodes`, `mentions`, `mentionKeymap`                                               |
-| `plugin-paste-clean` | Pulisce l'incolla da Word, Google Docs, pagine web                                         | `pasteClean`                                                                              |
+| Pacchetto            | A cosa serve                                                                               | Esportazioni principali                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `plugin-link`        | Link con dialog accessibile; apri, rimuovi; link automatici mentre scrivi; ancore          | `linkMarks`, `linkKeymap`, `linkToolbarItems`, `linkContextMenu`, `autolink`, `withAnchors`, `anchorToolbarItem` |
+| `plugin-image`       | Immagini: upload tramite tua funzione, trascina e incolla, ridimensiona, testo alternativo | `imageNodes`, `imagePlugins`, `imageKeymap`, `imageToolbarItems`, `imageContextMenu`                             |
+| `plugin-table`       | Tabelle: righe/colonne, unisci/dividi, intestazioni, larghezze, selezione di celle         | `tableNodes`, `tablePlugins`, `tableKeymap`, `tableToolbarItems`, `tableContextMenu`                             |
+| `plugin-mention`     | Menzioni `@persona` con ricerca asincrona                                                  | `mentionNodes`, `mentions`, `mentionKeymap`                                                                      |
+| `plugin-paste-clean` | Pulisce l'incolla da Word, Google Docs, pagine web                                         | `pasteClean`                                                                                                     |
 
 ## Strumenti e interfaccia
 

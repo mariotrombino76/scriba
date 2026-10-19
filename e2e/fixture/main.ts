@@ -52,11 +52,13 @@ import {
   withBlockStyles,
 } from '@scriba/plugin-text-style'
 import {
+  anchorToolbarItem,
   autolink,
   linkContextMenu,
   linkKeymap,
   linkMarks,
   linkToolbarItems,
+  withAnchors,
 } from '@scriba/plugin-link'
 import {
   codeBlockKeymap,
@@ -177,18 +179,20 @@ const searchPeople: MentionSearch = (query, signal) =>
 const fileOptions: FileOptions = { t }
 const schema = new Schema({
   nodes: withBlockIds(
-    withBlockStyles({
-      ...basicSchemaSpec.nodes,
-      ...blockquoteNodes,
-      ...listNodes,
-      ...codeBlockNodes,
-      ...imageNodes,
-      ...mentionNodes,
-      ...taskNodes,
-      ...calloutNodes,
-      ...hrNodes,
-      ...tableNodes,
-    }),
+    withAnchors(
+      withBlockStyles({
+        ...basicSchemaSpec.nodes,
+        ...blockquoteNodes,
+        ...listNodes,
+        ...codeBlockNodes,
+        ...imageNodes,
+        ...mentionNodes,
+        ...taskNodes,
+        ...calloutNodes,
+        ...hrNodes,
+        ...tableNodes,
+      }),
+    ),
   ),
   marks: {
     ...linkMarks,
@@ -586,6 +590,7 @@ menubar.menus = [
     items: [
       ...imageToolbarItems(schema, t, images),
       ...linkToolbarItems(schema, t),
+      anchorToolbarItem(t),
       commentToolbarItem(comments, t),
       ...codeBlockToolbarItems(schema),
       '|',

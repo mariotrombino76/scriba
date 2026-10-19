@@ -174,6 +174,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     di Word.
   - `@scriba/ui`: pulsanti Apice e Pedice in `markItems`, `nonBreakingSpaceItem`.
   - `@scriba/plugin-file`: apice e pedice anche nell'export Word.
+  - `@scriba/plugin-link`: ancore come anchor di TinyMCE (`withAnchors`, `anchorToolbarItem`,
+    `setAnchor`): `id="anchor-<nome>"` su paragrafi e titoli, solo con il prefisso fisso e un nome
+    sicuro (contro il DOM clobbering); nome unico nel documento; i link puntano a `#anchor-<nome>`.
   - `@scriba/plugin-autosave` (nuovo): bozza salvata nel browser mentre si scrive, come autosave di
     TinyMCE (`autosave`, solo dopo la prima modifica, chiave per documento, limite di dimensione);
     "Ripristina l'ultima bozza" nel menu File (`restoreDraftItem`, annullabile); la bozza rientra

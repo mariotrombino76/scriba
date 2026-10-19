@@ -1732,3 +1732,13 @@ hr.scriba-page-break {
   outline: 2px solid var(--scriba-focus);
   outline-offset: 1px;
 }
+
+/* Anchors (@scriba/plugin-link): a discreet mark in the editor, room when jumping to them */
+.scriba-editor [id^='anchor-'] {
+  scroll-margin-top: 1rem;
+  border-left: 2px dotted var(--scriba-muted);
+  padding-left: 0.4em;
+}
+[id^='anchor-'] {
+  scroll-margin-top: 1rem;
+}
