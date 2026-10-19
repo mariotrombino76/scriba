@@ -27,5 +27,14 @@
     "@scriba/plugin-link": "workspace:*",
     "@scriba/plugin-list": "workspace:*",
     "@scriba/plugin-text-style": "workspace:*"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

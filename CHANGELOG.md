@@ -151,6 +151,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   con `StrictMode`. Testato in jsdom e nei tre browser con la CSP rigida (`e2e/react.spec.ts`).
 - `@scriba/view`: `parseContent`, `serializeContent` e `sameContent` (prima nel wrapper Vue, che
   continua a esportarli), condivisi da Vue, React e build CDN.
+- `@scriba/browser`: Scriba in qualsiasi pagina senza framework né build: `scriba.iife.js`
+  (globale `Scriba`, ~84 KB gzip con il preset completo), `scriba.js` (modulo ES) e `scriba.css`;
+  `Scriba.createEditor(destinazione, { content, preset, toolbar, locale, onChange, upload })`.
+  Testato in jsdom e nei tre browser con la CSP rigida (`e2e/cdn.spec.ts`).
+- Preparazione alla pubblicazione su npm: `publishConfig.access: public` in tutti i pacchetti e
+  guida `RELEASING.md` (organizzazione npm, 2FA, provenance dalla CI, verifiche, versione).
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),

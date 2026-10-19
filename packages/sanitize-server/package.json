@@ -25,5 +25,14 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.5"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

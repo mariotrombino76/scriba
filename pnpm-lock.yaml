@@ -84,6 +84,63 @@ importers:
         specifier: 3.3.13
         version: 3.3.13(typescript@6.0.3)
 
+  packages/browser:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@scriba/plugin-blockquote':
+        specifier: workspace:*
+        version: link:../plugins/blockquote
+      '@scriba/plugin-charmap':
+        specifier: workspace:*
+        version: link:../plugins/charmap
+      '@scriba/plugin-code-block':
+        specifier: workspace:*
+        version: link:../plugins/code-block
+      '@scriba/plugin-find-replace':
+        specifier: workspace:*
+        version: link:../plugins/find-replace
+      '@scriba/plugin-fullscreen':
+        specifier: workspace:*
+        version: link:../plugins/fullscreen
+      '@scriba/plugin-hr':
+        specifier: workspace:*
+        version: link:../plugins/hr
+      '@scriba/plugin-image':
+        specifier: workspace:*
+        version: link:../plugins/image
+      '@scriba/plugin-link':
+        specifier: workspace:*
+        version: link:../plugins/link
+      '@scriba/plugin-list':
+        specifier: workspace:*
+        version: link:../plugins/list
+      '@scriba/plugin-markdown':
+        specifier: workspace:*
+        version: link:../plugins/markdown
+      '@scriba/plugin-paste-clean':
+        specifier: workspace:*
+        version: link:../plugins/paste-clean
+      '@scriba/plugin-source':
+        specifier: workspace:*
+        version: link:../plugins/source
+      '@scriba/plugin-table':
+        specifier: workspace:*
+        version: link:../plugins/table
+      '@scriba/plugin-text-style':
+        specifier: workspace:*
+        version: link:../plugins/text-style
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../view
+
   packages/collab-server:
     dependencies:
       '@scriba/core':

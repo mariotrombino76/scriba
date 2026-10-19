@@ -11,5 +11,14 @@
   "files": [
     "scriba.css"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

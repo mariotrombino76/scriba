@@ -1,0 +1,58 @@
+{
+  "name": "@scriba/browser",
+  "version": "0.0.0",
+  "description": "Scriba for any web page: one script (global Scriba) or one ES module, plus the CSS. No framework, no build step.",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/scriba.js",
+  "module": "./dist/scriba.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/scriba.iife.js",
+  "jsdelivr": "./dist/scriba.iife.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/scriba.js"
+    },
+    "./scriba.iife.js": "./dist/scriba.iife.js",
+    "./scriba.css": "./dist/scriba.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && vite build --mode iife && node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@scriba/core": "workspace:*",
+    "@scriba/i18n": "workspace:*",
+    "@scriba/plugin-blockquote": "workspace:*",
+    "@scriba/plugin-charmap": "workspace:*",
+    "@scriba/plugin-code-block": "workspace:*",
+    "@scriba/plugin-find-replace": "workspace:*",
+    "@scriba/plugin-fullscreen": "workspace:*",
+    "@scriba/plugin-hr": "workspace:*",
+    "@scriba/plugin-image": "workspace:*",
+    "@scriba/plugin-link": "workspace:*",
+    "@scriba/plugin-list": "workspace:*",
+    "@scriba/plugin-markdown": "workspace:*",
+    "@scriba/plugin-paste-clean": "workspace:*",
+    "@scriba/plugin-source": "workspace:*",
+    "@scriba/plugin-table": "workspace:*",
+    "@scriba/plugin-text-style": "workspace:*",
+    "@scriba/ui": "workspace:*",
+    "@scriba/view": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
+}

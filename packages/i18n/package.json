@@ -18,5 +18,14 @@
   "scripts": {
     "build": "node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

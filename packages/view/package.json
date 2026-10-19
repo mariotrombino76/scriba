@@ -21,5 +21,14 @@
   "license": "MIT",
   "dependencies": {
     "@scriba/core": "workspace:*"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

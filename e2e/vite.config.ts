@@ -22,6 +22,8 @@ const CSP = [
 export default defineConfig({
   plugins: [vue()],
   root: fileURLToPath(new URL('./fixture', import.meta.url)),
+  // scriba.iife.js and scriba.css as published (@scriba/browser), served like a CDN would
+  publicDir: fileURLToPath(new URL('../packages/browser/dist', import.meta.url)),
   resolve: {
     alias: {
       '@scriba/core': src('core'),
@@ -67,6 +69,7 @@ export default defineConfig({
       input: {
         main: fileURLToPath(new URL('./fixture/index.html', import.meta.url)),
         react: fileURLToPath(new URL('./fixture/react.html', import.meta.url)),
+        cdn: fileURLToPath(new URL('./fixture/cdn.html', import.meta.url)),
       },
     },
   },

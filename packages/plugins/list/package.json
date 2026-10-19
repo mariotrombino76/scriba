@@ -22,5 +22,14 @@
     "@scriba/core": "workspace:*",
     "@scriba/ui": "workspace:*"
   },
-  "description": "Bulleted and numbered lists, nested, with Tab/Shift+Tab, for the Scriba editor."
+  "description": "Bulleted and numbered lists, nested, with Tab/Shift+Tab, for the Scriba editor.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

@@ -24,5 +24,14 @@
     "@scriba/i18n": "workspace:*",
     "@scriba/ui": "workspace:*",
     "@scriba/view": "workspace:*"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

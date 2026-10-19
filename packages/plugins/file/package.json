@@ -35,5 +35,14 @@
     "@scriba/plugin-link": "workspace:*",
     "@scriba/plugin-table": "workspace:*",
     "@scriba/plugin-image": "workspace:*"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

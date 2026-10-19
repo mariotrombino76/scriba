@@ -26,5 +26,14 @@
   },
   "devDependencies": {
     "@scriba/plugin-blockquote": "workspace:*"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

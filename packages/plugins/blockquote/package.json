@@ -22,5 +22,14 @@
     "@scriba/core": "workspace:*",
     "@scriba/ui": "workspace:*"
   },
-  "description": "Blockquotes for the Scriba editor."
+  "description": "Blockquotes for the Scriba editor.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

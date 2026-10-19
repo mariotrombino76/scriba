@@ -23,5 +23,14 @@
     "@scriba/core": "workspace:*",
     "@scriba/view": "workspace:*",
     "markdown-it": "15.0.2"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }

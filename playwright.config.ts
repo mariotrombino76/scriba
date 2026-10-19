@@ -11,7 +11,9 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:4173', viewport: { width: 1600, height: 900 } },
   webServer: [
     {
-      command: 'vite build --config e2e/vite.config.ts && vite preview --config e2e/vite.config.ts',
+      // @scriba/browser first: its built files are the classic-script page's (cdn.html)
+      command:
+        'pnpm --filter @scriba/browser build && vite build --config e2e/vite.config.ts && vite preview --config e2e/vite.config.ts',
       url: 'http://localhost:4173',
       reuseExistingServer: !process.env['CI'],
     },

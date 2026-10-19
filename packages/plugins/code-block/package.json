@@ -28,5 +28,14 @@
   },
   "devDependencies": {
     "@types/hast": "^3.0.5"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ]
 }
