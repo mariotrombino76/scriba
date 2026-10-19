@@ -36,6 +36,16 @@ export class ContentExpr {
     return START
   }
 
+  /**
+   * The single term of an expression like `"block+"` or `"inline*"` (one set of types,
+   * repeated without limit), or null. For these, checking a change needs only the new
+   * nodes and the count, not every child (fast checks in large documents).
+   */
+  get repeated(): ContentElement | null {
+    const el = this.elements.length === 1 ? this.elements[0]! : null
+    return el && el.max === Infinity ? el : null
+  }
+
   /** True when the expression only admits inline nodes. */
   get inlineContent(): boolean {
     const first = this.elements[0]?.types[0]

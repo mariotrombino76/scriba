@@ -224,30 +224,45 @@ export function updateDesc(
     return desc
   }
   const old = desc.children as NodeViewDesc[]
-  const used = new Set<NodeViewDesc>()
-  const upcoming = new Set<Node>()
-  node.forEach((child) => upcoming.add(child))
-  const next: NodeViewDesc[] = []
-  let cursor = 0
+  const kids: Node[] = []
+  const offsets: number[] = []
   node.forEach((child, offset) => {
+    kids.push(child)
+    offsets.push(offset)
+  })
+  // The usual edit changes one block of thousands: the same children at the start and at
+  // the end are kept as they are, and only the part in between is reconciled.
+  const max = Math.min(kids.length, old.length)
+  let head = 0
+  while (head < max && old[head]!.node === kids[head]) head++
+  let tail = 0
+  while (tail < max - head && old[old.length - 1 - tail]!.node === kids[kids.length - 1 - tail])
+    tail++
+  const oldMid = old.slice(head, old.length - tail)
+  const used = new Set<NodeViewDesc>()
+  const upcoming = new Set<Node>(kids.slice(head, kids.length - tail))
+  const mid: NodeViewDesc[] = []
+  let cursor = 0
+  for (let i = head; i < kids.length - tail; i++) {
+    const child = kids[i]!
     upcoming.delete(child)
-    const childStart = contentStart + offset + 1
+    const childStart = contentStart + offsets[i]! + 1
     // 1. The very same node further ahead: reuse it untouched.
     let found = -1
-    for (let j = cursor; j < old.length; j++) {
-      if (old[j]!.node === child && !used.has(old[j]!)) {
+    for (let j = cursor; j < oldMid.length; j++) {
+      if (oldMid[j]!.node === child && !used.has(oldMid[j]!)) {
         found = j
         break
       }
     }
     if (found >= 0) {
-      next.push(old[found]!)
-      used.add(old[found]!)
+      mid.push(oldMid[found]!)
+      used.add(oldMid[found]!)
       cursor = found + 1
-      return
+      continue
     }
     // 2. A node with the same markup in this slot, not needed later: update it in place.
-    const candidate = old[cursor]
+    const candidate = oldMid[cursor]
     if (
       candidate &&
       !used.has(candidate) &&
@@ -256,15 +271,42 @@ export function updateDesc(
         (!!candidate.custom && candidate.node.type === child.type))
     ) {
       used.add(candidate)
-      next.push(updateDesc(doc, candidate, child, childStart, ctx))
+      mid.push(updateDesc(doc, candidate, child, childStart, ctx))
       cursor++
-      return
+      continue
     }
     // 3. Otherwise render it fresh.
-    next.push(renderNode(doc, child, childStart - 1, ctx))
-  })
-  syncChildren(desc, next)
+    mid.push(renderNode(doc, child, childStart - 1, ctx))
+  }
+  const next = [...old.slice(0, head), ...mid, ...old.slice(old.length - tail)]
+  syncRange(desc, oldMid, mid, tail ? old[old.length - tail]!.dom : null, next)
   return desc
+}
+
+/**
+ * Puts the reconciled middle children in place, before `ref` (the first kept child at
+ * the end, or null), removing the old ones not reused. When the DOM holds anything else
+ * (e.g. something the browser inserted), the whole content is made to match.
+ */
+function syncRange(
+  desc: NodeViewDesc,
+  oldMid: readonly NodeViewDesc[],
+  mid: readonly NodeViewDesc[],
+  ref: globalThis.Node | null,
+  next: NodeViewDesc[],
+): void {
+  const content = desc.contentDOM!
+  const keep = new Set(mid.map((d) => d.dom))
+  for (const d of oldMid)
+    if (!keep.has(d.dom) && d.dom.parentNode === content) content.removeChild(d.dom)
+  let at = ref
+  for (let i = mid.length - 1; i >= 0; i--) {
+    const dom = mid[i]!.dom
+    if (dom.parentNode !== content || dom.nextSibling !== at) content.insertBefore(dom, at)
+    at = dom
+  }
+  if (content.childNodes.length !== next.length) syncChildren(desc, next)
+  else desc.setChildren(next)
 }
 
 /** Makes the content DOM match the given children, in order, removing stale nodes. */

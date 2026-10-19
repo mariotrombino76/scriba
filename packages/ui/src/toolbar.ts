@@ -289,21 +289,25 @@ export class ScribaToolbar extends Base {
         enabled = !!state && item.entries.some((e) => controlUsable(view!, e) && e.command(state))
         if (c.value) {
           const value = state && item.valueLabel ? item.valueLabel(state, t) : ''
-          c.value.textContent = value
-          el.setAttribute('aria-label', value ? `${item.label(t)}: ${value}` : item.label(t))
+          if (c.value.textContent !== value) c.value.textContent = value
+          setAttr(el, 'aria-label', value ? `${item.label(t)}: ${value}` : item.label(t))
         }
         if (c.indicator) {
           const raw = state && item.indicator ? item.indicator(state) : null
           const color = raw ? normalizeColor(raw) : null
-          c.indicator.style.backgroundColor = color ?? 'transparent' // CSSOM, validated color
-          c.indicator.classList.toggle('scriba-toolbar-indicator-empty', !color)
+          const background = color ?? 'transparent'
+          if (c.indicator.dataset['color'] !== background) {
+            c.indicator.dataset['color'] = background
+            c.indicator.style.backgroundColor = background // CSSOM, validated color
+            c.indicator.classList.toggle('scriba-toolbar-indicator-empty', !color)
+          }
         }
       } else {
         enabled =
           !!state && controlUsable(view!, item) && (item.command(state) || !!item.isActive?.(state))
-        if (item.isActive) el.setAttribute('aria-pressed', String(!!state && item.isActive(state)))
+        if (item.isActive) setAttr(el, 'aria-pressed', String(!!state && item.isActive(state)))
       }
-      el.setAttribute('aria-disabled', String(!enabled))
+      setAttr(el, 'aria-disabled', String(!enabled))
     }
     this.updateGroups()
     // Measuring is costly: re-layout only when controls appeared or disappeared.
@@ -353,10 +357,16 @@ export class ScribaToolbar extends Base {
   private updateTabStops(): void {
     const nav = this.navigable()
     this.focusIndex = Math.min(this.focusIndex, Math.max(0, nav.length - 1))
-    for (const c of this.controls) c.el.tabIndex = -1
-    if (this.moreButton) this.moreButton.tabIndex = -1
     const current = nav[this.focusIndex]
-    if (current) current.tabIndex = 0
+    // only the changes (this runs on every keystroke)
+    for (const c of this.controls) {
+      const index = c.el === current ? 0 : -1
+      if (c.el.tabIndex !== index) c.el.tabIndex = index
+    }
+    if (this.moreButton) {
+      const index = this.moreButton === current ? 0 : -1
+      if (this.moreButton.tabIndex !== index) this.moreButton.tabIndex = index
+    }
   }
 
   private closeMenus(except?: MenuPopup): void {
@@ -487,4 +497,12 @@ declare global {
   interface HTMLElementTagNameMap {
     'scriba-toolbar': ScribaToolbar
   }
+}
+
+/**
+ * Sets an attribute only when it changes: the toolbar updates on every keystroke, and
+ * rewriting an attribute (even with the same value) makes the browser recompute styles.
+ */
+function setAttr(el: HTMLElement, name: string, value: string): void {
+  if (el.getAttribute(name) !== value) el.setAttribute(name, value)
 }

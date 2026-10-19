@@ -246,13 +246,14 @@ export class EditorView {
   syncSelectionToDOM(): void {
     const domSel = this.document.getSelection()
     const sel = this.state.selection
-    this.dom
-      .querySelectorAll('.scriba-selected-node')
-      .forEach((el) => el.classList.remove('scriba-selected-node'))
-    if (sel instanceof NodeSelection) {
-      const dom = descAt(this.rootDesc, sel.from)?.dom
-      if (dom && dom.nodeType === 1) (dom as HTMLElement).classList.add('scriba-selected-node')
-    }
+    // the highlighted node is remembered: no search through a large document per keystroke
+    const dom = sel instanceof NodeSelection ? descAt(this.rootDesc, sel.from)?.dom : null
+    const selected = dom && dom.nodeType === 1 ? (dom as HTMLElement) : null
+    if (this.selectedNodeDOM !== selected) {
+      this.selectedNodeDOM?.classList.remove('scriba-selected-node')
+      selected?.classList.add('scriba-selected-node')
+      this.selectedNodeDOM = selected
+    } else selected?.classList.add('scriba-selected-node') // redrawn since
     writeDOMSelection(this.rootDesc, sel, domSel)
   }
 
@@ -475,6 +476,9 @@ export class EditorView {
     return pasteContent(this, data)
   }
 
+  /** The element showing the selected node, if any. */
+  private selectedNodeDOM: HTMLElement | null = null
+
   /** @internal A mouse button is down after a click in the text (not on an atom). */
   pointerSelecting = false
 
@@ -525,8 +529,11 @@ export class EditorView {
   private updateEditable(): void {
     const editable = this.editable
     // commenters get a caret (keyboard selections) but every edit is refused
-    this.dom.setAttribute('contenteditable', editable || this.canAnnotate ? 'true' : 'false')
-    this.dom.setAttribute('aria-readonly', editable ? 'false' : 'true')
+    // only when they change: rewriting contenteditable is costly in large documents
+    const set = (name: string, value: string) =>
+      this.dom.getAttribute(name) !== value && this.dom.setAttribute(name, value)
+    set('contenteditable', editable || this.canAnnotate ? 'true' : 'false')
+    set('aria-readonly', editable ? 'false' : 'true')
     // read-only content stays reachable with Tab (find, reading, selecting to copy)
     if (!this.dom.hasAttribute('tabindex')) this.dom.tabIndex = 0
   }

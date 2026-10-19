@@ -169,7 +169,23 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   aggiornamento che tocca un blocco protetto viene annullato per tutti, mittente compreso
   (`applyGuardedUpdate`).
 
+- Prestazioni (CLAUDE.md §7): benchmark del core su un documento da 1 MB in
+  `packages/core/bench` (`pnpm bench`, con soglie: digitazione, Invio, grassetto, annulla;
+  parsing, serializzazione, JSON), `pnpm test:perf` (Playwright, a parte dalla suite e2e: un
+  tasto in un documento da 1 MB sotto i 16 ms, mediana, nei tre browser) e `pnpm size` (peso
+  minificato e gzip; il core deve restare sotto i 60 KB gzip: oggi 25 KB, core + view 35,6 KB).
+
 ### Modificato
+
+- Prestazioni con documenti grandi (un tasto in 1 MB di testo, mediane: Chromium ~10 ms,
+  Firefox da ~14–22 a ~11 ms, WebKit da ~15–17 a ~12 ms):
+  - `@scriba/view`: la riconciliazione salta i blocchi identici all'inizio e alla fine e lavora
+    solo sulla parte cambiata; l'evidenziazione del nodo selezionato non cerca più in tutto il
+    documento; `contenteditable` e `aria-readonly` si riscrivono solo quando cambiano.
+  - `@scriba/ui`: la toolbar scrive attributi, testi e `tabIndex` solo quando cambiano.
+  - `@scriba/core`: `canReplace` per le espressioni come `"block+"` controlla solo i nodi nuovi
+    e il conteggio, non tutti i figli (i pulsanti elenco/citazione/codice si aggiornano a ogni
+    tasto); stesso esito del confronto completo.
 
 - Ruolo "commentatore" (sola lettura, ma può commentare):
   - `@scriba/core`: opzione `annotation` dei mark (il mark commento la usa), `isAnnotationOnly(tr)`,

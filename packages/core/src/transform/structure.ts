@@ -63,10 +63,18 @@ export function canReplace(
   content: Fragment = Fragment.empty,
 ): boolean {
   const expr = node.type.contentExpr
-  let state = expr.matchFragment(node.content, undefined, 0, from)
-  if (state) state = expr.matchFragment(content, state)
-  if (state) state = expr.matchFragment(node.content, state, to)
-  if (!state || !expr.validEnd(state)) return false
+  const repeated = expr.repeated
+  if (repeated) {
+    // "block+" and the like: the children kept are valid already (O(content), not O(node))
+    if (node.childCount - (to - from) + content.childCount < repeated.min) return false
+    for (let i = 0; i < content.childCount; i++)
+      if (!repeated.types.includes(content.child(i).type)) return false
+  } else {
+    let state = expr.matchFragment(node.content, undefined, 0, from)
+    if (state) state = expr.matchFragment(content, state)
+    if (state) state = expr.matchFragment(node.content, state, to)
+    if (!state || !expr.validEnd(state)) return false
+  }
   for (let i = 0; i < content.childCount; i++) {
     if (!node.type.allowsMarks(content.child(i).marks)) return false
   }

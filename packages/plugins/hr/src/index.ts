@@ -94,7 +94,8 @@ export function hrPlugins(t: Translate): Plugin[] {
               hr.setAttribute('aria-label', t('pagebreak.label'))
         })
       label(view)
-      return { update: label }
+      // only when the document changed (this looks through the editor's DOM)
+      return { update: (v, prev) => v.state.doc !== prev.doc && label(v) }
     },
   }
   return [new Plugin({ props: { ...props } })]
