@@ -22,7 +22,7 @@ test.afterEach(async ({ page }) => {
   ).toEqual([])
 })
 
-test('menus like TinyMCE: File, Modifica, Visualizza, Inserisci, Formato, Strumenti, Tabella', async ({
+test('menus like TinyMCE: File, Modifica, Visualizza, Inserisci, Formato, Strumenti, Tabella, Aiuto', async ({
   page,
 }) => {
   await expect(menubar(page).getByRole('menuitem')).toHaveText([
@@ -33,6 +33,7 @@ test('menus like TinyMCE: File, Modifica, Visualizza, Inserisci, Formato, Strume
     'Formato',
     'Strumenti',
     'Tabella',
+    'Aiuto',
   ])
   // groups separated like TinyMCE's menus
   await menubar(page).getByRole('menuitem', { name: 'File' }).click()

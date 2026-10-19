@@ -103,6 +103,15 @@ import {
 } from '@scriba/plugin-comments'
 import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
 import {
+  editingHelp,
+  helpItem,
+  helpKeymap,
+  markdownHelp,
+  navigationHelp,
+  shortcutsFromItems,
+  type HelpOptions,
+} from '@scriba/plugin-help'
+import {
   aiAssistant,
   aiKeymap,
   aiToolbarItem,
@@ -320,6 +329,16 @@ const comments = shared
   ? collabCommentStore(shared.provider)
   : createMemoryCommentStore({ id: 'local', name: 'Tu' })
 
+// Help ▸ Keyboard shortcuts (Alt+0): the toolbar and menu shortcuts plus the keys without a button
+const helpOptions: HelpOptions = {
+  t,
+  groups: () => [
+    shortcutsFromItems([...(toolbar.items ?? []), ...menubar.menus.flatMap((m) => m.items)]),
+    editingHelp({ slash: true, mentions: true }),
+    markdownHelp(),
+    navigationHelp({ bubble: true, contextMenu: true }),
+  ],
+}
 const state = EditorState.create({
   doc,
   plugins: [
@@ -354,6 +373,7 @@ const state = EditorState.create({
     ...markdownShortcuts(schema),
     keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
+    keymap(helpKeymap(helpOptions), { priority: 80, readOnly: true }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     keymap(taskKeymap(), { priority: 70 }),
     codeHighlight({ lowlight: createLowlight(common) }),
@@ -528,6 +548,7 @@ menubar.menus = [
     items: [aiToolbarItem(aiOptions), '|', wordCountItem],
   },
   { id: 'table', label: 'menu.table', items: tableToolbarItems(schema, t) },
+  { id: 'help', label: 'menu.help', items: [helpItem(helpOptions)] },
 ]
 menubar.view = view
 // right click on a link, an image or a table (elsewhere: the browser's menu), like TinyMCE

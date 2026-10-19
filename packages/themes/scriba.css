@@ -1610,3 +1610,70 @@ scriba-toolbar.scriba-bubble {
   border: 1px solid var(--scriba-border);
   border-radius: var(--scriba-radius);
 }
+
+/* Help: keyboard shortcuts dialog */
+.scriba-dialog.scriba-help {
+  width: min(40rem, calc(100vw - 2rem));
+}
+.scriba-help input[type='search'] {
+  padding: 0.5rem;
+  font: inherit;
+  color: var(--scriba-text);
+  background: var(--scriba-bg);
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+}
+.scriba-help-groups {
+  max-height: min(60vh, 32rem);
+  overflow-y: auto;
+}
+.scriba-help-groups section[hidden] {
+  display: none;
+}
+.scriba-help-groups h3 {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.9375rem;
+}
+.scriba-help-groups table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.scriba-help-groups th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--scriba-muted);
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid var(--scriba-border);
+}
+.scriba-help-groups td {
+  padding: 5px 8px 5px 0;
+  border-bottom: 1px solid var(--scriba-border);
+  vertical-align: top;
+}
+.scriba-help-groups td:last-child {
+  white-space: nowrap;
+}
+.scriba-help kbd,
+.scriba-help code {
+  display: inline-block;
+  padding: 1px 6px;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 0.8125rem;
+  color: var(--scriba-text);
+  background: var(--scriba-accent-bg);
+  border: 1px solid var(--scriba-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+.scriba-help code {
+  border-bottom-width: 1px;
+}
+.scriba-help-empty {
+  margin: 0;
+  color: var(--scriba-muted);
+  font-size: 0.875rem;
+}
+.scriba-help-empty:empty {
+  display: none;
+}

@@ -125,6 +125,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     Cella, Riga, Colonna; proprietà ed elimina tabella). Dove nessuna sezione si applica, e con
     Ctrl (Cmd su macOS), resta il menu del browser; tasto menu e Maiusc+F10 lo aprono al cursore.
     `MenuPopup.openAt(x, y)`, `popupEntries`, `withoutPressed`.
+- `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
+  TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
+  `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
+  `editingHelp`, `markdownHelp`, `navigationHelp`. Dialog con una tabella per gruppo e ricerca.
 - `@scriba/plugin-file`: menu "File" come in TinyMCE, tutto nel browser.
   - Apri (.docx, .html, .md, .txt), anche trascinando il file; prima chiede conferma se ci sono
     modifiche non salvate.
