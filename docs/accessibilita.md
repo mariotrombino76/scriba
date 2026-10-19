@@ -26,6 +26,8 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 | ------------------------- | ---------------------------------------------------------------- |
 | Mod+B / I / U             | Grassetto / corsivo / sottolineato                               |
 | Mod+Maiusc+S, Mod+E       | Barrato, codice in linea                                         |
+| Mod+. , Mod+,             | Apice, pedice                                                    |
+| Mod+Maiusc+Spazio         | Spazio non separabile                                            |
 | Mod+Alt+0 … 6             | Paragrafo, Titolo 1…6                                            |
 | Mod+K                     | Link                                                             |
 | Mod+Z, Mod+Y              | Annulla, ripeti                                                  |

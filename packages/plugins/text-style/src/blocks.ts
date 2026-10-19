@@ -1,4 +1,5 @@
 import {
+  LINE_HEIGHTS,
   styleValue,
   withStyle,
   type Command,
@@ -21,6 +22,36 @@ function readAlign(el: DOMLikeElement): TextAlign | null {
   return ALIGNS.includes(value) ? (value as TextAlign) : null
 }
 
+export type LineHeight = (typeof LINE_HEIGHTS)[number]
+export type TextDirection = 'ltr' | 'rtl'
+
+/** Line height from a style: one of the allowed values, or a percentage of one (Word: 150%). */
+function readLineHeight(el: DOMLikeElement): LineHeight | null {
+  const raw = styleValue(el, 'line-height')?.trim()
+  if (!raw) return null
+  const pct = /^(\d{2,3})%$/.exec(raw)
+  const value = pct ? String(Number(pct[1]) / 100) : raw
+  return (LINE_HEIGHTS as readonly string[]).includes(value) ? (value as LineHeight) : null
+}
+
+/**
+ * Only right-to-left is kept: left-to-right is the default (Google Docs writes
+ * dir="ltr" on every block, which would only add noise).
+ */
+function readDirection(el: DOMLikeElement): 'rtl' | null {
+  return el.getAttribute('dir')?.toLowerCase() === 'rtl' ? 'rtl' : null
+}
+
+/** Adds an attribute to an HTML spec `[tag, attrs?, …]` (null: nothing added). */
+function withAttr(spec: HTMLSpec, name: string, value: string | null): HTMLSpec {
+  if (value === null || typeof spec === 'string') return spec
+  const [tag, ...rest] = spec as readonly unknown[]
+  const first = rest[0]
+  if (first !== undefined && first !== 0 && typeof first === 'object' && !Array.isArray(first))
+    return [tag, { ...(first as object), [name]: value }, ...rest.slice(1)] as unknown as HTMLSpec
+  return [tag, { [name]: value }, ...rest] as unknown as HTMLSpec
+}
+
 /** Reads indentation from margin-left/padding-left (Word, TinyMCE, Google Docs). */
 function readIndent(el: DOMLikeElement): number {
   const raw = styleValue(el, 'margin-left') ?? styleValue(el, 'padding-left')
@@ -31,8 +62,9 @@ function readIndent(el: DOMLikeElement): number {
 }
 
 /**
- * Adds `align` and `indent` attributes to textblock specs (default: paragraph
- * and heading), read from / written to typed inline styles.
+ * Adds `align`, `indent` and `lineHeight` attributes (typed inline styles) and
+ * `dir` (the `dir` attribute: text direction) to textblock specs (default:
+ * paragraph and heading).
  */
 export function withBlockStyles<N extends Record<string, NodeSpec>>(
   nodes: N,
@@ -52,23 +84,36 @@ export function withBlockStyles<N extends Record<string, NodeSpec>>(
           default: 0,
           validate: (v) => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= MAX_INDENT,
         },
+        lineHeight: {
+          default: null,
+          validate: (v) => v === null || (LINE_HEIGHTS as readonly unknown[]).includes(v),
+        },
+        dir: { default: null, validate: (v) => v === null || v === 'rtl' },
       },
       parseHTML: (spec.parseHTML ?? []).map((rule): ParseRule => ({
         ...rule,
         getAttrs: (el) => {
           const base = rule.getAttrs ? rule.getAttrs(el) : null
           if (base === false) return false
-          return { ...base, align: readAlign(el), indent: readIndent(el) }
+          return {
+            ...base,
+            align: readAlign(el),
+            indent: readIndent(el),
+            lineHeight: readLineHeight(el),
+            dir: readDirection(el),
+          }
         },
       })),
       ...(toHTML
         ? {
             toHTML: (node: Node): HTMLSpec => {
               const indent = node.attrs['indent'] as number
-              return withStyle(toHTML(node), {
+              const styled = withStyle(toHTML(node), {
                 'text-align': node.attrs['align'] as string | null,
                 'margin-left': indent ? `${indent * 2}em` : null,
+                'line-height': node.attrs['lineHeight'] as string | null,
               })
+              return withAttr(styled, 'dir', node.attrs['dir'] as string | null)
             },
           }
         : {}),
@@ -141,3 +186,54 @@ export function isAligned(state: EditorState, align: TextAlign): boolean {
 }
 
 export type { NodeType }
+
+/** Sets one block attribute on the selected blocks that have it (`null` = default). */
+function setBlockAttr(attr: string, value: unknown): Command {
+  return (state, dispatch) => {
+    let any = false
+    const targets: number[] = []
+    eachStyledBlock(state, attr, (node, pos) => {
+      any = true
+      if (node.attrs[attr] !== value) targets.push(pos)
+    })
+    if (!any) return false
+    if (dispatch && targets.length) {
+      const tr = state.tr
+      for (const pos of targets) tr.setNodeAttrs(pos, { [attr]: value })
+      dispatch(tr.scrollIntoView())
+    }
+    return true
+  }
+}
+
+/** True when every selected block has this value of the attribute. */
+function allBlocks(state: EditorState, attr: string, value: unknown): boolean {
+  let all = true
+  let any = false
+  eachStyledBlock(state, attr, (node) => {
+    any = true
+    if (node.attrs[attr] !== value) all = false
+  })
+  return any && all
+}
+
+/** Sets the line height of the selected blocks (`null` = the theme's). */
+export function setLineHeight(lineHeight: LineHeight | null): Command {
+  return setBlockAttr('lineHeight', lineHeight)
+}
+
+export function hasLineHeight(state: EditorState, lineHeight: LineHeight | null): boolean {
+  return allBlocks(state, 'lineHeight', lineHeight)
+}
+
+/**
+ * Sets the text direction of the selected blocks: `'rtl'` for Arabic, Hebrew…;
+ * `'ltr'` (or `null`) goes back to the default, left to right.
+ */
+export function setTextDirection(dir: TextDirection | null): Command {
+  return setBlockAttr('dir', dir === 'rtl' ? 'rtl' : null)
+}
+
+export function hasTextDirection(state: EditorState, dir: TextDirection): boolean {
+  return allBlocks(state, 'dir', dir === 'rtl' ? 'rtl' : null)
+}

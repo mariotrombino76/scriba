@@ -9,6 +9,7 @@ import {
   deleteSelection,
   deleteSelectedBlock,
   insertNode,
+  insertNonBreakingSpace,
   joinBackward,
   joinForward,
   newlineInCode,
@@ -48,7 +49,8 @@ export const historyKeymap: KeyBindings = {
 
 /**
  * Formatting keys for the node/mark types present in the schema:
- * Mod-b/i/u bold/italic/underline, Mod-Shift-s strike, Mod-e code,
+ * Mod-b/i/u bold/italic/underline, Mod-Shift-s strike, Mod-e code, Mod-. / Mod-,
+ * superscript / subscript, Mod-Shift-Space non-breaking space,
  * Shift-Enter hard break, Mod-Alt-0 paragraph, Mod-Alt-1..6 headings.
  */
 export function formatKeymap(schema: Schema): KeyBindings {
@@ -59,6 +61,9 @@ export function formatKeymap(schema: Schema): KeyBindings {
   if (marks['underline']) keys['Mod-u'] = toggleMark(marks['underline'])
   if (marks['strike']) keys['Shift-Mod-s'] = toggleMark(marks['strike'])
   if (marks['code']) keys['Mod-e'] = toggleMark(marks['code'])
+  if (marks['superscript']) keys['Mod-.'] = toggleMark(marks['superscript'])
+  if (marks['subscript']) keys['Mod-,'] = toggleMark(marks['subscript'])
+  keys['Shift-Mod- '] = insertNonBreakingSpace
   if (nodes['hard_break']) keys['Shift-Enter'] = insertNode(nodes['hard_break'])
   if (nodes['paragraph']) keys['Mod-Alt-0'] = setBlockType(nodes['paragraph'])
   if (nodes['heading']) {

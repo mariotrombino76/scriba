@@ -46,8 +46,8 @@ test('text color through the menu, keyboard only', async ({ page }) => {
   await page.keyboard.type('rosso')
   await page.keyboard.press('Shift+Home')
   await page.keyboard.press('Shift+Tab') // into the toolbar
-  // Annulla, Ripeti, Stile, Carattere, Dimensione, B, I, U, S, codice → Colore testo
-  for (let i = 0; i < 10; i++) await page.keyboard.press('ArrowRight')
+  // Annulla, Ripeti, Stile, Carattere, Dimensione, B, I, U, S, apice, pedice, codice → Colore testo
+  for (let i = 0; i < 12; i++) await page.keyboard.press('ArrowRight')
   await expect(button(page, 'Colore testo')).toBeFocused()
   await page.keyboard.press('Enter')
   const menu = page.getByRole('menu', { name: 'Colore testo' })

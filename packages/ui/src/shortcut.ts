@@ -24,6 +24,14 @@ export function formatShortcut(binding: string, t: Translate, mac = isMac()): st
     if (mod === 'Alt') names.push(t(mac ? 'key.altMac' : 'key.alt'))
     if (mod === 'Shift') names.push(t(mac ? 'key.shiftMac' : 'key.shift'))
   }
-  names.push(key === 'Enter' ? t('key.enter') : key.length === 1 ? key.toUpperCase() : key)
+  names.push(
+    key === 'Enter'
+      ? t('key.enter')
+      : key === ' '
+        ? t('key.space')
+        : key.length === 1
+          ? key.toUpperCase()
+          : key,
+  )
   return names.join(mac ? '' : '+')
 }

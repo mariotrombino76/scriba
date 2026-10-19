@@ -13,7 +13,18 @@ import type {
   ToolbarMenu,
   ToolbarMenuEntry,
 } from '@scriba/ui'
-import { changeIndent, isAligned, setTextAlign, type TextAlign } from './blocks.js'
+import {
+  changeIndent,
+  hasLineHeight,
+  hasTextDirection,
+  isAligned,
+  setLineHeight,
+  setTextAlign,
+  setTextDirection,
+  type LineHeight,
+  type TextAlign,
+} from './blocks.js'
+import { LINE_HEIGHTS } from '@scriba/core'
 import { markValue, setMarkValue } from './marks.js'
 
 export * from './blocks.js'
@@ -129,6 +140,35 @@ export function alignmentMenu(): ToolbarMenu {
       isActive: (state) => isAligned(state, a.value),
     })),
   }
+}
+
+/** "Line height" menu: the theme's (default) and the allowed values (1, 1.15, 1.5, 2). */
+export function lineHeightMenu(): ToolbarMenu {
+  const entry = (value: LineHeight | null): ToolbarMenuEntry => ({
+    id: `line-height-${value ?? 'default'}`,
+    label: (t) => (value ? value.replace('.', t('lineHeight.decimal')) : t('lineHeight.default')),
+    command: setLineHeight(value),
+    isActive: (state) => hasLineHeight(state, value),
+  })
+  return {
+    type: 'menu',
+    id: 'line-height',
+    icon: 'lineHeight',
+    label: (t) => t('lineHeight.menu'),
+    entries: [entry(null), ...LINE_HEIGHTS.map((v) => entry(v))],
+  }
+}
+
+/** Left-to-right (the default) and right-to-left (Arabic, Hebrew…) buttons. */
+export function directionItems(): ToolbarButton[] {
+  return (['ltr', 'rtl'] as const).map((dir) => ({
+    type: 'button' as const,
+    id: `dir-${dir}`,
+    icon: dir === 'ltr' ? ('ltr' as const) : ('rtl' as const),
+    label: (t: Translate) => t(dir === 'ltr' ? 'dir.ltr' : 'dir.rtl'),
+    command: setTextDirection(dir),
+    isActive: (state) => hasTextDirection(state, dir),
+  }))
 }
 
 /** Decrease / increase indentation (combined with list nesting when `options.indent` is set). */

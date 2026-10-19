@@ -21,6 +21,7 @@ import {
   historyItems,
   clearFormatItem,
   clipboardItems,
+  nonBreakingSpaceItem,
   selectAllItem,
   type ToolbarButton,
   markItems,
@@ -30,6 +31,7 @@ import {
   listIndentCommands,
   listKeymap,
   listNodes,
+  listStyleMenus,
   listToolbarItems,
   toggleList,
 } from '@scriba/plugin-list'
@@ -40,6 +42,8 @@ import {
 } from '@scriba/plugin-blockquote'
 import {
   alignmentMenu,
+  directionItems,
+  lineHeightMenu,
   colorItems,
   fontItems,
   indentItems,
@@ -575,6 +579,7 @@ menubar.menus = [
       '|',
       charmapToolbarItem(t),
       hrToolbarItems(schema)[0]!,
+      nonBreakingSpaceItem(),
       '|',
       hrToolbarItems(schema)[1]!,
       '|',
@@ -594,6 +599,9 @@ menubar.menus = [
       ...(styleMenu ? [styleMenu] : []),
       ...fontItems(schema),
       alignmentMenu(),
+      lineHeightMenu(),
+      ...directionItems(),
+      ...listStyleMenus(schema),
       '|',
       ...colorItems(schema),
       '|',

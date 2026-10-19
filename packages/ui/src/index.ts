@@ -7,6 +7,7 @@ export {
   clearFormatItem,
   clearFormatting,
   selectAllItem,
+  nonBreakingSpaceItem,
   markItems,
   blockStyleMenu,
   type ToolbarItem,

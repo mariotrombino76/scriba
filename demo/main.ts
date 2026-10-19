@@ -25,6 +25,7 @@ import {
   historyItems,
   clearFormatItem,
   clipboardItems,
+  nonBreakingSpaceItem,
   selectAllItem,
   type ToolbarButton,
   markItems,
@@ -34,6 +35,7 @@ import {
   listIndentCommands,
   listKeymap,
   listNodes,
+  listStyleMenus,
   listToolbarItems,
   toggleList,
 } from '@scriba/plugin-list'
@@ -44,6 +46,8 @@ import {
 } from '@scriba/plugin-blockquote'
 import {
   alignmentMenu,
+  directionItems,
+  lineHeightMenu,
   colorItems,
   fontItems,
   indentItems,
@@ -528,8 +532,11 @@ toolbar.items = [
   ),
   toolbarGroup('lists', 'toolbar.group.lists', [
     ...listToolbarItems(schema, { indent: false }).map((item) => ({ ...item, priority: 2 })),
+    ...listStyleMenus(schema),
     ...indentItems({ indent: listIndentCommands(schema) }),
     alignmentMenu(),
+    lineHeightMenu(),
+    ...directionItems(),
   ]),
   toolbarGroup('blocks', 'toolbar.group.blocks', [
     ...blockquoteToolbarItems(schema),
@@ -607,6 +614,7 @@ menubar.menus = [
       '|',
       charmapToolbarItem(t),
       hrToolbarItems(schema)[0]!,
+      nonBreakingSpaceItem(),
       '|',
       hrToolbarItems(schema)[1]!,
       '|',
@@ -626,6 +634,8 @@ menubar.menus = [
       ...(styleMenu ? [styleMenu] : []),
       ...fontItems(schema),
       alignmentMenu(),
+      lineHeightMenu(),
+      ...directionItems(),
       '|',
       ...colorItems(schema),
       '|',

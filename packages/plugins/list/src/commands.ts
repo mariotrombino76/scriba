@@ -202,3 +202,38 @@ export function isInList(state: EditorState, listType: NodeType, itemType: NodeT
   const depth = listDepth(state.selection.$from, itemType)
   return depth >= 0 && state.selection.$from.node(depth).type === listType
 }
+
+/**
+ * Sets an attribute of the list around the cursor (e.g. its bullet shape or
+ * numbering) when it is a `listType` list; otherwise wraps the selection in a
+ * new one with that attribute.
+ */
+export function setListStyle(
+  listType: NodeType,
+  itemType: NodeType,
+  attrs: Record<string, unknown>,
+): Command {
+  return (state, dispatch) => {
+    const depth = listDepth(state.selection.$from, itemType)
+    if (depth >= 0 && state.selection.$from.node(depth).type === listType) {
+      if (dispatch) {
+        const pos = state.selection.$from.before(depth)
+        dispatch(state.tr.setNodeAttrs(pos, attrs).scrollIntoView())
+      }
+      return true
+    }
+    return toggleList(listType, itemType, attrs)(state, dispatch)
+  }
+}
+
+/** The attribute of the list around the cursor, when it is a `listType` list. */
+export function listAttr(
+  state: EditorState,
+  listType: NodeType,
+  itemType: NodeType,
+  attr: string,
+): unknown {
+  const depth = listDepth(state.selection.$from, itemType)
+  const list = depth >= 0 ? state.selection.$from.node(depth) : null
+  return list?.type === listType ? list.attrs[attr] : undefined
+}

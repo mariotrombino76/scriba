@@ -162,6 +162,18 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   Testato in jsdom e nei tre browser con la CSP rigida (`e2e/cdn.spec.ts`).
 - Preparazione alla pubblicazione su npm: `publishConfig.access: public` in tutti i pacchetti e
   guida `RELEASING.md` (organizzazione npm, 2FA, provenance dalla CI, verifiche, versione).
+- Formattazione mancante rispetto a TinyMCE (tag, attributi e valori approvati il 2026-10-19):
+  - `@scriba/core`: mark `superscript`/`subscript` (`<sup>`/`<sub>`, si escludono), Ctrl/Cmd+. e
+    Ctrl/Cmd+,; `insertNonBreakingSpace` (Ctrl/Cmd+Maiusc+Spazio); stili tipizzati `line-height`
+    (1, 1.15, 1.5, 2) e `list-style-type` (disc, circle, square).
+  - `@scriba/plugin-text-style`: interlinea (`lineHeightMenu`, `setLineHeight`) e direzione del
+    testo (`directionItems`, `setTextDirection`: `dir="rtl"`; da sinistra a destra è il
+    default e non scrive l'attributo, così il `dir="ltr"` di Google Docs non sporca l'HTML).
+  - `@scriba/plugin-list`: stili degli elenchi come advlist (`listStyleMenus`, `setListStyle`):
+    puntato disc/circle/square, numerato 1/a/A/i/I (attributo `type`), letti anche dagli stili
+    di Word.
+  - `@scriba/ui`: pulsanti Apice e Pedice in `markItems`, `nonBreakingSpaceItem`.
+  - `@scriba/plugin-file`: apice e pedice anche nell'export Word.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
@@ -233,6 +245,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   gli strumenti per sviluppatori.
 
 ### Corretto
+
+- `@scriba/ui`: scorrere dentro un menu (es. un menu Formato lungo) chiudeva il sottomenu appena
+  aperto; ora lo scorrimento interno a un menu non chiude gli altri, quello della pagina sì.
 
 - `@scriba/view`: dopo aver selezionato un blocco o un'immagine (clic sopra), un clic nel testo
   non spostava la selezione: quello che si scriveva dopo sostituiva il nodo. Ora il clic sposta il

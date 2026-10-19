@@ -13,18 +13,18 @@ L'esempio completo, con tutti i plugin insieme, è `demo/main.ts` (`pnpm dev`).
 
 ## Scrittura e struttura
 
-| Pacchetto           | A cosa serve                                                         | Esportazioni principali                                                                                           |
-| ------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `plugin-list`       | Elenchi puntati e numerati annidati, Tab/Maiusc+Tab                  | `listNodes`, `listKeymap`, `listToolbarItems`, `toggleList`, `listIndentCommands`                                 |
-| `plugin-blockquote` | Citazioni                                                            | `blockquoteNodes`, `toggleBlockquote`, `blockquoteToolbarItems`                                                   |
-| `plugin-code-block` | Blocchi di codice con evidenziazione sicura (lowlight → decorazioni) | `codeBlockNodes`, `codeHighlight`, `codeBlockKeymap`, `codeBlockToolbarItems`                                     |
-| `plugin-text-style` | Allineamento, rientro, colori, font e dimensione (stili tipizzati)   | `textStyleMarks`, `withBlockStyles`, `textStyleKeymap`, `alignmentMenu`, `indentItems`, `colorItems`, `fontItems` |
-| `plugin-hr`         | Linea orizzontale e interruzione di pagina                           | `hrNodes`, `hrPlugins`, `hrToolbarItems`, `hrSlashItems`                                                          |
-| `plugin-callout`    | Riquadri (info, suggerimento, avviso, pericolo)                      | `calloutNodes`, `toggleCallout`, `calloutToolbarItem`, `calloutSlashItem`                                         |
-| `plugin-task`       | Attività con casella e scadenza (vista Vue)                          | `taskNodes`, `insertTask`, `taskKeymap`, `taskToolbarItem`                                                        |
-| `plugin-markdown`   | Scorciatoie Markdown mentre scrivi, import ed export                 | `markdownShortcuts`, `parseMarkdown`, `serializeMarkdown`                                                         |
-| `plugin-datetime`   | Inserisci data e ora                                                 | `dateTimeMenu`, `formatDateTime`                                                                                  |
-| `plugin-charmap`    | Caratteri speciali ed emoji                                          | `charmapToolbarItem`, `openCharmapDialog`                                                                         |
+| Pacchetto           | A cosa serve                                                                                              | Esportazioni principali                                                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `plugin-list`       | Elenchi puntati e numerati annidati, Tab/Maiusc+Tab, stili (cerchio, quadrato, a/A/i/I)                   | `listNodes`, `listKeymap`, `listToolbarItems`, `listStyleMenus`, `toggleList`, `listIndentCommands`                                                   |
+| `plugin-blockquote` | Citazioni                                                                                                 | `blockquoteNodes`, `toggleBlockquote`, `blockquoteToolbarItems`                                                                                       |
+| `plugin-code-block` | Blocchi di codice con evidenziazione sicura (lowlight → decorazioni)                                      | `codeBlockNodes`, `codeHighlight`, `codeBlockKeymap`, `codeBlockToolbarItems`                                                                         |
+| `plugin-text-style` | Allineamento, rientro, interlinea, direzione del testo (RTL), colori, font e dimensione (stili tipizzati) | `textStyleMarks`, `withBlockStyles`, `textStyleKeymap`, `alignmentMenu`, `lineHeightMenu`, `directionItems`, `indentItems`, `colorItems`, `fontItems` |
+| `plugin-hr`         | Linea orizzontale e interruzione di pagina                                                                | `hrNodes`, `hrPlugins`, `hrToolbarItems`, `hrSlashItems`                                                                                              |
+| `plugin-callout`    | Riquadri (info, suggerimento, avviso, pericolo)                                                           | `calloutNodes`, `toggleCallout`, `calloutToolbarItem`, `calloutSlashItem`                                                                             |
+| `plugin-task`       | Attività con casella e scadenza (vista Vue)                                                               | `taskNodes`, `insertTask`, `taskKeymap`, `taskToolbarItem`                                                                                            |
+| `plugin-markdown`   | Scorciatoie Markdown mentre scrivi, import ed export                                                      | `markdownShortcuts`, `parseMarkdown`, `serializeMarkdown`                                                                                             |
+| `plugin-datetime`   | Inserisci data e ora                                                                                      | `dateTimeMenu`, `formatDateTime`                                                                                                                      |
+| `plugin-charmap`    | Caratteri speciali ed emoji                                                                               | `charmapToolbarItem`, `openCharmapDialog`                                                                                                             |
 
 ## Contenuti
 

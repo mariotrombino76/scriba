@@ -113,3 +113,17 @@ describe('clearFormatting', () => {
     expect(clearFormatting(state)).toBe(false) // nothing left to clear
   })
 })
+
+describe('sub-menus and scrolling', () => {
+  it('scrolling inside the parent menu does not close a sub-menu', () => {
+    const { items, openMenu } = setup()
+    items()[1]!.click()
+    const parent = openMenu()!
+    parent.querySelector<HTMLButtonElement>('[data-entry=block-style]')!.click()
+    expect(openMenu()?.getAttribute('aria-label')).toBe('Stile paragrafo')
+    parent.dispatchEvent(new Event('scroll'))
+    expect(openMenu()?.getAttribute('aria-label')).toBe('Stile paragrafo')
+    document.dispatchEvent(new Event('scroll')) // the page itself: closes
+    expect(openMenu()).toBeNull()
+  })
+})

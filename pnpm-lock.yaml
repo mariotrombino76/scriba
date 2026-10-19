@@ -473,6 +473,9 @@ importers:
       '@scriba/core':
         specifier: workspace:*
         version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
       '@scriba/ui':
         specifier: workspace:*
         version: link:../../ui

@@ -10,6 +10,7 @@ import {
   type EditorState,
   type Schema,
   type Transaction,
+  insertNonBreakingSpace,
 } from '@scriba/core'
 import type { MessageKey, Translate } from '@scriba/i18n'
 import type { EditorView } from '@scriba/view'
@@ -166,6 +167,17 @@ export function clearFormatItem(): ToolbarButton {
   }
 }
 
+/** Inserts a non-breaking space: the words around it stay on one line (e.g. "10 km"). */
+export function nonBreakingSpaceItem(): ToolbarButton {
+  return {
+    type: 'button',
+    id: 'nbsp',
+    label: (t) => t('insert.nbsp'),
+    shortcut: 'Shift-Mod- ',
+    command: insertNonBreakingSpace,
+  }
+}
+
 /** Select all (also in read-only: selecting changes nothing). */
 export function selectAllItem(): ToolbarButton {
   return {
@@ -200,13 +212,15 @@ export function historyItems(): ToolbarButton[] {
   ]
 }
 
-/** Bold, italic, underline, strike, inline code — whichever the schema has. */
+/** Bold, italic, underline, strike, superscript, subscript, inline code — whichever the schema has. */
 export function markItems(schema: Schema): ToolbarButton[] {
   const spec: [string, string | null, IconName | null, string][] = [
     ['bold', 'B', null, 'Mod-b'],
     ['italic', 'I', null, 'Mod-i'],
     ['underline', 'U', null, 'Mod-u'],
     ['strike', 'S', null, 'Shift-Mod-s'],
+    ['superscript', null, 'superscript', 'Mod-.'],
+    ['subscript', null, 'subscript', 'Mod-,'],
     ['code', null, 'code', 'Mod-e'],
   ]
   const items: ToolbarButton[] = []

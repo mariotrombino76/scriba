@@ -314,7 +314,10 @@ export class MenuPopup {
   /** Page scrolled or window resized: the menu would be misplaced, so it closes. */
   private onViewportChange = (event: Event): void => {
     const target = event.target as globalThis.Node | null
-    if (target && target !== this.button.ownerDocument && this.el.contains(target)) return // scrolling the menu itself
+    // scrolling inside a menu (this one, or the menu a sub-menu came from) moves nothing
+    // the menu is placed against
+    if (target && target !== this.button.ownerDocument && this.el.contains(target)) return
+    if (target instanceof Element && target.closest('.scriba-toolbar-menu')) return
     this.close(false)
   }
 

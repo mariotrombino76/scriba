@@ -82,6 +82,16 @@ export const basicSchemaSpec = {
       ],
       toHTML: hole('s'),
     },
+    superscript: {
+      excludes: 'subscript',
+      parseHTML: [{ tag: 'sup' }, spanStyle('vertical-align', (v) => v === 'super')],
+      toHTML: hole('sup'),
+    },
+    subscript: {
+      excludes: 'superscript',
+      parseHTML: [{ tag: 'sub' }, spanStyle('vertical-align', (v) => v === 'sub')],
+      toHTML: hole('sub'),
+    },
     code: { excludes: '_', parseHTML: [{ tag: 'code' }], toHTML: hole('code') },
   },
 } satisfies SchemaSpec

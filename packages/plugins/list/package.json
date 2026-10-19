@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@scriba/core": "workspace:*",
+    "@scriba/i18n": "workspace:*",
     "@scriba/ui": "workspace:*"
   },
   "description": "Bulleted and numbered lists, nested, with Tab/Shift+Tab, for the Scriba editor.",

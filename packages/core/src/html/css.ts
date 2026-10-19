@@ -97,7 +97,16 @@ const PROPERTIES: Readonly<Record<string, (value: string) => string | null>> = {
   'border-width': (v) => normalizeLength(v, ['px'], 10),
   'border-style': (v) => enumerated(v, BORDER_STYLES),
   'border-color': normalizeColor,
+  // Line height of paragraphs and headings, list bullet shape (enumerated; approved 2026-10-19)
+  'line-height': (v) => enumerated(v, LINE_HEIGHTS),
+  'list-style-type': (v) => enumerated(v, BULLET_STYLES),
 }
+
+/** Line heights allowed on blocks. */
+export const LINE_HEIGHTS = ['1', '1.15', '1.5', '2'] as const
+
+/** Bullet shapes allowed on bulleted lists. */
+export const BULLET_STYLES = ['disc', 'circle', 'square'] as const
 
 /** Border styles allowed on tables and cells. */
 export const BORDER_STYLES = ['solid', 'dashed', 'dotted', 'double', 'none'] as const

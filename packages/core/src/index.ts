@@ -57,6 +57,7 @@ export {
   type CommandView,
   chainCommands,
   createParagraphNear,
+  insertNonBreakingSpace,
   deleteSelection,
   deleteSelectedBlock,
   joinBackward,
@@ -132,6 +133,8 @@ export {
   isAllowedStyleProperty,
   withStyle,
   BORDER_STYLES,
+  LINE_HEIGHTS,
+  BULLET_STYLES,
   type StyleDecls,
 } from './html/css.js'
 export { sanitizeUrl, DEFAULT_MAX_DATA_IMAGE_BYTES, type UrlRule } from './html/url.js'

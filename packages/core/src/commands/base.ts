@@ -282,6 +282,13 @@ export const splitBlock: Command = (state, dispatch) => {
   return true
 }
 
+/** Inserts a non-breaking space (U+00A0): the words around it stay on the same line. */
+export const insertNonBreakingSpace: Command = (state, dispatch) => {
+  if (!state.selection.$from.parent.inlineContent) return false
+  dispatch?.(state.tr.insertText('\u00a0').scrollIntoView())
+  return true
+}
+
 /** Selects the whole document. */
 export const selectAll: Command = (state, dispatch) => {
   dispatch?.(state.tr.setSelection(new AllSelection(state.doc)))

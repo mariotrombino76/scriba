@@ -88,7 +88,17 @@ test('two users: Anna suggests, Bruno sees her name and accepts', async ({
   await editor(anna.page).click()
   await anna.page.keyboard.type('base')
   await expect.poll(() => html(bruno.page)).toBe('<p>base</p>')
-  await toggle(anna.page).click()
+  // through the View menu: in the collaborative page the toolbar is narrower and the
+  // button may sit in "More options"
+  await anna.page
+    .getByRole('menubar', { name: 'Menu' })
+    .getByRole('menuitem', { name: 'Visualizza' })
+    .click()
+  await anna.page
+    .getByRole('menu', { name: 'Visualizza' })
+    .locator('[role^=menuitem]')
+    .getByText('Proponi modifiche', { exact: true })
+    .click()
   await editor(anna.page).focus()
   await anna.page.keyboard.press('End')
   await anna.page.keyboard.type(' nuova')

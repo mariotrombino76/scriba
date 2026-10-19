@@ -82,6 +82,8 @@ function runs(node: Node, ctx: Context): Run[] {
         bold: has('bold'),
         italics: has('italic'),
         strike: has('strike'),
+        ...(has('superscript') ? { superScript: true } : {}),
+        ...(has('subscript') ? { subScript: true } : {}),
         ...(has('underline') || href ? { underline: {} } : {}),
         ...(has('code') ? { font: 'Courier New' } : {}),
         ...(href ? { style: 'Hyperlink' } : {}),
