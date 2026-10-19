@@ -9,19 +9,25 @@
   </head>
   <body>
     <header>
-      <h1>Scriba <small>prova dell'editor — Fase 2 in corso</small></h1>
+      <h1>Scriba <small>prova dell'editor</small></h1>
     </header>
 
     <main>
-      <section class="editor-area">
-        <div class="toolbar-row">
-          <div id="toolbar-slot"></div>
-          <label class="toggle"><input type="checkbox" id="readonly" /> sola lettura</label>
-          <label class="toggle"><input type="checkbox" id="comment" /> può commentare</label>
-        </div>
-        <div id="editor"></div>
-        <p class="status" id="status" aria-live="polite"></p>
-      </section>
+      <div class="editor-column">
+        <fieldset class="role-switch">
+          <legend>Prova come</legend>
+          <label><input type="radio" name="role" value="edit" checked /> Modifica</label>
+          <label><input type="radio" name="role" value="comment" /> Solo commenti</label>
+          <label><input type="radio" name="role" value="read" /> Sola lettura</label>
+        </fieldset>
+        <section class="editor-area">
+          <div class="toolbar-row">
+            <div id="toolbar-slot"></div>
+          </div>
+          <div id="editor"></div>
+          <p class="status" id="status" aria-live="polite"></p>
+        </section>
+      </div>
 
       <aside>
         <div id="comments"></div>

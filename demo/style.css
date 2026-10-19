@@ -76,11 +76,39 @@ main {
   border-bottom: 0;
   background: transparent;
 }
-.toolbar-row .toggle {
-  padding: 0 12px;
-  color: var(--muted);
+.editor-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+/* Demo only: which role to try the editor with (not part of the editor UI). */
+.role-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
   font-size: 0.875rem;
+  color: var(--muted);
+}
+.role-switch legend {
+  float: left;
+  padding: 0;
+  margin-right: 4px;
+  font-weight: 600;
+}
+.role-switch label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
   white-space: nowrap;
+}
+.role-switch label:has(:checked) {
+  color: var(--text);
 }
 
 .scriba-editor {
