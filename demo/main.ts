@@ -55,7 +55,13 @@ import {
   textStyleMarks,
   withBlockStyles,
 } from '@scriba/plugin-text-style'
-import { linkContextMenu, linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import {
+  autolink,
+  linkContextMenu,
+  linkKeymap,
+  linkMarks,
+  linkToolbarItems,
+} from '@scriba/plugin-link'
 import {
   codeBlockKeymap,
   toggleCodeBlock,
@@ -451,6 +457,7 @@ const state = EditorState.create({
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
+    autolink(schema.marks['link']!),
     keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
     keymap(helpKeymap(helpOptions), { priority: 80, readOnly: true }),

@@ -174,6 +174,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     di Word.
   - `@scriba/ui`: pulsanti Apice e Pedice in `markItems`, `nonBreakingSpaceItem`.
   - `@scriba/plugin-file`: apice e pedice anche nell'export Word.
+  - `@scriba/plugin-link`: link automatici come autolink di TinyMCE (`autolink`): dopo uno spazio
+    o Invio, `https://…`, `www.…` e gli indirizzi email diventano link (whitelist degli URL; mai
+    altri protocolli, mai nel codice); Ctrl+Z dopo lo spazio toglie il link e lascia il testo.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),

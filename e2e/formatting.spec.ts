@@ -76,3 +76,19 @@ test('non-breaking space: Ctrl+Shift+Space', async ({ page }) => {
   await page.keyboard.type('km')
   await expect.poll(() => html(page)).toBe('<p>10 km</p>')
 })
+
+test('addresses typed become links (space or Enter); Ctrl+Z keeps the text', async ({ page }) => {
+  await page.keyboard.type('vedi www.example.com ')
+  await expect
+    .poll(() => html(page))
+    .toBe('<p>vedi <a href="https://www.example.com">www.example.com</a> </p>')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe('<p>vedi www.example.com </p>')
+  await page.keyboard.type('scrivi a anna@example.it')
+  await page.keyboard.press('Enter')
+  await expect
+    .poll(() => html(page))
+    .toBe(
+      '<p>vedi www.example.com scrivi a <a href="mailto:anna@example.it">anna@example.it</a></p><p></p>',
+    )
+})

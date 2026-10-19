@@ -55,7 +55,13 @@ import {
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
-import { linkContextMenu, linkKeymap, linkMarks, linkToolbarItems } from '@scriba/plugin-link'
+import {
+  autolink,
+  linkContextMenu,
+  linkKeymap,
+  linkMarks,
+  linkToolbarItems,
+} from '@scriba/plugin-link'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { markdownShortcuts } from '@scriba/plugin-markdown'
 import { pasteClean } from '@scriba/plugin-paste-clean'
@@ -161,6 +167,7 @@ export function createEditor(
         ...hrPlugins(t),
         ...findReplacePlugins(),
         ...markdownShortcuts(schema),
+        autolink((schema as Schema).marks['link']!),
         keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
         keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
         keymap(imageKeymap(t, images), { priority: 70 }),
