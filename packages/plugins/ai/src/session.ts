@@ -8,10 +8,12 @@ import {
   TextSelection,
   insertContent,
   type EditorState,
+  type Node,
   type Schema,
   type Transaction,
 } from '@scriba/core'
 import type { EditorView, InlineDecoration } from '@scriba/view'
+import type { AiBlocks } from './blocks.js'
 
 /** What is sent to your backend (only on an explicit user action, §5.9). */
 export interface AiRequest {
@@ -23,6 +25,13 @@ export interface AiRequest {
   text: string
   /** Aborted when the user presses Stop or closes the editor. */
   signal: AbortSignal
+  /**
+   * `"blocks"`: answer with JSON lines of the allowed blocks (see `aiBlocksPrompt`
+   * and `aiBlocksJsonSchema` for your backend); otherwise text.
+   */
+  output?: 'text' | 'blocks'
+  /** With `output: "blocks"`: what the answer may contain. */
+  blocks?: AiBlocks
 }
 
 /**
@@ -42,11 +51,16 @@ export interface AiPending {
   to: number
   /** What was there before (restored by Discard). */
   original: Slice
+  /** The whole top-level blocks around it, for when blocks in the answer split them… */
+  outer: Slice
+  /** …and where they are now (mapped like the range). */
+  outerFrom: number
+  outerTo: number
   /** The raw answer so far. */
   text: string
   status: AiStatus
   /** For Retry. */
-  request: { action: string; prompt?: string; text: string; mode: AiMode }
+  request: { action: string; prompt?: string; text: string; mode: AiMode; blocks?: AiBlocks }
 }
 
 /** Where the answer goes. */
@@ -85,7 +99,9 @@ export function aiPlugin(): Plugin<AiPending | null> {
         if (!value || !tr.docChanged) return value
         const from = tr.mapping.map(value.from, -1)
         const to = Math.max(from, tr.mapping.map(value.to, 1))
-        return { ...value, from, to }
+        const outerFrom = tr.mapping.map(value.outerFrom, -1)
+        const outerTo = Math.max(outerFrom, tr.mapping.map(value.outerTo, 1))
+        return { ...value, from, to, outerFrom, outerTo }
       },
     },
     filterTransaction(tr, state) {
@@ -153,17 +169,24 @@ export function streamUpdate(
 ): void {
   const p = getPending(view.state)
   if (!p) return
-  const tr = view.state.tr
+  let tr = view.state.tr
   const inline =
     p.original.content.childCount <= 1 && view.state.doc.resolve(p.from).parent.inlineContent
   let to = p.to
+  const content = answerContent(view.state, text, parse, inline)
   try {
-    to = replaceRange(tr, p.from, p.to, answerContent(view.state, text, parse, inline))
+    to = replaceRange(tr, p.from, p.to, content)
   } catch {
-    to = replaceRange(tr, p.from, p.to, plainText(text, view.state.schema).firstChild!.content)
+    // not allowed here (e.g. a table inside a table): its text, on one line. The text
+    // of the checked content, never the raw answer (which may be JSON for blocks)
+    const flat = content.textBetween(0, content.size, ' ', ' ').replace(/\s+/g, ' ').trim()
+    tr = view.state.tr // the failed attempt may have left steps behind
+    to = replaceRange(tr, p.from, p.to, plainText(flat, view.state.schema).firstChild!.content)
   }
   tr.setMeta(AI_META, true).setMeta(ADD_TO_HISTORY, false)
-  tr.setMeta(aiKey, { ...p, to, text, status })
+  const outerFrom = tr.mapping.map(p.outerFrom, -1)
+  const outerTo = Math.max(outerFrom, tr.mapping.map(p.outerTo, 1))
+  tr.setMeta(aiKey, { ...p, to, text, status, outerFrom, outerTo })
   view.dispatch(tr)
 }
 
@@ -174,11 +197,16 @@ export function beginPending(
   to: number,
   request: AiPending['request'],
 ): void {
-  const original = view.state.doc.slice(from, to)
+  const doc = view.state.doc
+  const original = doc.slice(from, to)
+  const [start, end] = outerRange(doc, from, to)
   const tr = view.state.tr.setMeta(aiKey, {
     from,
     to,
     original,
+    outer: doc.slice(start, end),
+    outerFrom: start,
+    outerTo: end,
     text: '',
     status: 'streaming',
     request,
@@ -186,19 +214,45 @@ export function beginPending(
   view.dispatch(tr)
 }
 
+/** The top-level blocks around [from, to] (the range itself when it is between blocks). */
+function outerRange(doc: Node, from: number, to: number): [number, number] {
+  const $from = doc.resolve(from)
+  const $to = doc.resolve(to)
+  return [$from.depth ? $from.before(1) : from, $to.depth ? $to.after(1) : to]
+}
+
+/**
+ * Puts the original back: exactly the replaced range when the answer stayed
+ * inside one block (changes from others around it stay), else the whole
+ * top-level blocks it was in (an answer made of blocks splits them).
+ */
+function restoreOriginal(tr: Transaction, p: AiPending): void {
+  const $from = tr.doc.resolve(p.from)
+  const $to = tr.doc.resolve(p.to)
+  const sameBlock = $from.depth > 0 && $from.depth === $to.depth && $from.sameParent($to)
+  const simple = sameBlock || ($from.depth === 0 && $to.depth === 0)
+  if (simple && p.original.openStart === $from.depth && p.original.openEnd === $to.depth) {
+    tr.replace(p.from, p.to, p.original)
+  } else {
+    tr.replace(p.outerFrom, p.outerTo, p.outer)
+  }
+}
+
 /** Keeps the answer: one undo step from the original to the answer. */
 export function acceptPending(view: EditorView): void {
   const p = getPending(view.state)
   if (!p || p.status === 'streaming') return
-  const answer = view.state.doc.slice(p.from, p.to)
+  // the answer as whole top-level blocks (blocks in the answer may have split a paragraph)
+  const answer = view.state.doc.slice(p.outerFrom, p.outerTo)
   // back to the original (outside history), then the answer as one normal, undoable change
-  const revert = view.state.tr.replace(p.from, p.to, p.original)
+  const revert = view.state.tr
+  restoreOriginal(revert, p)
   revert.setMeta(AI_META, true).setMeta(ADD_TO_HISTORY, false)
-  const end = p.from + p.original.size
+  const end = revert.mapping.map(p.outerTo, 1)
   view.dispatch(revert)
   const tr = view.state.tr.setMeta(aiKey, null).setMeta(CLOSE_HISTORY, true).setMeta(AI_META, true)
-  tr.replace(p.from, end, answer)
-  const after = tr.mapping.map(end, 1)
+  tr.replace(p.outerFrom, end, answer)
+  const after = tr.mapping.map(end, -1)
   tr.setSelection(TextSelection.near(tr.doc.resolve(Math.min(after, tr.doc.content.size)), -1))
   view.dispatch(tr.scrollIntoView())
 }
@@ -207,7 +261,8 @@ export function acceptPending(view: EditorView): void {
 export function discardPending(view: EditorView): void {
   const p = getPending(view.state)
   if (!p) return
-  const tr = view.state.tr.replace(p.from, p.to, p.original)
+  const tr = view.state.tr
+  restoreOriginal(tr, p)
   tr.setMeta(AI_META, true).setMeta(ADD_TO_HISTORY, false).setMeta(aiKey, null)
   view.dispatch(tr)
 }

@@ -21,13 +21,30 @@ export {
   type AiStatus,
   type AiMode,
 } from './session.js'
-export { runAi, stopAi, defaultAiActions, type AiAction, type AiOptions } from './run.js'
+export {
+  runAi,
+  stopAi,
+  defaultAiActions,
+  blockAiActions,
+  type AiAction,
+  type AiOptions,
+} from './run.js'
+export {
+  blocksParser,
+  aiBlocksJsonSchema,
+  aiBlocksPrompt,
+  DEFAULT_AI_MARKS,
+  MAX_AI_BLOCKS,
+  MAX_AI_NODES,
+  type AiBlocks,
+} from './blocks.js'
 export { openAiMenu, closeAiMenu } from './ui.js'
 
 /**
  * AI assistant: bring your own backend through `options.complete`. Answers
- * are untrusted content (parsed like a paste), shown as a pending range the
- * user accepts (one undo step) or discards; the AI can only insert text.
+ * are untrusted content (parsed like a paste, or blocks checked against the
+ * schema), shown as a pending range the user accepts (one undo step) or
+ * discards; the AI can only insert content, never run anything.
  */
 export function aiAssistant(options: AiOptions): Plugin[] {
   const props: ViewPluginProps = { pluginView: (view) => aiBarView(view, options) }

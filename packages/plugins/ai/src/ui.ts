@@ -80,7 +80,11 @@ export function openAiMenu(view: EditorView, options: AiOptions): void {
     if (disabled) b.title = t('ai.needsSelection')
     b.addEventListener('click', () => {
       closeAiMenu(view)
-      void runAi(view, options, { action: a.id, mode: a.mode })
+      void runAi(view, options, {
+        action: a.id,
+        mode: a.mode,
+        ...(a.blocks ? { blocks: a.blocks } : {}),
+      })
     })
     list.appendChild(b)
     buttons.push(b)

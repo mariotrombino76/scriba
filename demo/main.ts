@@ -118,9 +118,12 @@ import {
   aiAssistant,
   aiKeymap,
   aiToolbarItem,
+  blockAiActions,
+  defaultAiActions,
   openAiMenu,
   type AiComplete,
   type AiOptions,
+  type AiRequest,
 } from '@scriba/plugin-ai'
 import {
   findReplaceKeymap,
@@ -227,8 +230,63 @@ const FAKE_ANSWERS: Record<string, string> = {
   summarize: 'In sintesi: il punto principale.',
   translate: 'Text in English',
 }
+/**
+ * Generative blocks (output "blocks"): a real backend gives the model
+ * aiBlocksPrompt(schema, req.blocks) and answers with its JSON lines. Here:
+ * blocks built from the selected text; "ATTACCO" in it adds hostile lines.
+ */
+function fakeBlocks(req: AiRequest): string[] {
+  const items = req.text
+    .split(/[,.;\n]+|\s+e\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  const text = (s: string) => ({ type: 'text', text: s })
+  const para = (s: string) => ({ type: 'paragraph', content: s ? [text(s)] : [] })
+  const cell = (s: string, type = 'table_cell') => ({ type, content: [para(s)] })
+  const blocks: object[] =
+    req.action === 'make_table'
+      ? [
+          {
+            type: 'table',
+            content: [
+              {
+                type: 'table_row',
+                content: [cell('N.', 'table_header'), cell('Voce', 'table_header')],
+              },
+              ...items.map((s, i) => ({
+                type: 'table_row',
+                content: [cell(String(i + 1)), cell(s)],
+              })),
+            ],
+          },
+        ]
+      : req.action === 'extract_tasks'
+        ? items.map((s) => ({ type: 'task', attrs: { title: s } }))
+        : [{ type: 'callout', attrs: { kind: 'info' }, content: [para(req.text)] }]
+  if (req.text.includes('ATTACCO'))
+    blocks.unshift(
+      {
+        type: 'paragraph',
+        content: [{ type: 'image', attrs: { src: 'https://evil.example/x.png' } }],
+      },
+      { type: 'task', attrs: { title: 'x', onclick: 'alert(1)' } },
+      { type: 'script', content: [text('alert(1)')] },
+    )
+  return blocks.map((b) => JSON.stringify(b) + '\n')
+}
 const fakeAi: AiComplete = (req) =>
   (async function* () {
+    if (req.output === 'blocks') {
+      for (const line of fakeBlocks(req)) {
+        // half a line, then the rest: a block appears once its line is complete
+        const half = Math.ceil(line.length / 2)
+        for (const part of [line.slice(0, half), line.slice(half)]) {
+          await wait(req.prompt === 'lento' ? 400 : 40, req.signal)
+          yield part
+        }
+      }
+      return
+    }
     const text =
       req.prompt === 'attacco'
         ? 'Ok **fatto** [qui](javascript:alert(1)) <img src=x onerror=alert(1)><script>alert(1)</script>'
@@ -246,6 +304,7 @@ const fakeAi: AiComplete = (req) =>
   })()
 const aiOptions: AiOptions = {
   complete: fakeAi,
+  actions: [...defaultAiActions, ...blockAiActions(schema)],
   parse: (text, s) => parseMarkdown(s, text).content,
   t,
 }

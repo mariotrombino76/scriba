@@ -1,6 +1,7 @@
 import type { MessageKey, Translate } from '@scriba/i18n'
 import type { IconName } from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
+import type { Schema } from '@scriba/core'
 import {
   MAX_ANSWER,
   beginPending,
@@ -12,6 +13,7 @@ import {
   type AiParse,
   type AiStatus,
 } from './session.js'
+import { blocksParser, type AiBlocks } from './blocks.js'
 
 export interface AiAction {
   id: string
@@ -21,6 +23,8 @@ export interface AiAction {
   mode: AiMode
   /** Needs selected text (e.g. "improve"); otherwise it uses the text before the cursor. */
   needsSelection?: boolean
+  /** The answer is blocks (a table, tasks…), not text: what it may contain. */
+  blocks?: AiBlocks
 }
 
 export interface AiOptions {
@@ -41,6 +45,22 @@ const action = (id: string, key: MessageKey, mode: AiMode, needsSelection = true
   mode,
   needsSelection,
 })
+
+/**
+ * Generative actions for the blocks the schema has: a table from the
+ * selection, its tasks, the selection in a callout. The answer is blocks
+ * (checked against the schema), pending until accepted, like any answer.
+ */
+export function blockAiActions(schema: Schema): AiAction[] {
+  const list: AiAction[] = []
+  const add = (id: string, key: MessageKey, mode: AiMode, node: string, icon: IconName) => {
+    if (schema.nodes[node]) list.push({ ...action(id, key, mode), icon, blocks: { nodes: [node] } })
+  }
+  add('make_table', 'ai.action.table', 'after', 'table', 'table')
+  add('extract_tasks', 'ai.action.tasks', 'after', 'task', 'task')
+  add('to_callout', 'ai.action.callout', 'replace', 'callout', 'callout')
+  return list
+}
 
 /** Continue, improve, fix, shorter, longer, summarize, translate. */
 export const defaultAiActions: AiAction[] = [
@@ -91,12 +111,12 @@ function target(
 export async function runAi(
   view: EditorView,
   options: AiOptions,
-  request: { action: string; prompt?: string; mode: AiMode },
+  request: { action: string; prompt?: string; mode: AiMode; blocks?: AiBlocks },
 ): Promise<void> {
   if (getPending(view.state) || !view.editable) return
   const place = target(view, request.mode, options.maxContext ?? 4000)
   if (!place) return
-  const parse = options.parse ?? plainText
+  const parse = request.blocks ? blocksParser(request.blocks) : (options.parse ?? plainText)
   beginPending(view, place.from, place.to, { ...request, text: place.text })
   const controller = new AbortController()
   controllers.set(view, controller)
@@ -120,6 +140,7 @@ export async function runAi(
       ...(request.prompt ? { prompt: request.prompt } : {}),
       text: place.text,
       signal: controller.signal,
+      ...(request.blocks ? { output: 'blocks' as const, blocks: request.blocks } : {}),
     })
     if (typeof (result as Promise<string>).then === 'function') {
       answer = String(await (result as Promise<string>)).slice(0, MAX_ANSWER)
@@ -146,13 +167,14 @@ export async function runAi(
 /** Runs the pending answer's request again (after Discard of the current answer). */
 export function retryRequest(
   view: EditorView,
-): { action: string; prompt?: string; mode: AiMode } | null {
+): { action: string; prompt?: string; mode: AiMode; blocks?: AiBlocks } | null {
   const p = getPending(view.state)
   return p
     ? {
         action: p.request.action,
         ...(p.request.prompt ? { prompt: p.request.prompt } : {}),
         mode: p.request.mode,
+        ...(p.request.blocks ? { blocks: p.request.blocks } : {}),
       }
     : null
 }

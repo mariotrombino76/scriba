@@ -86,6 +86,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   `listenCollabServer`, `documentFromYjs`).
 - `@scriba/plugin-ai`: `aiAssistant({ complete, parse, t, actions })`, risposte in streaming
   con Accetta (un solo passo di annulla), Scarta, Stop e Riprova.
+  - Generative UI nel documento: azioni che rispondono con blocchi (`blockAiActions`: Crea una
+    tabella, Estrai le attività, Metti in un riquadro). Il modello risponde in NDJSON (un nodo
+    JSON per riga); `blocksParser` valida ogni riga con lo schema (`nodeFromJSON`) e con una
+    whitelist (tipi di primo livello dell'azione; dentro solo contenitori e testo; mark di sola
+    formattazione, niente immagini, menzioni, commenti né link se non richiesti) e limiti su
+    blocchi, nodi e profondità. I blocchi compaiono man mano che le righe sono complete.
+  - Per il backend: la richiesta porta `output: "blocks"` e `blocks`; `aiBlocksPrompt` e
+    `aiBlocksJsonSchema` descrivono il formato al modello.
 - `@scriba/plugin-comments`
   - Commenti con discussioni, risposte, risolvi/riapri e pannello laterale (Ctrl/Cmd+Alt+M).
   - `CommentStore` e `createMemoryCommentStore`.
@@ -193,6 +201,11 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   gli strumenti per sviluppatori.
 
 ### Corretto
+
+- `@scriba/plugin-ai`: Accetta e Scarta di una risposta fatta di blocchi in mezzo a un paragrafo
+  (che lo spezza) fallivano o ricucivano male il testo; ora il ripristino usa i blocchi interi
+  che la contenevano, mappati come l'intervallo della risposta. Il ripiego per un blocco che non
+  può stare dove va inserisce il testo già validato, mai la risposta grezza.
 
 - In sola lettura il pannello commenti permetteva di accettare o rifiutare le modifiche proposte ed
   eliminare discussioni. Ora accetta e rifiuta richiedono la modifica, le azioni sui commenti il
