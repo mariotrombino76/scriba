@@ -99,6 +99,7 @@ import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/p
 import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
 import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
 import { dateTimeMenu } from '@scriba/plugin-datetime'
+import { autosave, restoreDraftItem } from '@scriba/plugin-autosave'
 import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
 import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
@@ -425,6 +426,8 @@ const helpOptions: HelpOptions = {
     navigationHelp({ bubble: true, contextMenu: true }),
   ],
 }
+// drafts kept in this browser while writing (File ▸ Restore last draft)
+const draftOptions = { key: 'scriba-demo', delay: 2000 }
 const state = EditorState.create({
   doc,
   plugins: [
@@ -457,6 +460,7 @@ const state = EditorState.create({
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
+    autosave(draftOptions),
     autolink(schema.marks['link']!),
     keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
     keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
@@ -575,6 +579,7 @@ menubar.menus = [
     items: [
       fileEntry('new'),
       fileEntry('open'),
+      restoreDraftItem(draftOptions),
       '|',
       fileEntry('preview'),
       '|',

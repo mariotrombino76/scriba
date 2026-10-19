@@ -182,3 +182,15 @@ test('read-only: opening is off, downloading and printing are on', async ({ page
     'false',
   )
 })
+
+test('a draft survives a reload: File ▸ Restore last draft', async ({ page }) => {
+  await page.keyboard.type('testo non salvato')
+  await page.waitForTimeout(600) // the draft is written 300 ms after the last change
+  await page.reload()
+  await editor(page).click()
+  expect(await html(page)).not.toContain('testo non salvato')
+  await fileMenu(page, "Ripristina l'ultima bozza")
+  await expect.poll(() => html(page)).toBe('<p>testo non salvato</p>')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).not.toContain('testo non salvato')
+})

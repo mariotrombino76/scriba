@@ -401,6 +401,7 @@ export const en = {
   'hr.label': 'Horizontal line',
   'pagebreak.label': 'Page break',
   'datetime.label': 'Date/time',
+  'autosave.restore': 'Restore last draft',
 } as const
 
 export type MessageKey = keyof typeof en

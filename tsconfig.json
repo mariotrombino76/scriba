@@ -33,6 +33,7 @@
       "@scriba/react": ["./packages/react/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
+      "@scriba/plugin-autosave": ["./packages/plugins/autosave/src/index.ts"],
       "@scriba/plugin-datetime": ["./packages/plugins/datetime/src/index.ts"],
       "@scriba/plugin-hr": ["./packages/plugins/hr/src/index.ts"],
       "@scriba/plugin-help": ["./packages/plugins/help/src/index.ts"],

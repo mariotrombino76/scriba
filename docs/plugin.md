@@ -48,6 +48,7 @@ L'esempio completo, con tutti i plugin insieme, è `demo/main.ts` (`pnpm dev`).
 | `plugin-word-count`   | Conteggio parole e caratteri                                                 | `createWordCountStatus`, `openWordCountDialog`                      |
 | `plugin-file`         | Menu File: nuovo, apri (.docx, .html, .md, .txt), scarica, anteprima, stampa | `filePlugin`, `fileKeymap`, `fileMenu`                              |
 | `plugin-help`         | Menu Aiuto con le scorciatoie (Alt+0)                                        | `helpItem`, `helpKeymap`, `shortcutsFromItems`                      |
+| `plugin-autosave`     | Bozza salvata nel browser mentre si scrive, "Ripristina l'ultima bozza"      | `autosave`, `restoreDraftItem`, `restoreDraft`, `clearDraft`        |
 
 Dall'interfaccia (`@scriba/ui`): `<scriba-toolbar>`, `<scriba-menubar>`, `contextMenu(view, {
 sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `historyItems`,

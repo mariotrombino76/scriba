@@ -82,6 +82,13 @@ tipo e della dimensione nel browser è solo un aiuto per l'utente. Sul server:
   servili con il `Content-Type` corretto e `Content-Disposition: attachment`;
 - servi le immagini da un dominio separato se puoi.
 
+## Bozze nel browser
+
+`@scriba/plugin-autosave` salva il documento nel `localStorage` **in chiaro**, su quel dispositivo:
+attivalo solo dove è accettabile (non su computer condivisi per dati sensibili) e chiama
+`clearDraft` dopo il salvataggio e al logout. Una bozza letta dal browser è input non fidato:
+rientra solo se `schema.nodeFromJSON` la accetta.
+
 ## Collaborazione
 
 Gli aggiornamenti degli altri utenti sono input non fidato: il client li valida contro lo schema

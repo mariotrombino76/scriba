@@ -404,4 +404,5 @@ export const it: Messages = {
   'hr.label': 'Linea orizzontale',
   'pagebreak.label': 'Interruzione di pagina',
   'datetime.label': 'Data/ora',
+  'autosave.restore': "Ripristina l'ultima bozza",
 }
