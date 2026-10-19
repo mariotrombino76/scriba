@@ -73,6 +73,8 @@ export interface ToolbarMenuEntry {
   readOnly?: boolean
   /** Also usable by people who may only comment (it only adds or removes annotations). */
   annotates?: boolean
+  /** The label is computed again each time the menu opens (e.g. it shows the current time). */
+  live?: boolean
 }
 
 /** A button opening a popup menu (WAI-ARIA menu button pattern). */

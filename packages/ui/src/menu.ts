@@ -40,7 +40,7 @@ export class MenuPopup {
     menu: Pick<ToolbarMenu, 'label' | 'layout' | 'columns'> & { entries: PopupEntry[] },
     /** The menu button, or the element the menu belongs to (no `aria-*` set on it then). */
     readonly button: HTMLElement,
-    t: Translate,
+    private readonly t: Translate,
     private readonly getView: () => EditorView | null,
     mac = false,
     /** In a menu bar: Left/Right go to the previous/next menu (WAI-ARIA menubar). */
@@ -173,6 +173,13 @@ export class MenuPopup {
       // `run` entries are enabled by their command too; read-only editors only allow read-only entries
       const enabled = !!state && !!view && controlUsable(view, entry) && entry.command(state)
       el.setAttribute('aria-disabled', String(!enabled))
+      if (entry.live) {
+        // labels that change over time (e.g. the current time): computed again now
+        const label = entry.label(this.t)
+        el.setAttribute('aria-label', label)
+        const text = el.querySelector('.scriba-toolbar-menu-text')
+        if (text && entry.text === undefined) text.textContent = label
+      }
       if (entry.isActive) {
         const on = !!state && entry.isActive(state)
         el.setAttribute('aria-checked', String(on))

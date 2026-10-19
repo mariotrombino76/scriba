@@ -374,4 +374,7 @@ export const it: Messages = {
   'help.nav.context': 'Menu contestuale (link, immagine, tabella)',
   'help.nav.arrows': 'Spostarsi in toolbar e menu',
   'help.nav.escape': 'Chiudere menu e finestre',
+  'hr.label': 'Linea orizzontale',
+  'pagebreak.label': 'Interruzione di pagina',
+  'datetime.label': 'Data/ora',
 }

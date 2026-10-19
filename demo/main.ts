@@ -87,6 +87,8 @@ import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scri
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
 import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
+import { dateTimeMenu } from '@scriba/plugin-datetime'
 import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
 import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
@@ -172,6 +174,7 @@ const schema = new Schema({
       ...mentionNodes,
       ...taskNodes,
       ...calloutNodes,
+      ...hrNodes,
       ...tableNodes,
     }),
   ),
@@ -252,6 +255,7 @@ const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
   calloutSlashItem(schema),
+  ...hrSlashItems(schema),
   {
     id: 'bullet_list',
     label: (tr) => tr('list.bullet'),
@@ -380,6 +384,7 @@ const state = EditorState.create({
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     ...tablePlugins(),
+    ...hrPlugins(t),
     keymap(tableKeymap(), { priority: 55 }),
     keymap(listKeymap(schema), { priority: 50 }),
     keymap(textStyleKeymap({ indent: listIndentCommands(schema) })),
@@ -530,6 +535,11 @@ menubar.menus = [
       ...codeBlockToolbarItems(schema),
       '|',
       charmapToolbarItem(t),
+      hrToolbarItems(schema)[0]!,
+      '|',
+      hrToolbarItems(schema)[1]!,
+      '|',
+      dateTimeMenu(),
       '|',
       taskToolbarItem(schema),
       calloutToolbarItem(schema),

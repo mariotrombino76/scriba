@@ -251,6 +251,21 @@ importers:
         specifier: workspace:*
         version: link:../../view
 
+  packages/plugins/datetime:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
   packages/plugins/file:
     dependencies:
       '@scriba/core':
@@ -325,6 +340,21 @@ importers:
         version: link:../../view
 
   packages/plugins/help:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
+  packages/plugins/hr:
     dependencies:
       '@scriba/core':
         specifier: workspace:*

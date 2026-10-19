@@ -371,6 +371,9 @@ export const en = {
   'help.nav.context': 'Context menu (link, image, table)',
   'help.nav.arrows': 'Move within toolbar and menus',
   'help.nav.escape': 'Close menus and dialogs',
+  'hr.label': 'Horizontal line',
+  'pagebreak.label': 'Page break',
+  'datetime.label': 'Date/time',
 } as const
 
 export type MessageKey = keyof typeof en

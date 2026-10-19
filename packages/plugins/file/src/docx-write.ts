@@ -195,6 +195,14 @@ function blocks(parent: Node, ctx: Context, place: Place): Block[] {
         rows.push(new docx.TableRow({ children: cells }))
       })
       out.push(new docx.Table({ rows, width: { size: 100, type: docx.WidthType.PERCENTAGE } }))
+    } else if (name === 'page_break') {
+      out.push(new docx.Paragraph({ children: [new docx.PageBreak()] }))
+    } else if (name === 'horizontal_rule') {
+      out.push(
+        new docx.Paragraph({
+          border: { bottom: { style: docx.BorderStyle.SINGLE, size: 6, color: 'auto', space: 1 } },
+        }),
+      )
     } else if (node.isAtom && node.type.spec.leafText) {
       out.push(
         new docx.Paragraph({

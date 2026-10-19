@@ -1677,3 +1677,27 @@ scriba-toolbar.scriba-bubble {
 .scriba-help-empty:empty {
   display: none;
 }
+
+/* Horizontal line and page break (@scriba/plugin-hr) */
+.scriba-editor hr,
+.scriba-preview hr {
+  margin: 1.25em 0;
+  border: 0;
+  border-top: 2px solid var(--scriba-border);
+}
+.scriba-editor hr.scriba-page-break,
+.scriba-preview hr.scriba-page-break {
+  border-top: 2px dashed var(--scriba-muted);
+}
+.scriba-editor hr.scriba-selected-node {
+  outline-offset: 4px;
+}
+hr.scriba-page-break {
+  break-after: page;
+}
+@media print {
+  hr.scriba-page-break {
+    border: 0;
+    margin: 0;
+  }
+}

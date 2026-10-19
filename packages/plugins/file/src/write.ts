@@ -46,7 +46,9 @@ export function fileName(title: string, format: SaveFormat): string {
 export function documentToHTMLFile(doc: Node, title: string, lang: string): string {
   return (
     `<!doctype html>\n<html lang="${escapeAttr(lang)}">\n<head>\n<meta charset="utf-8">\n` +
-    `<title>${escapeText(title)}</title>\n</head>\n<body>\n${serializeHTML(doc)}\n</body>\n</html>\n`
+    `<title>${escapeText(title)}</title>\n` +
+    // page breaks (@scriba/plugin-hr) start a new page when printed
+    `<style>hr.scriba-page-break{break-after:page}</style>\n</head>\n<body>\n${serializeHTML(doc)}\n</body>\n</html>\n`
   )
 }
 

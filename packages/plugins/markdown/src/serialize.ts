@@ -152,6 +152,9 @@ function block(node: Node): string {
       return list(node)
     case 'table':
       return table(node)
+    case 'horizontal_rule':
+    case 'page_break': // Markdown has no page break: a line
+      return '---'
     default:
       // unknown blocks: their text content (never lost); atoms: their leafText
       if (node.isAtom && node.type.spec.leafText)

@@ -151,6 +151,18 @@ const ICONS = {
     ['path', 'M18 6 6 18'],
     ['path', 'm6 6 12 12'],
   ],
+  hr: [['path', 'M4 12h16']],
+  pageBreak: [
+    ['path', 'M3 12h4'],
+    ['path', 'M10 12h4'],
+    ['path', 'M17 12h4'],
+    ['path', 'M6 3v5h12V3'],
+    ['path', 'M6 21v-5h12v5'],
+  ],
+  clock: [
+    ['circle', 12, 12, 10],
+    ['path', 'M12 6v6l4 2'],
+  ],
   help: [
     ['circle', 12, 12, 10],
     ['path', 'M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3'],

@@ -49,6 +49,8 @@ export default defineConfig({
       '@scriba/plugin-file': plugin('file'),
       '@scriba/plugin-markdown': plugin('markdown'),
       '@scriba/plugin-charmap': plugin('charmap'),
+      '@scriba/plugin-datetime': plugin('datetime'),
+      '@scriba/plugin-hr': plugin('hr'),
       '@scriba/plugin-help': plugin('help'),
       '@scriba/plugin-find-replace': plugin('find-replace'),
       '@scriba/plugin-source': plugin('source'),

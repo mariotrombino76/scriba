@@ -218,6 +218,20 @@ export function markdownInputRules(schema: {
       ),
     )
   if (n['blockquote']) rules.push(blockRule(/^>\s$/, wrapBlock(n['blockquote'])))
+  if (n['horizontal_rule']) {
+    const hr = n['horizontal_rule']
+    // "---" (or "___", "***") alone in a paragraph: a horizontal line, the text goes on below
+    rules.push(
+      blockRule(/^(?:---|___|\*\*\*)$/, (tr, start) => {
+        const $pos = tr.doc.resolve(start)
+        if ($pos.parent.content.size) return false
+        const para = $pos.parent.type
+        tr.replaceWith($pos.before(), $pos.after(), [hr.create(), para.create()])
+        tr.setSelection(TextSelection.create(tr.doc, $pos.before() + 2))
+        return true
+      }),
+    )
+  }
   if (n['code_block'])
     rules.push(
       blockRule(/^```([a-z0-9][a-z0-9+#_-]{0,31})?\s$/i, (tr, start, m) => {
