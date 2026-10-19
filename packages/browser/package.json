@@ -54,5 +54,6 @@
     "editor",
     "rich-text",
     "wysiwyg"
-  ]
+  ],
+  "author": "Mario Trombino"
 }
