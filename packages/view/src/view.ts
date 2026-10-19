@@ -10,6 +10,7 @@ import { renderContent, updateDesc, type RenderContext } from './build.js'
 import { DecorationIndex, stateDecorations } from './decorations.js'
 import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
 import { charsDiff, domChars, modelChars, LEAF_CHAR } from './dom-text.js'
+import { pasteContent, selectionClipboard, type ClipboardContent } from './clipboard.js'
 import { attachInputHandlers } from './input.js'
 import {
   NODE_VIEW_ATTR,
@@ -450,6 +451,23 @@ export class EditorView {
   /** @internal Textblock containing the DOM selection anchor (e.g. the one being composed). */
   textblockDescAtDOMSelection(): NodeViewDesc | null {
     return textblockDescOf(this.document.getSelection()?.anchorNode ?? null, this.rootDesc)
+  }
+
+  /**
+   * The selection as clipboard data (HTML from the serializer, plain text), for
+   * copying from a menu; null when the selection is empty.
+   */
+  clipboardContent(): { html: string; text: string } | null {
+    return selectionClipboard(this)
+  }
+
+  /**
+   * Pastes data read from the clipboard (e.g. a "Paste" menu entry) exactly
+   * like a paste event: untrusted, through the inert document and the schema
+   * parser. Does nothing when read-only; returns whether something was inserted.
+   */
+  paste(data: ClipboardContent): boolean {
+    return pasteContent(this, data)
   }
 
   /** @internal Ctrl/Cmd+Shift+V was pressed: the next paste (within 1s) is plain text. */

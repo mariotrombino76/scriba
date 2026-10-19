@@ -17,6 +17,7 @@ export {
   type ToolbarMenu,
   type ToolbarMenuEntry,
 } from './items.js'
+export { clipboardItems } from './clipboard-items.js'
 export { createIcon, type IconName } from './icons.js'
 export { formatShortcut, isMac } from './shortcut.js'
 export { MenuPopup, type PopupEntry } from './menu.js'

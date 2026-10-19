@@ -125,6 +125,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     Cella, Riga, Colonna; proprietà ed elimina tabella). Dove nessuna sezione si applica, e con
     Ctrl (Cmd su macOS), resta il menu del browser; tasto menu e Maiusc+F10 lo aprono al cursore.
     `MenuPopup.openAt(x, y)`, `popupEntries`, `withoutPressed`.
+  - Taglia, Copia, Incolla e Incolla come testo nel menu Modifica, come TinyMCE
+    (`clipboardItems`). Copia e taglia usano l'evento `copy` del browser (riempito dal
+    serializzatore), poi l'API Clipboard; Incolla legge gli appunti con l'API Clipboard (il
+    browser può chiedere il permesso) e, se il browser rifiuta, un messaggio indica Ctrl+V.
+- `@scriba/view`: `view.clipboardContent()` e `view.paste({ html, text, files })`: stesso
+  percorso dell'evento `paste` (documento inerte, pulizia dei plugin, parser dello schema).
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),

@@ -13,5 +13,5 @@ export {
   type InlineDecoration,
   type DecorationSource,
 } from './decorations.js'
-export type { TransformPastedDOM } from './clipboard.js'
+export type { TransformPastedDOM, ClipboardContent } from './clipboard.js'
 export { someProp, type ViewPluginProps, type PluginView } from './plugin-hooks.js'

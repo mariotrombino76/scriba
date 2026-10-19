@@ -12,19 +12,36 @@ import { someProp } from './plugin-hooks.js'
 import { parseInertHTML } from './trusted-types.js'
 import type { EditorView } from './view.js'
 
-/** Copy/cut: HTML from the model's serializer (never from the DOM) plus plain text. */
-export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean): void {
-  // selectionchange is async: make sure the model has the selection the user sees
-  view.syncSelectionFromDOM()
+/** Clipboard data: HTML and/or plain text, files (images…). */
+export interface ClipboardContent {
+  html?: string
+  text?: string
+  files?: readonly File[]
+}
+
+/**
+ * What the selection holds, as clipboard data: HTML from the model's
+ * serializer (never from the DOM) plus plain text; null for an empty selection.
+ */
+export function selectionClipboard(view: EditorView): { html: string; text: string } | null {
   const sel = view.state.selection
-  if (sel.empty || !event.clipboardData) return
-  event.preventDefault()
+  if (sel.empty) return null
   // the selection decides what it holds (a cell selection: just its cells, as a table)
   const slice = sel.content()
   const html = new HTMLSerializer(view.state.schema).serializeFragment(slice.content)
   const text = slice.content.textBetween(0, slice.content.size, '\n\n', '\n')
-  event.clipboardData.setData('text/html', html)
-  event.clipboardData.setData('text/plain', text)
+  return { html, text }
+}
+
+/** Copy/cut: see `selectionClipboard`. */
+export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean): void {
+  // selectionchange is async: make sure the model has the selection the user sees
+  view.syncSelectionFromDOM()
+  const data = selectionClipboard(view)
+  if (!data || !event.clipboardData) return
+  event.preventDefault()
+  event.clipboardData.setData('text/html', data.html)
+  event.clipboardData.setData('text/plain', data.text)
   if (cut && view.editable) view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
 }
 
@@ -50,13 +67,28 @@ export function handlePaste(view: EditorView, event: ClipboardEvent): void {
   if (!view.editable || !event.clipboardData) return
   // selectionchange is async: paste where the caret is now, not where it was a moment ago
   view.syncSelectionFromDOM()
-  const files = [...(event.clipboardData.files ?? [])]
-  if (files.length && someProp(view.state, 'handlePasteFiles', (handle) => handle(view, files)))
-    return
   const plainOnly = view.consumePlainPaste()
-  const html = plainOnly ? '' : event.clipboardData.getData('text/html')
-  const text = event.clipboardData.getData('text/plain')
-  if (html.length > MAX_PASTE_LENGTH || text.length > MAX_PASTE_LENGTH) return
+  pasteContent(view, {
+    html: plainOnly ? '' : event.clipboardData.getData('text/html'),
+    text: event.clipboardData.getData('text/plain'),
+    files: [...(event.clipboardData.files ?? [])],
+  })
+}
+
+/**
+ * Pastes clipboard data at the selection, through the same path as a paste
+ * event: files to the plugins, HTML through the inert document, the plugins'
+ * cleaning and the schema parser, else plain text. The data is untrusted.
+ * Returns whether something was inserted.
+ */
+export function pasteContent(view: EditorView, data: ClipboardContent): boolean {
+  if (!view.editable) return false
+  const files = [...(data.files ?? [])]
+  if (files.length && someProp(view.state, 'handlePasteFiles', (handle) => handle(view, files)))
+    return true
+  const html = data.html ?? ''
+  const text = data.text ?? ''
+  if (html.length > MAX_PASTE_LENGTH || text.length > MAX_PASTE_LENGTH) return false
   let doc: Node | null = null
   if (html) {
     try {
@@ -76,8 +108,10 @@ export function handlePaste(view: EditorView, event: ClipboardEvent): void {
     (someProp(view.state, 'handlePasteContent', (handle) => handle(view, doc.content)) ||
       insertFragment(view, doc.content))
   )
-    return
-  if (text) insertPlainText(view, text)
+    return true
+  if (!text) return false
+  insertPlainText(view, text)
+  return true
 }
 
 /** A parsed paste that produced only an empty paragraph has nothing to insert. */

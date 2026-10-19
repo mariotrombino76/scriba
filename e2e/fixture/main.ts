@@ -20,6 +20,7 @@ import {
   defineScribaToolbar,
   historyItems,
   clearFormatItem,
+  clipboardItems,
   selectAllItem,
   type ToolbarButton,
   markItems,
@@ -466,7 +467,15 @@ menubar.menus = [
   {
     id: 'edit',
     label: 'menu.edit',
-    items: [...historyItems(), '|', selectAllItem(), '|', findReplaceToolbarItem(t)],
+    items: [
+      ...historyItems(),
+      '|',
+      ...clipboardItems(t, { mac: false }),
+      '|',
+      selectAllItem(),
+      '|',
+      findReplaceToolbarItem(t),
+    ],
   },
   {
     id: 'view',

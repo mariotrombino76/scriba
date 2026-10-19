@@ -40,7 +40,7 @@ test('Aiuto ▸ Scorciatoie da tastiera: tables, search, Escape back to the edit
     '**testo**',
   )
   await expect(dialog.getByRole('table', { name: 'Navigazione' })).toContainText('Maiusc+F10')
-  await page.keyboard.type('incolla')
+  await page.keyboard.type('testo semplice')
   await expect(dialog.getByRole('row').filter({ visible: true })).toHaveCount(2) // header + 1
   await expect(dialog.getByRole('row', { name: /Incolla come testo semplice/ })).toContainText(
     'Ctrl+Maiusc+V',
