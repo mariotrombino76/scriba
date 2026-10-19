@@ -107,3 +107,57 @@ test('Inserisci ▸ Data/ora: the current date and time, as text', async ({ page
     '19/10/26',
   ])
 })
+
+test('a selected line: Enter adds a paragraph, typing replaces it, also at the top', async ({
+  page,
+}) => {
+  await setHTML(page, '<p>a</p><hr><p>b</p>')
+  await editor(page).locator('hr').click()
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('dopo')
+  await expect.poll(() => html(page)).toBe('<p>a</p><hr><p>dopo</p><p>b</p>')
+  await editor(page).locator('hr').click()
+  await page.keyboard.type('x')
+  await expect.poll(() => html(page)).toBe('<p>a</p><p>x</p><p>dopo</p><p>b</p>')
+  // a line at the top: Enter writes above it
+  await setHTML(page, '<hr><p>b</p>')
+  await editor(page).locator('hr').click()
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('sopra')
+  await expect.poll(() => html(page)).toBe('<p>sopra</p><hr><p>b</p>')
+})
+
+test('copy and paste a selected page break', async ({ page }) => {
+  await setHTML(page, '<p>a</p><hr class="scriba-page-break"><p>b</p>')
+  await editor(page).locator('hr').click()
+  // clipboard events with their data (the constructor's clipboardData is not supported everywhere)
+  const copied = await editor(page).evaluate((el) => {
+    const data = new DataTransfer()
+    const event = new Event('copy', { bubbles: true, cancelable: true })
+    Object.defineProperty(event, 'clipboardData', { value: data })
+    el.dispatchEvent(event)
+    return data.getData('text/html')
+  })
+  expect(copied).toBe('<hr class="scriba-page-break">')
+  // a click in the text after selecting the line: the caret moves there
+  await editor(page).getByText('b', { exact: true }).click()
+  await page.keyboard.press('End')
+  await editor(page).evaluate((el, html) => {
+    const data = new DataTransfer()
+    data.setData('text/html', html)
+    const event = new Event('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(event, 'clipboardData', { value: data })
+    el.dispatchEvent(event)
+  }, copied)
+  await expect
+    .poll(() => html(page))
+    .toBe('<p>a</p><hr class="scriba-page-break"><p>b</p><hr class="scriba-page-break">')
+})
+
+test('after selecting a line, a click in the text moves the caret there', async ({ page }) => {
+  await setHTML(page, '<p>a</p><hr><p>bb</p>')
+  await editor(page).locator('hr').click()
+  await editor(page).getByText('bb').click()
+  await page.keyboard.type('x')
+  await expect.poll(() => html(page)).toMatch(/^<p>a<\/p><hr><p>(xbb|bxb|bbx)<\/p>$/)
+})

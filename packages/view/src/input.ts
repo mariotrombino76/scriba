@@ -1,5 +1,6 @@
 import {
   chainCommands,
+  createParagraphNear,
   deleteChar,
   deleteSelection,
   deleteSelectedBlock,
@@ -73,7 +74,17 @@ function insertText(
     if (someProp(view.state, 'handleTextInput', (handle) => handle(view, from, to, text))) return
   }
   const tr = view.state.tr
-  if (!(sel instanceof TextSelection) && !sel.empty) {
+  const paragraph = view.state.schema.nodes['paragraph']
+  if (
+    sel instanceof NodeSelection &&
+    sel.node.isBlock &&
+    paragraph &&
+    sel.$from.parent.type.canContain(paragraph)
+  ) {
+    // a selected block (a line, a table…) is replaced by a paragraph with the text, where it was
+    tr.replaceWith(sel.from, sel.to, paragraph.create(null, view.state.schema.text(text)))
+    tr.setSelection(TextSelection.create(tr.doc, sel.from + 1 + text.length))
+  } else if (!(sel instanceof TextSelection) && !sel.empty) {
     // node and cell selections know how to delete themselves; then type at the new cursor
     tr.deleteSelection()
     tr.insertText(text)
@@ -111,7 +122,10 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
       return
     }
     case 'insertParagraph':
-      return run(view, chainCommands(newlineInCode, liftEmptyBlock, splitBlock))
+      return run(
+        view,
+        chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
+      )
     case 'insertLineBreak':
       return run(view, lineBreak(view))
     case 'deleteContentBackward':
@@ -225,7 +239,11 @@ function atomAt(view: EditorView, target: EventTarget | null): { pos: number; no
 function onMouseDown(view: EditorView, event: MouseEvent): void {
   if (event.button !== 0) return
   const atom = atomAt(view, event.target)
-  if (!atom || !NodeSelection.isSelectable(atom.node)) return
+  if (!atom || !NodeSelection.isSelectable(atom.node)) {
+    // a click in the text: the caret the browser places wins over a selected node
+    if (view.state.selection instanceof NodeSelection) view.pointerSelecting = true
+    return
+  }
   event.preventDefault()
   view.focus()
   view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, atom.pos)))
@@ -269,7 +287,15 @@ export function attachInputHandlers(view: EditorView): () => void {
         onMouseDown(view, e as MouseEvent)
       },
     ],
-    [doc, 'mouseup', () => (pointerDown = false)],
+    [
+      doc,
+      'mouseup',
+      () => {
+        pointerDown = false
+        if (view.pointerSelecting) view.syncSelectionFromDOM()
+        view.pointerSelecting = false
+      },
+    ],
     [dom, 'dblclick', (e) => onDoubleClick(view, e as MouseEvent)],
     [dom, 'focus', () => !pointerDown && view.syncSelectionToDOM()],
     [doc, 'selectionchange', () => view.syncSelectionFromDOM()],

@@ -56,6 +56,7 @@ export {
   type Command,
   type CommandView,
   chainCommands,
+  createParagraphNear,
   deleteSelection,
   deleteSelectedBlock,
   joinBackward,

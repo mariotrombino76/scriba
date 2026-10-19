@@ -260,7 +260,12 @@ export class EditorView {
   syncSelectionFromDOM(): void {
     if (this.composing || !this.hasFocus()) return
     const sel = readDOMSelection(this.rootDesc, this.state.doc, this.document.getSelection())
-    if (sel && !sel.eq(this.state.selection) && !this.state.selection.preserves(sel)) {
+    // a click in the text moves the selection even off a selected node (which otherwise
+    // survives the browser reading its DOM selection back as a nearby caret)
+    const keep =
+      !(this.pointerSelecting && this.state.selection instanceof NodeSelection) &&
+      this.state.selection.preserves(sel ?? this.state.selection)
+    if (sel && !sel.eq(this.state.selection) && !keep) {
       this.dispatch(this.state.tr.setSelection(sel))
     }
   }
@@ -469,6 +474,9 @@ export class EditorView {
   paste(data: ClipboardContent): boolean {
     return pasteContent(this, data)
   }
+
+  /** @internal A mouse button is down after a click in the text (not on an atom). */
+  pointerSelecting = false
 
   /** @internal Ctrl/Cmd+Shift+V was pressed: the next paste (within 1s) is plain text. */
   requestPlainPaste(): void {

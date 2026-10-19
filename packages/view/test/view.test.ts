@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { Plugin, TextSelection } from '@scriba/core'
+import { NodeSelection, Plugin, TextSelection } from '@scriba/core'
 import { b, beforeInput, br, doc, h, img, mount, p, pre, quote, schema, tick } from './helpers.js'
 
 describe('rendering', () => {
@@ -262,5 +262,28 @@ describe('selection', () => {
     domSel.removeAllRanges()
     view.dom.dispatchEvent(new FocusEvent('focus'))
     expect(domSel.rangeCount).toBe(1)
+  })
+})
+
+describe('clicking in the text after selecting a node', () => {
+  it('moves the selection to the click (typing must not replace the node)', async () => {
+    const view = mount(doc(p('a', img('x.png'), 'bcd')))
+    view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, 2)))
+    const text = view.dom.querySelector('p')!.lastChild!
+    // the click: mousedown on the text, the browser places the caret, selectionchange
+    text.parentElement!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }))
+    document.getSelection()!.collapse(text, 2)
+    document.dispatchEvent(new Event('selectionchange'))
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+    expect(view.state.selection).toBeInstanceOf(TextSelection)
+    expect(view.state.selection.from).toBe(5)
+  })
+
+  it('without a click, a caret read back next to the node keeps it selected', () => {
+    const view = mount(doc(p('a', img('x.png'), 'bcd')))
+    view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, 2)))
+    document.getSelection()!.collapse(view.dom.querySelector('p')!.lastChild!, 0)
+    document.dispatchEvent(new Event('selectionchange'))
+    expect(view.state.selection).toBeInstanceOf(NodeSelection)
   })
 })

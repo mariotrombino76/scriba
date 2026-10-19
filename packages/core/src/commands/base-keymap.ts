@@ -4,6 +4,7 @@ import { redo, undo } from '../history.js'
 import type { KeyBindings } from '../keymap.js'
 import {
   chainCommands,
+  createParagraphNear,
   deleteChar,
   deleteSelection,
   deleteSelectedBlock,
@@ -20,7 +21,7 @@ import { liftEmptyBlock, liftEmptyOrFirstBlock } from './structure.js'
 
 /** Editing keys that work with any schema: Enter, Backspace, Delete, select all. */
 export const baseKeymap: KeyBindings = {
-  Enter: chainCommands(newlineInCode, liftEmptyBlock, splitBlock),
+  Enter: chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
   Backspace: chainCommands(
     deleteSelectedBlock(-1),
     deleteSelection,

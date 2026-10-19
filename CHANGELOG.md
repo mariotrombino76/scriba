@@ -202,6 +202,15 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- `@scriba/view`: dopo aver selezionato un blocco o un'immagine (clic sopra), un clic nel testo
+  non spostava la selezione: quello che si scriveva dopo sostituiva il nodo. Ora il clic sposta il
+  cursore.
+- `@scriba/view`: scrivere con un blocco selezionato (linea, tabella…) metteva il testo nel
+  paragrafo precedente; ora il blocco diventa un paragrafo con il testo, al suo posto.
+- `@scriba/core`: Invio con un blocco selezionato crea un paragrafo dopo (prima, se è il primo
+  blocco: così si può scrivere sopra una linea o una tabella in cima). Nuovo comando
+  `createParagraphNear` nella `baseKeymap`.
+
 - `@scriba/plugin-ai`: Accetta e Scarta di una risposta fatta di blocchi in mezzo a un paragrafo
   (che lo spezza) fallivano o ricucivano male il testo; ora il ripristino usa i blocchi interi
   che la contenevano, mappati come l'intervallo della risposta. Il ripiego per un blocco che non

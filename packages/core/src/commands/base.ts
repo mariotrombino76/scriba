@@ -243,6 +243,27 @@ function defaultBlockAfter(
   return match ? expr.defaultType(match) : null
 }
 
+/**
+ * Enter on a selected block (a line, a table, a task…): a new empty
+ * paragraph after it, or before it when it is the first block of its
+ * parent, so there is always a way to write above a block at the top.
+ */
+export const createParagraphNear: Command = (state, dispatch) => {
+  const sel = state.selection
+  if (!(sel instanceof NodeSelection) || !sel.node.isBlock) return false
+  const { $from, $to } = sel
+  const before = $from.parentOffset === 0 && $to.index() < $to.parent.childCount
+  const type = defaultBlockAfter($to, $to.depth)
+  if (!type?.isTextblock) return false
+  if (dispatch) {
+    const side = before ? $from.pos : $to.pos
+    const tr = state.tr.insert(side, type.createAndFill()!)
+    tr.setSelection(TextSelection.create(tr.doc, side + 1))
+    dispatch(tr.scrollIntoView())
+  }
+  return true
+}
+
 /** Enter: splits the textblock at the cursor (deleting the selection first). */
 export const splitBlock: Command = (state, dispatch) => {
   const sel = state.selection

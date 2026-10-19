@@ -4,7 +4,10 @@ import {
   EditorState,
   Schema,
   TextSelection,
+  NodeSelection,
   basicSchemaSpec,
+  baseKeymap,
+  createParagraphNear,
   parseHTML,
   serializeHTML,
   type Command,
@@ -118,5 +121,40 @@ describe('hrPlugins', () => {
     expect(pageBreak!.getAttribute('aria-label')).toBe('Interruzione di pagina')
     expect(line!.hasAttribute('aria-label')).toBe(false)
     expect(serializeHTML(view.state.doc)).toBe('<p>a</p><hr class="scriba-page-break"><hr>')
+  })
+})
+
+describe('a selected line, like any selected block', () => {
+  const selected = (html: string, at: number) => {
+    const doc = parse(html)
+    return EditorState.create({ doc, selection: NodeSelection.create(doc, at) })
+  }
+
+  it('Enter: a paragraph after it, or before it when it is the first block', () => {
+    let state = selected('<p>a</p><hr><p>b</p>', 3)
+    expect(baseKeymap['Enter']!(state, (tr) => (state = state.apply(tr)))).toBe(true)
+    expect(serializeHTML(state.doc)).toBe('<p>a</p><hr><p></p><p>b</p>')
+    expect(state.selection.from).toBe(5)
+    state = selected('<hr><p>b</p>', 0)
+    expect(createParagraphNear(state, (tr) => (state = state.apply(tr)))).toBe(true)
+    expect(serializeHTML(state.doc)).toBe('<p></p><hr><p>b</p>')
+    expect(state.selection.from).toBe(1)
+  })
+
+  it('typing replaces it with a paragraph holding the text, where it was', () => {
+    document.body.textContent = ''
+    const place = document.createElement('div')
+    document.body.append(place)
+    const view = new EditorView(place, { state: selected('<p>a</p><hr><p>b</p>', 3) })
+    view.dom.dispatchEvent(
+      new InputEvent('beforeinput', {
+        inputType: 'insertText',
+        data: 'x',
+        cancelable: true,
+        bubbles: true,
+      }),
+    )
+    expect(serializeHTML(view.state.doc)).toBe('<p>a</p><p>x</p><p>b</p>')
+    expect(view.state.selection.from).toBe(5)
   })
 })
