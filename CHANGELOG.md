@@ -146,6 +146,11 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - `@scriba/plugin-datetime`: Inserisci ▸ Data/ora, come insertdatetime di TinyMCE: ora, data
   ISO, data estesa e breve nella lingua della pagina, inserite come testo semplice. Le voci
   mostrano l'ora del momento in cui si apre il menu (`live` nelle voci dei menu di `@scriba/ui`).
+- `@scriba/react`: wrapper React 18/19, `<ScribaEditor value onChange>` (HTML o JSON, `editable`,
+  `locale`, `toolbar`, `ref` con `getContent`/`setContent`/`focus`) e hook `useScriba()`; funziona
+  con `StrictMode`. Testato in jsdom e nei tre browser con la CSP rigida (`e2e/react.spec.ts`).
+- `@scriba/view`: `parseContent`, `serializeContent` e `sameContent` (prima nel wrapper Vue, che
+  continua a esportarli), condivisi da Vue, React e build CDN.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),

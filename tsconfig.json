@@ -2,6 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
+    // @scriba/react
+    "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
       "@scriba/core": ["./packages/core/src/index.ts"],
@@ -28,6 +30,7 @@
       "@scriba/plugin-callout": ["./packages/plugins/callout/src/index.ts"],
       "@scriba/plugin-file": ["./packages/plugins/file/src/index.ts"],
       "@scriba/vue": ["./packages/vue/src/index.ts"],
+      "@scriba/react": ["./packages/react/src/index.ts"],
       "@scriba/plugin-markdown": ["./packages/plugins/markdown/src/index.ts"],
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
       "@scriba/plugin-datetime": ["./packages/plugins/datetime/src/index.ts"],

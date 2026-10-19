@@ -28,6 +28,7 @@ export default defineConfig({
       '@scriba/view': src('view'),
       '@scriba/i18n': src('i18n'),
       '@scriba/ui': src('ui'),
+      '@scriba/react': src('react'),
       '@scriba/vue': src('vue'),
       '@scriba/plugin-list': plugin('list'),
       '@scriba/plugin-blockquote': plugin('blockquote'),
@@ -62,6 +63,12 @@ export default defineConfig({
     outDir: fileURLToPath(new URL('./.dist', import.meta.url)),
     emptyOutDir: true,
     modulePreload: false,
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./fixture/index.html', import.meta.url)),
+        react: fileURLToPath(new URL('./fixture/react.html', import.meta.url)),
+      },
+    },
   },
   preview: { port: 4173, strictPort: true, headers: { 'Content-Security-Policy': CSP } },
 })

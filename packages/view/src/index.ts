@@ -15,3 +15,10 @@ export {
 } from './decorations.js'
 export type { TransformPastedDOM, ClipboardContent } from './clipboard.js'
 export { someProp, type ViewPluginProps, type PluginView } from './plugin-hooks.js'
+export {
+  parseContent,
+  serializeContent,
+  sameContent,
+  type Content,
+  type ContentFormat,
+} from './content.js'

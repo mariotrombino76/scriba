@@ -4,7 +4,7 @@ import { createTranslator, type Messages } from '@scriba/i18n'
 import { defineScribaToolbar, type ScribaToolbar } from '@scriba/ui'
 import type { NodeViewFactory } from '@scriba/view'
 import { computed, onMounted, ref, watch } from 'vue'
-import { sameContent, type Content, type ContentFormat } from './content.js'
+import { sameContent, type Content, type ContentFormat } from '@scriba/view'
 import { useScriba } from './useScriba.js'
 
 const props = withDefaults(

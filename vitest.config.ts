@@ -18,6 +18,7 @@ export default defineConfig({
       '@scriba/view': src('view'),
       '@scriba/i18n': src('i18n'),
       '@scriba/ui': src('ui'),
+      '@scriba/react': src('react'),
       '@scriba/plugin-list': plugin('list'),
       '@scriba/plugin-blockquote': plugin('blockquote'),
       '@scriba/plugin-text-style': plugin('text-style'),
