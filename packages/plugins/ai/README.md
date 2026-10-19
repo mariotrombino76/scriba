@@ -19,12 +19,13 @@ editor ◀────────(risposta a pezzi)────── tuo backe
 3. [Il backend](#il-backend)
 4. [Azioni](#azioni)
 5. [Blocchi generati (Generative UI)](#blocchi-generati-generative-ui)
-6. [Uso con Vue](#uso-con-vue)
-7. [Interfaccia, tastiera e accessibilità](#interfaccia-tastiera-e-accessibilità)
-8. [Sicurezza](#sicurezza)
-9. [Riferimento API](#riferimento-api)
-10. [Personalizzare testi e aspetto](#personalizzare-testi-e-aspetto)
-11. [Domande frequenti](#domande-frequenti)
+6. [Più versioni tra cui scegliere](#più-versioni-tra-cui-scegliere)
+7. [Uso con Vue](#uso-con-vue)
+8. [Interfaccia, tastiera e accessibilità](#interfaccia-tastiera-e-accessibilità)
+9. [Sicurezza](#sicurezza)
+10. [Riferimento API](#riferimento-api)
+11. [Personalizzare testi e aspetto](#personalizzare-testi-e-aspetto)
+12. [Domande frequenti](#domande-frequenti)
 
 ---
 
@@ -152,13 +153,14 @@ Il backend riceve la richiesta, sceglie le istruzioni per il modello e restituis
 
 ### Cosa riceve
 
-| Campo    | Contenuto                                                                                                                                                                                    |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action` | L'azione scelta: `continue`, `improve`, `fix`, `shorter`, `longer`, `summarize`, `translate`, `make_table`, `extract_tasks`, `to_callout`, le tue, oppure `custom` per una richiesta libera. |
-| `prompt` | Il testo scritto dall'utente nel campo "Chiedi all'AI…" (solo per `custom`).                                                                                                                 |
-| `text`   | La selezione in testo semplice; per `continue`, il testo prima del cursore (al massimo `maxContext` caratteri).                                                                              |
-| `output` | `"blocks"` per le azioni che creano blocchi; assente per il testo.                                                                                                                           |
-| `blocks` | Con `output: "blocks"`: i tipi di blocco ammessi, es. `{ "nodes": ["table"] }`.                                                                                                              |
+| Campo                 | Contenuto                                                                                                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`              | L'azione scelta: `continue`, `improve`, `fix`, `shorter`, `longer`, `summarize`, `translate`, `make_table`, `extract_tasks`, `to_callout`, le tue, oppure `custom` per una richiesta libera. |
+| `prompt`              | Il testo scritto dall'utente nel campo "Chiedi all'AI…" (solo per `custom`).                                                                                                                 |
+| `text`                | La selezione in testo semplice; per `continue`, il testo prima del cursore (al massimo `maxContext` caratteri).                                                                              |
+| `output`              | `"blocks"` per le azioni che creano blocchi; assente per il testo.                                                                                                                           |
+| `blocks`              | Con `output: "blocks"`: i tipi di blocco ammessi, es. `{ "nodes": ["table"] }`.                                                                                                              |
+| `variant`, `variants` | Con più versioni: quale versione è questa richiesta (0, 1, 2…) e quante sono in tutto.                                                                                                       |
 
 ### Cosa restituisce
 
@@ -401,6 +403,31 @@ const parse = blocksParser({ nodes: ['task'] })
 const fragment = parse(rispostaDelModello, schema) // nodi già validati
 ```
 
+## Più versioni tra cui scegliere
+
+Un'azione può proporre **più versioni** della risposta: l'utente le confronta nel documento e
+tiene quella che preferisce.
+
+```ts
+import { variantAiActions } from '@scriba/plugin-ai'
+
+actions: [...defaultAiActions, ...variantAiActions()] // Riscrivi (3 proposte), Riassumi (3 proposte)
+// oppure su misura:
+{ id: 'titolo', label: () => 'Proponi un titolo', mode: 'after', needsSelection: true, variants: 3 }
+```
+
+- L'editor fa **una richiesta per versione**, in parallelo, con `variant` (0, 1, 2…) e `variants`
+  (quante sono): il backend può variare temperatura o istruzioni (es. formale, colloquiale,
+  breve). Il formato della risposta è quello di sempre (testo, Markdown o blocchi).
+- Nel documento compare la versione scelta (all'inizio la prima), aggiornata mentre arriva. Nella
+  barra c'è il selettore **Versione 1 · 2 · 3**: clic, frecce o tasti 1–5 (gruppo di radio
+  accessibile); lo stato annunciato dice quale versione stai guardando.
+- **Accetta** tiene la versione mostrata (un solo passo di annulla); **Stop** ferma tutte le
+  richieste. Se una versione fallisce le altre restano disponibili; Accetta non è proposto per
+  una versione senza risposta.
+- Al massimo `MAX_VARIANTS` (5) versioni: ognuna costa una richiesta al modello.
+- Da codice: `runAi(view, options, { action, mode, variants: 3 })` e `selectVariant(view, 1)`.
+
 ## Uso con Vue
 
 ```vue
@@ -488,6 +515,8 @@ Con il composable: `useScriba(target, { schema, plugins })`.
 | `getPending(state)` / `isPending(state)`                          | funzioni        | La risposta in attesa (intervallo, stato, testo) o `null`.                         |
 | `defaultAiActions`                                                | `AiAction[]`    | Le azioni di testo incluse.                                                        |
 | `blockAiActions(schema)`                                          | `AiAction[]`    | Le azioni a blocchi disponibili per lo schema.                                     |
+| `variantAiActions()`                                              | `AiAction[]`    | Riscrivi e Riassumi con tre versioni tra cui scegliere.                            |
+| `selectVariant(view, i)`                                          | funzione        | Mostra un'altra versione della risposta in attesa.                                 |
 | `blocksParser(blocks)`                                            | `AiParse`       | Parser delle risposte a blocchi (NDJSON).                                          |
 | `aiBlocksPrompt(schema, blocks)`                                  | `string`        | Istruzioni sul formato per il modello.                                             |
 | `aiBlocksJsonSchema(schema, blocks)`                              | `object`        | JSON Schema di un blocco.                                                          |

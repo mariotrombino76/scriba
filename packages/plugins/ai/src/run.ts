@@ -25,6 +25,8 @@ export interface AiAction {
   needsSelection?: boolean
   /** The answer is blocks (a table, tasks…), not text: what it may contain. */
   blocks?: AiBlocks
+  /** Ask for several versions (2–5) to choose from; each is a request to your backend. */
+  variants?: number
 }
 
 export interface AiOptions {
@@ -60,6 +62,17 @@ export function blockAiActions(schema: Schema): AiAction[] {
   add('extract_tasks', 'ai.action.tasks', 'after', 'task', 'task')
   add('to_callout', 'ai.action.callout', 'replace', 'callout', 'callout')
   return list
+}
+
+/**
+ * Actions offering several versions to choose from (three requests each): rewrite the
+ * selection, or summarize it (after it).
+ */
+export function variantAiActions(): AiAction[] {
+  return [
+    { ...action('rewrite_variants', 'ai.action.rewriteVariants', 'replace'), variants: 3 },
+    { ...action('summarize_variants', 'ai.action.summarizeVariants', 'after'), variants: 3 },
+  ]
 }
 
 /** Continue, improve, fix, shorter, longer, summarize, translate. */
@@ -104,70 +117,122 @@ function target(
   return { from: at, to: at, text: before.slice(-maxContext) }
 }
 
+/** Most versions one action may ask for (each is a request to your backend). */
+export const MAX_VARIANTS = 5
+
+/** The parser of the answer in progress, per editor (to redraw another version). */
+const parsers = new WeakMap<EditorView, AiParse>()
+
+/** The status shown for several versions: still writing while any is; failed only if all did. */
+function overall(statuses: readonly AiStatus[]): AiStatus {
+  if (statuses.includes('streaming')) return 'streaming'
+  if (statuses.every((s) => s === 'error')) return 'error'
+  return statuses.includes('stopped') ? 'stopped' : 'done'
+}
+
 /**
  * Runs an action: sends the request (only now, on the user's request, §5.9)
  * and streams the answer into the document as a pending, highlighted range.
+ * With `variants` (2–5), one request per version runs in parallel; the chosen
+ * version is shown (`selectVariant`) and Accept keeps it.
  */
 export async function runAi(
   view: EditorView,
   options: AiOptions,
-  request: { action: string; prompt?: string; mode: AiMode; blocks?: AiBlocks },
+  request: { action: string; prompt?: string; mode: AiMode; blocks?: AiBlocks; variants?: number },
 ): Promise<void> {
   if (getPending(view.state) || !view.editable) return
   const place = target(view, request.mode, options.maxContext ?? 4000)
   if (!place) return
   const parse = request.blocks ? blocksParser(request.blocks) : (options.parse ?? plainText)
+  parsers.set(view, parse)
+  const count = Math.max(1, Math.min(MAX_VARIANTS, Math.floor(request.variants ?? 1)))
   beginPending(view, place.from, place.to, { ...request, text: place.text })
   const controller = new AbortController()
   controllers.set(view, controller)
-  let answer = ''
+  const texts: string[] = Array.from({ length: count }, () => '')
+  const statuses: AiStatus[] = Array.from({ length: count }, () => 'streaming' as AiStatus)
   let frame = 0
   const win = view.document.defaultView
-  const flush = (status: AiStatus) => {
+  const flush = () => {
     if (frame) win?.cancelAnimationFrame(frame)
     frame = 0
-    streamUpdate(view, answer, status, parse)
+    const p = getPending(view.state)
+    if (!p) return
+    if (count === 1) {
+      streamUpdate(view, texts[0]!, statuses[0]!, parse)
+      return
+    }
+    const selected = p.variants?.selected ?? 0
+    streamUpdate(view, texts[selected]!, overall(statuses), parse, {
+      texts: [...texts],
+      statuses: [...statuses],
+      selected,
+    })
   }
   const schedule = () => {
     if (frame) return
-    frame = win?.requestAnimationFrame(() => flush('streaming')) ?? 0
-    if (!win) flush('streaming')
+    frame = win?.requestAnimationFrame(flush) ?? 0
+    if (!win) flush()
   }
-  let status: AiStatus = 'done'
-  try {
-    const result = options.complete({
-      action: request.action,
-      ...(request.prompt ? { prompt: request.prompt } : {}),
-      text: place.text,
-      signal: controller.signal,
-      ...(request.blocks ? { output: 'blocks' as const, blocks: request.blocks } : {}),
-    })
-    if (typeof (result as Promise<string>).then === 'function') {
-      answer = String(await (result as Promise<string>)).slice(0, MAX_ANSWER)
-    } else {
-      for await (const chunk of result as AsyncIterable<string>) {
-        if (controller.signal.aborted) break
-        answer += String(chunk)
-        if (answer.length >= MAX_ANSWER) {
-          answer = answer.slice(0, MAX_ANSWER)
-          break
+  const one = async (i: number): Promise<void> => {
+    try {
+      const result = options.complete({
+        action: request.action,
+        ...(request.prompt ? { prompt: request.prompt } : {}),
+        text: place.text,
+        signal: controller.signal,
+        ...(request.blocks ? { output: 'blocks' as const, blocks: request.blocks } : {}),
+        ...(count > 1 ? { variant: i, variants: count } : {}),
+      })
+      if (typeof (result as Promise<string>).then === 'function') {
+        texts[i] = String(await (result as Promise<string>)).slice(0, MAX_ANSWER)
+      } else {
+        for await (const chunk of result as AsyncIterable<string>) {
+          if (controller.signal.aborted) break
+          texts[i] += String(chunk)
+          if (texts[i]!.length >= MAX_ANSWER) {
+            texts[i] = texts[i]!.slice(0, MAX_ANSWER)
+            break
+          }
+          schedule()
         }
-        schedule()
       }
+      statuses[i] = controller.signal.aborted ? 'stopped' : 'done'
+    } catch {
+      statuses[i] = controller.signal.aborted ? 'stopped' : 'error'
     }
-    if (controller.signal.aborted) status = 'stopped'
-  } catch {
-    status = controller.signal.aborted ? 'stopped' : 'error'
+    schedule()
+  }
+  try {
+    await Promise.all(texts.map((_t, i) => one(i)))
   } finally {
     controllers.delete(view)
   }
-  if (getPending(view.state)) flush(status)
+  if (getPending(view.state)) flush()
+}
+
+/**
+ * Shows another version of a pending answer with several (0-based index): the
+ * document shows it at once; Accept keeps the one shown.
+ */
+export function selectVariant(view: EditorView, index: number): void {
+  const p = getPending(view.state)
+  const parse = parsers.get(view)
+  if (!p?.variants || !parse) return
+  const { texts, statuses } = p.variants
+  if (index < 0 || index >= texts.length || index === p.variants.selected) return
+  streamUpdate(view, texts[index]!, p.status, parse, { texts, statuses, selected: index })
 }
 
 /** Runs the pending answer's request again (after Discard of the current answer). */
-export function retryRequest(
-  view: EditorView,
-): { action: string; prompt?: string; mode: AiMode; blocks?: AiBlocks } | null {
+export function retryRequest(view: EditorView): {
+  action: string
+  prompt?: string
+  mode: AiMode
+  blocks?: AiBlocks
+  variants?: number
+} | null {
   const p = getPending(view.state)
   return p
     ? {
@@ -175,6 +240,7 @@ export function retryRequest(
         ...(p.request.prompt ? { prompt: p.request.prompt } : {}),
         mode: p.request.mode,
         ...(p.request.blocks ? { blocks: p.request.blocks } : {}),
+        ...(p.request.variants ? { variants: p.request.variants } : {}),
       }
     : null
 }

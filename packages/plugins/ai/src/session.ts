@@ -32,6 +32,13 @@ export interface AiRequest {
   output?: 'text' | 'blocks'
   /** With `output: "blocks"`: what the answer may contain. */
   blocks?: AiBlocks
+  /**
+   * When the user asked for several versions: which one this request is (0, 1, 2…) and
+   * how many there are. Each version is a separate request: vary the answer (e.g. the
+   * temperature or the instructions) by `variant`.
+   */
+  variant?: number
+  variants?: number
 }
 
 /**
@@ -60,7 +67,16 @@ export interface AiPending {
   text: string
   status: AiStatus
   /** For Retry. */
-  request: { action: string; prompt?: string; text: string; mode: AiMode; blocks?: AiBlocks }
+  request: {
+    action: string
+    prompt?: string
+    text: string
+    mode: AiMode
+    blocks?: AiBlocks
+    variants?: number
+  }
+  /** Several versions: the answer of each and its status; `selected` is the one shown. */
+  variants?: { texts: string[]; statuses: AiStatus[]; selected: number }
 }
 
 /** Where the answer goes. */
@@ -166,6 +182,7 @@ export function streamUpdate(
   text: string,
   status: AiStatus,
   parse: AiParse,
+  variants?: AiPending['variants'],
 ): void {
   const p = getPending(view.state)
   if (!p) return
@@ -186,7 +203,15 @@ export function streamUpdate(
   tr.setMeta(AI_META, true).setMeta(ADD_TO_HISTORY, false)
   const outerFrom = tr.mapping.map(p.outerFrom, -1)
   const outerTo = Math.max(outerFrom, tr.mapping.map(p.outerTo, 1))
-  tr.setMeta(aiKey, { ...p, to, text, status, outerFrom, outerTo })
+  tr.setMeta(aiKey, {
+    ...p,
+    to,
+    text,
+    status,
+    outerFrom,
+    outerTo,
+    ...(variants ? { variants } : {}),
+  })
   view.dispatch(tr)
 }
 

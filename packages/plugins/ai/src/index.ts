@@ -26,6 +26,9 @@ export {
   stopAi,
   defaultAiActions,
   blockAiActions,
+  variantAiActions,
+  selectVariant,
+  MAX_VARIANTS,
   type AiAction,
   type AiOptions,
 } from './run.js'

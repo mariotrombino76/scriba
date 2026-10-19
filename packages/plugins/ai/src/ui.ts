@@ -1,7 +1,14 @@
 import type { MessageKey } from '@scriba/i18n'
 import { createIcon } from '@scriba/ui'
 import type { EditorView, PluginView } from '@scriba/view'
-import { defaultAiActions, retryRequest, runAi, stopAi, type AiOptions } from './run.js'
+import {
+  defaultAiActions,
+  retryRequest,
+  runAi,
+  selectVariant,
+  stopAi,
+  type AiOptions,
+} from './run.js'
 import { acceptPending, discardPending, getPending } from './session.js'
 
 let ids = 0
@@ -84,6 +91,7 @@ export function openAiMenu(view: EditorView, options: AiOptions): void {
         action: a.id,
         mode: a.mode,
         ...(a.blocks ? { blocks: a.blocks } : {}),
+        ...(a.variants ? { variants: a.variants } : {}),
       })
     })
     list.appendChild(b)
@@ -161,7 +169,35 @@ export function aiBarView(view: EditorView, options: AiOptions): PluginView {
     void runAi(view, options, request)
   })
   accept.classList.add('scriba-ai-primary')
-  bar.append(status, stop, accept, discard, retry)
+  // several versions: one radio per version (arrows or 1–5 switch, like a tab list)
+  const versions = doc.createElement('div')
+  versions.className = 'scriba-ai-variants'
+  versions.setAttribute('role', 'radiogroup')
+  versions.setAttribute('aria-label', t('ai.variants'))
+  versions.hidden = true
+  const radios: HTMLButtonElement[] = []
+  const choose = (i: number) => {
+    selectVariant(view, i)
+    radios[i]?.focus()
+  }
+  versions.addEventListener('keydown', (e) => {
+    const p = getPending(view.state)
+    if (!p?.variants) return
+    const n = p.variants.texts.length
+    const i = p.variants.selected
+    const next =
+      e.key === 'ArrowRight' || e.key === 'ArrowDown'
+        ? (i + 1) % n
+        : e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+          ? (i - 1 + n) % n
+          : /^[1-5]$/.test(e.key) && Number(e.key) <= n
+            ? Number(e.key) - 1
+            : -1
+    if (next < 0) return
+    e.preventDefault()
+    choose(next)
+  })
+  bar.append(status, versions, stop, accept, discard, retry)
   bar.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return
     e.preventDefault()
@@ -183,11 +219,43 @@ export function aiBarView(view: EditorView, options: AiOptions): PluginView {
       return
     }
     const streaming = p.status === 'streaming'
+    const v = p.variants
+    const shownFailed = !!v && v.statuses[v.selected] === 'error'
     stop.hidden = !streaming
-    accept.hidden = streaming || p.status === 'error'
+    accept.hidden = streaming || p.status === 'error' || shownFailed
     discard.hidden = streaming
     retry.hidden = streaming
-    const text = t(STATUS[p.status]!)
+    let text = t(STATUS[p.status]!)
+    if (v) {
+      const n = v.texts.length
+      while (radios.length < n) {
+        const i = radios.length
+        const r = doc.createElement('button')
+        r.type = 'button'
+        r.setAttribute('role', 'radio')
+        r.textContent = String(i + 1)
+        r.addEventListener('mousedown', (e) => e.preventDefault())
+        r.addEventListener('click', () => choose(i))
+        versions.appendChild(r)
+        radios.push(r)
+      }
+      radios.forEach((r, i) => {
+        const on = i === v.selected
+        r.hidden = i >= n
+        r.setAttribute('aria-checked', String(on))
+        r.tabIndex = on ? 0 : -1
+        const failed = v.statuses[i] === 'error'
+        r.classList.toggle('scriba-ai-variant-failed', failed)
+        r.setAttribute(
+          'aria-label',
+          failed ? t('ai.variantFailed', { n: i + 1 }) : t('ai.variant', { n: i + 1, count: n }),
+        )
+      })
+      text = `${t('ai.variant', { n: v.selected + 1, count: n })}: ${
+        shownFailed ? t('ai.error') : text
+      }`
+    }
+    versions.hidden = !v
     if (status.textContent !== text) status.textContent = text
     bar.hidden = false
     placeNear(view, bar, p.to)

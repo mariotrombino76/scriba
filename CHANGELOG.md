@@ -92,6 +92,11 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     whitelist (tipi di primo livello dell'azione; dentro solo contenitori e testo; mark di sola
     formattazione, niente immagini, menzioni, commenti né link se non richiesti) e limiti su
     blocchi, nodi e profondità. I blocchi compaiono man mano che le righe sono complete.
+  - Più versioni tra cui scegliere: un'azione con `variants` (2–5) fa una richiesta per versione
+    (`variant`, `variants` nella richiesta), mostra quella scelta e la barra offre il selettore
+    "Versione 1 · 2 · 3" (radio, frecce, tasti 1–5); Accetta tiene quella mostrata, Stop le ferma
+    tutte, una versione fallita non blocca le altre. `variantAiActions()` (Riscrivi e Riassumi con
+    tre proposte), `selectVariant`, `MAX_VARIANTS`.
   - Per il backend: la richiesta porta `output: "blocks"` e `blocks`; `aiBlocksPrompt` e
     `aiBlocksJsonSchema` descrivono il formato al modello.
 - `@scriba/plugin-comments`

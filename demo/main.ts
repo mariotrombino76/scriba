@@ -121,6 +121,7 @@ import {
   blockAiActions,
   defaultAiActions,
   openAiMenu,
+  variantAiActions,
   type AiComplete,
   type AiOptions,
   type AiRequest,
@@ -287,16 +288,27 @@ const fakeAi: AiComplete = (req) =>
       }
       return
     }
+    // several versions: a different answer for each (a real backend varies the request)
+    const VARIANTS: Record<string, string[]> = {
+      rewrite_variants: ['Versione formale', 'Versione colloquiale', 'Versione breve'],
+      summarize_variants: [
+        'Sintesi in una riga.',
+        'Sintesi per punti.',
+        'Sintesi per chi ha fretta.',
+      ],
+    }
     const text =
-      req.prompt === 'attacco'
-        ? 'Ok **fatto** [qui](javascript:alert(1)) <img src=x onerror=alert(1)><script>alert(1)</script>'
-        : req.prompt === 'errore'
-          ? (() => {
-              throw new Error('backend down')
-            })()
-          : req.prompt
-            ? `Risposta a: ${req.prompt}`
-            : (FAKE_ANSWERS[req.action] ?? 'Fatto.')
+      req.variant !== undefined && VARIANTS[req.action]
+        ? VARIANTS[req.action]![req.variant]!
+        : req.prompt === 'attacco'
+          ? 'Ok **fatto** [qui](javascript:alert(1)) <img src=x onerror=alert(1)><script>alert(1)</script>'
+          : req.prompt === 'errore'
+            ? (() => {
+                throw new Error('backend down')
+              })()
+            : req.prompt
+              ? `Risposta a: ${req.prompt}`
+              : (FAKE_ANSWERS[req.action] ?? 'Fatto.')
     for (const word of text.split(/(?<= )/)) {
       await wait(req.prompt === 'lento' ? 400 : 40, req.signal)
       yield word
@@ -304,7 +316,7 @@ const fakeAi: AiComplete = (req) =>
   })()
 const aiOptions: AiOptions = {
   complete: fakeAi,
-  actions: [...defaultAiActions, ...blockAiActions(schema)],
+  actions: [...defaultAiActions, ...variantAiActions(), ...blockAiActions(schema)],
   parse: (text, s) => parseMarkdown(s, text).content,
   t,
 }

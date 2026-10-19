@@ -1701,3 +1701,34 @@ hr.scriba-page-break {
     margin: 0;
   }
 }
+
+/* AI: choosing among several versions */
+.scriba-ai-variants {
+  display: inline-flex;
+  gap: 4px;
+}
+.scriba-ai-variants[hidden] {
+  display: none;
+}
+.scriba-ai-variants button {
+  min-width: 2rem;
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+  color: var(--scriba-text);
+  background: var(--scriba-bg);
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.scriba-ai-variants button[aria-checked='true'] {
+  color: var(--scriba-bg);
+  background: var(--scriba-accent);
+  border-color: var(--scriba-accent);
+}
+.scriba-ai-variants button.scriba-ai-variant-failed {
+  text-decoration: line-through;
+}
+.scriba-ai-variants button:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}

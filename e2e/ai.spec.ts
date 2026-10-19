@@ -120,3 +120,33 @@ test('the menu closes with Escape and gives the focus back', async ({ page }) =>
   await expect(menu(page)).toBeHidden()
   await expect(editor(page)).toBeFocused()
 })
+
+test('several versions: choose one with the arrows, Accept keeps it, one undo step', async ({
+  page,
+}) => {
+  await page.keyboard.type('testo da riscrivere')
+  await page.keyboard.press('Shift+Home')
+  await page.keyboard.press('Control+j')
+  await menu(page).getByRole('button', { name: 'Riscrivi (3 proposte)' }).click()
+  await expect(bar(page).getByRole('status')).toHaveText(
+    'Versione 1 di 3: Risposta pronta: accettala o scartala',
+  )
+  const versions = bar(page).getByRole('radiogroup', { name: 'Versioni' })
+  await expect(versions.getByRole('radio')).toHaveCount(3)
+  expect(await html(page)).toBe('<p>Versione formale</p>')
+  await versions.getByRole('radio', { name: 'Versione 1 di 3' }).focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(versions.getByRole('radio', { name: 'Versione 2 di 3' })).toBeFocused()
+  await expect(versions.getByRole('radio', { name: 'Versione 2 di 3' })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  )
+  expect(await html(page)).toBe('<p>Versione colloquiale</p>')
+  await page.keyboard.press('3')
+  expect(await html(page)).toBe('<p>Versione breve</p>')
+  await bar(page).getByRole('button', { name: 'Accetta' }).click()
+  await expect(bar(page)).toBeHidden()
+  expect(await html(page)).toBe('<p>Versione breve</p>')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe('<p>testo da riscrivere</p>')
+})
