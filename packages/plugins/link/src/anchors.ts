@@ -1,4 +1,11 @@
-import type { Command, EditorState, HTMLSpec, Node, NodeSpec } from '@scriba/core'
+import {
+  withAttr,
+  type Command,
+  type EditorState,
+  type HTMLSpec,
+  type Node,
+  type NodeSpec,
+} from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import { openDialog, type ToolbarButton } from '@scriba/ui'
 import type { EditorView } from '@scriba/view'
@@ -54,20 +61,8 @@ export function withAnchors<N extends Record<string, NodeSpec>>(
       ...(toHTML
         ? {
             toHTML: (node: Node): HTMLSpec => {
-              const html = toHTML(node)
               const anchor = node.attrs['anchor'] as string | null
-              if (!anchor || typeof html === 'string') return html
-              const [tag, ...rest] = html as readonly unknown[]
-              const first = rest[0]
-              const id = `${ANCHOR_PREFIX}${anchor}`
-              if (
-                first !== undefined &&
-                first !== 0 &&
-                typeof first === 'object' &&
-                !Array.isArray(first)
-              )
-                return [tag, { ...(first as object), id }, ...rest.slice(1)] as unknown as HTMLSpec
-              return [tag, { id }, ...rest] as unknown as HTMLSpec
+              return withAttr(toHTML(node), 'id', anchor ? `${ANCHOR_PREFIX}${anchor}` : null)
             },
           }
         : {}),

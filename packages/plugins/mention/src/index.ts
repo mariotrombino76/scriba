@@ -1,14 +1,14 @@
-import type { Command, KeyBindings, Plugin } from '@scriba/core'
-import type { EditorView } from '@scriba/view'
+import type { KeyBindings, Plugin } from '@scriba/core'
 import type { MentionMenuOptions } from './menu.js'
 import {
-  chooseMention,
-  closeMention,
-  getMentionState,
-  isLoading,
+  canOpenMention,
+  cleanResults,
+  isMentionQuery,
+  mentionInsert,
   mentionKey,
-  mentionPlugin,
+  type MentionItem,
 } from './state.js'
+import { createSuggestion, type Suggestion } from './suggest.js'
 
 export {
   mentionNodes,
@@ -30,6 +30,40 @@ export {
 } from './state.js'
 export type { MentionSearch, MentionMenuOptions } from './menu.js'
 
+export {
+  createSuggestion,
+  type SuggestConfig,
+  type SuggestItem,
+  type SuggestSearch,
+  type SuggestState,
+  type Suggestion,
+} from './suggest.js'
+
+/** The mention suggestion; created once per options object (the key is shared). */
+function mentionSuggestion(options: MentionMenuOptions): Suggestion<MentionItem> {
+  const { t } = options
+  return createSuggestion<MentionItem>({
+    name: 'mention',
+    key: mentionKey,
+    trigger: '@',
+    canOpen: canOpenMention,
+    isQuery: isMentionQuery,
+    clean: cleanResults,
+    insert: mentionInsert,
+    search: options.search,
+    texts: {
+      list: t('mention.label'),
+      loading: t('mention.loading'),
+      none: t('mention.none'),
+      error: t('mention.error'),
+    },
+    className: 'scriba-mention-menu',
+    ...(options.debounce !== undefined ? { debounce: options.debounce } : {}),
+    ...(options.maxResults !== undefined ? { maxResults: options.maxResults } : {}),
+    ...(options.timeout !== undefined ? { timeout: options.timeout } : {}),
+  })
+}
+
 /**
  * Mentions: "@" at the start of a line or after a space opens a list of
  * people found by your `search` callback; choosing one inserts a `mention`
@@ -37,7 +71,7 @@ export type { MentionSearch, MentionMenuOptions } from './menu.js'
  * types "@". Use with `mentionKeymap()` at a high priority.
  */
 export function mentions(options: MentionMenuOptions): Plugin[] {
-  return [mentionPlugin(options)]
+  return [mentionSuggestion(options).plugin]
 }
 
 /**
@@ -46,41 +80,6 @@ export function mentions(options: MentionMenuOptions): Plugin[] {
  * query that found no one, closes it so normal typing goes on.
  */
 export function mentionKeymap(): KeyBindings {
-  const move =
-    (dir: 1 | -1): Command =>
-    (state, dispatch) => {
-      const s = getMentionState(state)
-      if (!s.active || !s.results.length) return false
-      const n = s.results.length
-      dispatch?.(
-        state.tr.setMeta(mentionKey, { ...s, index: (Math.min(s.index, n - 1) + dir + n) % n }),
-      )
-      return true
-    }
-  const choose: Command = (state, dispatch, view) => {
-    const s = getMentionState(state)
-    if (!s.active || !s.results.length || !view) return false
-    if (dispatch)
-      chooseMention(view as EditorView, s.results[Math.min(s.index, s.results.length - 1)]!)
-    return true
-  }
-  const close: Command = (state, dispatch) => {
-    if (!getMentionState(state).active) return false
-    dispatch?.(closeMention(state.tr))
-    return true
-  }
-  const space: Command = (state, dispatch) => {
-    const s = getMentionState(state)
-    if (!s.active || (s.query && (isLoading(s) || s.results.length))) return false
-    dispatch?.(closeMention(state.tr))
-    return false // the space is typed as usual
-  }
-  return {
-    ArrowDown: move(1),
-    ArrowUp: move(-1),
-    Enter: choose,
-    Tab: choose,
-    Escape: close,
-    ' ': space,
-  }
+  // the keys only read the shared state: any options do
+  return mentionSuggestion({ search: () => Promise.resolve([]), t: (k) => k }).keymap()
 }

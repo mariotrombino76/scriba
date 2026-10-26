@@ -54,6 +54,12 @@ un errore per tutto ciò che lo schema rifiuta (tipi, attributi, URL, profondit�
 - **Media**: un `<iframe>` solo per i player dei servizi approvati (YouTube in privacy avanzata,
   Vimeo, Dailymotion, Spotify, Google Maps), sempre con `sandbox`; `<video>`/`<audio>` solo con
   indirizzo https o relativo, mai `autoplay`; nessun altro iframe, mai `srcdoc` (dettagli sotto).
+- **Classi**: solo quelle elencate da te (`withBlockClasses`, `classMarks`), formato
+  `[a-z][a-z0-9-]*`, mai `scriba-…`; tutte le altre vengono scartate.
+- **Id**: solo con prefissi fissi (`anchor-`, `fn-`, `fnref-`) e un nome o numero controllato,
+  contro il DOM clobbering.
+- **Campi di unione**: `data-merge-tag` solo con un nome `[a-z0-9_.]`; il testo dentro è sempre
+  ricostruito dal nome. `fillMergeTags` inserisce i valori come **testo**, mai come HTML.
 - **Sezioni comprimibili** (`<details>`): solo l'attributo `open`; `ontoggle` e ogni altro
   attributo vengono scartati.
 - **Ricerca con regex** in un Web Worker con limite di tempo: una regex catastrofica non blocca

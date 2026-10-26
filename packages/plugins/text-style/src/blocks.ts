@@ -10,6 +10,7 @@ import {
   type NodeSpec,
   type NodeType,
   type ParseRule,
+  withAttr,
 } from '@scriba/core'
 
 export type TextAlign = 'left' | 'center' | 'right' | 'justify'
@@ -40,16 +41,6 @@ function readLineHeight(el: DOMLikeElement): LineHeight | null {
  */
 function readDirection(el: DOMLikeElement): 'rtl' | null {
   return el.getAttribute('dir')?.toLowerCase() === 'rtl' ? 'rtl' : null
-}
-
-/** Adds an attribute to an HTML spec `[tag, attrs?, …]` (null: nothing added). */
-function withAttr(spec: HTMLSpec, name: string, value: string | null): HTMLSpec {
-  if (value === null || typeof spec === 'string') return spec
-  const [tag, ...rest] = spec as readonly unknown[]
-  const first = rest[0]
-  if (first !== undefined && first !== 0 && typeof first === 'object' && !Array.isArray(first))
-    return [tag, { ...(first as object), [name]: value }, ...rest.slice(1)] as unknown as HTMLSpec
-  return [tag, { [name]: value }, ...rest] as unknown as HTMLSpec
 }
 
 /** Reads indentation from margin-left/padding-left (Word, TinyMCE, Google Docs). */

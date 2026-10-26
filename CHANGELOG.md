@@ -206,6 +206,34 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     - Dialog unico Inserisci ▸ Media (`openMediaDialog`): accetta i link soliti (youtube.com/watch,
       youtu.be, vimeo.com, dai.ly, open.spotify.com), il codice «Incorpora» di Google Maps,
       l'indirizzo di un file, oppure carica un file con la tua funzione `upload`.
+  - `@scriba/plugin-statusbar` (nuovo): barra di stato come quella di TinyMCE: percorso
+    dell'elemento (`createElementPath`, un pulsante per blocco che lo seleziona) e maniglia di
+    ridimensionamento (`createResizeHandle`: trascinamento, frecce, Esc per l'altezza automatica;
+    altezza impostata via CSSOM).
+  - `@scriba/plugin-save` (nuovo): pulsante Salva e Ctrl/Cmd+S come il plugin save di TinyMCE
+    (`savePlugin`, `saveKeymap`, `saveItem`): chiama la tua funzione, attivo solo con modifiche
+    non salvate, mai due salvataggi insieme; un errore lascia il documento "non salvato".
+  - `@scriba/plugin-text-style`: maiuscole e minuscole come Case Change di TinyMCE (`caseMenu`,
+    `changeCase`: minuscolo, MAIUSCOLO, Iniziali Maiuscole, Maiuscola a inizio frase), con le
+    regole della lingua, la formattazione mantenuta e un passo di annullamento ciascuno.
+  - `@scriba/plugin-text-style`: stili con le classi del sito come style_formats di TinyMCE
+    (`withBlockClasses`, `classMarks`, `classFormatsMenu`, `setBlockClass`): solo le classi
+    elencate dall'integratore (approvato il 2026-10-26), una per blocco o per testo.
+  - `@scriba/plugin-footnotes` (nuovo): note a piè di pagina come Footnotes di TinyMCE: richiami
+    `<sup><a href="#fn-N" id="fnref-N">`, elenco `<ol class="scriba-footnotes">` in fondo;
+    numeri in ordine di lettura e note allineate in automatico (anche dopo incolla, annulla,
+    collaborazione), Ctrl+Alt+F, vai alla nota e ritorno.
+  - `@scriba/plugin-toc` (nuovo): indice dei contenuti come Table of Contents di TinyMCE
+    (`<ol class="scriba-toc">` di link alle ancore dei titoli), aggiornato con i titoli; i titoli
+    senza ancora la ricevono, quelle esistenti non cambiano.
+  - `@scriba/plugin-merge-tags` (nuovo): campi di unione come Merge Tags di TinyMCE
+    (`<span data-merge-tag="nome">{{nome}}</span>`): menu, suggerimenti dopo `{{`,
+    `fillMergeTags` per l'unione (valori come testo), `mergeTagsIn`.
+  - `@scriba/plugin-mention`: il menu di suggerimenti è ora un motore generico
+    (`createSuggestion`), usato da `@` e da `{{`; API delle menzioni invariata.
+  - `@scriba/core`: `withAttr` e `withClass` per decorare l'output di altri nodi (prima copiati in
+    più plugin); il parser, quando il nodo di una regola non può stare in quel punto, prova la
+    regola successiva (niente testo perso).
   - `@scriba/core`: il parser accetta `<iframe>`, `<video>` e `<audio>` solo come nodo foglia di
     uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
     `media` (solo https o relativo); il serializzatore non scrive mai `srcdoc` né `autoplay` e

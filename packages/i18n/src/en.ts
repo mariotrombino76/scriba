@@ -438,6 +438,13 @@ export const en = {
   'embed.cancel': 'Cancel',
   'embed.invalid':
     'Address not recognized: use a YouTube, Vimeo, Dailymotion or Spotify link, or the Google Maps code',
+  'toc.insert': 'Table of contents',
+  'mergeTag.menu': 'Merge tag',
+  'mergeTag.list': 'Merge tags',
+  'mergeTag.none': 'No tags',
+  'footnote.insert': 'Footnote',
+  'footnote.goTo': 'Go to the note or back to the text',
+  'classes.menu': 'Styles',
   'case.menu': 'Letter case',
   'case.lower': 'lowercase',
   'case.upper': 'UPPERCASE',

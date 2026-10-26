@@ -72,12 +72,21 @@ import {
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
 import {
+  anchorToolbarItem,
   autolink,
   linkContextMenu,
   linkKeymap,
   linkMarks,
   linkToolbarItems,
+  withAnchors,
 } from '@scriba/plugin-link'
+import {
+  footnoteNodes,
+  footnotes,
+  footnotesKeymap,
+  footnoteToolbarItem,
+} from '@scriba/plugin-footnotes'
+import { tableOfContents, tocNodes, tocToolbarItem } from '@scriba/plugin-toc'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { markdownShortcuts } from '@scriba/plugin-markdown'
 import { pasteClean } from '@scriba/plugin-paste-clean'
@@ -140,18 +149,22 @@ export interface ScribaEditorHandle {
 
 function fullSchema(): Schema {
   return new Schema({
-    nodes: withBlockStyles({
-      ...basicSchemaSpec.nodes,
-      ...blockquoteNodes,
-      ...listNodes,
-      ...codeBlockNodes,
-      ...detailsNodes,
-      ...embedNodes,
-      ...mediaNodes,
-      ...imageNodes,
-      ...hrNodes,
-      ...tableNodes,
-    }),
+    nodes: withAnchors(
+      withBlockStyles({
+        ...basicSchemaSpec.nodes,
+        ...blockquoteNodes,
+        ...listNodes,
+        ...codeBlockNodes,
+        ...detailsNodes,
+        ...embedNodes,
+        ...mediaNodes,
+        ...imageNodes,
+        ...hrNodes,
+        ...tableNodes,
+        ...footnoteNodes,
+        ...tocNodes,
+      }),
+    ),
     marks: { ...linkMarks, ...basicSchemaSpec.marks, ...textStyleMarks },
   })
 }
@@ -191,6 +204,9 @@ export function createEditor(
         keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
         keymap(imageKeymap(t, images), { priority: 70 }),
         keymap(detailsKeymap(), { priority: 70 }),
+        keymap(footnotesKeymap(schema as Schema), { priority: 70 }),
+        footnotes(),
+        tableOfContents(),
         keymap(embedKeymap(t), { priority: 70 }),
         ...embedPlugins(t),
         detailsAutoOpen(),
@@ -267,6 +283,9 @@ export function createEditor(
             embedToolbarItem(t),
             ...tableToolbarItems(schema, t),
             ...hrToolbarItems(schema),
+            footnoteToolbarItem(schema),
+            tocToolbarItem(schema),
+            anchorToolbarItem(t),
             detailsToolbarItem(schema),
             charmapToolbarItem(t),
           ],

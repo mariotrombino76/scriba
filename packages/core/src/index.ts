@@ -138,5 +138,6 @@ export {
   type StyleDecls,
 } from './html/css.js'
 export { sanitizeUrl, DEFAULT_MAX_DATA_IMAGE_BYTES, type UrlRule } from './html/url.js'
+export { withAttr, withClass } from './html/spec.js'
 export { styleValue, isBoldWeight, STYLE_DATA_ATTR } from './html/style.js'
 export { parseHTML, serializeHTML } from './html/index.js'

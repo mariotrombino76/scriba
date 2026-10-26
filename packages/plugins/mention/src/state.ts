@@ -1,7 +1,7 @@
-import { CLOSE_HISTORY, Plugin, PluginKey, type EditorState, type Transaction } from '@scriba/core'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
-import { mentionMenuView, type MentionMenuOptions } from './menu.js'
+import { CLOSE_HISTORY, PluginKey, type EditorState, type Transaction } from '@scriba/core'
+import type { EditorView } from '@scriba/view'
 import { isMentionId, isMentionLabel, MAX_LABEL_LENGTH } from './nodes.js'
+import { isLoading as loading, type SuggestState } from './suggest.js'
 
 /** A person found by your `search` callback. */
 export interface MentionItem {
@@ -13,20 +13,7 @@ export interface MentionItem {
   detail?: string
 }
 
-export interface MentionState {
-  active: boolean
-  /** Position of the "@" that opened the list. */
-  from: number
-  query: string
-  /** Highlighted entry. */
-  index: number
-  /** Last results received (they stay visible while the next search runs). */
-  results: readonly MentionItem[]
-  /** Query of `results`; differs from `query` while a search is pending. */
-  resultsFor: string | null
-  /** The last search failed. */
-  error: boolean
-}
+export type MentionState = SuggestState<MentionItem>
 
 export const mentionKey = new PluginKey<MentionState>('mention')
 
@@ -39,16 +26,14 @@ const CLOSED: MentionState = {
   resultsFor: null,
   error: false,
 }
-export const MAX_QUERY = 50
+export { MAX_QUERY } from './suggest.js'
 
 export function getMentionState(state: EditorState): MentionState {
   return mentionKey.getState(state) ?? CLOSED
 }
 
 /** A search is still running for the current query. */
-export function isLoading(s: MentionState): boolean {
-  return s.active && s.resultsFor !== s.query
-}
+export const isLoading = (s: MentionState): boolean => loading(s)
 
 /**
  * Keeps only well-formed entries (the source is outside the editor): valid id
@@ -75,39 +60,35 @@ export function cleanResults(raw: unknown, max: number): MentionItem[] {
   return out
 }
 
-/** The "@query" text still there and the cursor right after it? Otherwise the list closes. */
-function stillValid(state: EditorState, s: MentionState): MentionState {
-  const { selection, doc } = state
-  if (!selection.empty || s.from >= doc.content.size) return CLOSED
-  const $from = doc.resolve(s.from)
-  const head = selection.head
-  if (head <= s.from || !$from.sameParent(selection.$head)) return CLOSED
-  if (doc.textBetween(s.from, s.from + 1) !== '@') return CLOSED
-  const query = doc.textBetween(s.from + 1, head, '\n', '\n')
-  // names have single spaces ("Anna Rossi"); a leading or double space ends the mention
-  if (/\n|^\s|\s\s/.test(query) || query.length > MAX_QUERY) return CLOSED
-  return { ...s, query, index: query === s.query ? s.index : 0 }
-}
-
-/** Opens on "@" typed at the start of a block or after a space (not in code, not in an e-mail). */
-function openOnAt(view: EditorView, from: number, to: number, text: string): boolean {
-  if (text !== '@' || from !== to) return false
-  const state = view.state
+/** Opens on "@" at the start of a block or after a space (not in an e-mail address). */
+export function canOpenMention(state: EditorState, from: number): boolean {
   const type = state.schema.nodes['mention']
   const $pos = state.doc.resolve(from)
-  if (!type || !$pos.parent.inlineContent || $pos.parent.type.spec.code) return false
-  if (!$pos.parent.type.canContain(type)) return false
-  if ($pos.marks().some((m) => m.type.name === 'code')) return false
+  if (!type || !$pos.parent.type.canContain(type)) return false
   const before = $pos.parent.textBetween(
     Math.max(0, $pos.parentOffset - 1),
     $pos.parentOffset,
     '',
     '￼',
   )
-  if (before && !/\s/.test(before)) return false
-  const tr = state.tr.insertText('@', from, to)
-  view.dispatch(tr.setMeta(mentionKey, { ...CLOSED, active: true, from, resultsFor: null }))
-  return true
+  return !before || /\s/.test(before)
+}
+
+/** Names have single spaces ("Anna Rossi"); a leading or double space ends the mention. */
+export const isMentionQuery = (query: string): boolean => !/^\s|\s\s/.test(query)
+
+/** "@query" replaced by the mention and a space (cursor after it). */
+export function mentionInsert(
+  state: EditorState,
+  from: number,
+  to: number,
+  item: MentionItem,
+): Transaction | null {
+  const type = state.schema.nodes['mention']
+  if (!type) return null
+  const marks = state.doc.resolve(from).marks()
+  const node = type.create({ id: item.id, label: item.label }, null, marks)
+  return state.tr.replaceWith(from, to, [node, state.schema.text(' ', marks)])
 }
 
 export function closeMention(tr: Transaction): Transaction {
@@ -117,35 +98,11 @@ export function closeMention(tr: Transaction): Transaction {
 /** Replaces "@query" with the mention and a space, cursor after it. */
 export function chooseMention(view: EditorView, item: MentionItem): boolean {
   const s = getMentionState(view.state)
-  const type = view.state.schema.nodes['mention']
-  if (!s.active || !type) return false
-  const { schema } = view.state
-  const head = view.state.selection.head
-  const marks = view.state.doc.resolve(s.from).marks()
-  const node = type.create({ id: item.id, label: item.label }, null, marks)
-  const tr = view.state.tr.replaceWith(s.from, head, [node, schema.text(' ', marks)])
+  if (!s.active) return false
+  const tr = mentionInsert(view.state, s.from, view.state.selection.head, item)
+  if (!tr) return false
   // its own undo step: Ctrl+Z right after brings the typed "@query" back
   view.dispatch(closeMention(tr).setMeta(CLOSE_HISTORY, true).scrollIntoView())
   view.focus()
   return true
-}
-
-export function mentionPlugin(options: MentionMenuOptions): Plugin<MentionState> {
-  const props: ViewPluginProps = {
-    handleTextInput: openOnAt,
-    pluginView: (view) => mentionMenuView(view, options),
-  }
-  return new Plugin<MentionState>({
-    key: mentionKey,
-    state: {
-      init: () => CLOSED,
-      apply(tr, value, _old, state) {
-        const meta = tr.getMeta<MentionState>(mentionKey)
-        if (meta) return meta
-        if (!value.active || (!tr.docChanged && !tr.selectionSet)) return value
-        return stillValid(state, { ...value, from: tr.mapping.map(value.from, -1) })
-      },
-    },
-    props: { ...props },
-  })
 }

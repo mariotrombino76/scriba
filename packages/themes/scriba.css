@@ -1999,6 +1999,57 @@ hr.scriba-page-break {
   overflow-y: auto;
 }
 
+/* Footnotes (@scriba/plugin-footnotes) */
+:is(.scriba-editor, .scriba-preview) ol.scriba-footnotes {
+  margin: 2em 0 0;
+  padding: 0.75em 0 0 1.5em;
+  font-size: 0.9em;
+  border-top: 1px solid var(--scriba-border);
+}
+:is(.scriba-editor, .scriba-preview) sup > a[href^='#fn-'] {
+  padding: 0 0.1em;
+  text-decoration: none;
+}
+.scriba-editor sup:has(> a[href^='#fn-']).scriba-selected-node {
+  outline: 2px solid var(--scriba-accent);
+  border-radius: 2px;
+}
+
+/* Merge tags (@scriba/plugin-merge-tags) */
+.scriba-editor span[data-merge-tag] {
+  padding: 0 0.3em;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 0.9em;
+  color: var(--scriba-accent);
+  background: var(--scriba-accent-bg);
+  border-radius: 4px;
+}
+.scriba-editor span[data-merge-tag].scriba-selected-node {
+  outline: 2px solid var(--scriba-accent);
+}
+
+/* Table of contents (@scriba/plugin-toc) */
+:is(.scriba-editor, .scriba-preview) ol.scriba-toc,
+:is(.scriba-editor, .scriba-preview) ol.scriba-toc ol {
+  list-style: none;
+}
+:is(.scriba-editor, .scriba-preview) ol.scriba-toc {
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  background: var(--scriba-code-bg);
+  border-radius: var(--scriba-radius);
+}
+:is(.scriba-editor, .scriba-preview) ol.scriba-toc ol {
+  padding-left: 1.25em;
+}
+.scriba-editor ol.scriba-toc:empty::before {
+  content: '—';
+  color: var(--scriba-muted);
+}
+.scriba-editor ol.scriba-toc.scriba-selected-node {
+  outline: 2px solid var(--scriba-accent);
+}
+
 /* AI: choosing among several versions */
 .scriba-ai-variants {
   display: inline-flex;

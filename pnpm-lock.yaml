@@ -110,6 +110,9 @@ importers:
       '@scriba/plugin-find-replace':
         specifier: workspace:*
         version: link:../plugins/find-replace
+      '@scriba/plugin-footnotes':
+        specifier: workspace:*
+        version: link:../plugins/footnotes
       '@scriba/plugin-fullscreen':
         specifier: workspace:*
         version: link:../plugins/fullscreen
@@ -140,6 +143,9 @@ importers:
       '@scriba/plugin-text-style':
         specifier: workspace:*
         version: link:../plugins/text-style
+      '@scriba/plugin-toc':
+        specifier: workspace:*
+        version: link:../plugins/toc
       '@scriba/ui':
         specifier: workspace:*
         version: link:../ui
@@ -444,6 +450,21 @@ importers:
         specifier: workspace:*
         version: link:../../view
 
+  packages/plugins/footnotes:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
   packages/plugins/fullscreen:
     dependencies:
       '@scriba/core':
@@ -561,6 +582,24 @@ importers:
       '@scriba/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
+
+  packages/plugins/merge-tags:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/plugin-mention':
+        specifier: workspace:*
+        version: link:../mention
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
 
   packages/plugins/paste-clean:
     dependencies:
@@ -702,6 +741,24 @@ importers:
       '@scriba/ui':
         specifier: workspace:*
         version: link:../../ui
+
+  packages/plugins/toc:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/plugin-link':
+        specifier: workspace:*
+        version: link:../link
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
 
   packages/plugins/visual-aids:
     dependencies:

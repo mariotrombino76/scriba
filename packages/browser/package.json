@@ -35,6 +35,7 @@
     "@scriba/plugin-details": "workspace:*",
     "@scriba/plugin-embed": "workspace:*",
     "@scriba/plugin-find-replace": "workspace:*",
+    "@scriba/plugin-footnotes": "workspace:*",
     "@scriba/plugin-fullscreen": "workspace:*",
     "@scriba/plugin-hr": "workspace:*",
     "@scriba/plugin-image": "workspace:*",
@@ -45,6 +46,7 @@
     "@scriba/plugin-source": "workspace:*",
     "@scriba/plugin-table": "workspace:*",
     "@scriba/plugin-text-style": "workspace:*",
+    "@scriba/plugin-toc": "workspace:*",
     "@scriba/ui": "workspace:*",
     "@scriba/view": "workspace:*"
   },

@@ -31,6 +31,7 @@ import { changeCase, LETTER_CASES } from './case.js'
 export * from './blocks.js'
 export * from './marks.js'
 export * from './case.js'
+export * from './classes.js'
 
 type MessageKey = Parameters<Translate>[0]
 

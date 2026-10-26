@@ -193,3 +193,19 @@ kbd {
   background: var(--bg);
   color: var(--text);
 }
+
+/* The site's own classes offered in Format ▸ Styles (the integrator styles them) */
+.nota-margine {
+  padding-left: 0.75em;
+  border-left: 3px solid #8a6d00;
+  color: #5c4a00;
+  font-style: italic;
+}
+.avviso {
+  padding: 0.5em 0.75em;
+  background: #fff4d6;
+  border-radius: 6px;
+}
+.evidenza {
+  background: linear-gradient(transparent 55%, #ffe58a 55%);
+}

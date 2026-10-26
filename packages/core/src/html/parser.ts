@@ -100,8 +100,13 @@ export class HTMLParser {
   }
 
   /** @internal */
-  matchNode(tag: string, el: DOMLikeElement): { type: NodeType; attrs: Attrs } | null {
+  matchNode(
+    tag: string,
+    el: DOMLikeElement,
+    fits: (type: NodeType) => boolean = () => true,
+  ): { type: NodeType; attrs: Attrs } | null {
     for (const { type, rule } of this.nodeRules.get(tag) ?? []) {
+      if (!fits(type)) continue
       const attrs = rule.getAttrs ? rule.getAttrs(el) : null
       if (attrs === false) continue
       try {
@@ -189,7 +194,9 @@ class ParseRun {
       if (embed?.type.isLeaf && embed.type.isBlock) this.insertLeaf(embed.type, embed.attrs)
       return
     }
-    const match = this.parser.matchNode(tag, el)
+    // a rule whose node cannot be placed here gives way to the next one (e.g. a footnote's
+    // <li> inside an ordinary list is a list item, not lost content)
+    const match = this.parser.matchNode(tag, el, (type) => this.canPlace(type))
     if (match) {
       if (match.type.isLeaf) {
         // In code blocks, inline leaves (e.g. <br>) become their text equivalent.
@@ -214,6 +221,11 @@ class ParseRun {
     this.walk(el, depth)
     this.marks = saved
     if (block) this.closeAuto()
+  }
+
+  /** Whether a node of `type` can go somewhere in the open contexts (inline: always). */
+  private canPlace(type: NodeType): boolean {
+    return type.isInline || this.stack.some((ctx) => ctx.type.canContain(type))
   }
 
   /** Closes contexts until one can hold `type`; returns false when none can. */

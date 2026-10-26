@@ -44,6 +44,10 @@ import {
   alignmentMenu,
   directionItems,
   caseMenu,
+  classFormatsMenu,
+  classMarks,
+  withBlockClasses,
+  type ClassFormat,
   lineHeightMenu,
   colorItems,
   fontItems,
@@ -106,6 +110,16 @@ import {
   detailsToolbarItem,
 } from '@scriba/plugin-details'
 import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+import {
+  footnoteGoToItem,
+  footnoteNodes,
+  footnotes,
+  footnotesKeymap,
+  footnoteSlashItem,
+  footnoteToolbarItem,
+} from '@scriba/plugin-footnotes'
+import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba/plugin-merge-tags'
+import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba/plugin-toc'
 import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
 import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
 import {
@@ -205,30 +219,51 @@ const searchPeople: MentionSearch = (query, signal) =>
   })
 // File menu: open .docx/.html/.md/.txt, download, preview, print (all in the browser)
 const fileOptions: FileOptions = { t }
+// Styles (Format ▸ Styles): the classes this site styles; the same lists go to the server schema
+const BLOCK_CLASSES = ['nota-margine', 'avviso']
+const INLINE_CLASSES = ['evidenza']
+const classFormats: ClassFormat[] = [
+  { label: 'Nota a margine', class: 'nota-margine', kind: 'block' },
+  { label: 'Avviso', class: 'avviso', kind: 'block' },
+  { label: 'Evidenza', class: 'evidenza', kind: 'inline' },
+]
+// Merge tags (Insert ▸ Merge tag, or type "{{"): filled in later by the app
+const tags: MergeTag[] = [
+  { name: 'cliente.nome', label: 'Nome', group: 'Cliente' },
+  { name: 'cliente.email', label: 'E-mail', group: 'Cliente' },
+  { name: 'data_oggi', label: 'Data di oggi' },
+]
 const schema = new Schema({
   nodes: withBlockIds(
     withAnchors(
-      withBlockStyles({
-        ...basicSchemaSpec.nodes,
-        ...blockquoteNodes,
-        ...listNodes,
-        ...codeBlockNodes,
-        ...imageNodes,
-        ...mentionNodes,
-        ...taskNodes,
-        ...calloutNodes,
-        ...detailsNodes,
-        ...embedNodes,
-        ...mediaNodes,
-        ...hrNodes,
-        ...tableNodes,
-      }),
+      withBlockClasses(
+        withBlockStyles({
+          ...basicSchemaSpec.nodes,
+          ...blockquoteNodes,
+          ...listNodes,
+          ...codeBlockNodes,
+          ...imageNodes,
+          ...mentionNodes,
+          ...taskNodes,
+          ...calloutNodes,
+          ...detailsNodes,
+          ...embedNodes,
+          ...mediaNodes,
+          ...hrNodes,
+          ...tableNodes,
+          ...footnoteNodes,
+          ...mergeTagNodes,
+          ...tocNodes,
+        }),
+        BLOCK_CLASSES,
+      ),
     ),
   ),
   marks: {
     ...linkMarks,
     ...basicSchemaSpec.marks,
     ...textStyleMarks,
+    ...classMarks(INLINE_CLASSES),
     ...commentMarks,
     ...suggestionMarks,
   },
@@ -342,11 +377,14 @@ const aiOptions: AiOptions = {
 }
 
 // Slash menu: blocks and actions from the plugins in use.
+const mergeTagSuggest = mergeTags(tags, t)
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
   calloutSlashItem(schema),
   detailsSlashItem(schema),
+  footnoteSlashItem(schema),
+  tocSlashItem(schema),
   embedSlashItem(t, mediaOptions),
   ...hrSlashItems(schema),
   {
@@ -476,6 +514,8 @@ const state = EditorState.create({
     keymap(bubbleKeymap(), { priority: 80, readOnly: true }),
     keymap(slashKeymap(slashItems, t), { priority: 110 }),
     keymap(mentionKeymap(), { priority: 110 }),
+    ...mergeTagSuggest.plugins,
+    keymap(mergeTagSuggest.keymap(), { priority: 110 }),
     ...markdownShortcuts(schema),
     autosave(draftOptions),
     autolink(schema.marks['link']!),
@@ -485,6 +525,9 @@ const state = EditorState.create({
     keymap(imageKeymap(t, images), { priority: 70 }),
     keymap(taskKeymap(), { priority: 70 }),
     keymap(detailsKeymap(), { priority: 70 }),
+    keymap(footnotesKeymap(schema), { priority: 70 }),
+    footnotes(),
+    tableOfContents(),
     keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
     ...embedPlugins(t, mediaOptions),
     detailsAutoOpen(),
@@ -657,6 +700,11 @@ menubar.menus = [
       calloutToolbarItem(schema),
       detailsToolbarItem(schema),
       detailsToggleItem(),
+      '|',
+      footnoteToolbarItem(schema),
+      footnoteGoToItem(),
+      tocToolbarItem(schema),
+      mergeTagMenu(tags),
       ...blockquoteToolbarItems(schema),
     ],
   },
@@ -669,6 +717,7 @@ menubar.menus = [
       ...(styleMenu ? [styleMenu] : []),
       ...fontItems(schema),
       alignmentMenu(),
+      classFormatsMenu(schema, classFormats),
       caseMenu('it'),
       lineHeightMenu(),
       ...directionItems(),

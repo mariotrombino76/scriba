@@ -441,6 +441,13 @@ export const it: Messages = {
   'embed.cancel': 'Annulla',
   'embed.invalid':
     'Indirizzo non riconosciuto: usa un link di YouTube, Vimeo, Dailymotion, Spotify o il codice di Google Maps',
+  'toc.insert': 'Indice dei contenuti',
+  'mergeTag.menu': 'Campo di unione',
+  'mergeTag.list': 'Campi di unione',
+  'mergeTag.none': 'Nessun campo',
+  'footnote.insert': 'Nota a piè di pagina',
+  'footnote.goTo': 'Vai alla nota o al testo',
+  'classes.menu': 'Stili',
   'case.menu': 'Maiuscole e minuscole',
   'case.lower': 'minuscolo',
   'case.upper': 'MAIUSCOLO',

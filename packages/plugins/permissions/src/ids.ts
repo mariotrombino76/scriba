@@ -1,4 +1,4 @@
-import type { HTMLAttrs, HTMLSpec, Node, NodeSpec, ParseRule } from '@scriba/core'
+import { withAttr, type HTMLSpec, type Node, type NodeSpec, type ParseRule } from '@scriba/core'
 
 /** Name of the block id attribute in the model. */
 export const BLOCK_ID = 'blockId'
@@ -24,17 +24,6 @@ export function isBlockId(value: unknown): value is string {
 export function blockIdOf(node: Node): string | null {
   const id = node.attrs[BLOCK_ID]
   return isBlockId(id) ? id : null
-}
-
-/** Adds `name="value"` to the outer element of a `toHTML` spec. */
-function withAttr(spec: HTMLSpec, name: string, value: string | null): HTMLSpec {
-  if (value === null || typeof spec === 'string') return spec
-  const [tag, ...rest] = spec
-  const first = rest[0]
-  if (first !== undefined && first !== 0 && typeof first === 'object' && !Array.isArray(first)) {
-    return [tag, { ...(first as HTMLAttrs), [name]: value }, ...rest.slice(1)]
-  }
-  return [tag, { [name]: value }, ...rest]
 }
 
 /**
