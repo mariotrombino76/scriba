@@ -41,6 +41,20 @@ import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquo
 import { charmapToolbarItem } from '@scriba/plugin-charmap'
 import { codeBlockKeymap, codeBlockNodes, codeBlockToolbarItems } from '@scriba/plugin-code-block'
 import {
+  detailsAutoOpen,
+  detailsKeymap,
+  detailsNodeView,
+  detailsNodes,
+  detailsToolbarItem,
+} from '@scriba/plugin-details'
+import {
+  embedKeymap,
+  embedNodeView,
+  embedNodes,
+  embedPlugins,
+  embedToolbarItem,
+} from '@scriba/plugin-embed'
+import {
   findReplaceKeymap,
   findReplacePlugins,
   findReplaceToolbarItem,
@@ -129,6 +143,8 @@ function fullSchema(): Schema {
       ...blockquoteNodes,
       ...listNodes,
       ...codeBlockNodes,
+      ...detailsNodes,
+      ...embedNodes,
       ...imageNodes,
       ...hrNodes,
       ...tableNodes,
@@ -171,6 +187,10 @@ export function createEditor(
         keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
         keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true }),
         keymap(imageKeymap(t, images), { priority: 70 }),
+        keymap(detailsKeymap(), { priority: 70 }),
+        keymap(embedKeymap(t), { priority: 70 }),
+        ...embedPlugins(t),
+        detailsAutoOpen(),
         keymap(codeBlockKeymap(), { priority: 60 }),
         keymap(tableKeymap(), { priority: 55 }),
         keymap(listKeymap(schema), { priority: 50 }),
@@ -197,6 +217,7 @@ export function createEditor(
     state: EditorState.create({ doc: parseContent(schema, options.content, format), plugins }),
     label: options.label ?? t('editor.label'),
     editable: () => editable,
+    ...(full ? { nodeViews: { details: detailsNodeView(t), embed: embedNodeView(t) } } : {}),
     dispatchTransaction(tr) {
       view.updateState(view.state.apply(tr))
       if (tr.docChanged && tr.getMeta('scribaSetContent') !== true)
@@ -231,8 +252,10 @@ export function createEditor(
           [
             ...linkToolbarItems(schema, t),
             ...imageToolbarItems(schema, t, images),
+            embedToolbarItem(t),
             ...tableToolbarItems(schema, t),
             ...hrToolbarItems(schema),
+            detailsToolbarItem(schema),
             charmapToolbarItem(t),
           ],
           2,

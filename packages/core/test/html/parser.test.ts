@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { parseHTML, type DOMLike } from '../../src/index.js'
+import { Schema, parseHTML, serializeHTML, type DOMLike } from '../../src/index.js'
 import { b, bi, br, doc, h, i, img, p, pre, quote, schema } from '../helpers/schema.js'
-import { clean, fromHTML } from '../helpers/html.js'
+import { clean, dom, fromHTML } from '../helpers/html.js'
 
 const same = (html: string, expected: ReturnType<typeof doc>) => {
   const parsed = fromHTML(html)
@@ -93,5 +93,40 @@ describe('HTMLParser', () => {
     const html =
       '<h2>T</h2><p>a<strong><em>b</em>c</strong><br>d</p><blockquote><p>q</p></blockquote>'
     expect(clean(html)).toBe(html)
+  })
+
+  describe('content that must start with a title ("title block+")', () => {
+    const titled = new Schema({
+      nodes: {
+        doc: { content: 'block+' },
+        paragraph: {
+          group: 'block',
+          content: 'inline*',
+          parseHTML: [{ tag: 'p' }],
+          toHTML: () => ['p', 0],
+        },
+        box: {
+          group: 'block',
+          content: 'box_title block+',
+          parseHTML: [{ tag: 'section' }],
+          toHTML: () => ['section', 0],
+        },
+        box_title: { content: 'inline*', parseHTML: [{ tag: 'h6' }], toHTML: () => ['h6', 0] },
+        text: { group: 'inline' },
+      },
+    })
+    const parse = (html: string) => serializeHTML(parseHTML(titled, dom(html)))
+
+    it('loose text after the title goes into a paragraph, not a second title', () => {
+      expect(parse('<section><h6>T</h6>testo</section>')).toBe(
+        '<section><h6>T</h6><p>testo</p></section>',
+      )
+    })
+
+    it('a missing title is created empty, the content is kept', () => {
+      expect(parse('<section><p>a</p><p>b</p></section>')).toBe(
+        '<section><h6></h6><p>a</p><p>b</p></section>',
+      )
+    })
   })
 })

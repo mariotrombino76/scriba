@@ -51,6 +51,10 @@ un errore per tutto ciò che lo schema rifiuta (tipi, attributi, URL, profondit�
 - **Attributi**: solo quelli dichiarati nello schema; tutti gli `on*` scartati; `id` gestiti per
   evitare il DOM clobbering.
 - **Link in nuova scheda** con `rel="noopener noreferrer"`.
+- **Video**: un `<iframe>` solo per i player di YouTube (privacy avanzata) e Vimeo, sempre con
+  `sandbox`; nessun altro iframe, mai `srcdoc` (dettagli sotto, in CSP).
+- **Sezioni comprimibili** (`<details>`): solo l'attributo `open`; `ontoggle` e ogni altro
+  attributo vengono scartati.
 - **Ricerca con regex** in un Web Worker con limite di tempo: una regex catastrofica non blocca
   la pagina.
 
@@ -70,6 +74,22 @@ object-src 'none'; base-uri 'none'; require-trusted-types-for 'script'
 - Caricando lo script da un CDN, aggiungi la sua origine a `script-src` e usa `integrity` (SRI).
 
 I test end-to-end girano tutti con questa CSP attiva.
+
+### Video incorporati
+
+Con `@scriba/plugin-embed` l'HTML salvato può contenere un `<iframe>`, ma solo con l'indirizzo
+esatto del player di YouTube in modalità privacy avanzata (`www.youtube-nocookie.com/embed/…`)
+o di Vimeo (`player.vimeo.com/video/…`). L'editor ricostruisce sempre l'indirizzo dall'ID
+controllato e mette lui `sandbox="allow-scripts allow-same-origin allow-presentation"`,
+`referrerpolicy="strict-origin-when-cross-origin"` e `loading="lazy"`: tutto ciò che arriva con
+l'iframe (altri domini, `srcdoc`, `allow`, handler, il suo `sandbox`) viene scartato, anche da
+`sanitize-server`. Nell'editor il video è una scheda: chi scrive non contatta YouTube né Vimeo.
+
+Le pagine che **mostrano** l'HTML salvato devono consentire i due player nella CSP:
+
+```
+frame-src https://www.youtube-nocookie.com https://player.vimeo.com
+```
 
 ## Upload delle immagini
 

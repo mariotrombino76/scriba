@@ -182,3 +182,64 @@ test('Inserisci ▸ Ancora names the block; a link can point to it', async ({ pa
   await dialog.getByRole('button', { name: 'Annulla' }).click()
   await expect(dialog).toHaveCount(0)
 })
+
+test('Inserisci ▸ Fisarmonica: title, open/close, Enter into the content', async ({ page }) => {
+  await setHTML(page, '<p>Risposta</p>')
+  await editor(page).getByText('Risposta').click()
+  await page
+    .getByRole('menubar', { name: 'Menu' })
+    .getByRole('menuitem', { name: 'Inserisci' })
+    .click()
+  await page
+    .getByRole('menu', { name: 'Inserisci' })
+    .getByRole('menuitemcheckbox', { name: 'Fisarmonica' })
+    .click()
+  await page.keyboard.type('Domanda')
+  await expect
+    .poll(() => html(page))
+    .toBe('<details open=""><summary>Domanda</summary><p>Risposta</p></details>')
+
+  // the button closes it: the content is hidden, the title stays
+  const toggle = editor(page).getByRole('button', { name: 'Apri o chiudi la sezione' })
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(editor(page).getByText('Risposta')).toBeHidden()
+  await expect(editor(page).getByText('Domanda')).toBeVisible()
+  await expect
+    .poll(() => html(page))
+    .toBe('<details><summary>Domanda</summary><p>Risposta</p></details>')
+
+  // Enter at the end of the title opens it and writes before the content
+  await editor(page).getByText('Domanda').click()
+  await page.keyboard.press('End')
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('Sì')
+  await expect
+    .poll(() => html(page))
+    .toBe('<details open=""><summary>Domanda</summary><p>Sì</p><p>Risposta</p></details>')
+  await expect(editor(page).getByText('Risposta')).toBeVisible()
+
+  // from the keyboard: the menu entry closes it again
+  await page
+    .getByRole('menubar', { name: 'Menu' })
+    .getByRole('menuitem', { name: 'Inserisci' })
+    .click()
+  await page
+    .getByRole('menu', { name: 'Inserisci' })
+    .getByRole('menuitem', { name: 'Apri o chiudi la sezione' })
+    .click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('Fisarmonica: arrows skip the hidden content of a closed section', async ({ page }) => {
+  await setHTML(page, '<details><summary>Titolo</summary><p>Nascosto</p></details><p>dopo</p>')
+  await expect(editor(page).getByText('Nascosto')).toBeHidden()
+  await editor(page).getByText('Titolo').click()
+  await page.keyboard.press('End')
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.type('!')
+  await expect(editor(page).getByText('Nascosto')).toBeHidden()
+  await expect.poll(() => html(page)).toMatch(/<p>(!dopo|dopo!)<\/p>$/)
+  expect(await html(page)).toContain('<details><summary>Titolo</summary><p>Nascosto</p></details>')
+})

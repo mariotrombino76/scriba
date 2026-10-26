@@ -22,33 +22,42 @@ L'esempio completo, con tutti i plugin insieme, è `demo/main.ts` (`pnpm dev`).
 | `plugin-hr`         | Linea orizzontale e interruzione di pagina                                                                | `hrNodes`, `hrPlugins`, `hrToolbarItems`, `hrSlashItems`                                                                                              |
 | `plugin-callout`    | Riquadri (info, suggerimento, avviso, pericolo)                                                           | `calloutNodes`, `toggleCallout`, `calloutToolbarItem`, `calloutSlashItem`                                                                             |
 | `plugin-task`       | Attività con casella e scadenza (vista Vue)                                                               | `taskNodes`, `insertTask`, `taskKeymap`, `taskToolbarItem`                                                                                            |
+| `plugin-details`    | Sezioni comprimibili (fisarmonica, `<details>`): titolo, apri/chiudi                                      | `detailsNodes`, `detailsNodeView`, `detailsKeymap`, `detailsAutoOpen`, `detailsToolbarItem`, `detailsSlashItem`                                       |
 | `plugin-markdown`   | Scorciatoie Markdown mentre scrivi, import ed export                                                      | `markdownShortcuts`, `parseMarkdown`, `serializeMarkdown`                                                                                             |
 | `plugin-datetime`   | Inserisci data e ora                                                                                      | `dateTimeMenu`, `formatDateTime`                                                                                                                      |
 | `plugin-charmap`    | Caratteri speciali ed emoji                                                                               | `charmapToolbarItem`, `openCharmapDialog`                                                                                                             |
 
+La fisarmonica nell'editor si mostra con la sua vista: passa
+`nodeViews: { details: detailsNodeView(t) }` all'editor (lo script da CDN lo fa da solo) e
+aggiungi `keymap(detailsKeymap(), { priority: 70 })` e `detailsAutoOpen()` ai plugin. Senza la
+vista il browser userebbe il `<details>` nativo, che si apre e si chiude da solo fuori dal
+documento.
+
 ## Contenuti
 
-| Pacchetto            | A cosa serve                                                                               | Esportazioni principali                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `plugin-link`        | Link con dialog accessibile; apri, rimuovi; link automatici mentre scrivi; ancore          | `linkMarks`, `linkKeymap`, `linkToolbarItems`, `linkContextMenu`, `autolink`, `withAnchors`, `anchorToolbarItem` |
-| `plugin-image`       | Immagini: upload tramite tua funzione, trascina e incolla, ridimensiona, testo alternativo | `imageNodes`, `imagePlugins`, `imageKeymap`, `imageToolbarItems`, `imageContextMenu`                             |
-| `plugin-table`       | Tabelle: righe/colonne, unisci/dividi, intestazioni, larghezze, selezione di celle         | `tableNodes`, `tablePlugins`, `tableKeymap`, `tableToolbarItems`, `tableContextMenu`                             |
-| `plugin-mention`     | Menzioni `@persona` con ricerca asincrona                                                  | `mentionNodes`, `mentions`, `mentionKeymap`                                                                      |
-| `plugin-paste-clean` | Pulisce l'incolla da Word, Google Docs, pagine web                                         | `pasteClean`                                                                                                     |
+| Pacchetto            | A cosa serve                                                                                                    | Esportazioni principali                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `plugin-link`        | Link con dialog accessibile; apri, rimuovi; link automatici mentre scrivi; ancore                               | `linkMarks`, `linkKeymap`, `linkToolbarItems`, `linkContextMenu`, `autolink`, `withAnchors`, `anchorToolbarItem` |
+| `plugin-image`       | Immagini: upload tramite tua funzione, trascina e incolla, ridimensiona, testo alternativo                      | `imageNodes`, `imagePlugins`, `imageKeymap`, `imageToolbarItems`, `imageContextMenu`                             |
+| `plugin-embed`       | Video di YouTube (privacy avanzata) e Vimeo: whitelist dei domini, iframe con `sandbox`; nell'editor una scheda | `embedNodes`, `embedNodeView`, `embedPlugins`, `embedKeymap`, `embedToolbarItem`, `embedSlashItem`               |
+| `plugin-table`       | Tabelle: righe/colonne, unisci/dividi, intestazioni, larghezze, selezione di celle                              | `tableNodes`, `tablePlugins`, `tableKeymap`, `tableToolbarItems`, `tableContextMenu`                             |
+| `plugin-mention`     | Menzioni `@persona` con ricerca asincrona                                                                       | `mentionNodes`, `mentions`, `mentionKeymap`                                                                      |
+| `plugin-paste-clean` | Pulisce l'incolla da Word, Google Docs, pagine web                                                              | `pasteClean`                                                                                                     |
 
 ## Strumenti e interfaccia
 
-| Pacchetto             | A cosa serve                                                                 | Esportazioni principali                                             |
-| --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `plugin-slash`        | Menu "/" di blocchi e azioni                                                 | `slashCommands`, `slashKeymap`, `basicSlashItems`                   |
-| `plugin-bubble`       | Barra di formattazione sopra il testo selezionato                            | `bubbleMenu`, `bubbleKeymap`                                        |
-| `plugin-find-replace` | Trova e sostituisci, anche con regex (in un Web Worker interrompibile)       | `findReplacePlugins`, `findReplaceKeymap`, `findReplaceToolbarItem` |
-| `plugin-source`       | Vista del sorgente HTML (ciò che modifichi ripassa dallo schema)             | `sourceToolbarItem`, `openSourceDialog`                             |
-| `plugin-fullscreen`   | Schermo intero                                                               | `Fullscreen`, `fullscreenKeymap`, `fullscreenToolbarItem`           |
-| `plugin-word-count`   | Conteggio parole e caratteri                                                 | `createWordCountStatus`, `openWordCountDialog`                      |
-| `plugin-file`         | Menu File: nuovo, apri (.docx, .html, .md, .txt), scarica, anteprima, stampa | `filePlugin`, `fileKeymap`, `fileMenu`                              |
-| `plugin-help`         | Menu Aiuto con le scorciatoie (Alt+0)                                        | `helpItem`, `helpKeymap`, `shortcutsFromItems`                      |
-| `plugin-autosave`     | Bozza salvata nel browser mentre si scrive, "Ripristina l'ultima bozza"      | `autosave`, `restoreDraftItem`, `restoreDraft`, `clearDraft`        |
+| Pacchetto             | A cosa serve                                                                 | Esportazioni principali                                                    |
+| --------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `plugin-slash`        | Menu "/" di blocchi e azioni                                                 | `slashCommands`, `slashKeymap`, `basicSlashItems`                          |
+| `plugin-bubble`       | Barra di formattazione sopra il testo selezionato                            | `bubbleMenu`, `bubbleKeymap`                                               |
+| `plugin-find-replace` | Trova e sostituisci, anche con regex (in un Web Worker interrompibile)       | `findReplacePlugins`, `findReplaceKeymap`, `findReplaceToolbarItem`        |
+| `plugin-source`       | Vista del sorgente HTML (ciò che modifichi ripassa dallo schema)             | `sourceToolbarItem`, `openSourceDialog`                                    |
+| `plugin-fullscreen`   | Schermo intero                                                               | `Fullscreen`, `fullscreenKeymap`, `fullscreenToolbarItem`                  |
+| `plugin-word-count`   | Conteggio parole e caratteri                                                 | `createWordCountStatus`, `openWordCountDialog`                             |
+| `plugin-file`         | Menu File: nuovo, apri (.docx, .html, .md, .txt), scarica, anteprima, stampa | `filePlugin`, `fileKeymap`, `fileMenu`                                     |
+| `plugin-help`         | Menu Aiuto con le scorciatoie (Alt+0)                                        | `helpItem`, `helpKeymap`, `shortcutsFromItems`                             |
+| `plugin-autosave`     | Bozza salvata nel browser mentre si scrive, "Ripristina l'ultima bozza"      | `autosave`, `restoreDraftItem`, `restoreDraft`, `clearDraft`               |
+| `plugin-visual-aids`  | Mostra blocchi e caratteri invisibili (solo nell'editor, l'HTML non cambia)  | `visualAids`, `visualAidsItems`, `toggleVisualBlocks`, `toggleVisualChars` |
 
 Dall'interfaccia (`@scriba/ui`): `<scriba-toolbar>`, `<scriba-menubar>`, `contextMenu(view, {
 sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `historyItems`,

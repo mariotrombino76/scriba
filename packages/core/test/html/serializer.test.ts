@@ -76,5 +76,13 @@ describe('serializeHTML', () => {
     expect(() => run(() => ['p', { style: 'color:red' }, 0])).toThrow(/style/)
     expect(() => run(() => ['p onclick=x', 0])).toThrow(/tag/)
     expect(run(() => ['a', { href: 'javascript:alert(1)' }, 0])).toBe('<a>x</a>')
+    // iframes: never srcdoc, always sandboxed, src through the URL whitelist
+    expect(() =>
+      run(() => ['iframe', { srcdoc: '<script>alert(1)</script>', sandbox: '' }]),
+    ).toThrow(/srcdoc/)
+    expect(() => run(() => ['iframe', { src: 'https://example.com/' }])).toThrow(/sandbox/)
+    expect(run(() => ['iframe', { src: 'javascript:alert(1)', sandbox: '' }])).toBe(
+      '<iframe sandbox=""></iframe>',
+    )
   })
 })

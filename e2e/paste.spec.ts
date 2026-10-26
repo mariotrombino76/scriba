@@ -85,3 +85,15 @@ test('multi-line plain text becomes paragraphs', async ({ page }) => {
   await paste(page, { 'text/plain': 'uno\ndue\n\ntre' })
   expect(await html(page)).toBe('<p>uno</p><p>due</p><p></p><p>tre</p>')
 })
+
+test('a pasted <details> keeps title and content, never its handlers', async ({ page }) => {
+  await editor(page).click()
+  await paste(page, {
+    'text/html':
+      '<details open ontoggle="window.__xss=1"><summary onclick="window.__xss=2">Domanda</summary>Risposta</details>',
+  })
+  await expect
+    .poll(() => html(page))
+    .toContain('<details open=""><summary>Domanda</summary><p>Risposta</p></details>')
+  expect(await page.evaluate(() => (window as unknown as { __xss?: number }).__xss)).toBeUndefined()
+})

@@ -1702,6 +1702,200 @@ hr.scriba-page-break {
   }
 }
 
+/* Collapsible sections (@scriba/plugin-details): editor node view, then the saved HTML */
+.scriba-details {
+  position: relative;
+  margin: 0.75em 0;
+  padding: 0.25em 0.75em 0.25em 2rem;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+}
+.scriba-details-toggle {
+  position: absolute;
+  top: 0.3em;
+  left: 0.35rem;
+  display: inline-flex;
+  padding: 2px;
+  color: var(--scriba-muted);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.scriba-details-toggle:hover {
+  color: var(--scriba-text);
+  background: var(--scriba-accent-bg);
+}
+.scriba-details-toggle svg {
+  transition: transform 0.15s;
+}
+.scriba-details[data-open] > .scriba-details-toggle svg {
+  transform: rotate(90deg);
+}
+.scriba-details-content > summary {
+  display: block;
+  font-weight: 600;
+  list-style: none;
+}
+.scriba-details:not([data-open]) > .scriba-details-content > :not(:first-child) {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scriba-details-toggle svg {
+    transition: none;
+  }
+}
+.scriba-preview details {
+  margin: 0.75em 0;
+  padding: 0.25em 0.75em;
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+}
+.scriba-preview summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+/* Editing aids (@scriba/plugin-visual-aids): only in the editor, never in the saved HTML */
+.scriba-editor.scriba-show-blocks
+  :is(
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    blockquote,
+    pre,
+    ul,
+    ol,
+    li,
+    table,
+    summary,
+    aside,
+    .scriba-details
+  ) {
+  position: relative;
+  outline: 1px dashed var(--scriba-muted);
+  outline-offset: 1px;
+}
+.scriba-editor.scriba-show-blocks
+  :is(p, h1, h2, h3, h4, h5, h6, blockquote, pre, ul, ol, li, table, summary, aside)::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 3px;
+  font:
+    600 9px/1.4 ui-monospace,
+    'SF Mono',
+    Consolas,
+    monospace;
+  color: var(--scriba-muted);
+  background: var(--scriba-bg);
+  pointer-events: none;
+  user-select: none;
+}
+.scriba-editor.scriba-show-blocks p::before {
+  content: 'P';
+}
+.scriba-editor.scriba-show-blocks h1::before {
+  content: 'H1';
+}
+.scriba-editor.scriba-show-blocks h2::before {
+  content: 'H2';
+}
+.scriba-editor.scriba-show-blocks h3::before {
+  content: 'H3';
+}
+.scriba-editor.scriba-show-blocks h4::before {
+  content: 'H4';
+}
+.scriba-editor.scriba-show-blocks h5::before {
+  content: 'H5';
+}
+.scriba-editor.scriba-show-blocks h6::before {
+  content: 'H6';
+}
+.scriba-editor.scriba-show-blocks blockquote::before {
+  content: 'BLOCKQUOTE';
+}
+.scriba-editor.scriba-show-blocks pre::before {
+  content: 'PRE';
+}
+.scriba-editor.scriba-show-blocks ul::before {
+  content: 'UL';
+}
+.scriba-editor.scriba-show-blocks ol::before {
+  content: 'OL';
+}
+.scriba-editor.scriba-show-blocks li::before {
+  content: 'LI';
+}
+.scriba-editor.scriba-show-blocks table::before {
+  content: 'TABLE';
+}
+.scriba-editor.scriba-show-blocks summary::before {
+  content: 'SUMMARY';
+}
+.scriba-editor.scriba-show-blocks aside::before {
+  content: 'ASIDE';
+}
+.scriba-editor .scriba-char-nbsp {
+  background: var(--scriba-accent-bg);
+  border-radius: 2px;
+  box-shadow: inset 0 -2px 0 var(--scriba-accent);
+}
+.scriba-editor .scriba-char-shy {
+  box-shadow: inset 2px 0 0 var(--scriba-accent);
+}
+
+/* Videos (@scriba/plugin-embed): a card in the editor, the player in the saved HTML */
+.scriba-editor .scriba-embed {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  margin: 0.75em 0;
+  padding: 1rem;
+  color: var(--scriba-text);
+  background: var(--scriba-accent-bg);
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.scriba-editor .scriba-embed svg {
+  flex: none;
+  color: var(--scriba-accent);
+}
+.scriba-embed-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.scriba-embed-text strong,
+.scriba-embed-address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scriba-embed-address {
+  color: var(--scriba-muted);
+  font-size: 0.8125rem;
+}
+.scriba-editor .scriba-embed.scriba-selected-node {
+  outline: 2px solid var(--scriba-accent);
+  outline-offset: 2px;
+}
+.scriba-dialog-row {
+  display: flex;
+  gap: 0.75rem;
+}
+.scriba-preview iframe {
+  max-width: 100%;
+  border: 0;
+}
+
 /* AI: choosing among several versions */
 .scriba-ai-variants {
   display: inline-flex;

@@ -64,6 +64,9 @@ Per comporre un editor su misura, lo stesso file espone anche i mattoni: `Scriba
   di salvarlo o mostrarlo: chiunque può inviare HTML al tuo server senza passare dall'editor.
 - Funziona con una CSP rigida (`script-src 'self'` più l'origine del CDN, niente
   `unsafe-inline` né `unsafe-eval`) e con `require-trusted-types-for 'script'` (policy `scriba`).
+- Video (Inserisci ▸ Video): solo YouTube in modalità privacy avanzata e Vimeo, in un `<iframe>`
+  con `sandbox`. Nell'editor appare una scheda; la pagina che mostra l'HTML salvato deve
+  consentire `frame-src https://www.youtube-nocookie.com https://player.vimeo.com`.
 
 ## Limiti dello script classico
 

@@ -25,6 +25,12 @@ const SKIP_TAGS = new Set([
   'caption', // read as plain text by the table rule (a table attribute), never as content
 ]) // prettier-ignore
 
+/**
+ * Dropped tags a schema may still take, only as a block leaf whose rule checks it
+ * (e.g. a video embed with a domain whitelist): their content is never read.
+ */
+const EMBED_TAGS = new Set(['iframe'])
+
 /** Unknown elements that still separate blocks (their inline content gets its own paragraph). */
 const BLOCK_TAGS = new Set([
   'address', 'article', 'aside', 'blockquote', 'dd', 'details', 'dialog', 'div', 'dl', 'dt',
@@ -177,7 +183,12 @@ class ParseRun {
 
   private addElement(el: DOMLikeElement, depth: number): void {
     const tag = el.nodeName.toLowerCase()
-    if (SKIP_TAGS.has(tag) || typeof el.getAttribute !== 'function') return
+    if (typeof el.getAttribute !== 'function') return
+    if (SKIP_TAGS.has(tag)) {
+      const embed = EMBED_TAGS.has(tag) ? this.parser.matchNode(tag, el) : null
+      if (embed?.type.isLeaf && embed.type.isBlock) this.insertLeaf(embed.type, embed.attrs)
+      return
+    }
     const match = this.parser.matchNode(tag, el)
     if (match) {
       if (match.type.isLeaf) {
@@ -232,10 +243,17 @@ class ParseRun {
     const top = this.top
     if (top.type.canContain(type)) return top
     if (top.type.inlineContent) return null
-    const textblock = [...top.type.contentExpr.allowedTypes()].find(
+    const expr = top.type.contentExpr
+    const candidates = [...expr.allowedTypes()].filter(
       (t) => t.isTextblock && t.canContain(type) && !t.hasRequiredAttrs(),
     )
+    let textblock = candidates[0]
     if (!textblock) return null
+    // e.g. "title block+": text after the title goes into a paragraph, not a second title
+    if (candidates.length > 1 && !expr.repeated) {
+      const state = expr.matchFragment(Fragment.fromArray(top.content))
+      textblock = (state && candidates.find((t) => expr.matchType(state, t))) || textblock
+    }
     const ctx = this.context(textblock, null, true)
     this.stack.push(ctx)
     return ctx
@@ -287,6 +305,24 @@ class ParseRun {
     return Fragment.fromArray(kept)
   }
 
+  /** `content` after the nodes its type requires first (e.g. an empty title), when it lacks them. */
+  private fillStart(type: NodeType, content: readonly Node[]): Fragment | null {
+    const first = content[0]
+    if (!first) return null
+    const expr = type.contentExpr
+    const lead: Node[] = []
+    let state = expr.start
+    for (let i = 0; i < 4 && !expr.matchType(state, first.type); i++) {
+      const needed = expr.defaultType(state)
+      const node = needed?.createAndFill()
+      const next = needed && node && expr.matchType(state, needed)
+      if (!node || !next) return null
+      lead.push(node)
+      state = next
+    }
+    return Fragment.fromArray([...lead, ...content])
+  }
+
   private close(): void {
     const ctx = this.stack.pop()!
     if (ctx.type.inlineContent && !ctx.type.spec.code) trimTrailingSpace(ctx.content)
@@ -294,6 +330,7 @@ class ParseRun {
     this.count()
     const node =
       ctx.type.createAndFill(ctx.attrs, Fragment.fromArray(ctx.content)) ??
+      ctx.type.createAndFill(ctx.attrs, this.fillStart(ctx.type, ctx.content)) ??
       ctx.type.createAndFill(ctx.attrs, this.fitting(ctx.type, ctx.content))
     if (node) this.top.content.push(node)
   }

@@ -152,6 +152,25 @@ const ICONS = {
     ['path', 'm6 6 12 12'],
   ],
   hr: [['path', 'M4 12h16']],
+  video: [
+    ['path', 'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+    ['path', 'm10 9 5 3-5 3z'],
+  ],
+  blocks: [
+    ['path', 'M4 4h16v6H4z'],
+    ['path', 'M4 14h16v6H4z'],
+  ],
+  pilcrow: [
+    ['path', 'M13 4v16'],
+    ['path', 'M17 4v16'],
+    ['path', 'M19 4H9.5a4.5 4.5 0 0 0 0 9H13'],
+  ],
+  details: [
+    ['path', 'm4 6 3 3 3-3'],
+    ['path', 'M13 7h7'],
+    ['path', 'M7 14h13'],
+    ['path', 'M7 18h13'],
+  ],
   anchor: [
     ['circle', 12, 5, 3],
     ['path', 'M12 22V8'],

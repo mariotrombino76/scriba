@@ -15,6 +15,7 @@ const IMAGE_ATTRS = new Set(['src'])
 const FORBIDDEN_ATTRS = new Set([
   'style',
   'srcset',
+  'srcdoc',
   'action',
   'formaction',
   'xlink:href',
@@ -114,6 +115,9 @@ export function safeOutputAttrs(tag: string, attrs: HTMLAttrs): [string, string]
     }
     out.push([lower, value])
   }
+  // embeds (e.g. videos) are always sandboxed, whatever the spec forgot
+  if (tag === 'iframe' && !out.some(([name]) => name === 'sandbox'))
+    throw new RangeError('An <iframe> needs a sandbox attribute')
   return out
 }
 

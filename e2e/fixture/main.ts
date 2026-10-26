@@ -95,6 +95,24 @@ import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scri
 import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
 import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
 import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+import {
+  detailsAutoOpen,
+  detailsKeymap,
+  detailsNodeView,
+  detailsNodes,
+  detailsSlashItem,
+  detailsToggleItem,
+  detailsToolbarItem,
+} from '@scriba/plugin-details'
+import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+import {
+  embedKeymap,
+  embedNodeView,
+  embedNodes,
+  embedPlugins,
+  embedSlashItem,
+  embedToolbarItem,
+} from '@scriba/plugin-embed'
 import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
 import { dateTimeMenu } from '@scriba/plugin-datetime'
 import { autosave, restoreDraftItem } from '@scriba/plugin-autosave'
@@ -189,6 +207,8 @@ const schema = new Schema({
         ...mentionNodes,
         ...taskNodes,
         ...calloutNodes,
+        ...detailsNodes,
+        ...embedNodes,
         ...hrNodes,
         ...tableNodes,
       }),
@@ -315,6 +335,8 @@ const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
   calloutSlashItem(schema),
+  detailsSlashItem(schema),
+  embedSlashItem(t),
   ...hrSlashItems(schema),
   {
     id: 'bullet_list',
@@ -446,6 +468,11 @@ const state = EditorState.create({
     keymap(helpKeymap(helpOptions), { priority: 80, readOnly: true }),
     keymap(imageKeymap(t, images), { priority: 70 }),
     keymap(taskKeymap(), { priority: 70 }),
+    keymap(detailsKeymap(), { priority: 70 }),
+    keymap(embedKeymap(t), { priority: 70 }),
+    ...embedPlugins(t),
+    detailsAutoOpen(),
+    visualAids(),
     codeHighlight({ lowlight: createLowlight(common) }),
     keymap(codeBlockKeymap(), { priority: 60 }),
     ...tablePlugins(),
@@ -476,6 +503,8 @@ const view = new EditorView(app, {
   nodeViews: {
     task: vueNodeView(TaskView, { t }),
     callout: vueNodeView(CalloutView, { t }),
+    details: detailsNodeView(t),
+    embed: embedNodeView(t),
   },
   // collaborative: editable only once the server allows writing
   editable: () =>
@@ -582,6 +611,8 @@ menubar.menus = [
       '|',
       fileEntry('preview'),
       fullscreenToolbarItem(fullscreen),
+      '|',
+      ...visualAidsItems(),
     ],
   },
   {
@@ -589,6 +620,7 @@ menubar.menus = [
     label: 'menu.insert',
     items: [
       ...imageToolbarItems(schema, t, images),
+      embedToolbarItem(t),
       ...linkToolbarItems(schema, t),
       anchorToolbarItem(t),
       commentToolbarItem(comments, t),
@@ -604,6 +636,8 @@ menubar.menus = [
       '|',
       taskToolbarItem(schema),
       calloutToolbarItem(schema),
+      detailsToolbarItem(schema),
+      detailsToggleItem(),
       ...blockquoteToolbarItems(schema),
     ],
   },

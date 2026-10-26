@@ -184,6 +184,25 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - `@scriba/plugin-link`: link automatici come autolink di TinyMCE (`autolink`): dopo uno spazio
     o Invio, `https://…`, `www.…` e gli indirizzi email diventano link (whitelist degli URL; mai
     altri protocolli, mai nel codice); Ctrl+Z dopo lo spazio toglie il link e lascia il testo.
+  - `@scriba/plugin-details` (nuovo): sezioni comprimibili come accordion di TinyMCE
+    (`<details>`/`<summary>`, solo l'attributo `open`): `detailsNodes`, `insertDetails`,
+    `removeDetails`, `toggleDetailsOpen`, `detailsToolbarItem`, `detailsSlashItem`. Nell'editor
+    una vista (`detailsNodeView`) con il pulsante apri/chiudi; Invio nel titolo passa al
+    contenuto, Backspace in una sezione vuota la toglie, `detailsAutoOpen` apre la sezione quando
+    il cursore entra nel contenuto nascosto (ricerca, annulla). Incluso nel preset di
+    `@scriba/browser`.
+  - `@scriba/plugin-visual-aids` (nuovo): "Mostra blocchi" e "Mostra caratteri invisibili" come
+    visualblocks e visualchars di TinyMCE (`visualAids`, `visualAidsItems`), solo nell'editor:
+    l'HTML non cambia.
+  - `@scriba/plugin-embed` (nuovo): video come media di TinyMCE, con whitelist (`embedNodes`,
+    `insertEmbed`, `openEmbedDialog`, `embedToolbarItem`, `embedSlashItem`). Un `<iframe>` entra
+    solo con l'indirizzo esatto del player di YouTube in modalità privacy avanzata o di Vimeo;
+    l'indirizzo è ricostruito dall'ID controllato e `sandbox`, `referrerpolicy`, `loading` sono
+    fissi. Il dialog accetta i link soliti (youtube.com/watch, youtu.be, shorts, vimeo.com).
+    Nell'editor una scheda (`embedNodeView`): il player non viene caricato mentre si scrive.
+  - `@scriba/core`: il parser accetta `<iframe>` solo come nodo foglia di uno schema che ha una
+    regola per esso (senza leggerne il contenuto); il serializzatore non scrive mai `srcdoc` e
+    rifiuta un `<iframe>` senza `sandbox`.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
@@ -258,6 +277,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 - `@scriba/ui`: scorrere dentro un menu (es. un menu Formato lungo) chiudeva il sottomenu appena
   aperto; ora lo scorrimento interno a un menu non chiude gli altri, quello della pagina sì.
+- `@scriba/core` (parser HTML): il testo libero dentro un nodo che inizia con un titolo
+  obbligatorio (es. `<details>`) finiva in un secondo titolo e veniva scartato; ora va in un
+  paragrafo. Un nodo a cui manca il primo figlio obbligatorio (es. `<details>` senza `<summary>`)
+  perdeva tutto il contenuto; ora riceve un titolo vuoto e tiene il contenuto.
 
 - `@scriba/view`: dopo aver selezionato un blocco o un'immagine (clic sopra), un clic nel testo
   non spostava la selezione: quello che si scriveva dopo sostituiva il nodo. Ora il clic sposta il

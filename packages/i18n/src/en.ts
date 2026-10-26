@@ -411,6 +411,23 @@ export const en = {
   'anchor.remove': 'Remove',
   'anchor.invalid': 'Write a name (letters or digits)',
   'anchor.taken': 'Another block already has this anchor',
+  'details.insert': 'Accordion',
+  'details.toggle': 'Expand or collapse the section',
+  'visual.blocks': 'Show blocks',
+  'visual.chars': 'Show invisible characters',
+  'embed.label.short': 'Video',
+  'embed.label': 'Video: {title}',
+  'embed.insertTitle': 'Insert video',
+  'embed.editTitle': 'Edit video',
+  'embed.address': 'Video address',
+  'embed.hint': 'A YouTube or Vimeo link. YouTube is embedded in privacy-enhanced mode.',
+  'embed.name': 'Title (read by screen readers)',
+  'embed.width': 'Width (px)',
+  'embed.height': 'Height (px)',
+  'embed.insert': 'Insert',
+  'embed.save': 'Save',
+  'embed.cancel': 'Cancel',
+  'embed.invalid': 'Address not recognized: use a YouTube or Vimeo link',
 } as const
 
 export type MessageKey = keyof typeof en

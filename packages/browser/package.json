@@ -32,6 +32,8 @@
     "@scriba/plugin-blockquote": "workspace:*",
     "@scriba/plugin-charmap": "workspace:*",
     "@scriba/plugin-code-block": "workspace:*",
+    "@scriba/plugin-details": "workspace:*",
+    "@scriba/plugin-embed": "workspace:*",
     "@scriba/plugin-find-replace": "workspace:*",
     "@scriba/plugin-fullscreen": "workspace:*",
     "@scriba/plugin-hr": "workspace:*",

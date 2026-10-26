@@ -1,0 +1,38 @@
+{
+  "name": "@scriba/plugin-visual-aids",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
+  },
+  "license": "MIT",
+  "description": "Show blocks and invisible characters in the Scriba editor (editing aids, not saved).",
+  "dependencies": {
+    "@scriba/core": "workspace:*",
+    "@scriba/i18n": "workspace:*",
+    "@scriba/ui": "workspace:*",
+    "@scriba/view": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "scriba",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ],
+  "author": "Mario Trombino"
+}
