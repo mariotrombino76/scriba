@@ -200,6 +200,16 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     l'indirizzo è ricostruito dall'ID controllato e `sandbox`, `referrerpolicy`, `loading` sono
     fissi. Il dialog accetta i link soliti (youtube.com/watch, youtu.be, shorts, vimeo.com).
     Nell'editor una scheda (`embedNodeView`): il player non viene caricato mentre si scrive.
+  - `@scriba/plugin-statusbar` (nuovo): barra di stato come quella di TinyMCE: percorso
+    dell'elemento (`createElementPath`, un pulsante per blocco che lo seleziona) e maniglia di
+    ridimensionamento (`createResizeHandle`: trascinamento, frecce, Esc per l'altezza automatica;
+    altezza impostata via CSSOM).
+  - `@scriba/plugin-save` (nuovo): pulsante Salva e Ctrl/Cmd+S come il plugin save di TinyMCE
+    (`savePlugin`, `saveKeymap`, `saveItem`): chiama la tua funzione, attivo solo con modifiche
+    non salvate, mai due salvataggi insieme; un errore lascia il documento "non salvato".
+  - `@scriba/plugin-text-style`: maiuscole e minuscole come Case Change di TinyMCE (`caseMenu`,
+    `changeCase`: minuscolo, MAIUSCOLO, Iniziali Maiuscole, Maiuscola a inizio frase), con le
+    regole della lingua, la formattazione mantenuta e un passo di annullamento ciascuno.
   - `@scriba/core`: il parser accetta `<iframe>` solo come nodo foglia di uno schema che ha una
     regola per esso (senza leggerne il contenuto); il serializzatore non scrive mai `srcdoc` e
     rifiuta un `<iframe>` senza `sandbox`.

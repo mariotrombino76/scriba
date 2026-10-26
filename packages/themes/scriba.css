@@ -791,6 +791,13 @@ scriba-toolbar {
 .scriba-fullscreen > .scriba-editor {
   flex: 1 0 auto;
 }
+/* full screen: the whole window, whatever height the resize handle had set */
+.scriba-fullscreen .scriba-editor.scriba-sized {
+  height: auto !important;
+}
+.scriba-fullscreen .scriba-resize-handle {
+  display: none;
+}
 html.scriba-fullscreen-open,
 html.scriba-fullscreen-open body {
   overflow: hidden;
@@ -1894,6 +1901,81 @@ hr.scriba-page-break {
 .scriba-preview iframe {
   max-width: 100%;
   border: 0;
+}
+
+/* Status bar (@scriba/plugin-statusbar): element path, word count, resize handle */
+.scriba-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.75rem;
+  padding: 0 0.25rem 0 0.5rem;
+  color: var(--scriba-muted);
+  font-size: 0.85em;
+  border-top: 1px solid var(--scriba-border);
+}
+.scriba-element-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.scriba-element-path ol {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  white-space: nowrap;
+}
+.scriba-element-path li + li::before {
+  content: '›';
+  padding: 0 0.15rem;
+}
+.scriba-element-path button,
+.scriba-element-path span {
+  padding: 1px 4px;
+  font: inherit;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+}
+.scriba-element-path button {
+  cursor: pointer;
+}
+.scriba-element-path button:hover {
+  color: var(--scriba-text);
+  background: var(--scriba-code-bg);
+}
+.scriba-element-path button:focus-visible,
+.scriba-resize-handle:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+}
+.scriba-resize-handle {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  color: var(--scriba-muted);
+  background: linear-gradient(
+    135deg,
+    transparent 55%,
+    currentColor 55%,
+    currentColor 62%,
+    transparent 62%,
+    transparent 72%,
+    currentColor 72%,
+    currentColor 79%,
+    transparent 79%
+  );
+  border: 0;
+  border-radius: 4px;
+  cursor: ns-resize;
+  touch-action: none;
+}
+.scriba-editor.scriba-sized {
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 /* AI: choosing among several versions */

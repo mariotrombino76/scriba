@@ -428,6 +428,15 @@ export const en = {
   'embed.save': 'Save',
   'embed.cancel': 'Cancel',
   'embed.invalid': 'Address not recognized: use a YouTube or Vimeo link',
+  'case.menu': 'Letter case',
+  'case.lower': 'lowercase',
+  'case.upper': 'UPPERCASE',
+  'case.title': 'Title Case',
+  'case.sentence': 'Sentence case',
+  'save.label': 'Save',
+  'path.label': 'Element path',
+  'path.select': 'Select {tag}',
+  'resize.label': 'Resize the editor (up and down arrows, Esc for automatic height)',
 } as const
 
 export type MessageKey = keyof typeof en

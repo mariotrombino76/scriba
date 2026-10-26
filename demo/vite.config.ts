@@ -40,6 +40,8 @@ export default defineConfig({
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-autosave': plugin('autosave'),
       '@scriba/plugin-details': plugin('details'),
+      '@scriba/plugin-save': plugin('save'),
+      '@scriba/plugin-statusbar': plugin('statusbar'),
       '@scriba/plugin-embed': plugin('embed'),
       '@scriba/plugin-visual-aids': plugin('visual-aids'),
       '@scriba/plugin-datetime': plugin('datetime'),

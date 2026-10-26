@@ -30,6 +30,7 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 | Mod+Maiusc+Spazio         | Spazio non separabile                                            |
 | Mod+Alt+0 … 6             | Paragrafo, Titolo 1…6                                            |
 | Mod+K                     | Link                                                             |
+| Mod+S                     | Salva (con `@scriba/plugin-save`)                                |
 | Mod+Z, Mod+Y              | Annulla, ripeti                                                  |
 | Maiusc+Invio              | A capo nello stesso paragrafo                                    |
 | Tab, Maiusc+Tab           | Rientro negli elenchi, cella successiva/precedente nelle tabelle |
@@ -43,6 +44,10 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 
 Nella toolbar e nei menu: un solo punto di tabulazione, frecce per spostarsi, Invio/Spazio per
 scegliere, Esc per tornare all'editor.
+
+Nella barra di stato: il **percorso dell'elemento** è una navigazione con un pulsante per blocco
+(seleziona quel blocco), un solo punto di tabulazione e frecce sinistra/destra per spostarsi; la **maniglia di ridimensionamento** è un pulsante che cambia l'altezza
+con le frecce su e giù (Pag su/giù per passi più grandi), Esc torna all'altezza automatica.
 
 ## Contrasto e temi
 

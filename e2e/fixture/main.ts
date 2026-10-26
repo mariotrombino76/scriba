@@ -43,6 +43,7 @@ import {
 import {
   alignmentMenu,
   directionItems,
+  caseMenu,
   lineHeightMenu,
   colorItems,
   fontItems,
@@ -105,6 +106,8 @@ import {
   detailsToolbarItem,
 } from '@scriba/plugin-details'
 import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
+import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
 import {
   embedKeymap,
   embedNodeView,
@@ -428,11 +431,16 @@ const helpOptions: HelpOptions = {
 }
 // drafts kept in this browser while writing (File ▸ Restore last draft)
 const draftOptions = { key: 'scriba-e2e', delay: 300 }
+// Save (Ctrl+S): the e2e tests read what was saved
+const saved: string[] = []
+const saveOptions: SaveOptions = { save: (doc) => void saved.push(serializeHTML(doc)) }
 const state = EditorState.create({
   schema,
   plugins: [
     history(),
     filePlugin(fileOptions),
+    savePlugin(),
+    keymap(saveKeymap(saveOptions), { priority: 90 }),
     keymap(fileKeymap(fileOptions), { priority: 80, readOnly: true }),
     // protected blocks: ids starting with "lock" (a real app asks its server)
     ...blockPermissions({ canEdit: (id) => !id.startsWith('lock'), t }),
@@ -577,6 +585,7 @@ menubar.menus = [
     items: [
       fileEntry('new'),
       fileEntry('open'),
+      saveItem(saveOptions),
       restoreDraftItem(draftOptions),
       '|',
       fileEntry('preview'),
@@ -650,6 +659,7 @@ menubar.menus = [
       ...(styleMenu ? [styleMenu] : []),
       ...fontItems(schema),
       alignmentMenu(),
+      caseMenu('it'),
       lineHeightMenu(),
       ...directionItems(),
       ...listStyleMenus(schema),
@@ -683,7 +693,15 @@ const sidebar = document.createElement('aside')
 sidebar.className = 'comments-sidebar'
 document.body.appendChild(sidebar)
 commentsPanel(view, { store: comments, t, container: sidebar })
-app.appendChild(createWordCountStatus(view, t, { delay: 50 }).el)
+// status bar like TinyMCE's: element path, words, resize handle
+const statusbar = document.createElement('div')
+statusbar.className = 'scriba-statusbar'
+statusbar.append(
+  createElementPath(view, t).el,
+  createWordCountStatus(view, t, { delay: 50 }).el,
+  createResizeHandle(view, t).el,
+)
+app.appendChild(statusbar)
 
 const cspViolations: string[] = []
 document.addEventListener('securitypolicyviolation', (e) =>
@@ -694,6 +712,7 @@ Object.assign(window, {
   scriba: {
     view,
     html: () => serializeHTML(view.state.doc),
+    saved,
     markdown: () => serializeMarkdown(view.state.doc),
     json: () => view.state.doc.toJSON(),
     selection: () => ({ from: view.state.selection.from, to: view.state.selection.to }),

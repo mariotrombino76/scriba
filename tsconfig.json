@@ -35,6 +35,8 @@
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
       "@scriba/plugin-autosave": ["./packages/plugins/autosave/src/index.ts"],
       "@scriba/plugin-details": ["./packages/plugins/details/src/index.ts"],
+      "@scriba/plugin-save": ["./packages/plugins/save/src/index.ts"],
+      "@scriba/plugin-statusbar": ["./packages/plugins/statusbar/src/index.ts"],
       "@scriba/plugin-embed": ["./packages/plugins/embed/src/index.ts"],
       "@scriba/plugin-visual-aids": ["./packages/plugins/visual-aids/src/index.ts"],
       "@scriba/plugin-datetime": ["./packages/plugins/datetime/src/index.ts"],

@@ -26,9 +26,11 @@ import {
 } from './blocks.js'
 import { LINE_HEIGHTS } from '@scriba/core'
 import { markValue, setMarkValue } from './marks.js'
+import { changeCase, LETTER_CASES } from './case.js'
 
 export * from './blocks.js'
 export * from './marks.js'
+export * from './case.js'
 
 type MessageKey = Parameters<Translate>[0]
 
@@ -325,4 +327,19 @@ export function textStyleToolbarItems(
     ...colorItems(schema, options),
     ...fontItems(schema, options),
   ]
+}
+
+/** Format ▸ Letter case: lowercase, UPPERCASE, Title Case, Sentence case. */
+export function caseMenu(locale?: string): ToolbarMenu {
+  return {
+    type: 'menu',
+    id: 'letter-case',
+    icon: 'letterCase',
+    label: (t) => t('case.menu'),
+    entries: LETTER_CASES.map((kind) => ({
+      id: `case-${kind}`,
+      label: (t: Translate) => t(`case.${kind}`),
+      command: changeCase(kind, locale),
+    })),
+  }
 }

@@ -432,4 +432,13 @@ export const it: Messages = {
   'embed.save': 'Salva',
   'embed.cancel': 'Annulla',
   'embed.invalid': 'Indirizzo non riconosciuto: usa un link di YouTube o Vimeo',
+  'case.menu': 'Maiuscole e minuscole',
+  'case.lower': 'minuscolo',
+  'case.upper': 'MAIUSCOLO',
+  'case.title': 'Iniziali Maiuscole',
+  'case.sentence': 'Maiuscola a inizio frase',
+  'save.label': 'Salva',
+  'path.label': "Percorso dell'elemento",
+  'path.select': 'Seleziona {tag}',
+  'resize.label': "Ridimensiona l'editor (frecce su e giù, Esc per l'altezza automatica)",
 }

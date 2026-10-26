@@ -9,3 +9,6 @@ e2e/.collab
 test-results
 playwright-report
 .vitest
+
+# graphify (knowledge graph, generated locally)
+graphify-out/

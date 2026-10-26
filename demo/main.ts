@@ -47,6 +47,7 @@ import {
 import {
   alignmentMenu,
   directionItems,
+  caseMenu,
   lineHeightMenu,
   colorItems,
   fontItems,
@@ -109,6 +110,8 @@ import {
   detailsToolbarItem,
 } from '@scriba/plugin-details'
 import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
+import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
 import {
   embedKeymap,
   embedNodeView,
@@ -119,7 +122,7 @@ import {
 } from '@scriba/plugin-embed'
 import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
 import { dateTimeMenu } from '@scriba/plugin-datetime'
-import { autosave, restoreDraftItem } from '@scriba/plugin-autosave'
+import { autosave, clearDraft, restoreDraftItem } from '@scriba/plugin-autosave'
 import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
 import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
 import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
@@ -454,11 +457,19 @@ const helpOptions: HelpOptions = {
 }
 // drafts kept in this browser while writing (File ▸ Restore last draft)
 const draftOptions = { key: 'scriba-demo', delay: 2000 }
+// Save (Ctrl+S): here it waits a moment and drops the browser draft; your app sends the HTML
+// to its server (which passes it through @scriba/sanitize-server)
+const saveOptions: SaveOptions = {
+  save: () =>
+    new Promise<void>((resolve) => setTimeout(resolve, 300)).then(() => clearDraft(draftOptions)),
+}
 const state = EditorState.create({
   doc,
   plugins: [
     history(),
     filePlugin(fileOptions),
+    savePlugin(),
+    keymap(saveKeymap(saveOptions), { priority: 90 }),
     keymap(fileKeymap(fileOptions), { priority: 80, readOnly: true }),
     // protected blocks: ids starting with "lock" (a real app asks its server)
     ...blockPermissions({ canEdit: (id) => !id.startsWith('lock'), t }),
@@ -612,6 +623,7 @@ menubar.menus = [
     items: [
       fileEntry('new'),
       fileEntry('open'),
+      saveItem(saveOptions),
       restoreDraftItem(draftOptions),
       '|',
       fileEntry('preview'),
@@ -685,6 +697,7 @@ menubar.menus = [
       ...(styleMenu ? [styleMenu] : []),
       ...fontItems(schema),
       alignmentMenu(),
+      caseMenu('it'),
       lineHeightMenu(),
       ...directionItems(),
       '|',
@@ -713,11 +726,16 @@ contextMenu(view, {
 })
 toolbar.view = view
 commentsPanel(view, { store: comments, t, container: $('comments') })
-status.before(createWordCountStatus(view, t).el)
+// status bar like TinyMCE's: element path, words, (collaboration), resize handle
+const statusbar = document.createElement('div')
+statusbar.className = 'scriba-statusbar'
+statusbar.append(createElementPath(view, t).el, createWordCountStatus(view, t).el)
+status.before(statusbar)
 if (shared) {
-  status.before(collabStatusElement(document, shared.provider, t))
+  statusbar.append(collabStatusElement(document, shared.provider, t))
   shared.provider.onStatus(() => view.updateState(view.state))
 }
+statusbar.append(createResizeHandle(view, t).el)
 
 // demo: the role to try (editor, commenter = read-only but may comment, reader)
 document.querySelector('.role-switch')!.addEventListener('change', (event) => {
