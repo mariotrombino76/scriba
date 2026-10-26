@@ -64,9 +64,7 @@ describe('embed (server)', () => {
     expect(sanitize(out)).toBe(out)
   })
 
-  // Not the leading <noscript> (a browser document moves it into <head>, see details.test.ts).
-  const agree = PAYLOADS.filter((p) => !p.startsWith('<noscript>'))
-  it.each(agree.map((p) => [p]))('server and browser agree for %s', (payload) => {
+  it.each(PAYLOADS.map((p) => [p]))('server and browser agree for %s', (payload) => {
     expect(sanitize(payload)).toBe(inBrowser(payload))
   })
 

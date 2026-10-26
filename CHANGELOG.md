@@ -275,6 +275,11 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- `@scriba/sanitize-server`: l'HTML era analizzato come frammento, mentre l'editor lo analizza
+  come documento intero (`DOMParser`); con un `<noscript>` all'inizio i due risultati
+  divergevano (il browser recuperava il contenuto, il server lo scartava). Ora anche il server
+  analizza un documento e ne legge il `<body>`: stesso albero da entrambe le parti, regola
+  contro la mutation XSS.
 - `@scriba/ui`: scorrere dentro un menu (es. un menu Formato lungo) chiudeva il sottomenu appena
   aperto; ora lo scorrimento interno a un menu non chiude gli altri, quello della pagina sì.
 - `@scriba/core` (parser HTML): il testo libero dentro un nodo che inizia con un titolo

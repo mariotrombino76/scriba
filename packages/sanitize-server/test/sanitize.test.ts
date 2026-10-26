@@ -23,6 +23,14 @@ const PAYLOADS = [
   '<a href="https://ok.it" target="_blank">x</a>',
   '<h2>T</h2><p>a <b>b</b> <i>c</i><br>d</p><blockquote><p>q</p></blockquote><pre>  x\n y</pre>',
   '<b style="font-weight:normal"><p><span style="font-weight:700">B</span></p></b>',
+  // regression: parsed as a whole document like the editor's DOMParser, not as a fragment
+  // (a leading <noscript> goes into <head>, its other content back to <body>)
+  '<noscript><blockquote></noscript><p>h</p>',
+  '<noscript><h1>x</h1></noscript><p>y</p>',
+  '<title>t</title><meta charset="x"><style>p{}</style><p>z</p>',
+  '<html><head><noscript><p>a</p></noscript></head><body><p>b</p></body></html>',
+  '<frameset><frame src="javascript:alert(1)"></frameset>',
+  '</head><p>c</p></body><p>d</p></html><p>e</p>',
 ]
 
 describe('sanitizeHTML (server)', () => {

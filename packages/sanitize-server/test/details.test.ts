@@ -40,11 +40,7 @@ describe('details (server)', () => {
     expect(sanitize(out)).toBe(out)
   })
 
-  // Not the <noscript> one: a browser document moves a leading <noscript> into <head> and its
-  // other content back to <body>, the server's fragment parse drops it all (known, safe: the
-  // server keeps less).
-  const agree = PAYLOADS.filter((p) => !p.startsWith('<noscript>'))
-  it.each(agree.map((p) => [p]))('server and browser agree for %s', (payload) => {
+  it.each(PAYLOADS.map((p) => [p]))('server and browser agree for %s', (payload) => {
     expect(sanitize(payload)).toBe(inBrowser(payload))
   })
 

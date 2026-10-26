@@ -5,7 +5,7 @@ import {
   type Node,
   type Schema,
 } from '@scriba/core'
-import { parseFragment } from 'parse5'
+import { parse, type DefaultTreeAdapterMap } from 'parse5'
 import { adaptParse5 } from './adapter.js'
 
 export { adaptParse5 } from './adapter.js'
@@ -32,10 +32,21 @@ export function parseHTMLOnServer(
   if (typeof html !== 'string') throw new TypeError('HTML input must be a string')
   if (html.length > (options.maxInputLength ?? 5_000_000))
     throw new InputTooLargeError('HTML input too large')
-  // Same parsing mode as the editor's inert DOMParser document (scripting disabled),
-  // so <noscript> content is read identically on both sides (mutation XSS guard).
-  const fragment = parseFragment(html, { scriptingEnabled: false })
-  return new HTMLParser(schema, options).parse(adaptParse5(fragment))
+  // Parsed exactly like the editor does: a whole document with scripting disabled (an inert
+  // DOMParser document), then its <body>. A fragment parse would differ, e.g. a leading
+  // <noscript> goes into <head> in a document and its other content back to <body>
+  // (mutation XSS guard: server and browser must read the same tree).
+  const document = parse(html, { scriptingEnabled: false })
+  return new HTMLParser(schema, options).parse(adaptParse5(bodyOf(document)))
+}
+
+type P5Parent = DefaultTreeAdapterMap['document'] | DefaultTreeAdapterMap['element']
+
+/** `document.body`: the <body> (or <frameset>) of the <html> element. */
+function bodyOf(document: DefaultTreeAdapterMap['document']): P5Parent {
+  const html = document.childNodes.find((n) => n.nodeName === 'html') as P5Parent | undefined
+  const body = html?.childNodes.find((n) => n.nodeName === 'body' || n.nodeName === 'frameset')
+  return (body as P5Parent | undefined) ?? document
 }
 
 /**
