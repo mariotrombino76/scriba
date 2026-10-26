@@ -70,6 +70,8 @@ export default defineConfig({
   build: {
     outDir: fileURLToPath(new URL('./.dist', import.meta.url)),
     emptyOutDir: true,
+    // real files, never data: URLs (media tests upload the fixture's silent WAV by address)
+    assetsInlineLimit: 0,
     modulePreload: false,
     rollupOptions: {
       input: {

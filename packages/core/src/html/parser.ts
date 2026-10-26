@@ -29,7 +29,7 @@ const SKIP_TAGS = new Set([
  * Dropped tags a schema may still take, only as a block leaf whose rule checks it
  * (e.g. a video embed with a domain whitelist): their content is never read.
  */
-const EMBED_TAGS = new Set(['iframe'])
+const EMBED_TAGS = new Set(['iframe', 'video', 'audio'])
 
 /** Unknown elements that still separate blocks (their inline content gets its own paragraph). */
 const BLOCK_TAGS = new Set([

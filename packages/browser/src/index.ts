@@ -53,6 +53,8 @@ import {
   embedNodes,
   embedPlugins,
   embedToolbarItem,
+  mediaFileNodeView,
+  mediaNodes,
 } from '@scriba/plugin-embed'
 import {
   findReplaceKeymap,
@@ -145,6 +147,7 @@ function fullSchema(): Schema {
       ...codeBlockNodes,
       ...detailsNodes,
       ...embedNodes,
+      ...mediaNodes,
       ...imageNodes,
       ...hrNodes,
       ...tableNodes,
@@ -217,7 +220,16 @@ export function createEditor(
     state: EditorState.create({ doc: parseContent(schema, options.content, format), plugins }),
     label: options.label ?? t('editor.label'),
     editable: () => editable,
-    ...(full ? { nodeViews: { details: detailsNodeView(t), embed: embedNodeView(t) } } : {}),
+    ...(full
+      ? {
+          nodeViews: {
+            details: detailsNodeView(t),
+            embed: embedNodeView(t),
+            video_file: mediaFileNodeView(t),
+            audio_file: mediaFileNodeView(t),
+          },
+        }
+      : {}),
     dispatchTransaction(tr) {
       view.updateState(view.state.apply(tr))
       if (tr.docChanged && tr.getMeta('scribaSetContent') !== true)

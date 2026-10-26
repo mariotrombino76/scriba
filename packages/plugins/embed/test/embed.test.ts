@@ -16,8 +16,8 @@ import {
   embedNodeView,
   embedNodes,
   insertEmbed,
-  videoFromAddress,
-  videoFromPlayerUrl,
+  embedFromAddress,
+  embedFromPlayerUrl,
 } from '../src/index.js'
 
 const schema = new Schema({
@@ -36,17 +36,17 @@ const YT = `<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" wid
 
 describe('player addresses (HTML)', () => {
   it('only the two players, exactly', () => {
-    expect(videoFromPlayerUrl('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')).toEqual({
+    expect(embedFromPlayerUrl('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')).toEqual({
       provider: 'youtube',
-      id: 'dQw4w9WgXcQ',
+      ref: 'dQw4w9WgXcQ',
     })
-    expect(videoFromPlayerUrl('https://youtube-nocookie.com/embed/dQw4w9WgXcQ?start=10')).toEqual({
+    expect(embedFromPlayerUrl('https://youtube-nocookie.com/embed/dQw4w9WgXcQ?start=10')).toEqual({
       provider: 'youtube',
-      id: 'dQw4w9WgXcQ',
+      ref: 'dQw4w9WgXcQ',
     })
-    expect(videoFromPlayerUrl('https://player.vimeo.com/video/76979871')).toEqual({
+    expect(embedFromPlayerUrl('https://player.vimeo.com/video/76979871')).toEqual({
       provider: 'vimeo',
-      id: '76979871',
+      ref: '76979871',
     })
   })
 
@@ -70,7 +70,7 @@ describe('player addresses (HTML)', () => {
     '//player.vimeo.com/video/123',
     '',
   ])('refuses %s', (src) => {
-    expect(videoFromPlayerUrl(src)).toBeNull()
+    expect(embedFromPlayerUrl(src)).toBeNull()
   })
 })
 
@@ -85,7 +85,7 @@ describe('addresses typed in the dialog', () => {
     ['  https://vimeo.com/76979871  ', 'vimeo', '76979871'],
     ['https://player.vimeo.com/video/76979871', 'vimeo', '76979871'],
   ])('%s', (address, provider, id) => {
-    expect(videoFromAddress(address)).toEqual({ provider, id })
+    expect(embedFromAddress(address)).toEqual({ provider, ref: id })
   })
 
   it.each([
@@ -97,7 +97,7 @@ describe('addresses typed in the dialog', () => {
     'ftp://vimeo.com/76979871',
     'una frase qualsiasi',
   ])('refuses %s', (address) => {
-    expect(videoFromAddress(address)).toBeNull()
+    expect(embedFromAddress(address)).toBeNull()
   })
 })
 
@@ -147,14 +147,12 @@ describe('embed node', () => {
   it('JSON with a bad id or attributes is refused', () => {
     const json = (attrs: Record<string, unknown>) => ({
       type: 'doc',
-      content: [
-        { type: 'embed', attrs: { provider: 'youtube', videoId: 'dQw4w9WgXcQ', ...attrs } },
-      ],
+      content: [{ type: 'embed', attrs: { provider: 'youtube', ref: 'dQw4w9WgXcQ', ...attrs } }],
     })
     expect(() => schema.nodeFromJSON(json({}))).not.toThrow()
     for (const bad of [
-      { videoId: '../../x' },
-      { videoId: 'dQw4w9WgXcQ"onload="x' },
+      { ref: '../../x' },
+      { ref: 'dQw4w9WgXcQ"onload="x' },
       { provider: 'evil' },
       { width: 99999 },
       { height: '315' },
@@ -173,7 +171,7 @@ describe('insertEmbed', () => {
   it('in an empty paragraph: replaces it, the cursor goes below', () => {
     const doc = parse('<p></p>')
     let state = EditorState.create({ doc, selection: TextSelection.create(doc, 1) })
-    const ok = insertEmbed({ provider: 'vimeo', videoId: '76979871', title: 'T' })(
+    const ok = insertEmbed({ provider: 'vimeo', ref: '76979871', title: 'T' })(
       state,
       (tr) => (state = state.apply(tr)),
     )
@@ -189,7 +187,7 @@ describe('insertEmbed', () => {
     let state = EditorState.create({ doc, selection: NodeSelection.create(doc, 0) })
     insertEmbed({
       provider: 'youtube',
-      videoId: 'aaaaaaaaaaa',
+      ref: 'aaaaaaaaaaa',
       title: 'Nuovo',
       width: 640,
       height: 360,
@@ -197,7 +195,7 @@ describe('insertEmbed', () => {
     expect(serializeHTML(state.doc)).toContain(
       'embed/aaaaaaaaaaa" width="640" height="360" title="Nuovo"',
     )
-    expect(insertEmbed({ provider: 'youtube', videoId: 'no' })(state)).toBe(false)
+    expect(insertEmbed({ provider: 'youtube', ref: 'no' })(state)).toBe(false)
   })
 })
 

@@ -51,8 +51,9 @@ un errore per tutto ciò che lo schema rifiuta (tipi, attributi, URL, profondit�
 - **Attributi**: solo quelli dichiarati nello schema; tutti gli `on*` scartati; `id` gestiti per
   evitare il DOM clobbering.
 - **Link in nuova scheda** con `rel="noopener noreferrer"`.
-- **Video**: un `<iframe>` solo per i player di YouTube (privacy avanzata) e Vimeo, sempre con
-  `sandbox`; nessun altro iframe, mai `srcdoc` (dettagli sotto, in CSP).
+- **Media**: un `<iframe>` solo per i player dei servizi approvati (YouTube in privacy avanzata,
+  Vimeo, Dailymotion, Spotify, Google Maps), sempre con `sandbox`; `<video>`/`<audio>` solo con
+  indirizzo https o relativo, mai `autoplay`; nessun altro iframe, mai `srcdoc` (dettagli sotto).
 - **Sezioni comprimibili** (`<details>`): solo l'attributo `open`; `ontoggle` e ogni altro
   attributo vengono scartati.
 - **Ricerca con regex** in un Web Worker con limite di tempo: una regex catastrofica non blocca
@@ -75,20 +76,30 @@ object-src 'none'; base-uri 'none'; require-trusted-types-for 'script'
 
 I test end-to-end girano tutti con questa CSP attiva.
 
-### Video incorporati
+### Media incorporati e file video/audio
 
-Con `@scriba/plugin-embed` l'HTML salvato può contenere un `<iframe>`, ma solo con l'indirizzo
-esatto del player di YouTube in modalità privacy avanzata (`www.youtube-nocookie.com/embed/…`)
-o di Vimeo (`player.vimeo.com/video/…`). L'editor ricostruisce sempre l'indirizzo dall'ID
-controllato e mette lui `sandbox="allow-scripts allow-same-origin allow-presentation"`,
-`referrerpolicy="strict-origin-when-cross-origin"` e `loading="lazy"`: tutto ciò che arriva con
-l'iframe (altri domini, `srcdoc`, `allow`, handler, il suo `sandbox`) viene scartato, anche da
-`sanitize-server`. Nell'editor il video è una scheda: chi scrive non contatta YouTube né Vimeo.
+Con `@scriba/plugin-embed` l'HTML salvato può contenere:
 
-Le pagine che **mostrano** l'HTML salvato devono consentire i due player nella CSP:
+- un `<iframe>`, ma solo con l'indirizzo esatto del player di un servizio approvato: YouTube in
+  modalità privacy avanzata (`www.youtube-nocookie.com/embed/…`), Vimeo
+  (`player.vimeo.com/video/…`), Dailymotion (`www.dailymotion.com/embed/video/…`), Spotify
+  (`open.spotify.com/embed/track|album|playlist|episode/…`) e Google Maps
+  (`www.google.com/maps/embed?pb=…`). L'editor ricostruisce sempre l'indirizzo dal riferimento
+  controllato e mette lui `sandbox="allow-scripts allow-same-origin allow-presentation"`,
+  `referrerpolicy="strict-origin-when-cross-origin"` e `loading="lazy"`: tutto ciò che arriva con
+  l'iframe (altri domini, `srcdoc`, `allow`, handler, il suo `sandbox`) viene scartato, anche da
+  `sanitize-server`. Nell'editor il player è una scheda: chi scrive non contatta il servizio.
+- un `<video controls>` o `<audio controls>` con `src` **https o relativo** (mai `data:`,
+  `blob:` o `http:`); `autoplay`, `poster`, `muted`, `loop` e gli altri attributi vengono
+  scartati, di un `<source>` si legge solo l'indirizzo. Il file caricato passa dalla **tua**
+  funzione `upload`: sul server verifica il tipo reale, la dimensione e il contenuto.
+
+Le pagine che **mostrano** l'HTML salvato devono consentirli nella CSP (`EMBED_FRAME_SRC`
+elenca i servizi):
 
 ```
-frame-src https://www.youtube-nocookie.com https://player.vimeo.com
+frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://www.dailymotion.com https://open.spotify.com https://www.google.com;
+media-src 'self' https://il-tuo-cdn.example
 ```
 
 ## Upload delle immagini

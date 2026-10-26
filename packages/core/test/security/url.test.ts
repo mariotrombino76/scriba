@@ -72,3 +72,25 @@ describe('sanitizeUrl (whitelist, CLAUDE.md §5.3)', () => {
     expect(sanitizeUrl('https://x/y.png', image)).toBe('https://x/y.png')
   })
 })
+
+describe('sanitizeUrl, media files (https or relative only)', () => {
+  const media = { kind: 'media' } as const
+  it.each(['https://cdn.example/a.mp4', '/media/a.mp3', 'a.webm', '//cdn.example/a.mp4'])(
+    'accepts %s',
+    (url) => {
+      expect(sanitizeUrl(url, media)).toBe(url)
+    },
+  )
+  it.each([
+    'http://cdn.example/a.mp4',
+    'data:video/mp4;base64,AAAA',
+    'data:image/png;base64,iVBORw0KGgo=',
+    'blob:https://example.com/1',
+    'javascript:alert(1)',
+    'jav&#x09;ascript:alert(1)',
+    'ftp://x/a.mp4',
+    'file:///etc/passwd',
+  ])('refuses %s', (url) => {
+    expect(sanitizeUrl(url, media)).toBeNull()
+  })
+})

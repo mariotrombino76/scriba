@@ -119,6 +119,9 @@ import {
   embedPlugins,
   embedSlashItem,
   embedToolbarItem,
+  mediaFileNodeView,
+  mediaNodes,
+  type MediaOptions,
 } from '@scriba/plugin-embed'
 import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
 import { dateTimeMenu } from '@scriba/plugin-datetime'
@@ -215,6 +218,7 @@ const schema = new Schema({
         ...calloutNodes,
         ...detailsNodes,
         ...embedNodes,
+        ...mediaNodes,
         ...hrNodes,
         ...tableNodes,
       }),
@@ -360,12 +364,15 @@ const aiOptions: AiOptions = {
 }
 
 // Slash menu: blocks and actions from the plugins in use.
+// Media: in this demo files are linked by address (a real app passes `upload`, which sends
+// the file to its server and returns the https URL)
+const mediaOptions: MediaOptions = {}
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema),
   taskSlashItem(schema),
   calloutSlashItem(schema),
   detailsSlashItem(schema),
-  embedSlashItem(t),
+  embedSlashItem(t, mediaOptions),
   ...hrSlashItems(schema),
   {
     id: 'bullet_list',
@@ -505,8 +512,8 @@ const state = EditorState.create({
     keymap(imageKeymap(t, images), { priority: 70 }),
     keymap(taskKeymap(), { priority: 70 }),
     keymap(detailsKeymap(), { priority: 70 }),
-    keymap(embedKeymap(t), { priority: 70 }),
-    ...embedPlugins(t),
+    keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
+    ...embedPlugins(t, mediaOptions),
     detailsAutoOpen(),
     visualAids(),
     codeHighlight({ lowlight: createLowlight(common) }),
@@ -540,6 +547,8 @@ const view: EditorView = new EditorView($('editor'), {
     callout: vueNodeView(CalloutView, { t }),
     details: detailsNodeView(t),
     embed: embedNodeView(t),
+    video_file: mediaFileNodeView(t),
+    audio_file: mediaFileNodeView(t),
   },
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
@@ -667,7 +676,7 @@ menubar.menus = [
     label: 'menu.insert',
     items: [
       ...imageToolbarItems(schema, t, images),
-      embedToolbarItem(t),
+      embedToolbarItem(t, mediaOptions),
       ...linkToolbarItems(schema, t),
       anchorToolbarItem(t),
       commentToolbarItem(comments, t),

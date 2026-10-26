@@ -7,6 +7,8 @@ declare const URL: new (url: string, base?: string) => { readonly protocol: stri
  */
 const LINK_PROTOCOLS: ReadonlySet<string> = new Set(['http:', 'https:', 'mailto:', 'tel:'])
 const IMAGE_PROTOCOLS: ReadonlySet<string> = new Set(['http:', 'https:'])
+/** Video and audio files (approved 2026-10-26): https or relative only, never `data:`. */
+const MEDIA_PROTOCOLS: ReadonlySet<string> = new Set(['https:'])
 /** Raster formats only: never `image/svg+xml` (SVG can carry scripts). */
 const DATA_IMAGE_TYPES: ReadonlySet<string> = new Set([
   'image/png',
@@ -19,7 +21,8 @@ const DATA_IMAGE_TYPES: ReadonlySet<string> = new Set([
 export const DEFAULT_MAX_DATA_IMAGE_BYTES = 1_000_000
 
 /** How an attribute holding a URL is checked. */
-export type UrlRule = { kind: 'link' } | { kind: 'image'; maxDataBytes?: number }
+export type UrlRule =
+  { kind: 'link' } | { kind: 'image'; maxDataBytes?: number } | { kind: 'media' }
 
 const NAMED_ENTITIES: Readonly<Record<string, string>> = {
   amp: '&',
@@ -112,7 +115,10 @@ export function sanitizeUrl(value: unknown, rule: UrlRule): string | null {
       rule.maxDataBytes ?? DEFAULT_MAX_DATA_IMAGE_BYTES,
     )
   }
-  const allowed = rule.kind === 'link' ? LINK_PROTOCOLS : IMAGE_PROTOCOLS
+  const allowed =
+    rule.kind === 'link' ? LINK_PROTOCOLS
+    : rule.kind === 'media' ? MEDIA_PROTOCOLS
+    : IMAGE_PROTOCOLS // prettier-ignore
   const protocol = protocolOf(trimmed)
   if (!protocol || !allowed.has(protocol)) return null
   // Raw form must agree with the decoded one (no hidden scheme behind entities).

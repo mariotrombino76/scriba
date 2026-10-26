@@ -16,6 +16,7 @@ const FORBIDDEN_ATTRS = new Set([
   'style',
   'srcset',
   'srcdoc',
+  'autoplay',
   'action',
   'formaction',
   'xlink:href',
@@ -108,7 +109,10 @@ export function safeOutputAttrs(tag: string, attrs: HTMLAttrs): [string, string]
     }
     let value = raw === true ? '' : String(raw)
     if (LINK_ATTRS.has(lower) || IMAGE_ATTRS.has(lower)) {
-      const kind = IMAGE_ATTRS.has(lower) || tag === 'img' ? 'image' : 'link'
+      const kind =
+        tag === 'video' || tag === 'audio' ? 'media'
+        : IMAGE_ATTRS.has(lower) || tag === 'img' ? 'image'
+        : 'link' // prettier-ignore
       const safe = sanitizeUrl(value, { kind })
       if (safe === null) continue
       value = safe

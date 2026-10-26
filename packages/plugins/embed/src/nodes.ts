@@ -1,10 +1,13 @@
 import type { DOMLikeElement, Node, NodeSpec } from '@scriba/core'
 import {
+  defaultSize,
+  embedFromPlayerUrl,
+  isAnyEmbedRef,
   isEmbedProvider,
-  isVideoId,
+  isEmbedRef,
   pageUrl,
   playerUrl,
-  videoFromPlayerUrl,
+  providerName,
   type EmbedProvider,
 } from './providers.js'
 
@@ -12,9 +15,18 @@ import {
 export const EMBED_SANDBOX = 'allow-scripts allow-same-origin allow-presentation'
 export const EMBED_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
+/** The CSP `frame-src` sources a page needs to show the saved embeds. */
+export const EMBED_FRAME_SRC = [
+  'https://www.youtube-nocookie.com',
+  'https://player.vimeo.com',
+  'https://www.dailymotion.com',
+  'https://open.spotify.com',
+  'https://www.google.com',
+] as const
+
 export const MIN_EMBED_WIDTH = 200
 export const MAX_EMBED_WIDTH = 1920
-export const MIN_EMBED_HEIGHT = 113
+export const MIN_EMBED_HEIGHT = 80
 export const MAX_EMBED_HEIGHT = 1080
 export const MAX_EMBED_TITLE = 200
 
@@ -41,22 +53,20 @@ function size(el: DOMLikeElement, name: string, fallback: number, min: number, m
   return Math.min(max, Math.max(min, Number(raw)))
 }
 
-const PROVIDER_NAME: Record<EmbedProvider, string> = { youtube: 'YouTube', vimeo: 'Vimeo' }
-
 /** The video's accessible name: its title, or the name of the service. */
 export function embedTitle(node: Node): string {
-  return (node.attrs['title'] as string) || PROVIDER_NAME[node.attrs['provider'] as EmbedProvider]
+  return (node.attrs['title'] as string) || providerName(node.attrs['provider'] as EmbedProvider)
 }
 
 /**
- * Video embeds (approved 2026-10-19): an `<iframe>` whose `src` is exactly a
- * YouTube privacy-enhanced player (`www.youtube-nocookie.com/embed/<id>`) or a
- * Vimeo player (`player.vimeo.com/video/<id>`). Stored: service, checked id,
+ * Embeds: an `<iframe>` whose `src` is exactly the player of an approved
+ * service (see `EMBED_PROVIDERS`: YouTube privacy-enhanced, Vimeo, Dailymotion,
+ * Spotify, Google Maps). Stored: service, checked reference,
  * title, width and height; the `src` is rebuilt from them and `sandbox`,
  * `referrerpolicy`, `loading` are fixed. Any other iframe is dropped (CLAUDE.md §5.5).
  *
- * Pages showing the saved HTML need `frame-src https://www.youtube-nocookie.com
- * https://player.vimeo.com` in their CSP.
+ * Pages showing the saved HTML need the services in their CSP `frame-src` (see
+ * `EMBED_FRAME_SRC`).
  */
 export const embedNodes = {
   embed: {
@@ -64,10 +74,8 @@ export const embedNodes = {
     atom: true,
     attrs: {
       provider: { default: 'youtube', validate: isEmbedProvider },
-      // the format of either service (toHTML checks it against the provider again)
-      videoId: {
-        validate: (v) => isVideoId('youtube', v) || isVideoId('vimeo', v),
-      },
+      // the format of some service (toHTML checks it against the provider again)
+      ref: { validate: isAnyEmbedRef },
       title: { default: '', validate: isTitle },
       width: { default: 560, validate: isSize(MIN_EMBED_WIDTH, MAX_EMBED_WIDTH) },
       height: { default: 315, validate: isSize(MIN_EMBED_HEIGHT, MAX_EMBED_HEIGHT) },
@@ -75,34 +83,34 @@ export const embedNodes = {
     leafText: (node) =>
       pageUrl({
         provider: node.attrs['provider'] as EmbedProvider,
-        id: node.attrs['videoId'] as string,
+        ref: node.attrs['ref'] as string,
       }),
     parseHTML: [
       {
         tag: 'iframe',
         getAttrs: (el) => {
-          const video = videoFromPlayerUrl(el.getAttribute('src') ?? '')
-          if (!video) return false
-          const title = cleanEmbedTitle(el.getAttribute('title') ?? '')
+          const embed = embedFromPlayerUrl(el.getAttribute('src') ?? '')
+          if (!embed) return false
+          const fallback = defaultSize(embed.provider)
           return {
-            provider: video.provider,
-            videoId: video.id,
-            title,
-            width: size(el, 'width', 560, MIN_EMBED_WIDTH, MAX_EMBED_WIDTH),
-            height: size(el, 'height', 315, MIN_EMBED_HEIGHT, MAX_EMBED_HEIGHT),
+            provider: embed.provider,
+            ref: embed.ref,
+            title: cleanEmbedTitle(el.getAttribute('title') ?? ''),
+            width: size(el, 'width', fallback.width, MIN_EMBED_WIDTH, MAX_EMBED_WIDTH),
+            height: size(el, 'height', fallback.height, MIN_EMBED_HEIGHT, MAX_EMBED_HEIGHT),
           }
         },
       },
     ],
     toHTML: (node) => {
       const provider = node.attrs['provider'] as EmbedProvider
-      const id = node.attrs['videoId'] as string
-      // validated together here: the id format depends on the service
-      if (!isVideoId(provider, id)) return ['p']
+      const ref = node.attrs['ref'] as string
+      // validated together here: the reference format depends on the service
+      if (!isEmbedRef(provider, ref)) return ['p']
       return [
         'iframe',
         {
-          src: playerUrl({ provider, id }),
+          src: playerUrl({ provider, ref }),
           width: String(node.attrs['width']),
           height: String(node.attrs['height']),
           title: embedTitle(node),

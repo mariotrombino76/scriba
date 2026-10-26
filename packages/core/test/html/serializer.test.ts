@@ -84,5 +84,13 @@ describe('serializeHTML', () => {
     expect(run(() => ['iframe', { src: 'javascript:alert(1)', sandbox: '' }])).toBe(
       '<iframe sandbox=""></iframe>',
     )
+    // video and audio: never autoplay; src only https or relative
+    expect(() => run(() => ['video', { src: '/a.mp4', autoplay: true }])).toThrow(/autoplay/)
+    expect(run(() => ['video', { src: 'http://x/a.mp4', controls: true }])).toBe(
+      '<video controls></video>',
+    )
+    expect(run(() => ['audio', { src: 'https://x/a.mp3', controls: true }])).toBe(
+      '<audio src="https://x/a.mp3" controls></audio>',
+    )
   })
 })

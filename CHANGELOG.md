@@ -194,24 +194,21 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - `@scriba/plugin-visual-aids` (nuovo): "Mostra blocchi" e "Mostra caratteri invisibili" come
     visualblocks e visualchars di TinyMCE (`visualAids`, `visualAidsItems`), solo nell'editor:
     l'HTML non cambia.
-  - `@scriba/plugin-embed` (nuovo): video come media di TinyMCE, con whitelist (`embedNodes`,
-    `insertEmbed`, `openEmbedDialog`, `embedToolbarItem`, `embedSlashItem`). Un `<iframe>` entra
-    solo con l'indirizzo esatto del player di YouTube in modalità privacy avanzata o di Vimeo;
-    l'indirizzo è ricostruito dall'ID controllato e `sandbox`, `referrerpolicy`, `loading` sono
-    fissi. Il dialog accetta i link soliti (youtube.com/watch, youtu.be, shorts, vimeo.com).
-    Nell'editor una scheda (`embedNodeView`): il player non viene caricato mentre si scrive.
-  - `@scriba/plugin-statusbar` (nuovo): barra di stato come quella di TinyMCE: percorso
-    dell'elemento (`createElementPath`, un pulsante per blocco che lo seleziona) e maniglia di
-    ridimensionamento (`createResizeHandle`: trascinamento, frecce, Esc per l'altezza automatica;
-    altezza impostata via CSSOM).
-  - `@scriba/plugin-save` (nuovo): pulsante Salva e Ctrl/Cmd+S come il plugin save di TinyMCE
-    (`savePlugin`, `saveKeymap`, `saveItem`): chiama la tua funzione, attivo solo con modifiche
-    non salvate, mai due salvataggi insieme; un errore lascia il documento "non salvato".
-  - `@scriba/plugin-text-style`: maiuscole e minuscole come Case Change di TinyMCE (`caseMenu`,
-    `changeCase`: minuscolo, MAIUSCOLO, Iniziali Maiuscole, Maiuscola a inizio frase), con le
-    regole della lingua, la formattazione mantenuta e un passo di annullamento ciascuno.
-  - `@scriba/core`: il parser accetta `<iframe>` solo come nodo foglia di uno schema che ha una
-    regola per esso (senza leggerne il contenuto); il serializzatore non scrive mai `srcdoc` e
+  - `@scriba/plugin-embed` (nuovo): media come il plugin media di TinyMCE, con whitelist.
+    - Servizi in `<iframe>` (`embedNodes`): YouTube in modalità privacy avanzata, Vimeo,
+      Dailymotion, Spotify (brani, album, playlist, episodi) e Google Maps; solo l'indirizzo esatto
+      del player, ricostruito dal riferimento controllato, con `sandbox`, `referrerpolicy` e
+      `loading` fissi. Nell'editor una scheda (`embedNodeView`): il player non viene caricato
+      mentre si scrive.
+    - File video e audio (`mediaNodes`: `<video controls>`, `<audio controls>`), indirizzo https o
+      relativo; mai `autoplay`, `poster`, `data:`, `blob:`. Nell'editor il player vero
+      (`mediaFileNodeView`).
+    - Dialog unico Inserisci ▸ Media (`openMediaDialog`): accetta i link soliti (youtube.com/watch,
+      youtu.be, vimeo.com, dai.ly, open.spotify.com), il codice «Incorpora» di Google Maps,
+      l'indirizzo di un file, oppure carica un file con la tua funzione `upload`.
+  - `@scriba/core`: il parser accetta `<iframe>`, `<video>` e `<audio>` solo come nodo foglia di
+    uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
+    `media` (solo https o relativo); il serializzatore non scrive mai `srcdoc` né `autoplay` e
     rifiuta un `<iframe>` senza `sandbox`.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi

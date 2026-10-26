@@ -115,6 +115,9 @@ import {
   embedPlugins,
   embedSlashItem,
   embedToolbarItem,
+  mediaFileNodeView,
+  mediaNodes,
+  type MediaOptions,
 } from '@scriba/plugin-embed'
 import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
 import { dateTimeMenu } from '@scriba/plugin-datetime'
@@ -178,6 +181,10 @@ const images: ImageUploadOptions = {
       reader.readAsDataURL(file)
     }),
 }
+// Media upload (e2e): the file is not sent anywhere; a short silent WAV of the fixture
+// stands for the URL the server would return (same origin, so the strict CSP allows it)
+const silence = new URL('./media/silence.wav', import.meta.url).pathname
+const mediaOptions: MediaOptions = { upload: () => Promise.resolve(silence) }
 // Demo people: a real app asks its server (with the user's session) and returns the matches.
 const people = [
   { id: 'u-anna', label: 'Anna Rossi', detail: 'Redazione' },
@@ -212,6 +219,7 @@ const schema = new Schema({
         ...calloutNodes,
         ...detailsNodes,
         ...embedNodes,
+        ...mediaNodes,
         ...hrNodes,
         ...tableNodes,
       }),
@@ -339,7 +347,7 @@ const slashItems: SlashItem[] = [
   taskSlashItem(schema),
   calloutSlashItem(schema),
   detailsSlashItem(schema),
-  embedSlashItem(t),
+  embedSlashItem(t, mediaOptions),
   ...hrSlashItems(schema),
   {
     id: 'bullet_list',
@@ -477,8 +485,8 @@ const state = EditorState.create({
     keymap(imageKeymap(t, images), { priority: 70 }),
     keymap(taskKeymap(), { priority: 70 }),
     keymap(detailsKeymap(), { priority: 70 }),
-    keymap(embedKeymap(t), { priority: 70 }),
-    ...embedPlugins(t),
+    keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
+    ...embedPlugins(t, mediaOptions),
     detailsAutoOpen(),
     visualAids(),
     codeHighlight({ lowlight: createLowlight(common) }),
@@ -513,6 +521,8 @@ const view = new EditorView(app, {
     callout: vueNodeView(CalloutView, { t }),
     details: detailsNodeView(t),
     embed: embedNodeView(t),
+    video_file: mediaFileNodeView(t),
+    audio_file: mediaFileNodeView(t),
   },
   // collaborative: editable only once the server allows writing
   editable: () =>
@@ -629,7 +639,7 @@ menubar.menus = [
     label: 'menu.insert',
     items: [
       ...imageToolbarItems(schema, t, images),
-      embedToolbarItem(t),
+      embedToolbarItem(t, mediaOptions),
       ...linkToolbarItems(schema, t),
       anchorToolbarItem(t),
       commentToolbarItem(comments, t),
