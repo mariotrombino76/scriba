@@ -136,7 +136,8 @@ function finishUpload(view: EditorView, id: number, result: UploadResult, t: Tra
     announce(view, t('image.error.upload'))
     return
   }
-  const alt = typeof result === 'string' ? '' : (result.alt ?? '')
+  // without a text the image stays "to describe" (no `alt`): the accessibility checker asks for it
+  const alt = typeof result === 'string' ? null : result.alt?.trim() || null
   const node = imageType(state).create({ src, alt })
   const pos = Math.min(at, tr.doc.content.size)
   if (!tr.doc.resolve(pos).parent.type.canContain(node.type)) {

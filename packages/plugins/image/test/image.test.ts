@@ -36,8 +36,16 @@ describe('image node', () => {
       '<p><img src="a.png" alt="" width="200" style="display: block; margin-left: auto; margin-right: auto"></p>',
     )
     expect(roundTrip('<p><img src="a.png" align="left"></p>')).toBe(
-      '<p><img src="a.png" alt="" style="float: left"></p>',
+      '<p><img src="a.png" style="float: left"></p>',
     )
+  })
+
+  it('keeps "no alternative text yet" apart from "decorative"', () => {
+    expect(roundTrip('<p><img src="a.png"></p>')).toBe('<p><img src="a.png"></p>')
+    expect(roundTrip('<p><img src="a.png" alt=""></p>')).toBe('<p><img src="a.png" alt=""></p>')
+    expect(parse('<p><img src="a.png"></p>').firstChild!.firstChild!.attrs['alt']).toBeNull()
+    expect(parse('<p><img src="a.png" alt=""></p>').firstChild!.firstChild!.attrs['alt']).toBe('')
+    expect(() => schema.node('image', { src: 'a.png', alt: 3 })).toThrow()
   })
 
   it('refuses unsafe sources and bad attributes', () => {
@@ -45,9 +53,9 @@ describe('image node', () => {
     expect(roundTrip('<p><img src="data:image/svg+xml;base64,PHN2Zz4="></p>')).toBe('<p></p>')
     expect(
       roundTrip('<p><img src="a.png" width="99999" style="float: left; position: fixed"></p>'),
-    ).toBe('<p><img src="a.png" alt="" style="float: left"></p>')
+    ).toBe('<p><img src="a.png" style="float: left"></p>')
     expect(roundTrip(`<p><img src="${PNG}" onerror="alert(1)"></p>`)).toBe(
-      `<p><img src="${PNG}" alt=""></p>`,
+      `<p><img src="${PNG}"></p>`,
     )
     expect(() => schema.node('image', { src: 'a.png', align: 'top' })).toThrow()
     expect(() => schema.node('image', { src: 'a.png', width: 3 })).toThrow()
@@ -88,7 +96,8 @@ describe('upload', () => {
     resolve('https://cdn.example/a.png')
     await new Promise((r) => setTimeout(r, 0))
     expect(serializeHTML(view.state.doc)).toBe(
-      '<p>XYa<img src="https://cdn.example/a.png" alt="">b</p>',
+      // no alt from the upload: left for the user to write (the accessibility checker asks)
+      '<p>XYa<img src="https://cdn.example/a.png">b</p>',
     )
     expect(view.state.selection).toBeInstanceOf(NodeSelection)
     expect(document.querySelector('[role=status]')?.textContent).toBe('Immagine inserita')

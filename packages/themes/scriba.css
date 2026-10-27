@@ -13,6 +13,7 @@
   --scriba-focus: #2549b8;
   --scriba-code-bg: #eef1f6;
   --scriba-error: #b91c1c;
+  --scriba-warning: #8a4b00;
   --scriba-radius: 8px;
   --scriba-font: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --scriba-hl-keyword: #a3215f;
@@ -50,6 +51,7 @@
     --scriba-focus: #9db5ff;
     --scriba-code-bg: #2a303b;
     --scriba-error: #fca5a5;
+    --scriba-warning: #fcd34d;
     --scriba-hl-keyword: #ff8fc4;
     --scriba-hl-string: #9be3a6;
     --scriba-hl-number: #8cc8ff;
@@ -85,6 +87,7 @@
   --scriba-focus: #9db5ff;
   --scriba-code-bg: #2a303b;
   --scriba-error: #fca5a5;
+  --scriba-warning: #fcd34d;
   --scriba-hl-keyword: #ff8fc4;
   --scriba-hl-string: #9be3a6;
   --scriba-hl-number: #8cc8ff;
@@ -2124,4 +2127,106 @@ hr.scriba-page-break {
 .scriba-editor.scriba-format-painting,
 .scriba-editor.scriba-format-painting * {
   cursor: copy;
+}
+
+/* Accessibility checker */
+.scriba-dialog.scriba-a11y {
+  /* bottom right: the highlighted text stays visible above the dialog */
+  margin: auto 1rem 1rem auto;
+  width: min(30rem, calc(100vw - 2rem));
+}
+.scriba-dialog.scriba-a11y::backdrop {
+  background: rgb(0 0 0 / 0.15);
+}
+.scriba-a11y-issue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.scriba-a11y-status,
+.scriba-a11y-description,
+.scriba-a11y-wcag,
+.scriba-a11y-none {
+  margin: 0;
+}
+.scriba-a11y-status {
+  color: var(--scriba-muted);
+  font-size: 0.875rem;
+}
+.scriba-a11y-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.scriba-a11y-rule {
+  margin: 0;
+  font-size: 1rem;
+}
+.scriba-a11y-severity {
+  padding: 1px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.scriba-a11y-severity[data-severity='error'] {
+  color: var(--scriba-error);
+}
+.scriba-a11y-severity[data-severity='warning'] {
+  color: var(--scriba-warning);
+}
+.scriba-a11y-severity[data-severity='info'] {
+  color: var(--scriba-accent);
+}
+.scriba-a11y-wcag {
+  font-size: 0.875rem;
+}
+.scriba-a11y-wcag a {
+  color: var(--scriba-accent);
+}
+.scriba-a11y-repair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+}
+.scriba-a11y-repair legend {
+  padding: 0 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.scriba-a11y-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.scriba-a11y-actions button {
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  cursor: pointer;
+}
+.scriba-a11y-nav {
+  flex-wrap: wrap;
+}
+.scriba-a11y-nav button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.scriba-a11y a:focus-visible,
+.scriba-a11y-rule:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 1px;
+}
+.scriba-editor .scriba-a11y-current {
+  background: var(--scriba-find-bg);
+  outline: 2px solid var(--scriba-error);
+  outline-offset: 1px;
 }

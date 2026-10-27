@@ -35,6 +35,9 @@ describe.each(Object.entries(themes))('%s theme contrast', (_name, v) => {
     ['text', 'accent-bg', 4.5],
     ['text', 'code-bg', 4.5],
     ['error', 'bg', 4.5],
+    ['warning', 'bg', 4.5],
+    // the accessibility checker outlines the current issue in the error color on the highlight
+    ['error', 'find-bg', 3],
     ['bg', 'accent', 4.5],
     ...(
       ['keyword', 'string', 'number', 'comment', 'title', 'attr', 'builtin', 'meta'] as const

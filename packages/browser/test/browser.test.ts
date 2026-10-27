@@ -57,7 +57,7 @@ describe('Scriba.createEditor', () => {
     expect(onChange).toHaveBeenLastCalledWith('<p>ab</p>')
     editor.setContent('<p>nuovo <img src=x onerror=alert(1)></p>')
     expect(onChange).toHaveBeenCalledTimes(1)
-    expect(editor.getContent()).toBe('<p>nuovo <img src="x" alt=""></p>')
+    expect(editor.getContent()).toBe('<p>nuovo <img src="x"></p>')
   })
 
   it('JSON format, read-only, destroy', () => {

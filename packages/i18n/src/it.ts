@@ -473,4 +473,95 @@ export const it: Messages = {
   'path.label': "Percorso dell'elemento",
   'path.select': 'Seleziona {tag}',
   'resize.label': "Ridimensiona l'editor (frecce su e giù, Esc per l'altezza automatica)",
+  'a11y.check': 'Verifica accessibilità…',
+  'a11y.title': 'Verifica accessibilità',
+  'a11y.none': 'Nessun problema di accessibilità trovato.',
+  'a11y.position': 'Problema {n} di {total}.',
+  'a11y.severity.error': 'Errore',
+  'a11y.severity.warning': 'Avviso',
+  'a11y.severity.info': 'Suggerimento',
+  'a11y.wcag': 'WCAG 2.2 · {id} {name} (livello {level})',
+  'a11y.criterion.non-text-content': 'Contenuti non testuali',
+  'a11y.criterion.info-and-relationships': 'Informazioni e correlazioni',
+  'a11y.criterion.contrast-minimum': 'Contrasto (minimo)',
+  'a11y.criterion.contrast-enhanced': 'Contrasto (avanzato)',
+  'a11y.criterion.visual-presentation': 'Presentazione visiva',
+  'a11y.criterion.link-purpose-in-context': 'Scopo del collegamento (nel contesto)',
+  'a11y.criterion.headings-and-labels': 'Intestazioni ed etichette',
+  'a11y.criterion.name-role-value': 'Nome, ruolo, valore',
+  'a11y.repair': 'Correzione',
+  'a11y.apply': 'Correggi',
+  'a11y.previous': 'Precedente',
+  'a11y.next': 'Successivo',
+  'a11y.ignore': 'Ignora',
+  'a11y.close': 'Chiudi',
+  'a11y.repaired': 'Corretto.',
+  'a11y.ignored': 'Ignorato.',
+  'a11y.repairFailed':
+    'Correzione non riuscita: il documento è cambiato. Chiudi e riapri la verifica.',
+  'a11y.readOnly': 'Il documento è in sola lettura: puoi vedere i problemi ma non correggerli.',
+  'a11y.required': 'Scrivi un testo.',
+  'a11y.decorative': 'Immagine decorativa (i lettori di schermo la saltano)',
+  'a11y.field.alt': 'Testo alternativo',
+  'a11y.field.linkText': 'Testo del link',
+  'a11y.field.caption': 'Didascalia della tabella',
+  'a11y.field.title': 'Titolo del contenuto incorporato',
+  'a11y.field.level': 'Livello del titolo',
+  'a11y.action.headerRow': 'Prima riga come intestazione',
+  'a11y.action.headerColumn': 'Prima colonna come intestazione',
+  'a11y.action.toBulletList': 'Trasforma in elenco puntato',
+  'a11y.action.toOrderedList': 'Trasforma in elenco numerato',
+  'a11y.action.mergeLinks': 'Unisci in un solo link',
+  'a11y.action.toParagraph': 'Trasforma in paragrafo',
+  'a11y.action.suggestedColor': 'Usa il colore {color}',
+  'a11y.action.removeColor': 'Togli i colori',
+  'a11y.action.alignLeft': 'Allinea a sinistra',
+  'a11y.rule.image-alt.title': 'Immagine senza testo alternativo',
+  'a11y.rule.image-alt.description':
+    "Chi usa un lettore di schermo non può vedere l'immagine: descrivila in breve, oppure segnala che è solo decorativa.",
+  'a11y.rule.image-alt-filename.title': 'Testo alternativo poco utile',
+  'a11y.rule.image-alt-filename.description':
+    "Il testo alternativo «{alt}» sembra un nome di file o una parola generica: descrivi cosa mostra l'immagine.",
+  'a11y.rule.image-alt-long.title': 'Testo alternativo troppo lungo',
+  'a11y.rule.image-alt-long.description':
+    'Il testo alternativo ha {length} caratteri (consigliati al massimo {max}). Le descrizioni lunghe vanno nel testo della pagina.',
+  'a11y.rule.link-no-text.title': 'Link senza testo',
+  'a11y.rule.link-no-text.description':
+    'Il link non ha un testo da leggere: chi usa un lettore di schermo sente solo «link». Scrivi dove porta.',
+  'a11y.rule.link-text.title': 'Testo del link poco chiaro',
+  'a11y.rule.link-text.description':
+    '«{text}» non dice dove porta il link. Usa un testo che si capisca anche da solo, per esempio «Scarica il programma della giornata».',
+  'a11y.rule.adjacent-links.title': "Due link uguali uno accanto all'altro",
+  'a11y.rule.adjacent-links.description':
+    'Due link vicini portano allo stesso indirizzo: chi naviga con la tastiera o un lettore di schermo li incontra due volte. Uniscili in uno solo.',
+  'a11y.rule.heading-empty.title': 'Titolo vuoto',
+  'a11y.rule.heading-empty.description':
+    "Un titolo senza testo appare nell'elenco dei titoli dei lettori di schermo ma non dice nulla. Scrivi il titolo o trasformalo in paragrafo.",
+  'a11y.rule.heading-order.title': 'Livello del titolo saltato',
+  'a11y.rule.heading-order.description':
+    "Dopo un titolo di livello {previous} c'è un titolo di livello {level}: i livelli vanno scesi uno alla volta, come i capitoli di un indice.",
+  'a11y.rule.paragraph-as-heading.title': 'Paragrafo usato come titolo',
+  'a11y.rule.paragraph-as-heading.description':
+    'Questo testo breve in grassetto sembra un titolo, ma per i lettori di schermo è un paragrafo qualsiasi. Rendilo un titolo vero.',
+  'a11y.rule.fake-list.title': 'Elenco scritto a mano',
+  'a11y.rule.fake-list.description':
+    '{count} paragrafi iniziano con un trattino o un numero: sembrano un elenco, ma non lo sono. Un elenco vero dice quante voci ha e permette di saltarlo.',
+  'a11y.rule.table-headers.title': 'Tabella senza intestazioni',
+  'a11y.rule.table-headers.description':
+    'Senza celle di intestazione, chi usa un lettore di schermo non sa a quale colonna o riga appartiene un dato.',
+  'a11y.rule.table-header-empty.title': 'Intestazione di tabella vuota',
+  'a11y.rule.table-header-empty.description':
+    "Una cella di intestazione senza testo non dà un nome alla sua colonna o riga. Scrivi l'intestazione nella cella.",
+  'a11y.rule.table-caption.title': 'Tabella senza didascalia',
+  'a11y.rule.table-caption.description':
+    'Una didascalia dice in breve cosa contiene la tabella, prima di leggerne i dati.',
+  'a11y.rule.embed-title.title': 'Contenuto incorporato senza titolo',
+  'a11y.rule.embed-title.description':
+    'Il video o la mappa ha come nome solo quello del servizio. Scrivi un titolo che dica cosa contiene.',
+  'a11y.rule.contrast.title': 'Contrasto del testo insufficiente',
+  'a11y.rule.contrast.description':
+    'Il testo {color} su sfondo {background} ha un contrasto di {ratio}:1; ne serve almeno {required}:1 per leggerlo bene.',
+  'a11y.rule.justified-text.title': 'Testo giustificato',
+  'a11y.rule.justified-text.description':
+    'Il testo giustificato crea spazi irregolari tra le parole e rende più difficile la lettura, per esempio a chi ha la dislessia.',
 }

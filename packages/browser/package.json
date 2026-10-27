@@ -36,6 +36,7 @@
     "@scriba/plugin-embed": "workspace:*",
     "@scriba/plugin-find-replace": "workspace:*",
     "@scriba/plugin-footnotes": "workspace:*",
+    "@scriba/plugin-a11y-checker": "workspace:*",
     "@scriba/plugin-format-painter": "workspace:*",
     "@scriba/plugin-fullscreen": "workspace:*",
     "@scriba/plugin-hr": "workspace:*",

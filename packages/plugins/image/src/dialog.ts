@@ -118,10 +118,10 @@ export function openImageDialog(
       // --- Alternative text / decorative ---
       const alt = el('input')
       alt.type = 'text'
-      alt.value = editing ? (editing.node.attrs['alt'] as string) : ''
+      alt.value = editing ? ((editing.node.attrs['alt'] as string | null) ?? '') : ''
       const decorative = el('input')
       decorative.type = 'checkbox'
-      decorative.checked = !!editing && !editing.node.attrs['alt']
+      decorative.checked = !!editing && editing.node.attrs['alt'] === ''
       alt.disabled = decorative.checked
       decorative.addEventListener('change', () => {
         alt.disabled = decorative.checked

@@ -92,6 +92,7 @@ import {
   formatPainterItem,
   formatPainterKeymap,
 } from '@scriba/plugin-format-painter'
+import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { markdownShortcuts } from '@scriba/plugin-markdown'
 import { pasteClean } from '@scriba/plugin-paste-clean'
@@ -206,6 +207,7 @@ export function createEditor(
         ...findReplacePlugins(),
         formatPainter(t),
         keymap(formatPainterKeymap(), { priority: 85 }),
+        a11yChecker(),
         ...markdownShortcuts(schema),
         autolink((schema as Schema).marks['link']!),
         keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
@@ -317,6 +319,7 @@ export function createEditor(
         toolbarGroup('view', 'toolbar.group.view', [
           findReplaceToolbarItem(t),
           sourceToolbarItem(t),
+          a11yCheckerItem(t),
           fullscreenToolbarItem(fullscreen),
         ]),
       )

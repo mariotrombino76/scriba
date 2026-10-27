@@ -254,6 +254,21 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     direzione e classe; mai `id`. Un passo di annullamento; cursore del tema e messaggio per
     i lettori di schermo mentre aspetta. Anche nel preset CDN completo.
   - `@scriba/ui`: `isFormattingMark`, lo stesso criterio di "Rimuovi formattazione".
+  - `@scriba/plugin-a11y-checker` (nuovo): verifica accessibilità come l'Accessibility
+    Checker di TinyMCE (premium), su WCAG 2.2 livello A, AA (predefinito) o AAA. Strumenti ▸
+    "Verifica accessibilità…" (anche in sola lettura, senza correzioni) apre un dialog con un
+    problema alla volta: selezionato ed evidenziato nel testo, spiegazione semplice, criterio
+    WCAG con il link alla pagina del W3C, correzione; Precedente / Successivo / Ignora (per la
+    sessione). Controlli: immagine senza testo alternativo (o con nome di file o parola
+    generica, o troppo lungo), link senza testo o con testo generico ("clicca qui"), due link
+    uguali vicini, titolo vuoto o con livello saltato, paragrafo in grassetto usato come
+    titolo, elenco scritto a mano ("- uno", "1. due"), tabella senza intestazioni, intestazione
+    vuota, tabella senza didascalia, video o mappa senza titolo, contrasto del testo colorato
+    (anche su evidenziazione o sfondo della cella; testo grande a 3:1) con colore suggerito
+    della stessa tinta, testo giustificato (AAA). Correzioni in un clic o con un campo, ognuna
+    un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
+    anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
+    CDN completo (pulsante nella toolbar).
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
@@ -284,6 +299,15 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   minificato e gzip; il core deve restare sotto i 60 KB gzip: oggi 25 KB, core + view 35,6 KB).
 
 ### Modificato
+
+- **Incompatibile** — `@scriba/plugin-image`: l'attributo `alt` delle immagini è `null` quando
+  il testo alternativo manca e `''` quando l'immagine è decorativa. Prima un'immagine senza
+  `alt` diventava `alt=""` (decorativa) e nessuno se ne accorgeva; ora resta senza `alt`
+  nell'HTML finché qualcuno non la descrive, e la verifica accessibilità la segnala. Anche
+  l'upload senza testo alternativo lascia `alt` a `null`.
+- `@scriba/view`: il nodo selezionato riceve `scriba-selected-node` anche quando l'editor non
+  ha il focus (per esempio se lo seleziona un dialog).
+- `@scriba/themes`: variabile `--scriba-warning` (contrasto AA in chiaro e in scuro).
 
 - Prestazioni con documenti grandi (un tasto in 1 MB di testo, mediane: Chromium ~10 ms,
   Firefox da ~14–22 a ~11 ms, WebKit da ~15–17 a ~12 ms):

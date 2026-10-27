@@ -156,11 +156,11 @@ test('paste from the menu: hostile clipboard HTML is sanitized, nothing runs', a
   await editor(page).getByText('x').click()
   await page.keyboard.press('End')
   await editMenu(page, 'Incolla')
-  await expect.poll(() => html(page)).toBe('<p>xok<img src="x" alt="">l</p>')
+  await expect.poll(() => html(page)).toBe('<p>xok<img src="x">l</p>')
   expect(await page.evaluate(() => (window as unknown as { alerts: number }).alerts)).toBe(0)
   // as text: only the plain text
   await editMenu(page, 'Incolla come testo')
-  await expect.poll(() => html(page)).toBe('<p>xok<img src="x" alt="">lok l</p>')
+  await expect.poll(() => html(page)).toBe('<p>xok<img src="x">lok l</p>')
   await page.evaluate(() => {
     const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
     for (let i = list.length - 1; i >= 0; i--)

@@ -96,6 +96,9 @@ importers:
       '@scriba/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@scriba/plugin-a11y-checker':
+        specifier: workspace:*
+        version: link:../plugins/a11y-checker
       '@scriba/plugin-blockquote':
         specifier: workspace:*
         version: link:../plugins/blockquote
@@ -197,6 +200,27 @@ importers:
   packages/core: {}
 
   packages/i18n: {}
+
+  packages/plugins/a11y-checker:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/plugin-list':
+        specifier: workspace:*
+        version: link:../list
+      '@scriba/plugin-table':
+        specifier: workspace:*
+        version: link:../table
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
 
   packages/plugins/ai:
     dependencies:

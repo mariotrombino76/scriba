@@ -55,7 +55,11 @@ export const imageNodes = {
     atom: true,
     attrs: {
       src: { url: { kind: 'image' } },
-      alt: { default: '', validate: (v) => typeof v === 'string' && v.length <= 1000 },
+      // '' = decorative image (`alt=""`); null = no alternative text given yet (no `alt`)
+      alt: {
+        default: null,
+        validate: (v) => v === null || (typeof v === 'string' && v.length <= 1000),
+      },
       width: {
         default: null,
         validate: (v) =>
@@ -69,7 +73,7 @@ export const imageNodes = {
         tag: 'img',
         getAttrs: (el) => ({
           src: el.getAttribute('src'),
-          alt: (el.getAttribute('alt') ?? '').slice(0, 1000),
+          alt: el.getAttribute('alt')?.slice(0, 1000) ?? null,
           width: readWidth(el),
           align: readAlign(el),
         }),
@@ -79,7 +83,7 @@ export const imageNodes = {
       'img',
       {
         src: node.attrs['src'] as string,
-        alt: node.attrs['alt'] as string,
+        alt: node.attrs['alt'] as string | null,
         width: node.attrs['width'] as number | null,
         style: alignStyle(node.attrs['align'] as ImageAlign | null),
       },

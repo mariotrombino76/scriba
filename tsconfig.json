@@ -40,6 +40,7 @@
       "@scriba/plugin-merge-tags": ["./packages/plugins/merge-tags/src/index.ts"],
       "@scriba/plugin-footnotes": ["./packages/plugins/footnotes/src/index.ts"],
       "@scriba/plugin-format-painter": ["./packages/plugins/format-painter/src/index.ts"],
+      "@scriba/plugin-a11y-checker": ["./packages/plugins/a11y-checker/src/index.ts"],
       "@scriba/plugin-save": ["./packages/plugins/save/src/index.ts"],
       "@scriba/plugin-statusbar": ["./packages/plugins/statusbar/src/index.ts"],
       "@scriba/plugin-embed": ["./packages/plugins/embed/src/index.ts"],

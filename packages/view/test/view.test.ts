@@ -287,3 +287,17 @@ describe('clicking in the text after selecting a node', () => {
     expect(view.state.selection).toBeInstanceOf(NodeSelection)
   })
 })
+
+describe('selected node without focus', () => {
+  it('is marked while the focus is elsewhere (e.g. in a dialog), and unmarked after', () => {
+    const view = mount(doc(p('a', img('x.png'), 'bcd')))
+    const outside = document.body.appendChild(document.createElement('button'))
+    outside.focus()
+    expect(view.hasFocus()).toBe(false)
+    view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, 2)))
+    expect(view.dom.querySelector('img')!.classList.contains('scriba-selected-node')).toBe(true)
+    view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, 1)))
+    expect(view.dom.querySelector('.scriba-selected-node')).toBeNull()
+    outside.remove()
+  })
+})

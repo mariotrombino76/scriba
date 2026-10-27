@@ -132,7 +132,7 @@ export class EditorView {
     // Blocks whose decorations changed while their node did not (e.g. search highlights).
     if (!this.composing)
       this.redrawDecorated(DecorationIndex.changedBlocks(prevDecorations, this.decorations))
-    if (!this.composing && this.hasFocus()) this.syncSelectionToDOM()
+    this.syncSelection()
     this.updateSelectedCustom()
     for (const pluginView of this.pluginViews) pluginView.update?.(this, prev)
     for (const listener of this.listeners) listener(this)
@@ -244,7 +244,15 @@ export class EditorView {
 
   /** @internal Writes the model selection to the DOM. */
   syncSelectionToDOM(): void {
-    const domSel = this.document.getSelection()
+    this.syncSelectedNode()
+    writeDOMSelection(this.rootDesc, this.state.selection, this.document.getSelection())
+  }
+
+  /**
+   * Marks the selected node (also without focus: a dialog may select an image
+   * and show it, while the focus stays in the dialog).
+   */
+  private syncSelectedNode(): void {
     const sel = this.state.selection
     // the highlighted node is remembered: no search through a large document per keystroke
     const dom = sel instanceof NodeSelection ? descAt(this.rootDesc, sel.from)?.dom : null
@@ -254,7 +262,12 @@ export class EditorView {
       selected?.classList.add('scriba-selected-node')
       this.selectedNodeDOM = selected
     } else selected?.classList.add('scriba-selected-node') // redrawn since
-    writeDOMSelection(this.rootDesc, sel, domSel)
+  }
+
+  /** The DOM selection when the editor has the focus, the selected node mark always. */
+  private syncSelection(duringComposition = false): void {
+    if ((duringComposition || !this.composing) && this.hasFocus()) this.syncSelectionToDOM()
+    else this.syncSelectedNode()
   }
 
   /** @internal Reads the DOM selection into the model (after clicks, arrow keys…). */
@@ -397,7 +410,7 @@ export class EditorView {
         }
       }
     })
-    if (this.hasFocus()) this.syncSelectionToDOM()
+    this.syncSelection(true)
   }
 
   /**
@@ -523,7 +536,7 @@ export class EditorView {
       this.rootDesc = new NodeViewDesc(this.state.doc, this.dom, this.dom)
       renderContent(this.document, this.rootDesc, 0, this.context)
     })
-    if (this.hasFocus()) this.syncSelectionToDOM()
+    this.syncSelection(true)
   }
 
   private updateEditable(): void {

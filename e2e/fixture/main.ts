@@ -136,6 +136,7 @@ import {
   formatPainterItem,
   formatPainterKeymap,
 } from '@scriba/plugin-format-painter'
+import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
 import {
   embedKeymap,
   embedNodeView,
@@ -546,6 +547,7 @@ const state = EditorState.create({
     tableOfContents(),
     formatPainter(t),
     keymap(formatPainterKeymap(), { priority: 85 }),
+    a11yChecker(),
     keymap(mathKeymap(t), { priority: 70 }),
     ...mathPlugins(t),
     keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
@@ -755,7 +757,7 @@ menubar.menus = [
   {
     id: 'tools',
     label: 'menu.tools',
-    items: [aiToolbarItem(aiOptions), '|', wordCountItem],
+    items: [aiToolbarItem(aiOptions), '|', a11yCheckerItem(t), wordCountItem],
   },
   { id: 'table', label: 'menu.table', items: tableToolbarItems(schema, t) },
   { id: 'help', label: 'menu.help', items: [helpItem(helpOptions)] },

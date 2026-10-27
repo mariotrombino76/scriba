@@ -139,7 +139,7 @@ test('paste is sanitized through the schema', async ({ page }) => {
     document.querySelector('[role=textbox]')!.dispatchEvent(event)
   })
   // the image is kept (it is in the schema) but without its onerror handler
-  expect(await html(page)).toBe('<p>x<img src="x" alt=""><strong>bold</strong></p>')
+  expect(await html(page)).toBe('<p>x<img src="x"><strong>bold</strong></p>')
   expect(await page.evaluate(() => (window as unknown as { pwned?: number }).pwned)).toBeUndefined()
   // Chromium reports (and blocks) inline handlers met while parsing the pasted HTML in the
   // inert document: proof the CSP is enforced there too. Only those reports are expected here.

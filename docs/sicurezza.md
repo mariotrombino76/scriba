@@ -88,6 +88,20 @@ object-src 'none'; base-uri 'none'; require-trusted-types-for 'script'
 
 I test end-to-end girano tutti con questa CSP attiva.
 
+**Segnalazioni CSP da Chromium.** Per leggere l'HTML che arriva da fuori (incolla, vista
+sorgente, `setContent`) Scriba lo apre in un documento inerte. Chromium applica a quel
+documento la CSP della pagina: se l'HTML ha attributi `style` o `on…`, li **blocca** e lo
+segnala (`style-src-attr`, `script-src-attr`), anche se non sarebbero mai stati usati. Vale
+per ogni documento inerte (`DOMParser`, `<template>`, `createHTMLDocument`,
+`Document.parseHTMLUnsafe`); Firefox e Safari non lo fanno. Non è un attacco riuscito: è un
+attacco (o uno stile di Word) fermato. Se raccogli le segnalazioni con `report-uri` o
+`report-to`, aspettati queste voci quando gli utenti incollano da Word o da pagine web. Non
+aggiungere `'unsafe-inline'` per farle sparire: Scriba non ne ha bisogno.
+
+**WebKit e `<select>`.** Safari costruisce le parti interne di un `<select>` con stili inline,
+che una CSP rigida rifiuta (con un errore in console). Per questo i dialog di Scriba usano
+pulsanti radio al posto dei menu a tendina.
+
 ### Media incorporati e file video/audio
 
 Con `@scriba/plugin-embed` l'HTML salvato può contenere:

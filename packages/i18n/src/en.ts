@@ -470,6 +470,97 @@ export const en = {
   'path.label': 'Element path',
   'path.select': 'Select {tag}',
   'resize.label': 'Resize the editor (up and down arrows, Esc for automatic height)',
+  'a11y.check': 'Accessibility checker…',
+  'a11y.title': 'Accessibility checker',
+  'a11y.none': 'No accessibility issues found.',
+  'a11y.position': 'Issue {n} of {total}.',
+  'a11y.severity.error': 'Error',
+  'a11y.severity.warning': 'Warning',
+  'a11y.severity.info': 'Hint',
+  'a11y.wcag': 'WCAG 2.2 · {id} {name} (level {level})',
+  'a11y.criterion.non-text-content': 'Non-text Content',
+  'a11y.criterion.info-and-relationships': 'Info and Relationships',
+  'a11y.criterion.contrast-minimum': 'Contrast (Minimum)',
+  'a11y.criterion.contrast-enhanced': 'Contrast (Enhanced)',
+  'a11y.criterion.visual-presentation': 'Visual Presentation',
+  'a11y.criterion.link-purpose-in-context': 'Link Purpose (In Context)',
+  'a11y.criterion.headings-and-labels': 'Headings and Labels',
+  'a11y.criterion.name-role-value': 'Name, Role, Value',
+  'a11y.repair': 'Repair',
+  'a11y.apply': 'Repair',
+  'a11y.previous': 'Previous',
+  'a11y.next': 'Next',
+  'a11y.ignore': 'Ignore',
+  'a11y.close': 'Close',
+  'a11y.repaired': 'Repaired.',
+  'a11y.ignored': 'Ignored.',
+  'a11y.repairFailed':
+    'The repair failed: the document has changed. Close and run the check again.',
+  'a11y.readOnly': 'The document is read-only: you can see the issues but not fix them.',
+  'a11y.required': 'Write a text.',
+  'a11y.decorative': 'Decorative image (screen readers skip it)',
+  'a11y.field.alt': 'Alternative text',
+  'a11y.field.linkText': 'Link text',
+  'a11y.field.caption': 'Table caption',
+  'a11y.field.title': 'Title of the embedded content',
+  'a11y.field.level': 'Heading level',
+  'a11y.action.headerRow': 'First row as header',
+  'a11y.action.headerColumn': 'First column as header',
+  'a11y.action.toBulletList': 'Make it a bulleted list',
+  'a11y.action.toOrderedList': 'Make it a numbered list',
+  'a11y.action.mergeLinks': 'Merge into one link',
+  'a11y.action.toParagraph': 'Make it a paragraph',
+  'a11y.action.suggestedColor': 'Use color {color}',
+  'a11y.action.removeColor': 'Remove the colors',
+  'a11y.action.alignLeft': 'Align left',
+  'a11y.rule.image-alt.title': 'Image without alternative text',
+  'a11y.rule.image-alt.description':
+    'People using a screen reader cannot see the image: describe it briefly, or mark it as decorative.',
+  'a11y.rule.image-alt-filename.title': 'Unhelpful alternative text',
+  'a11y.rule.image-alt-filename.description':
+    'The alternative text “{alt}” looks like a file name or a generic word: describe what the image shows.',
+  'a11y.rule.image-alt-long.title': 'Alternative text too long',
+  'a11y.rule.image-alt-long.description':
+    'The alternative text has {length} characters (at most {max} recommended). Long descriptions belong in the page text.',
+  'a11y.rule.link-no-text.title': 'Link without text',
+  'a11y.rule.link-no-text.description':
+    'The link has no text to read: screen reader users only hear “link”. Say where it goes.',
+  'a11y.rule.link-text.title': 'Unclear link text',
+  'a11y.rule.link-text.description':
+    '“{text}” does not say where the link goes. Use a text that makes sense on its own, such as “Download the day’s programme”.',
+  'a11y.rule.adjacent-links.title': 'Two identical links side by side',
+  'a11y.rule.adjacent-links.description':
+    'Two links next to each other go to the same address: keyboard and screen reader users meet it twice. Merge them into one.',
+  'a11y.rule.heading-empty.title': 'Empty heading',
+  'a11y.rule.heading-empty.description':
+    'A heading without text shows up in the screen reader’s list of headings but says nothing. Write the heading or make it a paragraph.',
+  'a11y.rule.heading-order.title': 'Skipped heading level',
+  'a11y.rule.heading-order.description':
+    'A level {level} heading follows a level {previous} heading: levels go down one at a time, like the chapters of a table of contents.',
+  'a11y.rule.paragraph-as-heading.title': 'Paragraph used as a heading',
+  'a11y.rule.paragraph-as-heading.description':
+    'This short bold text looks like a heading, but for screen readers it is just a paragraph. Make it a real heading.',
+  'a11y.rule.fake-list.title': 'Hand-written list',
+  'a11y.rule.fake-list.description':
+    '{count} paragraphs start with a dash or a number: they look like a list but are not one. A real list says how many items it has and can be skipped.',
+  'a11y.rule.table-headers.title': 'Table without headers',
+  'a11y.rule.table-headers.description':
+    'Without header cells, screen reader users cannot tell which column or row a value belongs to.',
+  'a11y.rule.table-header-empty.title': 'Empty table header',
+  'a11y.rule.table-header-empty.description':
+    'A header cell without text gives its column or row no name. Write the header in the cell.',
+  'a11y.rule.table-caption.title': 'Table without caption',
+  'a11y.rule.table-caption.description':
+    'A caption says briefly what the table contains, before its data is read.',
+  'a11y.rule.embed-title.title': 'Embedded content without title',
+  'a11y.rule.embed-title.description':
+    'The video or map is only named after its service. Write a title that says what it contains.',
+  'a11y.rule.contrast.title': 'Insufficient text contrast',
+  'a11y.rule.contrast.description':
+    'Text {color} on background {background} has a contrast of {ratio}:1; it needs at least {required}:1 to be easy to read.',
+  'a11y.rule.justified-text.title': 'Justified text',
+  'a11y.rule.justified-text.description':
+    'Justified text leaves uneven spaces between words and is harder to read, for example for people with dyslexia.',
 } as const
 
 export type MessageKey = keyof typeof en

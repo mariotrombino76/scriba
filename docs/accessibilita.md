@@ -55,6 +55,73 @@ con le frecce su e giù (Pag su/giù per passi più grandi), Esc torna all'altez
 I colori del tema rispettano il contrasto AA in chiaro e in scuro (il tema segue le preferenze
 del sistema). Se ridefinisci le variabili CSS, verifica di nuovo il contrasto.
 
+## Verifica accessibilità del contenuto
+
+L'editor è accessibile, ma il **documento** dipende da chi scrive: un'immagine senza
+descrizione o un titolo saltato lo rendono difficile da usare. `@scriba/plugin-a11y-checker`
+controlla il documento come l'Accessibility Checker di TinyMCE.
+
+Pensala come il correttore ortografico, ma per chi usa un lettore di schermo: trova i punti
+dove queste persone si perderebbero, ti spiega perché e ti propone la correzione.
+
+```ts
+import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
+
+const plugins = [a11yChecker({ level: 'AA' }) /* , … */]
+// nel menu Strumenti o nella toolbar:
+const item = a11yCheckerItem(t)
+```
+
+**Strumenti ▸ Verifica accessibilità…** apre un dialog con un problema alla volta. Il problema
+è selezionato ed evidenziato nel testo (il dialog sta in basso a destra per lasciarlo vedere).
+Il dialog mostra gravità (errore, avviso, suggerimento), spiegazione, criterio WCAG 2.2 con il
+link alla pagina del W3C e la correzione: un campo (testo alternativo, testo del link,
+didascalia, titolo), il livello del titolo o un pulsante. Ogni correzione è un passo di
+annullamento. **Ignora** nasconde il problema fino a quando l'editor viene ricaricato (non
+scrive nulla nel documento). In sola lettura i problemi si vedono ma non si correggono.
+
+| Controllo              | Cosa trova                                                                  | Criterio  |
+| ---------------------- | --------------------------------------------------------------------------- | --------- |
+| `image-alt`            | Immagine senza testo alternativo (né descritta né decorativa)               | 1.1.1 A   |
+| `image-alt-filename`   | Testo alternativo che è un nome di file, di fotocamera o "immagine"         | 1.1.1 A   |
+| `image-alt-long`       | Testo alternativo oltre 150 caratteri (suggerimento)                        | 1.1.1 A   |
+| `link-no-text`         | Link senza testo (o solo con un'immagine decorativa)                        | 2.4.4 A   |
+| `link-text`            | Testo del link generico: "clicca qui", "leggi tutto", "read more"…          | 2.4.4 A   |
+| `adjacent-links`       | Due link vicini allo stesso indirizzo                                       | 2.4.4 A   |
+| `heading-empty`        | Titolo vuoto                                                                | 1.3.1 A   |
+| `heading-order`        | Livello del titolo saltato (h2 → h4)                                        | 1.3.1 A   |
+| `paragraph-as-heading` | Paragrafo breve tutto in grassetto usato come titolo                        | 1.3.1 A   |
+| `fake-list`            | Paragrafi che iniziano con "-", "•" o "1." al posto di un elenco            | 1.3.1 A   |
+| `table-headers`        | Tabella senza celle di intestazione                                         | 1.3.1 A   |
+| `table-header-empty`   | Cella di intestazione vuota                                                 | 1.3.1 A   |
+| `table-caption`        | Tabella senza didascalia                                                    | 1.3.1 A   |
+| `embed-title`          | Video, audio o mappa incorporati senza titolo                               | 4.1.2 A   |
+| `contrast`             | Testo colorato con contrasto sotto 4,5:1 (3:1 se grande); a livello AAA 7:1 | 1.4.3 AA  |
+| `justified-text`       | Testo giustificato (solo a livello AAA)                                     | 1.4.8 AAA |
+
+Opzioni di `a11yChecker()`: `level` (`'A'`, `'AA'`, `'AAA'`), `rules` (per spegnere un
+controllo: `{ 'table-caption': false }`), `background` e `color` (i colori della pagina dove
+il testo sarà mostrato, per il contrasto; predefiniti bianco e nero), `genericLinkTexts`,
+`maxAltLength`.
+
+Il contrasto si controlla solo dove il testo ha un colore suo (colore, evidenziazione, sfondo
+della cella): il resto prende i colori della pagina, che sono responsabilità del sito.
+
+### Sul server
+
+`checkAccessibility(doc, options)` è una funzione pura, senza DOM: con lo stesso schema puoi
+usarla nel backend, per esempio per avvisare o non pubblicare un documento con errori.
+
+```ts
+const errors = checkAccessibility(doc).filter((i) => i.severity === 'error')
+```
+
+### Immagini: "da descrivere" e "decorativa"
+
+Nel documento un'immagine ha `alt: null` finché nessuno l'ha descritta (nell'HTML: niente
+attributo `alt`) e `alt: ''` quando è decorativa (`alt=""`: i lettori di schermo la saltano).
+Così un'immagine incollata o caricata senza descrizione non passa per decorativa.
+
 ## Cosa resta a chi integra
 
 - Dai all'editor un'etichetta significativa nel contesto (`label: 'Testo della nota'`).
