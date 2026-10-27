@@ -60,6 +60,12 @@ un errore per tutto ciò che lo schema rifiuta (tipi, attributi, URL, profondit�
   contro il DOM clobbering.
 - **Campi di unione**: `data-merge-tag` solo con un nome `[a-z0-9_.]`; il testo dentro è sempre
   ricostruito dal nome. `fillMergeTags` inserisce i valori come **testo**, mai come HTML.
+- **Formule**: dell'HTML in ingresso si legge solo il sorgente LaTeX (l'annotazione
+  `application/x-tex`); il MathML viene sempre rigenerato da KaTeX con `trust: false` (niente
+  `\href`, `\url`, `\includegraphics`, `\htmlClass`) e limiti contro le macro ricorsive. Il
+  MathML in uscita usa solo una whitelist di elementi e attributi: mai `maction`,
+  `annotation-xml`, link, classi o stili. Così i noti attacchi di mutation XSS via MathML non
+  arrivano mai nel documento.
 - **Sezioni comprimibili** (`<details>`): solo l'attributo `open`; `ontoggle` e ogni altro
   attributo vengono scartati.
 - **Ricerca con regex** in un Web Worker con limite di tempo: una regex catastrofica non blocca

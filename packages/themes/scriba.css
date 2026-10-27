@@ -2050,6 +2050,35 @@ hr.scriba-page-break {
   outline: 2px solid var(--scriba-accent);
 }
 
+/* Formulas (@scriba/plugin-math): MathML drawn by the browser */
+.scriba-editor .scriba-math {
+  padding: 0 0.1em;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.scriba-editor .scriba-math:hover {
+  background: var(--scriba-accent-bg);
+}
+.scriba-editor .scriba-math-display {
+  display: block;
+  margin: 0.75em 0;
+  text-align: center;
+}
+.scriba-editor .scriba-math.scriba-selected-node {
+  outline: 2px solid var(--scriba-accent);
+}
+.scriba-math-source {
+  width: 100%;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+}
+.scriba-math-preview {
+  min-height: 2.5em;
+  padding: 0.5em;
+  text-align: center;
+  background: var(--scriba-code-bg);
+  border-radius: var(--scriba-radius);
+}
+
 /* AI: choosing among several versions */
 .scriba-ai-variants {
   display: inline-flex;

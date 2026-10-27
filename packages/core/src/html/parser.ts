@@ -26,10 +26,11 @@ const SKIP_TAGS = new Set([
 ]) // prettier-ignore
 
 /**
- * Dropped tags a schema may still take, only as a block leaf whose rule checks it
- * (e.g. a video embed with a domain whitelist): their content is never read.
+ * Dropped tags a schema may still take, only as a leaf whose rule checks it (a video
+ * embed with a domain whitelist, a formula read from its LaTeX annotation): their
+ * content is never parsed into the document.
  */
-const EMBED_TAGS = new Set(['iframe', 'video', 'audio'])
+const EMBED_TAGS = new Set(['iframe', 'video', 'audio', 'math'])
 
 /** Unknown elements that still separate blocks (their inline content gets its own paragraph). */
 const BLOCK_TAGS = new Set([
@@ -191,7 +192,7 @@ class ParseRun {
     if (typeof el.getAttribute !== 'function') return
     if (SKIP_TAGS.has(tag)) {
       const embed = EMBED_TAGS.has(tag) ? this.parser.matchNode(tag, el) : null
-      if (embed?.type.isLeaf && embed.type.isBlock) this.insertLeaf(embed.type, embed.attrs)
+      if (embed?.type.isLeaf) this.insertLeaf(embed.type, embed.attrs)
       return
     }
     // a rule whose node cannot be placed here gives way to the next one (e.g. a footnote's

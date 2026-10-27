@@ -234,8 +234,16 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - `@scriba/core`: `withAttr` e `withClass` per decorare l'output di altri nodi (prima copiati in
     più plugin); il parser, quando il nodo di una regola non può stare in quel punto, prova la
     regola successiva (niente testo perso).
-  - `@scriba/core`: il parser accetta `<iframe>`, `<video>` e `<audio>` solo come nodo foglia di
-    uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
+  - `@scriba/plugin-math` (nuovo): formule come il plugin math di TinyMCE: LaTeX nel documento,
+    MathML nell'HTML generato da KaTeX 0.19.0 (approvato il 2026-10-26; passato dall'integratore
+    con `createMathNodes(katex)`), `trust: false`, limiti contro le macro ricorsive, cache delle
+    formule già disegnate. Dell'HTML in ingresso si legge solo l'annotazione LaTeX. Dialog con
+    anteprima dal vivo, in linea o su una riga a sé; nell'editor il MathML vero.
+  - `@scriba/sanitize-server`: l'adattatore parse5 espone gli elementi MathML come il DOM del
+    browser (il parser legge da un `<math>` solo l'annotazione LaTeX, se lo schema ha le
+    formule; altrimenti lo scarta).
+  - `@scriba/core`: il parser accetta `<iframe>`, `<video>`, `<audio>` e `<math>` solo come
+    nodo foglia di uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
     `media` (solo https o relativo); il serializzatore non scrive mai `srcdoc` né `autoplay` e
     rifiuta un `<iframe>` senza `sandbox`.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
@@ -310,6 +318,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- Dipendenze: `markdown-it` 15.0.3 in `@scriba/plugin-markdown` (due avvisi di negazione del
+  servizio su 15.0.0–15.0.2, uno alto) e `undici` 8.12.2 per jsdom, solo nei test (tre avvisi su
+  8.0.0–8.12.1). `pnpm audit`: nessuna vulnerabilità nota.
 - `@scriba/sanitize-server`: l'HTML era analizzato come frammento, mentre l'editor lo analizza
   come documento intero (`DOMParser`); con un `<noscript>` all'inizio i due risultati
   divergevano (il browser recuperava il contenuto, il server lo scartava). Ora anche il server

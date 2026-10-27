@@ -25,6 +25,7 @@ L'esempio completo, con tutti i plugin insieme, è `demo/main.ts` (`pnpm dev`).
 | `plugin-details`    | Sezioni comprimibili (fisarmonica, `<details>`): titolo, apri/chiudi                                                                                             | `detailsNodes`, `detailsNodeView`, `detailsKeymap`, `detailsAutoOpen`, `detailsToolbarItem`, `detailsSlashItem`                                                                                                         |
 | `plugin-footnotes`  | Note a piè di pagina numerate in automatico, elenco in fondo sempre allineato (Ctrl+Alt+F)                                                                       | `footnoteNodes`, `footnotes`, `footnotesKeymap`, `insertFootnote`, `goToFootnote`, `footnoteToolbarItem`                                                                                                                |
 | `plugin-toc`        | Indice dei contenuti aggiornato con i titoli (con `withAnchors` sui titoli)                                                                                      | `tocNodes`, `tableOfContents`, `insertTableOfContents`, `tocToolbarItem`, `tocSlashItem`                                                                                                                                |
+| `plugin-math`       | Formule: LaTeX nel documento, MathML nell'HTML (KaTeX, `trust` disattivato), anteprima dal vivo                                                                  | `createMathNodes(katex)`, `mathNodeView`, `mathPlugins`, `mathKeymap`, `insertMath`, `mathToolbarItem`, `mathSlashItem`                                                                                                 |
 | `plugin-merge-tags` | Campi di unione `{{cliente.nome}}`: menu, suggerimenti dopo `{{`, `fillMergeTags`                                                                                | `mergeTagNodes`, `mergeTags`, `mergeTagMenu`, `insertMergeTag`, `fillMergeTags`, `mergeTagsIn`                                                                                                                          |
 | `plugin-markdown`   | Scorciatoie Markdown mentre scrivi, import ed export                                                                                                             | `markdownShortcuts`, `parseMarkdown`, `serializeMarkdown`                                                                                                                                                               |
 | `plugin-datetime`   | Inserisci data e ora                                                                                                                                             | `dateTimeMenu`, `formatDateTime`                                                                                                                                                                                        |
@@ -56,7 +57,15 @@ classFormatsMenu(schema, [{ label: 'Avviso', class: 'avviso', kind: 'block' }])
 Le altre classi (`MsoNormal` di Word, quelle delle pagine web) vengono scartate; i nomi sono solo
 `[a-z][a-z0-9-]*` e mai `scriba-…`, riservati all'editor. Il CSS delle classi è il tuo.
 
-## Contenuti
+Formule: passa KaTeX allo schema, così decidi tu quando caricarlo (anche solo quando serve):
+
+```ts
+import katex from 'katex' // oppure: const katex = (await import('katex')).default
+const schema = new Schema({ nodes: { ...nodi, ...createMathNodes(katex) }, marks })
+// nodeViews: { math_inline: mathNodeView(t), math_display: mathNodeView(t) }
+```
+
+L'HTML contiene MathML, che i browser mostrano da soli, senza script né CSS di KaTeX.
 
 | Pacchetto            | A cosa serve                                                                                                                                                                                                                         | Esportazioni principali                                                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |

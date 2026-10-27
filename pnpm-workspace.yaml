@@ -11,3 +11,5 @@ overrides:
   # argparse is used only by mammoth's command line (bin/mammoth), never in the browser;
   # argparse 2 drops sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed version published yet)
   'mammoth>argparse': 2.0.1
+  # jsdom (tests only): undici 8.12.2 fixes GHSA DoS and SRI bypass advisories (8.0.0–8.12.1)
+  'jsdom>undici': 8.12.2

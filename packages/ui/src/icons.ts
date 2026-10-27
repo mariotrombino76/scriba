@@ -152,6 +152,7 @@ const ICONS = {
     ['path', 'm6 6 12 12'],
   ],
   hr: [['path', 'M4 12h16']],
+  math: [['path', 'M18 5H7l5 7-5 7h11']],
   toc: [
     ['path', 'M4 6h2'],
     ['path', 'M9 6h11'],

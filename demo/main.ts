@@ -124,6 +124,15 @@ import {
 } from '@scriba/plugin-footnotes'
 import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba/plugin-merge-tags'
 import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba/plugin-toc'
+import katex from 'katex'
+import {
+  createMathNodes,
+  mathKeymap,
+  mathNodeView,
+  mathPlugins,
+  mathSlashItem,
+  mathToolbarItem,
+} from '@scriba/plugin-math'
 import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
 import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
 import {
@@ -253,6 +262,7 @@ const schema = new Schema({
           ...footnoteNodes,
           ...mergeTagNodes,
           ...tocNodes,
+          ...createMathNodes(katex),
         }),
         BLOCK_CLASSES,
       ),
@@ -410,6 +420,7 @@ const slashItems: SlashItem[] = [
   detailsSlashItem(schema),
   footnoteSlashItem(schema),
   tocSlashItem(schema),
+  mathSlashItem(t),
   embedSlashItem(t, mediaOptions),
   ...hrSlashItems(schema),
   {
@@ -555,6 +566,8 @@ const state = EditorState.create({
     keymap(footnotesKeymap(schema), { priority: 70 }),
     footnotes(),
     tableOfContents(),
+    keymap(mathKeymap(t), { priority: 70 }),
+    ...mathPlugins(t),
     keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
     ...embedPlugins(t, mediaOptions),
     detailsAutoOpen(),
@@ -592,6 +605,8 @@ const view: EditorView = new EditorView($('editor'), {
     embed: embedNodeView(t),
     video_file: mediaFileNodeView(t),
     audio_file: mediaFileNodeView(t),
+    math_inline: mathNodeView(t),
+    math_display: mathNodeView(t),
   },
   editable: () =>
     !readOnly && (!shared || (shared.provider.status === 'connected' && shared.provider.canWrite)),
@@ -741,6 +756,7 @@ menubar.menus = [
       footnoteToolbarItem(schema),
       footnoteGoToItem(),
       tocToolbarItem(schema),
+      mathToolbarItem(t),
       mergeTagMenu(tags),
       ...blockquoteToolbarItems(schema),
     ],

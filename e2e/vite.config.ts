@@ -54,6 +54,7 @@ export default defineConfig({
       '@scriba/plugin-charmap': plugin('charmap'),
       '@scriba/plugin-autosave': plugin('autosave'),
       '@scriba/plugin-details': plugin('details'),
+      '@scriba/plugin-math': plugin('math'),
       '@scriba/plugin-toc': plugin('toc'),
       '@scriba/plugin-merge-tags': plugin('merge-tags'),
       '@scriba/plugin-footnotes': plugin('footnotes'),

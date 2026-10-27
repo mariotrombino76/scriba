@@ -35,6 +35,7 @@
       "@scriba/plugin-charmap": ["./packages/plugins/charmap/src/index.ts"],
       "@scriba/plugin-autosave": ["./packages/plugins/autosave/src/index.ts"],
       "@scriba/plugin-details": ["./packages/plugins/details/src/index.ts"],
+      "@scriba/plugin-math": ["./packages/plugins/math/src/index.ts"],
       "@scriba/plugin-toc": ["./packages/plugins/toc/src/index.ts"],
       "@scriba/plugin-merge-tags": ["./packages/plugins/merge-tags/src/index.ts"],
       "@scriba/plugin-footnotes": ["./packages/plugins/footnotes/src/index.ts"],
