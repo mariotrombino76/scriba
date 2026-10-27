@@ -28,6 +28,7 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 | Mod+Maiusc+S, Mod+E       | Barrato, codice in linea                                         |
 | Mod+. , Mod+,             | Apice, pedice                                                    |
 | Mod+Maiusc+Spazio         | Spazio non separabile                                            |
+| Mod+Alt+C / Mod+Alt+V     | Copia formato / applicalo alla selezione (Esc annulla l'attesa)  |
 | Mod+Alt+0 … 6             | Paragrafo, Titolo 1…6                                            |
 | Mod+K                     | Link                                                             |
 | Mod+S                     | Salva (con `@scriba/plugin-save`)                                |

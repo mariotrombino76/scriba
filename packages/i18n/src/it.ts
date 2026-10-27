@@ -465,6 +465,10 @@ export const it: Messages = {
   'case.upper': 'MAIUSCOLO',
   'case.title': 'Iniziali Maiuscole',
   'case.sentence': 'Maiuscola a inizio frase',
+  'formatPainter.label': 'Copia formato',
+  'formatPainter.armed':
+    'Formato copiato: fai clic su una parola o seleziona il testo a cui darlo (Esc per annullare)',
+  'formatPainter.off': 'Copia formato disattivato',
   'save.label': 'Salva',
   'path.label': "Percorso dell'elemento",
   'path.select': 'Seleziona {tag}',

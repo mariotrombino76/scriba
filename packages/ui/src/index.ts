@@ -6,6 +6,7 @@ export {
   historyItems,
   clearFormatItem,
   clearFormatting,
+  isFormattingMark,
   selectAllItem,
   nonBreakingSpaceItem,
   markItems,

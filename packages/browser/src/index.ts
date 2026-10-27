@@ -87,6 +87,11 @@ import {
   footnoteToolbarItem,
 } from '@scriba/plugin-footnotes'
 import { tableOfContents, tocNodes, tocToolbarItem } from '@scriba/plugin-toc'
+import {
+  formatPainter,
+  formatPainterItem,
+  formatPainterKeymap,
+} from '@scriba/plugin-format-painter'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { markdownShortcuts } from '@scriba/plugin-markdown'
 import { pasteClean } from '@scriba/plugin-paste-clean'
@@ -114,7 +119,8 @@ export interface CreateEditorOptions {
   format?: ContentFormat
   /**
    * `'full'` (default): headings, lists, links, images, tables, colors and fonts,
-   * quotes, code, lines, find and replace, HTML source, full screen, Markdown shortcuts.
+   * quotes, code, lines, format painter, find and replace, HTML source, full screen,
+   * Markdown shortcuts.
    * `'basic'`: paragraphs, headings and bold/italic/underline/strike/code.
    */
   preset?: 'full' | 'basic'
@@ -198,6 +204,8 @@ export function createEditor(
         ...tablePlugins(),
         ...hrPlugins(t),
         ...findReplacePlugins(),
+        formatPainter(t),
+        keymap(formatPainterKeymap(), { priority: 85 }),
         ...markdownShortcuts(schema),
         autolink((schema as Schema).marks['link']!),
         keymap(findReplaceKeymap(t), { priority: 80, readOnly: true }),
@@ -268,7 +276,12 @@ export function createEditor(
     const items: ToolbarItem[] = [
       toolbarGroup('history', 'toolbar.group.history', historyItems(), 3),
       ...(style ? [toolbarGroup('text-style', 'toolbar.group.textStyle', [style], 3)] : []),
-      toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
+      toolbarGroup(
+        'format',
+        'toolbar.group.format',
+        [...markItems(schema), ...(full ? [formatPainterItem()] : [])],
+        2,
+      ),
     ]
     if (full) {
       items.push(

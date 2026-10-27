@@ -136,6 +136,11 @@ import {
 import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
 import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
 import {
+  formatPainter,
+  formatPainterItem,
+  formatPainterKeymap,
+} from '@scriba/plugin-format-painter'
+import {
   embedKeymap,
   embedNodeView,
   embedNodes,
@@ -566,6 +571,8 @@ const state = EditorState.create({
     keymap(footnotesKeymap(schema), { priority: 70 }),
     footnotes(),
     tableOfContents(),
+    formatPainter(t),
+    keymap(formatPainterKeymap(), { priority: 85 }),
     keymap(mathKeymap(t), { priority: 70 }),
     ...mathPlugins(t),
     keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
@@ -635,7 +642,7 @@ toolbar.items = [
     ...(styleMenu ? [{ ...styleMenu, priority: 3 }] : []),
     ...fontItems(schema),
   ]),
-  toolbarGroup('format', 'toolbar.group.format', markItems(schema), 2),
+  toolbarGroup('format', 'toolbar.group.format', [...markItems(schema), formatPainterItem()], 2),
   toolbarGroup('colors', 'toolbar.group.colors', colorItems(schema)),
   toolbarGroup(
     'insert',
@@ -777,6 +784,7 @@ menubar.menus = [
       '|',
       ...colorItems(schema),
       '|',
+      formatPainterItem(),
       clearFormatItem(),
     ],
   },

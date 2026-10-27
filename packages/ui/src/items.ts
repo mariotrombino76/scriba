@@ -8,6 +8,7 @@ import {
   undo,
   type Command,
   type EditorState,
+  type MarkType,
   type Schema,
   type Transaction,
   insertNonBreakingSpace,
@@ -138,16 +139,21 @@ export function toolbarGroup(
 }
 
 /**
+ * True for marks that are formatting (bold, colors, fonts, classes…): not
+ * links, annotations (comments, suggestions) or editor-only marks.
+ */
+export function isFormattingMark(type: MarkType): boolean {
+  return type.name !== 'link' && type.spec.annotation !== true && type.spec.serialize !== false
+}
+
+/**
  * Removes inline formatting (bold, colors, fonts…) from the selection, like
  * TinyMCE's "Remove format"; links and annotations (comments) stay.
  */
 export const clearFormatting: Command = (state, dispatch) => {
   const { from, to, empty } = state.selection
   if (empty) return false
-  const types = Object.values(state.schema.marks).filter(
-    (type) =>
-      type.name !== 'link' && type.spec.annotation !== true && type.spec.serialize !== false,
-  )
+  const types = Object.values(state.schema.marks).filter(isFormattingMark)
   if (!types.some((type) => state.doc.rangeHasMark(from, to, type))) return false
   if (dispatch) {
     const tr = state.tr

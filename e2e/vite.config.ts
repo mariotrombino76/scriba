@@ -58,6 +58,7 @@ export default defineConfig({
       '@scriba/plugin-toc': plugin('toc'),
       '@scriba/plugin-merge-tags': plugin('merge-tags'),
       '@scriba/plugin-footnotes': plugin('footnotes'),
+      '@scriba/plugin-format-painter': plugin('format-painter'),
       '@scriba/plugin-save': plugin('save'),
       '@scriba/plugin-statusbar': plugin('statusbar'),
       '@scriba/plugin-embed': plugin('embed'),

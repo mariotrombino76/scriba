@@ -2119,3 +2119,9 @@ hr.scriba-page-break {
 [id^='anchor-'] {
   scroll-margin-top: 1rem;
 }
+
+/* Format painter: waiting for the text to format */
+.scriba-editor.scriba-format-painting,
+.scriba-editor.scriba-format-painting * {
+  cursor: copy;
+}

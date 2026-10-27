@@ -246,6 +246,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     nodo foglia di uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
     `media` (solo https o relativo); il serializzatore non scrive mai `srcdoc` né `autoplay` e
     rifiuta un `<iframe>` senza `sandbox`.
+  - `@scriba/plugin-format-painter` (nuovo): copia formato come il Format Painter di TinyMCE.
+    Il pulsante copia la formattazione al cursore e la dà al clic o alla selezione successiva
+    (una volta; Esc o di nuovo il pulsante per annullare); Ctrl+Alt+C copia, Ctrl+Alt+V
+    applica. Copia i mark di formattazione (non link né commenti) e, per i blocchi selezionati
+    per intero, tipo (paragrafo/titolo e livello), allineamento, rientro, interlinea,
+    direzione e classe; mai `id`. Un passo di annullamento; cursore del tema e messaggio per
+    i lettori di schermo mentre aspetta. Anche nel preset CDN completo.
+  - `@scriba/ui`: `isFormattingMark`, lo stesso criterio di "Rimuovi formattazione".
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),

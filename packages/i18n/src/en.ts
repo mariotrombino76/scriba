@@ -462,6 +462,10 @@ export const en = {
   'case.upper': 'UPPERCASE',
   'case.title': 'Title Case',
   'case.sentence': 'Sentence case',
+  'formatPainter.label': 'Format painter',
+  'formatPainter.armed':
+    'Format copied: click a word or select the text to give it to (Esc to cancel)',
+  'formatPainter.off': 'Format painter off',
   'save.label': 'Save',
   'path.label': 'Element path',
   'path.select': 'Select {tag}',

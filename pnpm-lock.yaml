@@ -117,6 +117,9 @@ importers:
       '@scriba/plugin-footnotes':
         specifier: workspace:*
         version: link:../plugins/footnotes
+      '@scriba/plugin-format-painter':
+        specifier: workspace:*
+        version: link:../plugins/format-painter
       '@scriba/plugin-fullscreen':
         specifier: workspace:*
         version: link:../plugins/fullscreen
@@ -455,6 +458,21 @@ importers:
         version: link:../../view
 
   packages/plugins/footnotes:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
+  packages/plugins/format-painter:
     dependencies:
       '@scriba/core':
         specifier: workspace:*
