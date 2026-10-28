@@ -72,6 +72,7 @@ export class EditorState {
   }
 
   applyTransaction(root: Transaction): { state: EditorState; transactions: Transaction[] } {
+    root = this.rewrite(root)
     if (!this.filter(root)) return { state: this, transactions: [] }
     const trs = [root]
     let state = this.applyInner(root)
@@ -100,6 +101,18 @@ export class EditorState {
       if (!appended) return { state, transactions: trs }
     }
     throw new RangeError('appendTransaction did not settle (plugins keep appending)')
+  }
+
+  /** Lets plugins replace a transaction before it is filtered (`rewriteTransaction`). */
+  private rewrite(tr: Transaction): Transaction {
+    for (const p of this.plugins) {
+      const replaced = p.spec.rewriteTransaction?.(tr, this)
+      if (!replaced || replaced === tr) continue
+      if (replaced.before !== this.doc)
+        throw new RangeError('rewriteTransaction must build on the current state')
+      tr = replaced.inherit(tr)
+    }
+    return tr
   }
 
   private filter(tr: Transaction, ignore = -1): boolean {

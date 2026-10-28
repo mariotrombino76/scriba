@@ -10,6 +10,7 @@ import {
   history,
   parseHTML,
   serializeHTML,
+  toggleMark,
   undo,
 } from '@scriba/core'
 import { createTranslator } from '@scriba/i18n'
@@ -111,6 +112,35 @@ describe('editing a selection with protected blocks', () => {
     )
   })
 
+  it('bold on a selection with a protected block: the rest becomes bold', () => {
+    const state = select(`<p>uno</p>${LOCK}<p>due</p>`, 'all')
+    const next = state.apply(
+      state.tr.addMark(0, state.doc.content.size, schema.marks.bold!.create()),
+    )
+    expect(html(next)).toBe(`<p><strong>uno</strong></p>${LOCK}<p><strong>due</strong></p>`)
+    expect(next.selection).toBeInstanceOf(AllSelection)
+    const plain = next.apply(next.tr.removeMark(0, next.doc.content.size, schema.marks.bold!))
+    expect(html(plain)).toBe(`<p>uno</p>${LOCK}<p>due</p>`)
+    // bold only inside the protected block: still refused
+    expect(state.apply(state.tr.addMark(6, 11, schema.marks.bold!.create()))).toBe(state)
+  })
+
+  it('Ctrl+B twice on a selection with a protected block: bold, then not bold', () => {
+    // a browser's select all: a text selection from the first to the last letter
+    let state = select(`<p>uno</p>${LOCK}<p>due</p>`, 1, 16)
+    const bold = toggleMark(schema.marks.bold!)
+    bold(state, (tr) => (state = state.apply(tr)))
+    expect(html(state)).toBe(`<p><strong>uno</strong></p>${LOCK}<p><strong>due</strong></p>`)
+    bold(state, (tr) => (state = state.apply(tr)))
+    expect(html(state)).toBe(`<p>uno</p>${LOCK}<p>due</p>`)
+  })
+
+  it('a refused change that is not only formatting is not rewritten', () => {
+    const state = select(`<p>uno</p>${LOCK}`, 'all')
+    const tr = state.tr.addMark(0, 12, schema.marks.bold!.create()).insertText('x', 1)
+    expect(state.apply(tr)).toBe(state)
+  })
+
   it('in the view: keys, typing and cut go through the plugin', () => {
     const place = document.createElement('div')
     document.body.replaceChildren(place)
@@ -122,7 +152,7 @@ describe('editing a selection with protected blocks', () => {
     view.destroy()
   })
 
-  it('fuzz: typing over any selection never changes a protected block', () => {
+  it('fuzz: typing, deleting or formatting any selection never changes a protected block', () => {
     const source = `<p>uno</p>${LOCK}<blockquote><p>due</p><p data-block-id="lock-2">ancora</p></blockquote><h2>tre</h2>`
     const base = parse(source)
     const size = base.content.size
@@ -138,11 +168,15 @@ describe('editing a selection with protected blocks', () => {
         }
         const tr = typeKeepingLocked(state, state.selection.from, state.selection.to, 'Z', rules)
         if (tr) expect(checkBlockEdits(base, state.apply(tr).doc, rules)).toEqual([])
+        if (from < to) {
+          const bolded = state.apply(state.tr.addMark(from, to, schema.marks.bold!.create()))
+          expect(checkBlockEdits(base, bolded.doc, rules)).toEqual([])
+        }
         let deleted = state
         deleteSelectionKeepingLocked(rules)(state, (t) => (deleted = state.apply(t)))
         expect(checkBlockEdits(base, deleted.doc, rules)).toEqual([])
       }),
       { numRuns: 300 },
     )
-  })
+  }, 30_000)
 })

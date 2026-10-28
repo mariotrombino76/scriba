@@ -37,6 +37,12 @@ export function isMarkActive(state: EditorState, type: MarkType): boolean {
 }
 
 /**
+ * Meta set by `toggleMark` on its transaction (the mark type's name): a plugin
+ * that adjusts the change (e.g. around protected blocks) knows it is a toggle.
+ */
+export const TOGGLE_MARK = 'toggleMark'
+
+/**
  * Toggles a mark. With a cursor it changes the stored marks (affecting the next
  * typed text); with a range it removes the mark if the range is fully marked,
  * otherwise adds it.
@@ -55,7 +61,7 @@ export function toggleMark(type: MarkType, attrs?: Record<string, unknown> | nul
     } else {
       tr.addMark(sel.from, sel.to, type.create(attrs))
     }
-    dispatch(tr.scrollIntoView())
+    dispatch(tr.setMeta(TOGGLE_MARK, type.name).scrollIntoView())
     return true
   }
 }

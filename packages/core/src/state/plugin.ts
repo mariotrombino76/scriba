@@ -21,6 +21,14 @@ export interface PluginSpec<T = unknown> {
   key?: PluginKey<T>
   state?: StateField<T>
   props?: PluginProps
+  /**
+   * Before filtering: may return a transaction to apply instead of `tr`, built
+   * from `state.tr` and doing what the user asked as far as allowed (e.g. a mark
+   * applied around protected blocks). It inherits `tr`'s metadata and time, and
+   * still goes through every `filterTransaction`. Return null to keep `tr`.
+   * Only for transactions dispatched from outside (not appended ones).
+   */
+  rewriteTransaction?(tr: Transaction, state: EditorState): Transaction | null | undefined
   /** Return false to cancel a transaction. */
   filterTransaction?(tr: Transaction, state: EditorState): boolean
   /**

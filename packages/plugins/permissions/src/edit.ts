@@ -1,6 +1,10 @@
 import {
+  AddMarkStep,
   AllSelection,
   CLOSE_HISTORY,
+  Mapping,
+  RemoveMarkStep,
+  TOGGLE_MARK,
   Selection,
   TextSelection,
   TransformError,
@@ -8,6 +12,8 @@ import {
   type Command,
   type EditorState,
   type Fragment,
+  type MarkType,
+  type Node,
   type Transaction,
 } from '@scriba/core'
 import { lockedTest, transactionAllowed, type BlockRules } from './check.js'
@@ -164,4 +170,72 @@ export function pasteKeepingLocked(
   if (end === null) return null
   tr.setSelection(Selection.near(tr.doc.resolve(Math.min(end, tr.doc.content.size)), -1))
   return transactionAllowed(tr, rules) ? tr.scrollIntoView() : null
+}
+
+/** Whether every piece of text in the range that may carry `type` has it. */
+function allMarked(doc: Node, range: { from: number; to: number }, type: MarkType): boolean {
+  let all = true
+  doc.nodesBetween(range.from, range.to, (node, _pos, parent) => {
+    if (!all) return false
+    if (node.isText && parent?.type.allowsMarkType(type) && !type.isInSet(node.marks)) all = false
+    return true
+  })
+  return all
+}
+
+/** Parts of `from…to` outside protected blocks. */
+function unlockedRanges(
+  doc: Node,
+  from: number,
+  to: number,
+  locked: (node: Node) => boolean,
+): { from: number; to: number }[] {
+  const out: { from: number; to: number }[] = []
+  let start = from
+  doc.nodesBetween(from, to, (node, pos) => {
+    if (!locked(node)) return true
+    if (pos > start) out.push({ from: start, to: pos })
+    start = Math.max(start, pos + node.nodeSize)
+    return false
+  })
+  if (start < to) out.push({ from: start, to })
+  return out
+}
+
+/**
+ * A formatting change (bold, color…) refused because the selection contains
+ * protected blocks: the same marks applied only around them. Null when the
+ * transaction does something else, or nothing is left to change.
+ */
+export function marksAroundLocked(
+  tr: Transaction,
+  state: EditorState,
+  rules: BlockRules,
+): Transaction | null {
+  if (!tr.steps.every((s) => s instanceof AddMarkStep || s instanceof RemoveMarkStep)) return null
+  const locked = lockedTest(rules)
+  const out = state.tr
+  const steps = tr.steps as (AddMarkStep | RemoveMarkStep)[]
+  // a toggle (Ctrl+B…) seen as "add" only because the protected text lacks the
+  // mark: when all the editable text has it, the user is taking it away
+  const toggled = tr.getMeta<string>(TOGGLE_MARK)
+  const type = toggled ? state.schema.marks[toggled] : undefined
+  if (type && steps.every((s) => s instanceof AddMarkStep && s.mark.type === type)) {
+    const { from, to } = state.selection
+    const ranges = unlockedRanges(out.doc, from, to, locked)
+    if (ranges.length && ranges.every((r) => allMarked(out.doc, r, type)))
+      for (const r of ranges) out.removeMark(r.from, r.to, type)
+  }
+  if (!out.docChanged)
+    for (const step of steps) {
+      for (const r of unlockedRanges(out.doc, step.from, step.to, locked)) {
+        if (step instanceof AddMarkStep) out.addMark(r.from, r.to, step.mark)
+        else out.removeMark(r.from, r.to, step.mark)
+      }
+    }
+  if (!out.docChanged) return null
+  // marks do not move positions: the same selection and stored marks
+  if (tr.selectionSet) out.setSelection(tr.selection.map(out.doc, new Mapping()))
+  if (tr.storedMarksSet) out.setStoredMarks(tr.storedMarks)
+  return transactionAllowed(out, rules) ? out : null
 }

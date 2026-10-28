@@ -146,6 +146,17 @@ export class Transaction extends Transform {
     return (this.updated & Transaction.SCROLL) > 0
   }
 
+  /**
+   * Takes the metadata, time and scroll request of `tr`, which this
+   * transaction replaces (see `rewriteTransaction`). @internal
+   */
+  inherit(tr: Transaction): this {
+    for (const [key, value] of tr.meta) if (!this.meta.has(key)) this.meta.set(key, value)
+    this.time = tr.time
+    if (tr.scrolledIntoView) this.scrollIntoView()
+    return this
+  }
+
   /** True when the transaction only carries metadata (no steps, no selection change). */
   get isGeneric(): boolean {
     return this.meta.size > 0 && !this.docChanged && !this.selectionSet

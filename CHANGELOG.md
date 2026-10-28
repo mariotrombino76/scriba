@@ -323,6 +323,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   `pasteKeepingLocked`. Il controllo finale resta `transactionAllowed`: se il risultato toccasse
   un blocco protetto, la modifica viene rifiutata come prima (test fuzz in
   `permissions/test/edit.test.ts`, nella suite di sicurezza).
+- `@scriba/plugin-permissions`: anche la formattazione (grassetto, corsivo, colori…) di una
+  selezione che contiene blocchi protetti si applica al resto invece di essere rifiutata; Ctrl+B
+  una seconda volta toglie il grassetto anche se il testo protetto non lo ha mai avuto.
+  `marksAroundLocked`. Il blocco protetto da solo resta non formattabile.
+- `@scriba/core`: nuovo hook dei plugin `rewriteTransaction(tr, state)`: prima del filtro un
+  plugin può sostituire la transazione con una equivalente che accetta (eredita metadati e
+  tempo e passa comunque da tutti i `filterTransaction`). `toggleMark` segna la sua
+  transazione con il metadato `TOGGLE_MARK`.
 - `@scriba/view`: nuova prop dei plugin `handleDeleteSelection(view)`, chiamata prima di
   cancellare una selezione per taglia o per un evento di input del browser.
 - **Incompatibile** — `@scriba/plugin-image`: l'attributo `alt` delle immagini è `null` quando

@@ -89,11 +89,36 @@ test('editing around it works; a selection across it deletes everything else', a
   expect(await html(page)).toContain('<p data-block-id="lock-1">Clausola fissa</p><p>Alla Fine</p>')
 })
 
-test('the toolbar cannot format it', async ({ page }) => {
+test('select all + bold: the rest is formatted, the protected block is not', async ({ page }) => {
   await editor(page).getByText('Libero').click()
   await page.keyboard.press('Control+a')
-  await page.getByRole('toolbar', { name: 'Formattazione', exact: true }).getByRole('button', { name: 'Grassetto' }).click() // prettier-ignore
+  await page.keyboard.press('Control+b')
+  await expect
+    .poll(() => html(page))
+    .toBe(
+      '<p data-block-id="free-1"><strong>Libero</strong></p><p data-block-id="lock-1">Clausola fissa</p><p><strong>Fine</strong></p>',
+    )
+  // again: the bold goes away (the protected text never had it)
+  await page.keyboard.press('Control+b')
+  await expect.poll(() => html(page)).toBe(DOC)
+})
+
+test('the toolbar cannot format it; a wider selection formats the rest', async ({ page }) => {
+  const bold = () =>
+    page.getByRole('toolbar', { name: 'Formattazione', exact: true }).getByRole('button', { name: 'Grassetto' }).click() // prettier-ignore
+  await editor(page).getByText('Clausola fissa').click()
+  await page.keyboard.press('Home')
+  await page.keyboard.press('Shift+End')
+  await bold()
   expect(await html(page)).toBe(DOC)
+  await editor(page).getByText('Libero').click()
+  await page.keyboard.press('Control+a')
+  await bold()
+  await expect
+    .poll(() => html(page))
+    .toBe(
+      '<p data-block-id="free-1"><strong>Libero</strong></p><p data-block-id="lock-1">Clausola fissa</p><p><strong>Fine</strong></p>',
+    )
 })
 
 test('a pasted copy of a protected block loses its id', async ({ page }) => {

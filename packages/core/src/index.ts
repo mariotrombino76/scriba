@@ -69,7 +69,7 @@ export {
   insertNode,
   setBlockType,
 } from './commands/base.js'
-export { toggleMark, isMarkActive } from './commands/marks.js'
+export { toggleMark, isMarkActive, TOGGLE_MARK } from './commands/marks.js'
 export {
   wrapIn,
   lift,

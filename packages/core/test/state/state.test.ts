@@ -39,6 +39,31 @@ describe('EditorState', () => {
     expect(next.doc.eq(doc(p('a', b('X'), 'd')))).toBe(true)
   })
 
+  it('rewriteTransaction replaces a transaction, which is still filtered', () => {
+    const plugins = [
+      new Plugin({
+        // "x" typed anywhere becomes "y"
+        rewriteTransaction: (tr, state) =>
+          tr.getMeta('typed') === 'x' ? state.tr.insertText('y', 1) : null,
+      }),
+      new Plugin({ filterTransaction: (tr) => tr.getMeta('block') !== true }),
+    ]
+    const s = EditorState.create({ doc: doc(p('a')), plugins })
+    const { state, transactions } = s.applyTransaction(
+      s.tr.insertText('x', 1).setMeta('typed', 'x').setMeta('other', 1),
+    )
+    expect(state.doc.eq(doc(p('ya')))).toBe(true)
+    // the replacement keeps the original's metadata
+    expect(transactions[0]!.getMeta('other')).toBe(1)
+    expect(transactions[0]!.getMeta('typed')).toBe('x')
+    // and is filtered like any other
+    expect(s.apply(s.tr.insertText('x', 1).setMeta('typed', 'x').setMeta('block', true))).toBe(s)
+    // a replacement built on another document is a mistake
+    const wrong = new Plugin({ rewriteTransaction: () => EditorState.create({ schema }).tr })
+    const w = EditorState.create({ doc: doc(p('a')), plugins: [wrong] })
+    expect(() => w.apply(w.tr.insertText('x', 1))).toThrow(RangeError)
+  })
+
   it('runs plugin state, filterTransaction and appendTransaction', () => {
     const counter = new PluginKey<number>('counter')
     const plugins = [

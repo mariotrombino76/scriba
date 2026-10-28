@@ -4,6 +4,7 @@ export { blockPermissions, LOCKED_CLASS, type BlockPermissionOptions } from './p
 export {
   deleteKeepingLocked,
   deleteSelectionKeepingLocked,
+  marksAroundLocked,
   pasteKeepingLocked,
   typeKeepingLocked,
 } from './edit.js'

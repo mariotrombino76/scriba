@@ -2,7 +2,12 @@ import { Plugin, keymap, type EditorState, type Node, type Transaction } from '@
 import type { Translate } from '@scriba/i18n'
 import type { EditorView, PluginView, TransformPastedDOM, ViewPluginProps } from '@scriba/view'
 import { transactionAllowed, type BlockRules } from './check.js'
-import { deleteSelectionKeepingLocked, pasteKeepingLocked, typeKeepingLocked } from './edit.js'
+import {
+  deleteSelectionKeepingLocked,
+  marksAroundLocked,
+  pasteKeepingLocked,
+  typeKeepingLocked,
+} from './edit.js'
 import { BLOCK_ID, blockIdOf, isBlockId } from './ids.js'
 
 export interface BlockPermissionOptions extends BlockRules {
@@ -130,6 +135,11 @@ export function blockPermissions(options: BlockPermissionOptions): Plugin[] {
   }
   return [
     new Plugin({
+      // formatting a selection that contains protected blocks formats the rest
+      rewriteTransaction(tr, state) {
+        if (!tr.docChanged || trusted(tr) || transactionAllowed(tr, options)) return null
+        return marksAroundLocked(tr, state, options)
+      },
       filterTransaction(tr) {
         if (!tr.docChanged || trusted(tr) || transactionAllowed(tr, options)) return true
         for (const announce of refused) announce()
