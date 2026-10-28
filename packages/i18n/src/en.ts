@@ -150,6 +150,8 @@ export const en = {
   'table.toggleHeaderCol': 'Header column',
   'table.widen': 'Widen column',
   'table.narrow': 'Narrow column',
+  'table.sortAsc': 'Sort ascending (A→Z)',
+  'table.sortDesc': 'Sort descending (Z→A)',
   'table.delete': 'Delete table',
   'table.error.size': 'Use 1 to 50 rows and 1 to 20 columns',
   'table.insertMenu': 'Insert table',

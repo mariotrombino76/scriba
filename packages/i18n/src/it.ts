@@ -152,6 +152,8 @@ export const it: Messages = {
   'table.toggleHeaderCol': 'Colonna di intestazione',
   'table.widen': 'Allarga colonna',
   'table.narrow': 'Restringi colonna',
+  'table.sortAsc': 'Ordina crescente (A→Z)',
+  'table.sortDesc': 'Ordina decrescente (Z→A)',
   'table.delete': 'Elimina tabella',
   'table.error.size': 'Usa da 1 a 50 righe e da 1 a 20 colonne',
   'table.insertMenu': 'Inserisci tabella',

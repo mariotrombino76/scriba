@@ -21,6 +21,7 @@ import { openTableDialog } from './dialog.js'
 import { openCellDialog, openTablePropsDialog } from './properties.js'
 import { tableNormalize } from './normalize.js'
 import { tableView } from './table-view.js'
+import { sortTable } from './sort.js'
 import type { Command } from '@scriba/core'
 
 export {
@@ -61,6 +62,13 @@ export {
   MAX_COLS,
 } from './commands.js'
 export { tableKeymap } from './keys.js'
+export {
+  sortTable,
+  compareCellText,
+  parseLocaleNumber,
+  type SortOrder,
+  type SortOptions,
+} from './sort.js'
 export { tableNormalize } from './normalize.js'
 export { openTableDialog } from './dialog.js'
 export { openCellDialog, openTablePropsDialog } from './properties.js'
@@ -119,6 +127,8 @@ function tableEntries(t: Translate) {
     ),
     widen: entry('widen', 'table.widen', changeColumnWidth(20)),
     narrow: entry('narrow', 'table.narrow', changeColumnWidth(-20)),
+    sortAsc: entry('sort_asc', 'table.sortAsc', sortTable('asc')),
+    sortDesc: entry('sort_desc', 'table.sortDesc', sortTable('desc')),
     tableProps: {
       id: 'table_props',
       label: (tr) => tr('table.props'),
@@ -189,6 +199,8 @@ export function tableToolbarItems(schema: Schema, t: Translate): ToolbarControl[
         e.headerCol,
         e.widen,
         e.narrow,
+        e.sortAsc,
+        e.sortDesc,
         e.tableProps,
         e.cellProps,
         e.deleteTable,
@@ -224,6 +236,8 @@ export function tableContextMenu(schema: Schema, t: Translate): ContextMenuSecti
         e.headerCol,
         e.widen,
         e.narrow,
+        e.sortAsc,
+        e.sortDesc,
       ]),
       '|',
       e.tableProps,

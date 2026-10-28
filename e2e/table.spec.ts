@@ -323,6 +323,8 @@ test('size picker: hover highlights the area, click inserts; keyboard works too'
   // keyboard: below the table, open the picker and choose 2 × 2 with the arrows
   await page.keyboard.press('Control+End')
   const button = toolbar(page).getByRole('button', { name: 'Inserisci tabella', exact: true })
+  // the caret left the table (selectionchange is async): the button is enabled again
+  await expect(button).toBeEnabled()
   await button.focus()
   await page.keyboard.press('ArrowDown')
   await expect(menu.getByRole('menuitem', { name: 'Tabella 1 × 1', exact: true })).toBeFocused()
@@ -397,4 +399,39 @@ test('table properties: caption, alignment, border on table and cells', async ({
       `<tbody><tr>${cell}${cell}</tr></tbody></table><p></p>`,
   )
   await expect(editor(page).locator('caption')).toHaveText('Vendite <b>2026</b>')
+})
+
+test('Tabella ▸ sort by the column of the cursor; the header stays; one undo', async ({ page }) => {
+  const table = (...rows: string[]) => `<table><tbody>${rows.join('')}</tbody></table>`
+  const tr = (tag: string, ...cells: string[]) =>
+    `<tr>${cells.map((c) => `<${tag}><p>${c}</p></${tag}>`).join('')}</tr>`
+  const source = table(
+    tr('th', 'Città', 'Abitanti'),
+    tr('td', 'Torino', '848.885'),
+    tr('td', 'Roma', '2.749.031'),
+    tr('td', 'Milano', '1.354.196'),
+  )
+  await page.evaluate(
+    (s) => (window as unknown as { scriba: { setHTML(s: string): void } }).scriba.setHTML(s),
+    source + '<p></p>',
+  )
+  await editor(page).getByText('848.885').click()
+  await tableMenu(page).click()
+  await page.getByRole('menuitem', { name: 'Ordina decrescente (Z→A)' }).click()
+  await expect
+    .poll(() => html(page))
+    .toBe(
+      table(
+        tr('th', 'Città', 'Abitanti'),
+        tr('td', 'Roma', '2.749.031'),
+        tr('td', 'Milano', '1.354.196'),
+        tr('td', 'Torino', '848.885'),
+      ) + '<p></p>',
+    )
+  // the cursor stayed in its cell: typing goes there
+  await page.keyboard.type('!')
+  await expect.poll(() => html(page)).toMatch(/Torino<\/p><\/td><td><p>[\d.]*![\d.]*<\/p>/)
+  await page.keyboard.press('Control+z')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe(source + '<p></p>')
 })

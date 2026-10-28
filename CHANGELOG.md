@@ -269,6 +269,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
     anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
     CDN completo (pulsante nella toolbar).
+  - `@scriba/plugin-table`: ordinamento delle righe per la colonna del cursore, crescente o
+    decrescente, come le tabelle avanzate di TinyMCE (menu Tabella e menu contestuale ▸ Colonna).
+    Le righe d'intestazione in alto restano; numeri letti nella lingua del contenuto (`lang`
+    attorno all'editor: 1.234,5 in italiano), testo in ordine alfabetico senza badare a maiuscole
+    e accenti ("2" prima di "10"); celle vuote sempre in fondo; valori uguali nell'ordine di
+    prima. Ogni riga si sposta intera con la sua formattazione; il cursore segue la sua riga; un
+    passo di annullamento. Non disponibile con celle unite su più righe. `sortTable`,
+    `compareCellText`, `parseLocaleNumber`.
   - `@scriba/plugin-template` (nuovo): modelli di documento come il plugin template di
     TinyMCE. Inserisci ▸ "Modello…" apre un dialog con l'elenco dei modelli (pulsanti radio,
     si sceglie con le frecce), la descrizione e un'anteprima in sola lettura disegnata da una
