@@ -704,7 +704,7 @@ menubar.menus = [
       fileEntry('new'),
       fileEntry('open'),
       saveItem(saveOptions),
-      restoreDraftItem(draftOptions),
+      restoreDraftItem(draftOptions, t),
       '|',
       fileEntry('preview'),
       '|',

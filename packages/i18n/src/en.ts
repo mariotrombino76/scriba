@@ -405,6 +405,10 @@ export const en = {
   'pagebreak.label': 'Page break',
   'datetime.label': 'Date/time',
   'autosave.restore': 'Restore last draft',
+  'autosave.refusedTitle': 'The draft cannot be restored',
+  'autosave.refused':
+    'The draft changes parts of the document you cannot change (protected blocks), so it cannot be restored.',
+  'autosave.close': 'Close',
   'anchor.label': 'Anchor',
   'anchor.title': 'Anchor',
   'anchor.name': 'Name of the anchor',

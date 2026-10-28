@@ -408,6 +408,10 @@ export const it: Messages = {
   'pagebreak.label': 'Interruzione di pagina',
   'datetime.label': 'Data/ora',
   'autosave.restore': "Ripristina l'ultima bozza",
+  'autosave.refusedTitle': 'Impossibile ripristinare la bozza',
+  'autosave.refused':
+    'La bozza modifica parti del documento che non puoi cambiare (blocchi protetti), quindi non si può ripristinare.',
+  'autosave.close': 'Chiudi',
   'anchor.label': 'Ancora',
   'anchor.title': 'Ancora',
   'anchor.name': "Nome dell'ancora",

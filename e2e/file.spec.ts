@@ -195,6 +195,16 @@ test('a draft survives a reload: File ▸ Restore last draft', async ({ page }) 
   await expect.poll(() => html(page)).not.toContain('testo non salvato')
 })
 
+test('a reload right after typing keeps the draft too (saved when the page goes away)', async ({
+  page,
+}) => {
+  await page.keyboard.type('appena scritto')
+  await page.reload() // before the 300 ms delay
+  await editor(page).click()
+  await fileMenu(page, "Ripristina l'ultima bozza")
+  await expect.poll(() => html(page)).toBe('<p>appena scritto</p>')
+})
+
 test('protected blocks: New document opens a new one (onNewDocument), Open is refused', async ({
   page,
 }) => {

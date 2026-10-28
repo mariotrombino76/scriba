@@ -383,6 +383,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- `@scriba/plugin-autosave`: "Ripristina l'ultima bozza" non faceva nulla in un documento con
+  blocchi protetti, perché sostituiva tutto il documento. Ora cambia solo i blocchi diversi
+  (`draftTransaction`); se la bozza cambia davvero un blocco protetto, con il traduttore
+  (`restoreDraftItem(options, t)`) un dialog spiega perché non si può ripristinare. La bozza ora
+  viene scritta subito anche quando si ricarica o si chiude la pagina (`pagehide`) o la si
+  nasconde (`visibilitychange`): prima le modifiche degli ultimi istanti andavano perse.
 - `@scriba/plugin-file`: "Nuovo documento" e "Apri" in un documento con blocchi protetti
   (`blockPermissions`) non facevano nulla dopo "Continua senza salvare": la sostituzione veniva
   rifiutata in silenzio. Ora l'editor lo verifica prima di chiedere e mostra un dialog che spiega
