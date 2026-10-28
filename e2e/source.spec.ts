@@ -37,6 +37,8 @@ test('shows the HTML, saves edits as one undo step', async ({ page }) => {
   const { dialog, area } = await openSource(page)
   await expect(area).toBeFocused()
   await expect(area).toHaveValue('<p>ciao</p>')
+  // the text area fits in the dialog: no horizontal scroll bar
+  expect(await dialog.evaluate((d) => d.scrollWidth - d.clientWidth)).toBe(0)
   await area.fill('<h2>Titolo</h2>\n<p>testo <em>nuovo</em></p>')
   await dialog.getByRole('button', { name: 'Salva' }).click()
   await expect(dialog).toBeHidden()

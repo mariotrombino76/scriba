@@ -51,6 +51,7 @@ export function openSourceDialog(
     title: t('source.title'),
     returnFocus: () => view.focus(),
     build(form, handle) {
+      handle.dialog.classList.add('scriba-source-dialog')
       const id = `scriba-source-${++ids}`
       const label = doc.createElement('label')
       label.htmlFor = id
