@@ -23,6 +23,12 @@ export interface ViewPluginProps {
    * Return true when handled (e.g. Markdown input rules: `# ` → heading).
    */
   handleTextInput?: (view: EditorView, from: number, to: number, text: string) => boolean
+  /**
+   * The selection (not empty) is about to be deleted by a cut or by a delete
+   * the browser sends as an input event. Return true when handled (e.g.
+   * protected blocks deleted around, not refused as a whole).
+   */
+  handleDeleteSelection?: (view: EditorView) => boolean
   /** A node (e.g. an image) was double-clicked. Return true if handled. */
   handleDoubleClickNode?: (view: EditorView, pos: number, node: Node) => boolean
 }

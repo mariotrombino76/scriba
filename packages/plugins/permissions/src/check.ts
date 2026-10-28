@@ -23,7 +23,8 @@ export interface BlockRules {
 
 const DEFAULT_ALLOWED: readonly string[] = ['comment']
 
-function lockedTest(rules: BlockRules): (node: Node) => boolean {
+/** Tells whether a node is a block the user may not edit (cached per id). @internal */
+export function lockedTest(rules: BlockRules): (node: Node) => boolean {
   const cache = new Map<string, boolean>()
   return (node) => {
     const id = blockIdOf(node)

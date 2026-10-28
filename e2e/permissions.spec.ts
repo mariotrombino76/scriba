@@ -47,26 +47,45 @@ test('a protected block is marked and cannot be typed into', async ({ page }) =>
   expect(await html(page)).toBe(DOC)
 })
 
-test('editing around it works; deleting across it is refused with a message', async ({ page }) => {
+test('editing around it works; a selection across it deletes everything else', async ({ page }) => {
   await editor(page).getByText('Libero').click()
   await page.keyboard.press('End')
   await page.keyboard.type(' sì')
   await editor(page).getByText('Fine').click()
   await page.keyboard.press('Home')
   await page.keyboard.type('Alla ')
-  // select from the first block to the last one, then delete
+  const edited =
+    '<p data-block-id="free-1">Libero sì</p><p data-block-id="lock-1">Clausola fissa</p><p>Alla Fine</p>'
+  expect(await html(page)).toBe(edited)
+  // select all, then delete / type / cut: the protected block stays, the rest goes
   await page.keyboard.press('Control+a')
   await page.keyboard.press('Delete')
-  await expect(
-    page.getByRole('status').filter({ hasText: 'Questo blocco è protetto' }),
-  ).toBeVisible()
   expect(await html(page)).toBe(
-    '<p data-block-id="free-1">Libero sì</p><p data-block-id="lock-1">Clausola fissa</p><p>Alla Fine</p>',
+    '<p data-block-id="free-1"></p><p data-block-id="lock-1">Clausola fissa</p>',
   )
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe(edited)
+  await page.keyboard.press('Control+a')
+  await page.keyboard.type('Nuovo')
+  expect(await html(page)).toBe(
+    '<p data-block-id="free-1">Nuovo</p><p data-block-id="lock-1">Clausola fissa</p>',
+  )
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe(edited)
+  await page.keyboard.press('Control+a')
+  await page.keyboard.press('Control+x')
+  await expect
+    .poll(() => html(page))
+    .toBe('<p data-block-id="free-1"></p><p data-block-id="lock-1">Clausola fissa</p>')
+  await page.keyboard.press('Control+z')
+  await expect.poll(() => html(page)).toBe(edited)
   // Backspace at the start of the next block does not merge it into the protected one
   await editor(page).getByText('Alla Fine').click()
   await page.keyboard.press('Home')
   await page.keyboard.press('Backspace')
+  await expect(
+    page.getByRole('status').filter({ hasText: 'Questo blocco è protetto' }),
+  ).toBeVisible()
   expect(await html(page)).toContain('<p data-block-id="lock-1">Clausola fissa</p><p>Alla Fine</p>')
 })
 

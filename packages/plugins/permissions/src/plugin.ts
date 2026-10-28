@@ -1,7 +1,8 @@
-import { Plugin, type EditorState, type Node, type Transaction } from '@scriba/core'
+import { Plugin, keymap, type EditorState, type Node, type Transaction } from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import type { EditorView, PluginView, TransformPastedDOM, ViewPluginProps } from '@scriba/view'
 import { transactionAllowed, type BlockRules } from './check.js'
+import { deleteSelectionKeepingLocked, pasteKeepingLocked, typeKeepingLocked } from './edit.js'
 import { BLOCK_ID, blockIdOf, isBlockId } from './ids.js'
 
 export interface BlockPermissionOptions extends BlockRules {
@@ -108,8 +109,20 @@ function dedupeIds(transactions: readonly Transaction[], state: EditorState) {
 export function blockPermissions(options: BlockPermissionOptions): Plugin[] {
   const trusted = options.trusted ?? ((tr) => tr.getMeta(REMOTE_META) === true)
   const refused = new Set<() => void>()
+  // a selection with protected blocks in it: typing, deleting, cutting or pasting
+  // changes what may be changed around them instead of being refused as a whole
+  const deleteAround = deleteSelectionKeepingLocked(options)
+  const run = (view: EditorView, tr: Transaction | null) => {
+    if (tr) view.dispatch(tr)
+    return !!tr
+  }
   const props: ViewPluginProps = {
     pluginView: (view) => lockView(view, options, options.t, refused),
+    handleTextInput: (view, from, to, text) =>
+      run(view, typeKeepingLocked(view.state, from, to, text, options)),
+    handleDeleteSelection: (view) => deleteAround(view.state, (tr) => view.dispatch(tr), view),
+    handlePasteContent: (view, content) =>
+      run(view, pasteKeepingLocked(view.state, content, options)),
   }
   // pasted content is new content: it never brings ids (protected or not) along
   const transformPastedDOM: TransformPastedDOM = (body) => {
@@ -126,5 +139,17 @@ export function blockPermissions(options: BlockPermissionOptions): Plugin[] {
       appendTransaction: (transactions, _old, state) => dedupeIds(transactions, state),
       props: { ...props, transformPastedDOM },
     }),
+    // before the base keymap, which would delete the whole selection (and be refused)
+    keymap(
+      {
+        Backspace: deleteAround,
+        Delete: deleteAround,
+        'Mod-Backspace': deleteAround,
+        'Mod-Delete': deleteAround,
+        'Alt-Backspace': deleteAround,
+        'Alt-Delete': deleteAround,
+      },
+      { priority: 100 },
+    ),
   ]
 }

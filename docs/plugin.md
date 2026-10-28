@@ -102,12 +102,12 @@ sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `hi
 
 ## Lavoro di gruppo e AI
 
-| Pacchetto            | A cosa serve                                                                       | Esportazioni principali                                                                   |
-| -------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `plugin-collab`      | Collaborazione in tempo reale (Yjs) con i cursori degli altri                      | `collab`, `collabCommentStore` — vedi [Collaborazione](collaborazione.md)                 |
-| `plugin-comments`    | Commenti con discussioni e modifiche proposte (revisioni)                          | `commentMarks`, `commentsPlugin`, `commentsPanel`, `suggestionMarks`, `suggestionsPlugin` |
-| `plugin-permissions` | Blocchi protetti (non modificabili da alcuni utenti), controllati anche sul server | `withBlockIds`, `blockPermissions`                                                        |
-| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni            | vedi la [guida AI](../packages/plugins/ai/README.md)                                      |
+| Pacchetto            | A cosa serve                                                                                                                             | Esportazioni principali                                                                   |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `plugin-collab`      | Collaborazione in tempo reale (Yjs) con i cursori degli altri                                                                            | `collab`, `collabCommentStore` — vedi [Collaborazione](collaborazione.md)                 |
+| `plugin-comments`    | Commenti con discussioni e modifiche proposte (revisioni)                                                                                | `commentMarks`, `commentsPlugin`, `commentsPanel`, `suggestionMarks`, `suggestionsPlugin` |
+| `plugin-permissions` | Blocchi protetti (non modificabili da alcuni utenti), controllati anche sul server; una selezione che li contiene cancella solo il resto | `withBlockIds`, `blockPermissions`                                                        |
+| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni                                                                  | vedi la [guida AI](../packages/plugins/ai/README.md)                                      |
 
 ## Ordine e priorità delle scorciatoie
 

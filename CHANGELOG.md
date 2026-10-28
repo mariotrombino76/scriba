@@ -315,6 +315,16 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Modificato
 
+- `@scriba/plugin-permissions`: una selezione che contiene blocchi protetti non viene più
+  rifiutata per intero. Scrivere, Canc/Backspace, taglia e incolla cancellano tutto il resto
+  (un blocco protetto selezionato solo in parte resta intero) e il testo va dove iniziava la
+  selezione, in un solo passo di annullamento; Ctrl+A e poi scrivere funziona anche con un blocco
+  protetto. Funzioni `deleteKeepingLocked`, `deleteSelectionKeepingLocked`, `typeKeepingLocked`,
+  `pasteKeepingLocked`. Il controllo finale resta `transactionAllowed`: se il risultato toccasse
+  un blocco protetto, la modifica viene rifiutata come prima (test fuzz in
+  `permissions/test/edit.test.ts`, nella suite di sicurezza).
+- `@scriba/view`: nuova prop dei plugin `handleDeleteSelection(view)`, chiamata prima di
+  cancellare una selezione per taglia o per un evento di input del browser.
 - **Incompatibile** — `@scriba/plugin-image`: l'attributo `alt` delle immagini è `null` quando
   il testo alternativo manca e `''` quando l'immagine è decorativa. Prima un'immagine senza
   `alt` diventava `alt=""` (decorativa) e nessuno se ne accorgeva; ora resta senza `alt`

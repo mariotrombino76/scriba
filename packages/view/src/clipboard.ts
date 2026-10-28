@@ -42,7 +42,9 @@ export function handleCopy(view: EditorView, event: ClipboardEvent, cut: boolean
   event.preventDefault()
   event.clipboardData.setData('text/html', data.html)
   event.clipboardData.setData('text/plain', data.text)
-  if (cut && view.editable) view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
+  if (!cut || !view.editable) return
+  if (someProp(view.state, 'handleDeleteSelection', (handle) => handle(view))) return
+  view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
 }
 
 /** Upper bound on pasted HTML/text length (CLAUDE.md §5.10). */

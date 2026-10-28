@@ -114,6 +114,12 @@ function onBeforeInput(view: EditorView, event: InputEvent): void {
   // selectionchange is async: make sure the model has the caret the user sees.
   view.syncSelectionFromDOM()
   const sel = view.state.selection
+  if (
+    !sel.empty &&
+    event.inputType.startsWith('delete') &&
+    someProp(view.state, 'handleDeleteSelection', (handle) => handle(view))
+  )
+    return
   switch (event.inputType) {
     case 'insertText':
     case 'insertReplacementText': {
