@@ -150,6 +150,9 @@ importers:
       '@scriba/plugin-table':
         specifier: workspace:*
         version: link:../plugins/table
+      '@scriba/plugin-template':
+        specifier: workspace:*
+        version: link:../plugins/template
       '@scriba/plugin-text-style':
         specifier: workspace:*
         version: link:../plugins/text-style
@@ -793,6 +796,21 @@ importers:
       '@scriba/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
+
+  packages/plugins/template:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
 
   packages/plugins/text-style:
     dependencies:

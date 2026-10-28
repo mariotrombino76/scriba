@@ -47,6 +47,7 @@ export default defineConfig({
       '@scriba/plugin-footnotes': plugin('footnotes'),
       '@scriba/plugin-format-painter': plugin('format-painter'),
       '@scriba/plugin-a11y-checker': plugin('a11y-checker'),
+      '@scriba/plugin-template': plugin('template'),
       '@scriba/plugin-save': plugin('save'),
       '@scriba/plugin-statusbar': plugin('statusbar'),
       '@scriba/plugin-embed': plugin('embed'),

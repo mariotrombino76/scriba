@@ -37,6 +37,17 @@ describe('Scriba.createEditor', () => {
     )
   })
 
+  it('full preset: "Template…" only when templates are given', () => {
+    const item = (editor: { element: HTMLElement }) =>
+      editor.element.querySelector('[data-item="template"]')
+    expect(item(createEditor(host()))).toBeNull()
+    document.body.textContent = ''
+    const editor = createEditor(host(), {
+      templates: { templates: [{ title: 'Lettera', content: '<p>Gentile cliente,</p>' }] },
+    })
+    expect(item(editor)?.getAttribute('aria-label')).toBe('Modello…')
+  })
+
   it('basic preset: only the basic schema (a table becomes text)', () => {
     const editor = createEditor(host(), {
       preset: 'basic',

@@ -137,6 +137,7 @@ import {
   formatPainterKeymap,
 } from '@scriba/plugin-format-painter'
 import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
+import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
 import {
   embedKeymap,
   embedNodeView,
@@ -248,6 +249,38 @@ const tags: MergeTag[] = [
   { name: 'cliente.email', label: 'E-mail', group: 'Cliente' },
   { name: 'data_oggi', label: 'Data di oggi' },
 ]
+// document templates (Inserisci ▸ Modello…): one loaded later, as from a server
+const templateOptions: TemplateOptions = {
+  locale: 'it-IT',
+  values: { azienda: 'Ditta Esempio' },
+  templates: [
+    {
+      title: 'Verbale di riunione',
+      description: 'Titolo, data, partecipanti e decisioni.',
+      content:
+        '<h2>Verbale di riunione</h2><p><strong>Azienda:</strong> {{azienda}}</p><p><strong>Data:</strong> {{date}}</p><h3>Partecipanti</h3><ul><li><p></p></li></ul><h3>Decisioni</h3><ol><li><p></p></li></ol>',
+    },
+    {
+      title: 'Lettera',
+      description: 'Intestazione, oggetto e saluti finali.',
+      content: () =>
+        new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve(
+                '<p>{{azienda}}</p><p>Oggetto: </p><p>Gentile cliente,</p><p></p><p>Cordiali saluti.</p>',
+              ),
+            300,
+          ),
+        ),
+    },
+    {
+      title: 'Modello non disponibile',
+      description: 'Il server non risponde.',
+      content: () => Promise.reject(new Error('offline')),
+    },
+  ],
+}
 const schema = new Schema({
   nodes: withBlockIds(
     withAnchors(
@@ -730,6 +763,7 @@ menubar.menus = [
       tocToolbarItem(schema),
       mathToolbarItem(t),
       mergeTagMenu(tags),
+      templateToolbarItem(t, templateOptions),
       ...blockquoteToolbarItems(schema),
     ],
   },

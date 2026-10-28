@@ -2230,3 +2230,57 @@ hr.scriba-page-break {
   outline: 2px solid var(--scriba-error);
   outline-offset: 1px;
 }
+
+/* Templates: the list beside the description and a read-only preview */
+.scriba-dialog.scriba-template {
+  width: min(52rem, calc(100vw - 2rem));
+}
+.scriba-template-body {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) 2.5fr;
+  gap: 1rem;
+  align-items: start;
+}
+.scriba-template-list {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.scriba-template-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.scriba-template-description {
+  margin: 0;
+  color: var(--scriba-muted);
+  font-size: 0.875rem;
+}
+.scriba-template-description:empty {
+  display: none;
+}
+.scriba-template-preview {
+  box-sizing: border-box;
+  height: 45vh;
+  min-height: 8rem;
+  overflow: auto;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+  background: var(--scriba-bg);
+}
+.scriba-template-status:empty {
+  display: none;
+}
+@media (max-width: 40rem) {
+  .scriba-template-body {
+    grid-template-columns: 1fr;
+  }
+  .scriba-template-list {
+    max-height: 30vh;
+  }
+  .scriba-template-preview {
+    height: 35vh;
+  }
+}

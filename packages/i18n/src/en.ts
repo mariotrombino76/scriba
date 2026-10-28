@@ -561,6 +561,16 @@ export const en = {
   'a11y.rule.justified-text.title': 'Justified text',
   'a11y.rule.justified-text.description':
     'Justified text leaves uneven spaces between words and is harder to read, for example for people with dyslexia.',
+  'template.insert': 'Template…',
+  'template.title': 'Insert template',
+  'template.list': 'Templates',
+  'template.preview': 'Template preview',
+  'template.loading': 'Loading…',
+  'template.none': 'No templates available.',
+  'template.listError': 'The templates could not be loaded.',
+  'template.contentError': 'The template “{title}” could not be loaded.',
+  'template.apply': 'Insert',
+  'template.cancel': 'Cancel',
 } as const
 
 export type MessageKey = keyof typeof en

@@ -39,7 +39,8 @@ un errore per tutto ciò che lo schema rifiuta (tipi, attributi, URL, profondit�
 ## Cosa fa l'editor
 
 - **Parser dello schema per tutto ciò che entra**: incolla, contenuto iniziale, `setContent`,
-  file aperti, vista sorgente, trascinamento, risposte AI, aggiornamenti della collaborazione.
+  file aperti, vista sorgente, trascinamento, modelli di documento, risposte AI, aggiornamenti
+  della collaborazione.
   Il parsing avviene in un **documento inerte** (`DOMParser`): un `<img onerror>` non si attiva
   nemmeno durante l'analisi.
 - **Niente `innerHTML`** né `eval` nel codice (imposto da ESLint con regole di sicurezza).

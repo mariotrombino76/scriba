@@ -564,4 +564,14 @@ export const it: Messages = {
   'a11y.rule.justified-text.title': 'Testo giustificato',
   'a11y.rule.justified-text.description':
     'Il testo giustificato crea spazi irregolari tra le parole e rende più difficile la lettura, per esempio a chi ha la dislessia.',
+  'template.insert': 'Modello…',
+  'template.title': 'Inserisci modello',
+  'template.list': 'Modelli',
+  'template.preview': 'Anteprima del modello',
+  'template.loading': 'Caricamento…',
+  'template.none': 'Nessun modello disponibile.',
+  'template.listError': 'Impossibile caricare i modelli.',
+  'template.contentError': 'Impossibile caricare il modello «{title}».',
+  'template.apply': 'Inserisci',
+  'template.cancel': 'Annulla',
 }

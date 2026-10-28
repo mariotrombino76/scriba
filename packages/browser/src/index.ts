@@ -93,6 +93,7 @@ import {
   formatPainterKeymap,
 } from '@scriba/plugin-format-painter'
 import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
+import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
 import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
 import { markdownShortcuts } from '@scriba/plugin-markdown'
 import { pasteClean } from '@scriba/plugin-paste-clean'
@@ -139,6 +140,11 @@ export interface CreateEditorOptions {
    * its URL. Without it, images are inserted by address only.
    */
   upload?: ImageUploadOptions['upload']
+  /**
+   * Document templates (full preset): adds "Template…" to the toolbar. Their
+   * HTML is untrusted and goes through the schema, like a paste.
+   */
+  templates?: TemplateOptions
 }
 
 export interface ScribaEditorHandle {
@@ -303,6 +309,7 @@ export function createEditor(
             anchorToolbarItem(t),
             detailsToolbarItem(schema),
             charmapToolbarItem(t),
+            ...(options.templates ? [templateToolbarItem(t, options.templates)] : []),
           ],
           2,
         ),

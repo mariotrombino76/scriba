@@ -269,6 +269,21 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
     anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
     CDN completo (pulsante nella toolbar).
+  - `@scriba/plugin-template` (nuovo): modelli di documento come il plugin template di
+    TinyMCE. Inserisci ▸ "Modello…" apre un dialog con l'elenco dei modelli (pulsanti radio,
+    si sceglie con le frecce), la descrizione e un'anteprima in sola lettura disegnata da una
+    `EditorView`; Invio o "Inserisci" lo mette al cursore. I blocchi del modello restano
+    interi (il paragrafo al cursore viene diviso; un paragrafo vuoto, un documento vuoto o
+    tutto selezionato vengono sostituiti); dove non stanno (cella, blocco di codice) il
+    contenuto si adatta come un incolla. Un passo di annullamento. Elenco e contenuti anche
+    asincroni (caricati dal server quando servono, con messaggio di caricamento e di errore;
+    una risposta lenta per un modello non più scelto viene ignorata). Segnaposto `{{nome}}`
+    nel testo, con `date` e `time` già pronti nella lingua scelta: i valori entrano sempre come
+    testo, mai come markup, e non toccano gli attributi. L'HTML dei modelli è input non fidato:
+    documento inerte e parser dello schema, massimo `MAX_TEMPLATE_LENGTH` caratteri.
+    `parseTemplate`, `insertTemplate`, `fillPlaceholders`, `templateToolbarItem`,
+    `openTemplateDialog`. Nel preset CDN completo con l'opzione `templates`; icona `template`
+    in `@scriba/ui`.
 - `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
