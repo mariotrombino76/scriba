@@ -338,7 +338,17 @@ function saluta(nome: string): string {
 
 const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="alert('xss')"><script>alert(1)</script> <a href="javascript:alert(1)">link</a></p>`
 
-const doc = parseHTML(schema, parseInertHTML(SAMPLE).body)
+// File ▸ Save keeps the document in this browser (localStorage); a real app sends it to its
+// server. At start it is read back as untrusted input, through the schema like any content.
+const SAVED_KEY = 'scriba-demo-saved'
+function savedHTML(): string | null {
+  try {
+    return localStorage.getItem(SAVED_KEY)
+  } catch {
+    return null // storage blocked (private mode, policy): start from the sample
+  }
+}
+const doc = parseHTML(schema, parseInertHTML(savedHTML() ?? SAMPLE).body)
 // AI assistant with a FAKE backend (no network): a real app calls its own server here.
 const wait = (ms: number, signal: AbortSignal) =>
   new Promise<void>((resolve, reject) => {
@@ -555,8 +565,11 @@ const draftOptions = { key: 'scriba-demo', delay: 2000 }
 // Save (Ctrl+S): here it waits a moment and drops the browser draft; your app sends the HTML
 // to its server (which passes it through @scriba/sanitize-server)
 const saveOptions: SaveOptions = {
-  save: () =>
-    new Promise<void>((resolve) => setTimeout(resolve, 300)).then(() => clearDraft(draftOptions)),
+  save: (doc) =>
+    new Promise<void>((resolve) => setTimeout(resolve, 300)).then(() => {
+      localStorage.setItem(SAVED_KEY, serializeHTML(doc)) // a failure leaves it "not saved"
+      clearDraft(draftOptions)
+    }),
 }
 const state = EditorState.create({
   doc,
@@ -884,6 +897,20 @@ function refresh(): void {
 
 // --- Security demo: simulate pasting hostile HTML ---
 $('xss-sample').textContent = XSS
+// back to the sample document: forgets what was saved in this browser
+$('reset-sample').addEventListener('click', () => {
+  try {
+    localStorage.removeItem(SAVED_KEY)
+  } catch {
+    // nothing saved
+  }
+  clearDraft(draftOptions)
+  const sample = parseHTML(schema, parseInertHTML(SAMPLE).body)
+  view.updateState(EditorState.create({ schema, doc: sample, plugins: view.state.plugins }))
+  refresh()
+  view.focus()
+})
+
 $('paste-xss').addEventListener('click', () => {
   const pasted = parseHTML(schema, parseInertHTML(XSS).body)
   const tr = view.state.tr.setSelection(
