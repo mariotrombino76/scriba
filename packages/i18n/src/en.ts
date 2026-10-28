@@ -283,6 +283,9 @@ export const en = {
   'file.untitled': 'Document',
   'file.unsavedTitle': 'Unsaved changes',
   'file.unsaved': 'The document has unsaved changes. If you go on they will be lost.',
+  'file.lockedTitle': 'The document cannot be replaced',
+  'file.locked':
+    'The document contains parts you cannot delete (protected blocks), so it cannot be replaced by a new document or a file.',
   'file.cancel': 'Cancel',
   'file.discard': 'Go on without saving',
   'file.opening': 'Opening {name}…',

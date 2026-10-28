@@ -194,3 +194,25 @@ test('a draft survives a reload: File ▸ Restore last draft', async ({ page }) 
   await page.keyboard.press('Control+z')
   await expect.poll(() => html(page)).not.toContain('testo non salvato')
 })
+
+test('a document with protected blocks cannot be replaced: the dialog says why', async ({
+  page,
+}) => {
+  await page.evaluate(() =>
+    (window as unknown as { scriba: { setHTML(s: string): void } }).scriba.setHTML(
+      '<p>libero</p><p data-block-id="lock-1">protetto</p>',
+    ),
+  )
+  await menubar(page).getByRole('menuitem', { name: 'File' }).click()
+  await page
+    .getByRole('menu', { name: 'File' })
+    .getByRole('menuitem', { name: 'Nuovo documento' })
+    .click()
+  const dialog = page.getByRole('dialog', { name: 'Impossibile sostituire il documento' })
+  await expect(dialog).toContainText('blocchi protetti')
+  await expect(dialog.getByRole('button', { name: 'Chiudi' })).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(dialog).toBeHidden()
+  await expect(editor(page)).toBeFocused()
+  expect(await html(page)).toBe('<p>libero</p><p data-block-id="lock-1">protetto</p>')
+})

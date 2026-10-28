@@ -7,6 +7,7 @@ import {
   type EditorState,
   type KeyBindings,
   type Node,
+  type Transaction,
 } from '@scriba/core'
 import type { MessageKey, Translate } from '@scriba/i18n'
 import { openDialog, type ToolbarMenu } from '@scriba/ui'
@@ -55,17 +56,61 @@ export function hasUnsavedChanges(state: EditorState): boolean {
   return !!saved && !saved.eq(state.doc)
 }
 
-/** Replaces the whole document (one undoable step) and marks it saved. */
-function replaceDocument(view: EditorView, doc: Node): void {
-  const { state } = view
+/** The whole document replaced by `doc` (one undoable step), marked saved. */
+function replacement(state: EditorState, doc: Node): Transaction {
   const tr = state.tr.replaceWith(0, state.doc.content.size, doc.content)
   tr.setSelection(TextSelection.near(tr.doc.resolve(1))).setMeta(CLOSE_HISTORY, true)
-  view.dispatch(tr.setMeta(SAVED, true).scrollIntoView())
-  view.focus()
+  return tr.setMeta(SAVED, true).scrollIntoView()
 }
 
-/** Asks before losing unsaved changes; `go` runs at once when there are none. */
+/**
+ * Whether the document may be replaced at all: a plugin can refuse it, e.g.
+ * protected blocks (`blockPermissions`) cannot be deleted.
+ */
+function canReplaceDocument(state: EditorState): boolean {
+  const empty = state.schema.topNodeType.createAndFill()
+  return !!empty && state.applyTransaction(replacement(state, empty)).transactions.length > 0
+}
+
+/** Replaces the whole document; false when a plugin refused it. */
+function replaceDocument(view: EditorView, doc: Node): boolean {
+  const before = view.state
+  view.dispatch(replacement(before, doc))
+  view.focus()
+  return view.state !== before
+}
+
+/** Says why the document cannot be replaced (instead of doing nothing). */
+function refuseReplace(view: EditorView, t: Translate): void {
+  const handle = openDialog(view.document, {
+    title: t('file.lockedTitle'),
+    returnFocus: () => view.focus(),
+    build(form, handle) {
+      const doc = view.document
+      const text = doc.createElement('p')
+      text.textContent = t('file.locked')
+      const actions = doc.createElement('div')
+      actions.className = 'scriba-dialog-actions'
+      const close = doc.createElement('button')
+      close.type = 'submit'
+      close.textContent = t('file.close')
+      form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        handle.close()
+      })
+      actions.append(close)
+      form.append(text, actions)
+    },
+  })
+  handle.form.querySelector('button')?.focus()
+}
+
+/**
+ * Asks before losing unsaved changes; `go` runs at once when there are none.
+ * When the document cannot be replaced, says so first and never runs `go`.
+ */
 function confirmDiscard(view: EditorView, t: Translate, go: () => void): void {
+  if (!canReplaceDocument(view.state)) return refuseReplace(view, t)
   if (!hasUnsavedChanges(view.state)) return go()
   openDialog(view.document, {
     title: t('file.unsavedTitle'),
@@ -116,8 +161,8 @@ export function openFile(view: EditorView, file: File, options: FileOptions): vo
     readDocument(view.state.schema, file, options).then(
       (doc) => {
         if (!view.editable) return
-        replaceDocument(view, doc)
-        announce(view, t('file.opened', { name: file.name }))
+        if (replaceDocument(view, doc)) announce(view, t('file.opened', { name: file.name }))
+        else refuseReplace(view, t) // e.g. permissions changed while reading
       },
       (e: unknown) => {
         const reason = e instanceof OpenFileError ? e.reason : 'damaged'
@@ -146,8 +191,8 @@ export function chooseFile(view: EditorView, options: FileOptions): void {
 export function newDocument(view: EditorView, options: FileOptions): void {
   confirmDiscard(view, options.t, () => {
     const empty = view.state.schema.topNodeType.createAndFill()!
-    replaceDocument(view, empty)
-    announce(view, options.t('file.created'))
+    if (replaceDocument(view, empty)) announce(view, options.t('file.created'))
+    else refuseReplace(view, options.t)
   })
 }
 

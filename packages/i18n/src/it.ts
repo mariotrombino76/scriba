@@ -285,6 +285,9 @@ export const it: Messages = {
   'file.untitled': 'Documento',
   'file.unsavedTitle': 'Modifiche non salvate',
   'file.unsaved': 'Il documento ha modifiche non salvate. Se continui andranno perse.',
+  'file.lockedTitle': 'Impossibile sostituire il documento',
+  'file.locked':
+    'Il documento contiene parti che non puoi eliminare (blocchi protetti), quindi non si può sostituire con un nuovo documento o con un file.',
   'file.cancel': 'Annulla',
   'file.discard': 'Continua senza salvare',
   'file.opening': 'Apertura di {name}…',

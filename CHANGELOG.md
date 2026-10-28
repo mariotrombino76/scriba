@@ -365,6 +365,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Corretto
 
+- `@scriba/plugin-file`: "Nuovo documento" e "Apri" in un documento con blocchi protetti
+  (`blockPermissions`) non facevano nulla dopo "Continua senza salvare": la sostituzione veniva
+  rifiutata in silenzio. Ora l'editor lo verifica prima di chiedere e mostra un dialog che spiega
+  perché il documento non si può sostituire.
 - Dipendenze: `markdown-it` 15.0.3 in `@scriba/plugin-markdown` (due avvisi di negazione del
   servizio su 15.0.0–15.0.2, uno alto) e `undici` 8.12.2 per jsdom, solo nei test (tre avvisi su
   8.0.0–8.12.1). `pnpm audit`: nessuna vulnerabilità nota.
