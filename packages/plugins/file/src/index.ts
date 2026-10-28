@@ -44,6 +44,14 @@ export interface FileOptions extends OpenLimits {
   saveFormat?: SaveFormat
   /** Language written in saved HTML pages (default `'it'`). */
   lang?: string
+  /**
+   * "New document" in your app: create the document (e.g. on your server, with
+   * its own id and permissions) and show it, for example by loading a new page
+   * or with `view.updateState(EditorState.create(...))`. Called after the user
+   * confirms losing unsaved changes. Without it, "New document" empties the
+   * current document, which protected blocks (`blockPermissions`) refuse.
+   */
+  onNewDocument?: (view: EditorView) => void
 }
 
 /** The document as last opened, created or saved: anything else is unsaved. */
@@ -106,11 +114,16 @@ function refuseReplace(view: EditorView, t: Translate): void {
 }
 
 /**
- * Asks before losing unsaved changes; `go` runs at once when there are none.
- * When the document cannot be replaced, says so first and never runs `go`.
+ * Before replacing the document: when it cannot be replaced, says why and
+ * never runs `go`; otherwise asks about unsaved changes.
  */
 function confirmDiscard(view: EditorView, t: Translate, go: () => void): void {
   if (!canReplaceDocument(view.state)) return refuseReplace(view, t)
+  confirmUnsaved(view, t, go)
+}
+
+/** Asks before losing unsaved changes; `go` runs at once when there are none. */
+function confirmUnsaved(view: EditorView, t: Translate, go: () => void): void {
   if (!hasUnsavedChanges(view.state)) return go()
   openDialog(view.document, {
     title: t('file.unsavedTitle'),
@@ -187,8 +200,13 @@ export function chooseFile(view: EditorView, options: FileOptions): void {
   input.click()
 }
 
-/** Empties the document (after confirming unsaved changes). */
+/**
+ * After confirming unsaved changes: calls `onNewDocument` when given, else
+ * empties the document.
+ */
 export function newDocument(view: EditorView, options: FileOptions): void {
+  const create = options.onNewDocument
+  if (create) return confirmUnsaved(view, options.t, () => create(view))
   confirmDiscard(view, options.t, () => {
     const empty = view.state.schema.topNodeType.createAndFill()!
     if (replaceDocument(view, empty)) announce(view, options.t('file.created'))

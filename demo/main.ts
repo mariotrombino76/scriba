@@ -662,6 +662,16 @@ const view: EditorView = new EditorView($('editor'), {
   },
 })
 
+// File ▸ New document: a new, empty document with its own (empty) history. A real app
+// creates the document on its server, with its own id and permissions, and opens it.
+// With collaboration the room is the document: no new document here.
+if (!shared)
+  fileOptions.onNewDocument = (v) => {
+    v.updateState(EditorState.create({ schema: v.state.schema, plugins: v.state.plugins }))
+    v.focus()
+    refresh()
+  }
+
 // --- Toolbar: the real <scriba-toolbar> from @scriba/ui ---
 defineScribaToolbar()
 defineScribaMenubar()

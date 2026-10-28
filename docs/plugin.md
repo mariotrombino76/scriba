@@ -79,22 +79,22 @@ L'HTML contiene MathML, che i browser mostrano da soli, senza script né CSS di 
 
 ## Strumenti e interfaccia
 
-| Pacchetto               | A cosa serve                                                                                     | Esportazioni principali                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `plugin-slash`          | Menu "/" di blocchi e azioni                                                                     | `slashCommands`, `slashKeymap`, `basicSlashItems`                                        |
-| `plugin-bubble`         | Barra di formattazione sopra il testo selezionato                                                | `bubbleMenu`, `bubbleKeymap`                                                             |
-| `plugin-find-replace`   | Trova e sostituisci, anche con regex (in un Web Worker interrompibile)                           | `findReplacePlugins`, `findReplaceKeymap`, `findReplaceToolbarItem`                      |
-| `plugin-source`         | Vista del sorgente HTML (ciò che modifichi ripassa dallo schema)                                 | `sourceToolbarItem`, `openSourceDialog`                                                  |
-| `plugin-fullscreen`     | Schermo intero                                                                                   | `Fullscreen`, `fullscreenKeymap`, `fullscreenToolbarItem`                                |
-| `plugin-word-count`     | Conteggio parole e caratteri                                                                     | `createWordCountStatus`, `openWordCountDialog`                                           |
-| `plugin-statusbar`      | Barra di stato: percorso dell'elemento (`p › strong`) e maniglia per ridimensionare l'editor     | `createElementPath`, `elementPath`, `createResizeHandle`                                 |
-| `plugin-save`           | Pulsante Salva e Ctrl+S con la tua funzione, attivo solo con modifiche non salvate               | `savePlugin`, `saveKeymap`, `saveItem`, `saveCommand`, `isDirty`, `markSaved`            |
-| `plugin-file`           | Menu File: nuovo, apri (.docx, .html, .md, .txt), scarica, anteprima, stampa                     | `filePlugin`, `fileKeymap`, `fileMenu`                                                   |
-| `plugin-help`           | Menu Aiuto con le scorciatoie (Alt+0)                                                            | `helpItem`, `helpKeymap`, `shortcutsFromItems`                                           |
-| `plugin-autosave`       | Bozza salvata nel browser mentre si scrive, "Ripristina l'ultima bozza"                          | `autosave`, `restoreDraftItem`, `restoreDraft`, `clearDraft`                             |
-| `plugin-visual-aids`    | Mostra blocchi e caratteri invisibili (solo nell'editor, l'HTML non cambia)                      | `visualAids`, `visualAidsItems`, `toggleVisualBlocks`, `toggleVisualChars`               |
-| `plugin-format-painter` | Copia formato: dà la formattazione di un testo a un altro (Ctrl+Alt+C / Ctrl+Alt+V)              | `formatPainter`, `formatPainterKeymap`, `formatPainterItem`, `copyFormat`, `pasteFormat` |
-| `plugin-a11y-checker`   | Verifica accessibilità (WCAG 2.2 A/AA/AAA): un problema alla volta, con spiegazione e correzione | `a11yChecker`, `a11yCheckerItem`, `openA11yDialog`, `checkAccessibility`, `a11yIssues`   |
+| Pacchetto               | A cosa serve                                                                                            | Esportazioni principali                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `plugin-slash`          | Menu "/" di blocchi e azioni                                                                            | `slashCommands`, `slashKeymap`, `basicSlashItems`                                        |
+| `plugin-bubble`         | Barra di formattazione sopra il testo selezionato                                                       | `bubbleMenu`, `bubbleKeymap`                                                             |
+| `plugin-find-replace`   | Trova e sostituisci, anche con regex (in un Web Worker interrompibile)                                  | `findReplacePlugins`, `findReplaceKeymap`, `findReplaceToolbarItem`                      |
+| `plugin-source`         | Vista del sorgente HTML (ciò che modifichi ripassa dallo schema)                                        | `sourceToolbarItem`, `openSourceDialog`                                                  |
+| `plugin-fullscreen`     | Schermo intero                                                                                          | `Fullscreen`, `fullscreenKeymap`, `fullscreenToolbarItem`                                |
+| `plugin-word-count`     | Conteggio parole e caratteri                                                                            | `createWordCountStatus`, `openWordCountDialog`                                           |
+| `plugin-statusbar`      | Barra di stato: percorso dell'elemento (`p › strong`) e maniglia per ridimensionare l'editor            | `createElementPath`, `elementPath`, `createResizeHandle`                                 |
+| `plugin-save`           | Pulsante Salva e Ctrl+S con la tua funzione, attivo solo con modifiche non salvate                      | `savePlugin`, `saveKeymap`, `saveItem`, `saveCommand`, `isDirty`, `markSaved`            |
+| `plugin-file`           | Menu File: nuovo (o il tuo `onNewDocument`), apri (.docx, .html, .md, .txt), scarica, anteprima, stampa | `filePlugin`, `fileKeymap`, `fileMenu`                                                   |
+| `plugin-help`           | Menu Aiuto con le scorciatoie (Alt+0)                                                                   | `helpItem`, `helpKeymap`, `shortcutsFromItems`                                           |
+| `plugin-autosave`       | Bozza salvata nel browser mentre si scrive, "Ripristina l'ultima bozza"                                 | `autosave`, `restoreDraftItem`, `restoreDraft`, `clearDraft`                             |
+| `plugin-visual-aids`    | Mostra blocchi e caratteri invisibili (solo nell'editor, l'HTML non cambia)                             | `visualAids`, `visualAidsItems`, `toggleVisualBlocks`, `toggleVisualChars`               |
+| `plugin-format-painter` | Copia formato: dà la formattazione di un testo a un altro (Ctrl+Alt+C / Ctrl+Alt+V)                     | `formatPainter`, `formatPainterKeymap`, `formatPainterItem`, `copyFormat`, `pasteFormat` |
+| `plugin-a11y-checker`   | Verifica accessibilità (WCAG 2.2 A/AA/AAA): un problema alla volta, con spiegazione e correzione        | `a11yChecker`, `a11yCheckerItem`, `openA11yDialog`, `checkAccessibility`, `a11yIssues`   |
 
 Dall'interfaccia (`@scriba/ui`): `<scriba-toolbar>`, `<scriba-menubar>`, `contextMenu(view, {
 sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `historyItems`,

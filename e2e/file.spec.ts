@@ -195,24 +195,31 @@ test('a draft survives a reload: File ▸ Restore last draft', async ({ page }) 
   await expect.poll(() => html(page)).not.toContain('testo non salvato')
 })
 
-test('a document with protected blocks cannot be replaced: the dialog says why', async ({
+test('protected blocks: New document opens a new one (onNewDocument), Open is refused', async ({
   page,
 }) => {
-  await page.evaluate(() =>
-    (window as unknown as { scriba: { setHTML(s: string): void } }).scriba.setHTML(
-      '<p>libero</p><p data-block-id="lock-1">protetto</p>',
-    ),
-  )
-  await menubar(page).getByRole('menuitem', { name: 'File' }).click()
-  await page
-    .getByRole('menu', { name: 'File' })
-    .getByRole('menuitem', { name: 'Nuovo documento' })
-    .click()
+  const protectedDoc = '<p>libero</p><p data-block-id="lock-1">protetto</p>'
+  const setHTML = (source: string) =>
+    page.evaluate(
+      (s) => (window as unknown as { scriba: { setHTML(s: string): void } }).scriba.setHTML(s),
+      source,
+    )
+  // the app's onNewDocument: a new, empty document (the old one is not touched)
+  await setHTML(protectedDoc)
+  await fileMenu(page, 'Nuovo documento')
+  await expect(editor(page)).toBeFocused()
+  await expect.poll(() => html(page)).toBe('<p></p>')
+  await page.keyboard.type('nuovo')
+  await expect.poll(() => html(page)).toBe('<p>nuovo</p>')
+
+  // opening a file would delete the protected block: the dialog says why
+  await setHTML(protectedDoc)
+  await openWith(page, 'a.txt', 'altro')
   const dialog = page.getByRole('dialog', { name: 'Impossibile sostituire il documento' })
   await expect(dialog).toContainText('blocchi protetti')
   await expect(dialog.getByRole('button', { name: 'Chiudi' })).toBeFocused()
   await page.keyboard.press('Enter')
   await expect(dialog).toBeHidden()
   await expect(editor(page)).toBeFocused()
-  expect(await html(page)).toBe('<p>libero</p><p data-block-id="lock-1">protetto</p>')
+  expect(await html(page)).toBe(protectedDoc)
 })

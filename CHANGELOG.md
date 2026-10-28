@@ -369,6 +369,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   (`blockPermissions`) non facevano nulla dopo "Continua senza salvare": la sostituzione veniva
   rifiutata in silenzio. Ora l'editor lo verifica prima di chiedere e mostra un dialog che spiega
   perché il documento non si può sostituire.
+  Nuova opzione `onNewDocument` di `FileOptions`: "Nuovo documento" la chiama (dopo la conferma
+  delle modifiche non salvate) invece di svuotare il documento, così l'applicazione crea un
+  documento davvero nuovo, con il suo id e i suoi permessi. La demo la usa con un nuovo
+  `EditorState`.
 - Dipendenze: `markdown-it` 15.0.3 in `@scriba/plugin-markdown` (due avvisi di negazione del
   servizio su 15.0.0–15.0.2, uno alto) e `undici` 8.12.2 per jsdom, solo nei test (tre avvisi su
   8.0.0–8.12.1). `pnpm audit`: nessuna vulnerabilità nota.

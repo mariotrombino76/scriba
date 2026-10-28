@@ -62,6 +62,15 @@ describe('replacing a document with protected blocks', () => {
     view.destroy()
   })
 
+  it('"New document" with onNewDocument: the app creates the document, nothing is refused', () => {
+    const view = mount(SOURCE)
+    const created: EditorView[] = []
+    newDocument(view, { t, onNewDocument: (v) => created.push(v) })
+    expect(created).toEqual([view])
+    expect(document.querySelector('dialog')).toBeNull()
+    view.destroy()
+  })
+
   it('without protected blocks, "New document" empties the document', () => {
     const view = mount('<p>libero</p><p data-block-id="b-1">anche</p>')
     newDocument(view, { t })
