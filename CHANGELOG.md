@@ -289,6 +289,13 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     prima. Ogni riga si sposta intera con la sua formattazione; il cursore segue la sua riga; un
     passo di annullamento. Non disponibile con celle unite su più righe. `sortTable`,
     `compareCellText`, `parseLocaleNumber`.
+  - Modalità inline come quella di TinyMCE: opzione `inline` di `createEditor`
+    (`@scriba/browser`) e dei componenti Vue e React, `inlineToolbar(contenitore, toolbar)` in
+    `@scriba/ui`. Il testo prende gli stili della pagina (niente riquadro, bordo tratteggiato
+    solo con il focus); la barra compare solo mentre l'editor ha il focus (anche nei suoi menu),
+    sopra il testo, sotto se sopra non c'è spazio, agganciata in cima alla finestra quando il
+    testo è più alto dello schermo e scorre. Alt+F10 dal testo entra nella barra, Esc torna al
+    testo. Posizioni via CSSOM (CSP rigida).
   - `@scriba/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
     TinyMCE (premium). File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
     tuo server (data, autore, etichetta; dalla più recente) e l'anteprima di quella scelta,

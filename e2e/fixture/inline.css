@@ -1,0 +1,14 @@
+/* the page's own look: the inline editor must take it */
+body {
+  margin: 0;
+  padding: 120px 24px 0;
+}
+.pagina {
+  max-width: 640px;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  color: rgb(40, 20, 90);
+}
+.spazio {
+  height: 2000px;
+}

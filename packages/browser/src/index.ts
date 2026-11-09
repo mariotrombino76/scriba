@@ -25,6 +25,7 @@ import {
   contextMenu,
   defineScribaToolbar,
   historyItems,
+  inlineToolbar,
   markItems,
   toolbarGroup,
   type ScribaToolbar,
@@ -128,6 +129,12 @@ export interface CreateEditorOptions {
   preset?: 'full' | 'basic'
   /** Shows the toolbar (default true). */
   toolbar?: boolean
+  /**
+   * Inline mode (TinyMCE's): the text takes the page's own styles, the toolbar
+   * appears only while the editor has the focus, floating above it (below, or
+   * docked at the top of the window, when there is no room).
+   */
+  inline?: boolean
   /** Interface language: `'it'` (default), `'en'`, or a message object. */
   locale?: string | Messages
   /** Accessible name of the editing area. */
@@ -335,6 +342,8 @@ export function createEditor(
     toolbar.items = items
     toolbar.view = view
   }
+  const inline = options.inline && toolbar ? inlineToolbar(element, toolbar) : null
+  if (options.inline) element.classList.add('scriba-inline')
 
   return {
     view,
@@ -352,6 +361,7 @@ export function createEditor(
     focus: () => view.focus(),
     destroy() {
       menu?.destroy()
+      inline?.destroy()
       if (toolbar) toolbar.view = null
       view.destroy()
       element.remove()

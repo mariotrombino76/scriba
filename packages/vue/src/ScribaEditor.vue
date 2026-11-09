@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { NodeJSON, Plugin, Schema } from '@scriba/core'
 import { createTranslator, type Messages } from '@scriba/i18n'
-import { defineScribaToolbar, type ScribaToolbar } from '@scriba/ui'
+import { defineScribaToolbar, inlineToolbar, type ScribaToolbar } from '@scriba/ui'
 import type { NodeViewFactory } from '@scriba/view'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { sameContent, type Content, type ContentFormat } from '@scriba/view'
 import { useScriba } from './useScriba.js'
 
@@ -20,10 +20,12 @@ const props = withDefaults(
     /** UI language (`'it'`, `'en'`…) or a message object. */
     locale?: string | Messages
     toolbar?: boolean
+    /** Inline mode: page styles, toolbar only while focused (floating). Read when mounted. */
+    inline?: boolean
     /** Custom views of atomic nodes, e.g. `{ task: vueNodeView(TaskView, { t }) }`. */
     nodeViews?: Readonly<Record<string, NodeViewFactory>>
   }>(),
-  { modelValue: null, format: 'html', editable: true, toolbar: true, locale: 'it' },
+  { modelValue: null, format: 'html', editable: true, toolbar: true, inline: false, locale: 'it' },
 )
 
 const emit = defineEmits<{
@@ -35,6 +37,8 @@ defineScribaToolbar()
 const t = computed(() => createTranslator(props.locale))
 const editorEl = ref<HTMLElement | null>(null)
 const toolbarEl = ref<ScribaToolbar | null>(null)
+const rootEl = ref<HTMLElement | null>(null)
+let inlineHandle: { destroy(): void } | null = null
 let lastEmitted: Content | null = props.modelValue ?? null
 
 const scriba = useScriba(editorEl, {
@@ -56,7 +60,10 @@ onMounted(() => {
     toolbarEl.value.translator = t.value
     toolbarEl.value.view = scriba.view.value
   }
+  if (props.inline && rootEl.value && toolbarEl.value)
+    inlineHandle = inlineToolbar(rootEl.value, toolbarEl.value)
 })
+onBeforeUnmount(() => inlineHandle?.destroy())
 
 watch(t, (translate) => {
   if (toolbarEl.value) toolbarEl.value.translator = translate
@@ -76,7 +83,7 @@ defineExpose(scriba)
 </script>
 
 <template>
-  <div class="scriba">
+  <div ref="rootEl" :class="['scriba', { 'scriba-inline': inline }]">
     <scriba-toolbar v-if="toolbar" ref="toolbarEl" />
     <div ref="editorEl" class="scriba-mount" />
   </div>

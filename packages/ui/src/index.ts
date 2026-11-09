@@ -31,3 +31,4 @@ export {
   type ContextMenuSection,
 } from './context-menu.js'
 export { openDialog, type DialogHandle } from './dialog.js'
+export { inlineToolbar, type InlinePlacement, type InlineToolbarHandle } from './inline.js'

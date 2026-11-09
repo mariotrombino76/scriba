@@ -86,6 +86,7 @@ export default defineConfig({
         main: fileURLToPath(new URL('./fixture/index.html', import.meta.url)),
         react: fileURLToPath(new URL('./fixture/react.html', import.meta.url)),
         cdn: fileURLToPath(new URL('./fixture/cdn.html', import.meta.url)),
+        inline: fileURLToPath(new URL('./fixture/inline.html', import.meta.url)),
       },
     },
   },

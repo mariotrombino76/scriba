@@ -1,6 +1,6 @@
 import type { Plugin, Schema } from '@scriba/core'
 import { createTranslator, type Messages } from '@scriba/i18n'
-import { defineScribaToolbar, type ScribaToolbar } from '@scriba/ui'
+import { defineScribaToolbar, inlineToolbar, type ScribaToolbar } from '@scriba/ui'
 import { sameContent, type Content, type ContentFormat, type NodeViewFactory } from '@scriba/view'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 import { useScriba, type UseScriba } from './useScriba.js'
@@ -23,6 +23,8 @@ export interface ScribaEditorProps {
   locale?: string | Messages
   /** Shows the default `<scriba-toolbar>` above the editor. Default true. */
   toolbar?: boolean
+  /** Inline mode: page styles, toolbar only while focused (floating). Read when mounted. */
+  inline?: boolean
   /** Custom views of atomic nodes. Read when the editor is created. */
   nodeViews?: Readonly<Record<string, NodeViewFactory>>
   className?: string
@@ -44,6 +46,7 @@ export const ScribaEditor = forwardRef<UseScriba, ScribaEditorProps>(function Sc
     label,
     locale = 'it',
     toolbar = true,
+    inline = false,
     nodeViews,
     className,
   },
@@ -53,6 +56,7 @@ export const ScribaEditor = forwardRef<UseScriba, ScribaEditorProps>(function Sc
   const t = useMemo(() => createTranslator(locale), [locale])
   const editorEl = useRef<HTMLDivElement | null>(null)
   const toolbarEl = useRef<ScribaToolbar | null>(null)
+  const rootEl = useRef<HTMLDivElement | null>(null)
   const lastEmitted = useRef<Content | null>(value)
   const scriba = useScriba(editorEl, {
     ...(schema ? { schema } : {}),
@@ -77,6 +81,12 @@ export const ScribaEditor = forwardRef<UseScriba, ScribaEditorProps>(function Sc
     bar.view = scriba.view
   }, [t, scriba.view, toolbar])
 
+  useEffect(() => {
+    if (!inline || !rootEl.current || !toolbarEl.current) return
+    const handle = inlineToolbar(rootEl.current, toolbarEl.current)
+    return () => handle.destroy()
+  }, [inline, toolbar])
+
   // a value changed from outside replaces the content (parsed through the schema)
   useEffect(() => {
     if (!scriba.view || sameContent(value, lastEmitted.current)) return
@@ -85,7 +95,12 @@ export const ScribaEditor = forwardRef<UseScriba, ScribaEditorProps>(function Sc
   }, [value, scriba])
 
   return (
-    <div className={className ? `scriba ${className}` : 'scriba'}>
+    <div
+      ref={rootEl}
+      className={['scriba', inline ? 'scriba-inline' : '', className ?? '']
+        .filter(Boolean)
+        .join(' ')}
+    >
       {toolbar ? <scriba-toolbar ref={toolbarEl} /> : null}
       <div ref={editorEl} className="scriba-mount" />
     </div>

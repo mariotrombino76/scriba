@@ -39,6 +39,17 @@ const type = (el: HTMLElement, text: string) =>
   })
 
 describe('<ScribaEditor> (React)', () => {
+  it('inline: the toolbar shows only while the editor has the focus', () => {
+    const { host, editor } = render(
+      createElement(ScribaEditor, { value: '<p>a</p>', inline: true }),
+    )
+    expect(host.querySelector('.scriba')!.classList.contains('scriba-inline')).toBe(true)
+    const bar = host.querySelector<HTMLElement>('scriba-toolbar')!
+    expect(bar.hidden).toBe(true)
+    act(() => editor().focus())
+    expect(bar.hidden).toBe(false)
+  })
+
   it('renders the toolbar and the editor; the initial HTML goes through the schema', () => {
     const { host, editor } = render(
       createElement(ScribaEditor, { value: '<p>Ciao<script>alert(1)</script></p>' }),

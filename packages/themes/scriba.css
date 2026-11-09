@@ -1290,6 +1290,33 @@ scriba-menubar {
   }
 }
 
+/* Inline mode: the page's own styles; the toolbar floats while the editor has the focus */
+.scriba-inline {
+  position: relative;
+}
+.scriba-inline .scriba-editor {
+  min-height: 1.5em;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+}
+.scriba-inline .scriba-editor:focus-visible {
+  box-shadow: none;
+  outline: 2px dashed var(--scriba-focus);
+  outline-offset: 4px;
+}
+scriba-toolbar.scriba-inline-toolbar {
+  z-index: 1000;
+  box-sizing: border-box;
+  max-width: calc(100vw - 16px);
+  min-width: min(20rem, calc(100vw - 16px));
+  border: 1px solid var(--scriba-border);
+  border-radius: var(--scriba-radius);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+}
+
 /* Bubble menu: a compact toolbar over the selected text */
 scriba-toolbar[hidden] {
   display: none;

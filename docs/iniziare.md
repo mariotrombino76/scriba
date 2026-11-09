@@ -36,6 +36,21 @@ const editor = Scriba.createEditor('#editor', {
 
 Opzioni, limiti e sicurezza: [README di @scriba/browser](../packages/browser/README.md).
 
+### Modalità inline
+
+Con `inline: true` (anche `inline` nei componenti Vue e React) l'editor diventa parte della
+pagina, come la modalità inline di TinyMCE: il testo prende i caratteri, i colori e le misure
+della pagina, senza riquadro; la barra degli strumenti compare solo quando si sta scrivendo,
+sopra il testo (sotto, se sopra non c'è spazio; agganciata in cima alla finestra se il testo è
+più alto dello schermo). Da tastiera: Tab entra nel testo e mostra la barra, **Alt+F10** passa
+alla barra, Esc torna al testo.
+
+```js
+Scriba.createEditor('#articolo', { inline: true, content: articolo.innerHTML })
+```
+
+Per un'interfaccia tua: `inlineToolbar(contenitore, toolbar)` da `@scriba/ui`.
+
 ## Vue 3 e Nuxt
 
 ```bash
@@ -57,7 +72,7 @@ const html = ref('<p>Ciao</p>')
 ```
 
 Proprietà: `format` (`'html'`/`'json'`), `schema`, `plugins`, `editable`, `label`, `locale`,
-`toolbar`, `nodeViews`. Il componente espone `getContent`, `setContent`, `focus`, `view`, `state`.
+`toolbar`, `inline`, `nodeViews`. Il componente espone `getContent`, `setContent`, `focus`, `view`, `state`.
 Per un'interfaccia tua: `useScriba(elemento, opzioni)`.
 
 **Nuxt:** l'editor ha bisogno del DOM del browser. Mettilo dentro `<ClientOnly>` (oppure in un

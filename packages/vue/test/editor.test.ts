@@ -26,6 +26,20 @@ describe('<ScribaEditor>', () => {
     wrapper.unmount()
   })
 
+  it('inline: the toolbar shows only while the editor has the focus', async () => {
+    const wrapper = mount(ScribaEditor, {
+      props: { modelValue: '<p>a</p>', inline: true },
+      attachTo: document.body,
+    })
+    await nextTick()
+    expect(wrapper.classes()).toContain('scriba-inline')
+    const bar = wrapper.find('scriba-toolbar').element as HTMLElement
+    expect(bar.hidden).toBe(true)
+    ;(wrapper.find('.scriba-editor').element as HTMLElement).focus()
+    expect(bar.hidden).toBe(false)
+    wrapper.unmount()
+  })
+
   it('emits update:modelValue as HTML when typing', async () => {
     const wrapper = mount(ScribaEditor, {
       props: { modelValue: '<p>ab</p>' },
