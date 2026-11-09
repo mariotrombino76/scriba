@@ -143,6 +143,7 @@ import {
 } from '@scriba/plugin-format-painter'
 import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
 import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
+import { revisionsToolbarItem, type RevisionOptions } from '@scriba/plugin-revisions'
 import {
   embedKeymap,
   embedNodeView,
@@ -342,6 +343,7 @@ const XSS = `<p onclick="alert(1)">Testo <b>in grassetto</b><img src=x onerror="
 // File ▸ Save keeps the document in this browser (localStorage); a real app sends it to its
 // server. At start it is read back as untrusted input, through the schema like any content.
 const SAVED_KEY = 'scriba-demo-saved'
+const VERSIONS_KEY = 'scriba-demo-versions'
 function savedHTML(): string | null {
   try {
     return localStorage.getItem(SAVED_KEY)
@@ -565,10 +567,36 @@ const helpOptions: HelpOptions = {
 const draftOptions = { key: 'scriba-demo', delay: 2000 }
 // Save (Ctrl+S): here it waits a moment and drops the browser draft; your app sends the HTML
 // to its server (which passes it through @scriba/sanitize-server)
+interface DemoVersion {
+  id: string
+  createdAt: number
+  html: string
+}
+function readVersions(): DemoVersion[] {
+  try {
+    const list: unknown = JSON.parse(localStorage.getItem(VERSIONS_KEY) ?? '[]')
+    return Array.isArray(list) ? (list as DemoVersion[]) : []
+  } catch {
+    return []
+  }
+}
+// version history (File ▸ Cronologia versioni…): here the saves kept in the browser; a real
+// app lists them from its server. The content is untrusted: the plugin parses it with the schema.
+const revisionOptions: RevisionOptions = {
+  locale: 'it',
+  revisions: () =>
+    Promise.resolve(readVersions().map(({ id, createdAt }) => ({ id, createdAt, author: 'Tu' }))),
+  content: (revision) =>
+    Promise.resolve(readVersions().find((v) => v.id === revision.id)?.html ?? ''),
+}
 const saveOptions: SaveOptions = {
   save: (doc) =>
     new Promise<void>((resolve) => setTimeout(resolve, 300)).then(() => {
-      localStorage.setItem(SAVED_KEY, serializeHTML(doc)) // a failure leaves it "not saved"
+      const html = serializeHTML(doc)
+      localStorage.setItem(SAVED_KEY, html) // a failure leaves it "not saved"
+      // each save is also a version (newest first, the last 20)
+      const versions = [{ id: String(Date.now()), createdAt: Date.now(), html }, ...readVersions()]
+      localStorage.setItem(VERSIONS_KEY, JSON.stringify(versions.slice(0, 20)))
       clearDraft(draftOptions)
     }),
 }
@@ -759,6 +787,7 @@ menubar.menus = [
       fileEntry('open'),
       saveItem(saveOptions),
       restoreDraftItem(draftOptions, t),
+      revisionsToolbarItem(t, revisionOptions),
       '|',
       fileEntry('preview'),
       '|',

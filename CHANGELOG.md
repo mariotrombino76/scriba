@@ -289,6 +289,18 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     prima. Ogni riga si sposta intera con la sua formattazione; il cursore segue la sua riga; un
     passo di annullamento. Non disponibile con celle unite su più righe. `sortTable`,
     `compareCellText`, `parseLocaleNumber`.
+  - `@scriba/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
+    TinyMCE (premium). File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
+    tuo server (data, autore, etichetta; dalla più recente) e l'anteprima di quella scelta,
+    confrontata con il documento attuale: blocchi abbinati, poi parola per parola dentro i
+    paragrafi, anche in elenchi e tabelle (righe intere); aggiunto in verde sottolineato, tolto
+    in rosso barrato (non solo colore). Differenza precedente / successiva, lette ai lettori di
+    schermo; casella per vedere la versione com'era. "Ripristina questa versione" sostituisce il
+    documento in un passo di annullamento; disabilitato in sola lettura, dove il confronto resta
+    disponibile. Contenuti HTML o JSON, input non fidato (parser dello schema, limite di
+    lunghezza); versioni caricate quando scelte, risposte lente ignorate. Funzioni pure
+    `diffDocs`, `diffSequence`, `slideEdits`, `parseRevision`. La demo tiene le ultime 20
+    versioni salvate nel browser.
   - `@scriba/plugin-template` (nuovo): modelli di documento come il plugin template di
     TinyMCE. Inserisci ▸ "Modello…" apre un dialog con l'elenco dei modelli (pulsanti radio,
     si sceglie con le frecce), la descrizione e un'anteprima in sola lettura disegnata da una

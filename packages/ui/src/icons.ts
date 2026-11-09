@@ -213,6 +213,11 @@ const ICONS = {
     ['path', 'M7 3v5h8V3'],
     ['path', 'M7 21v-7h10v7'],
   ],
+  history: [
+    ['path', 'M3 12a9 9 0 1 0 2.64-6.36L3 8'],
+    ['path', 'M3 3v5h5'],
+    ['path', 'M12 7v5l3 2'],
+  ],
   crop: [
     ['path', 'M6 2v14a2 2 0 0 0 2 2h14'],
     ['path', 'M18 22V8a2 2 0 0 0-2-2H2'],

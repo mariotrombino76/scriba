@@ -138,6 +138,7 @@ import {
 } from '@scriba/plugin-format-painter'
 import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
 import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
+import { revisionsToolbarItem, type RevisionOptions } from '@scriba/plugin-revisions'
 import {
   embedKeymap,
   embedNodeView,
@@ -530,6 +531,21 @@ const draftOptions = { key: 'scriba-e2e', delay: 300 }
 // Save (Ctrl+S): the e2e tests read what was saved
 const saved: string[] = []
 const saveOptions: SaveOptions = { save: (doc) => void saved.push(serializeHTML(doc)) }
+// version history: every save is a version (a real app lists them from its server)
+const revisionOptions: RevisionOptions = {
+  locale: 'it',
+  revisions: () =>
+    Promise.resolve(
+      saved
+        .map((_, i) => ({
+          id: String(i),
+          createdAt: new Date(2026, 10, 9, 9, i),
+          author: i % 2 ? 'Bruno <b>Bianchi</b>' : 'Anna Rossi',
+        }))
+        .reverse(),
+    ),
+  content: (revision) => Promise.resolve(saved[Number(revision.id)] ?? ''),
+}
 const state = EditorState.create({
   schema,
   plugins: [
@@ -705,6 +721,7 @@ menubar.menus = [
       fileEntry('open'),
       saveItem(saveOptions),
       restoreDraftItem(draftOptions, t),
+      revisionsToolbarItem(t, revisionOptions),
       '|',
       fileEntry('preview'),
       '|',

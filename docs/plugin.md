@@ -102,12 +102,39 @@ sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `hi
 
 ## Lavoro di gruppo e AI
 
-| Pacchetto            | A cosa serve                                                                                                                             | Esportazioni principali                                                                   |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `plugin-collab`      | Collaborazione in tempo reale (Yjs) con i cursori degli altri                                                                            | `collab`, `collabCommentStore` — vedi [Collaborazione](collaborazione.md)                 |
-| `plugin-comments`    | Commenti con discussioni e modifiche proposte (revisioni)                                                                                | `commentMarks`, `commentsPlugin`, `commentsPanel`, `suggestionMarks`, `suggestionsPlugin` |
-| `plugin-permissions` | Blocchi protetti (non modificabili da alcuni utenti), controllati anche sul server; una selezione che li contiene cancella solo il resto | `withBlockIds`, `blockPermissions`                                                        |
-| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni                                                                  | vedi la [guida AI](../packages/plugins/ai/README.md)                                      |
+| Pacchetto            | A cosa serve                                                                                                                                                      | Esportazioni principali                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `plugin-collab`      | Collaborazione in tempo reale (Yjs) con i cursori degli altri                                                                                                     | `collab`, `collabCommentStore` — vedi [Collaborazione](collaborazione.md)                 |
+| `plugin-comments`    | Commenti con discussioni e modifiche proposte (revisioni)                                                                                                         | `commentMarks`, `commentsPlugin`, `commentsPanel`, `suggestionMarks`, `suggestionsPlugin` |
+| `plugin-permissions` | Blocchi protetti (non modificabili da alcuni utenti), controllati anche sul server; una selezione che li contiene cancella solo il resto                          | `withBlockIds`, `blockPermissions`                                                        |
+| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni                                                                                           | vedi la [guida AI](../packages/plugins/ai/README.md)                                      |
+| `plugin-revisions`   | Cronologia versioni: elenco delle versioni salvate dal tuo server, confronto con il documento attuale (aggiunto/tolto, parola per parola), ripristino annullabile | `revisionsToolbarItem`, `openRevisionDialog`, `diffDocs`, `parseRevision`                 |
+
+### Cronologia versioni
+
+L'editor non salva versioni da solo: le conserva il tuo server (per esempio a ogni salvataggio).
+Gli dai due funzioni:
+
+```ts
+import { revisionsToolbarItem } from '@scriba/plugin-revisions'
+
+const revisions = {
+  locale: 'it',
+  // le versioni, dalla più recente
+  revisions: () => fetch('/api/doc/42/versions').then((r) => r.json()),
+  // il contenuto di una versione: HTML oppure il JSON di doc.toJSON()
+  content: (v) => fetch(`/api/doc/42/versions/${v.id}`).then((r) => r.text()),
+}
+// nel menu File, accanto a Salva
+revisionsToolbarItem(t, revisions)
+```
+
+Il dialog mostra le versioni come pulsanti radio (si scelgono con le frecce); l'anteprima di
+quella scelta, confrontata con il documento attuale: in verde sottolineato ciò che è stato
+**aggiunto dopo**, in rosso barrato ciò che è stato **tolto dopo**. "Differenza precedente /
+successiva" le scorre e le legge ai lettori di schermo. "Ripristina questa versione" sostituisce
+il documento in un solo passo di annullamento (non disponibile in sola lettura). Il contenuto
+delle versioni è input non fidato: passa dal parser dello schema come `setContent`.
 
 ## Ordine e priorità delle scorciatoie
 

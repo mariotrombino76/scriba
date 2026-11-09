@@ -703,6 +703,21 @@ importers:
         specifier: workspace:*
         version: link:../blockquote
 
+  packages/plugins/revisions:
+    dependencies:
+      '@scriba/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@scriba/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../../view
+
   packages/plugins/save:
     dependencies:
       '@scriba/core':

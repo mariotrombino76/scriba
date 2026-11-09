@@ -147,6 +147,14 @@ un altro sito si possono modificare solo se quel sito le serve con CORS
 (`Access-Control-Allow-Origin`): l'editor le richiede con `crossOrigin="anonymous"`, senza
 cookie; altrimenti il dialog lo dice e non modifica nulla.
 
+## Versioni salvate
+
+Le versioni della cronologia (`@scriba/plugin-revisions`) arrivano dal tuo server ma sono comunque
+input non fidato: l'HTML passa dal parser dello schema in un documento inerte, il JSON da
+`schema.nodeFromJSON`; oltre 5 milioni di caratteri la versione viene rifiutata. Autore ed
+etichetta sono mostrati come testo. Controlla sul server chi può leggere le versioni di un
+documento, come per il documento stesso.
+
 ## Bozze nel browser
 
 `@scriba/plugin-autosave` salva il documento nel `localStorage` **in chiaro**, su quel dispositivo:
