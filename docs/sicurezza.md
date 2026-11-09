@@ -140,6 +140,13 @@ tipo e della dimensione nel browser è solo un aiuto per l'utente. Sul server:
   servili con il `Content-Type` corretto e `Content-Disposition: attachment`;
 - servi le immagini da un dominio separato se puoi.
 
+**Modifica foto** (ritaglio, rotazione, regolazioni) produce un file nuovo che passa dalla stessa
+funzione `upload`, con gli stessi controlli: trattalo come qualsiasi altro file caricato. Senza
+`upload` il risultato diventa un URL `data:` raster entro il limite dello schema. Le immagini di
+un altro sito si possono modificare solo se quel sito le serve con CORS
+(`Access-Control-Allow-Origin`): l'editor le richiede con `crossOrigin="anonymous"`, senza
+cookie; altrimenti il dialog lo dice e non modifica nulla.
+
 ## Bozze nel browser
 
 `@scriba/plugin-autosave` salva il documento nel `localStorage` **in chiaro**, su quel dispositivo:

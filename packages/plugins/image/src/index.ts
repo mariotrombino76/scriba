@@ -1,8 +1,16 @@
-import { NodeSelection, Plugin, type Command, type KeyBindings, type Schema } from '@scriba/core'
+import {
+  NodeSelection,
+  Plugin,
+  type Command,
+  type EditorState,
+  type KeyBindings,
+  type Schema,
+} from '@scriba/core'
 import type { Translate } from '@scriba/i18n'
 import { withoutPressed, type ContextMenuSection, type ToolbarControl } from '@scriba/ui'
 import type { EditorView, ViewPluginProps } from '@scriba/view'
 import { openImageDialog } from './dialog.js'
+import { openImageEditor } from './edit-dialog.js'
 import { resizeView } from './resize.js'
 import { uploadImages, uploadTracker, type ImageUploadOptions } from './upload.js'
 
@@ -17,6 +25,29 @@ export {
   type UploadResult,
 } from './upload.js'
 export { openImageDialog, selectedImage } from './dialog.js'
+export { openImageEditor } from './edit-dialog.js'
+export {
+  NO_EDITS,
+  rotate,
+  flip,
+  aspectCrop,
+  resizeCrop,
+  moveCrop,
+  clampCrop,
+  fitRatio,
+  editMatrix,
+  outputSize,
+  orientedSize,
+  isUnchanged,
+  editedWidth,
+  type ImageEdits,
+  type Adjustments,
+  type Rect,
+  type Rotation,
+  type Matrix,
+} from './edit-geometry.js'
+export { adjustPixels } from './edit-pixels.js'
+export { outputType } from './edit-render.js'
 
 /**
  * Image support for the view: drop and paste of image files (through your
@@ -78,7 +109,32 @@ export function imageToolbarItems(
   ]
 }
 
-/** Context menu section on an image (a right click selects it): edit it in the dialog. */
+const isImageSelected = (state: EditorState) =>
+  state.selection instanceof NodeSelection && state.selection.node.type.name === 'image'
+
+/**
+ * Toolbar button: edit the selected image as a photo (rotate, mirror, crop,
+ * brightness, contrast, saturation). Enabled only on a selected image.
+ */
+export function imageEditToolbarItems(
+  t: Translate,
+  options: ImageUploadOptions = {},
+): ToolbarControl[] {
+  return [
+    {
+      type: 'button',
+      id: 'imageEdit',
+      icon: 'crop',
+      label: (tr) => tr('imageEdit.label'),
+      command: isImageSelected,
+      // contextual: shown only while an image is selected
+      isVisible: isImageSelected,
+      run: (view) => void openImageEditor(view, t, options),
+    },
+  ]
+}
+
+/** Context menu section on an image (a right click selects it): its properties, or the photo editor. */
 export function imageContextMenu(
   schema: Schema,
   t: Translate,
@@ -89,6 +145,9 @@ export function imageContextMenu(
     isVisible: (state) =>
       state.selection instanceof NodeSelection && state.selection.node.type.name === 'image',
     // an action here, not a pressed toggle
-    items: imageToolbarItems(schema, t, options).map(withoutPressed),
+    items: [
+      ...imageToolbarItems(schema, t, options).map(withoutPressed),
+      ...imageEditToolbarItems(t, options),
+    ],
   }
 }

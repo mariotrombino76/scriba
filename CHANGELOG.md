@@ -269,6 +269,18 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
     anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
     CDN completo (pulsante nella toolbar).
+  - `@scriba/plugin-image`: modifica foto come l'Enhanced Image Editing di TinyMCE (premium).
+    Menu contestuale dell'immagine ▸ "Modifica foto…" (o il pulsante contestuale
+    `imageEditToolbarItems`) apre un dialog con anteprima: ruota a sinistra/destra, rifletti in
+    orizzontale/verticale, ritaglio trascinando il riquadro o le sue maniglie (mouse, penna,
+    dita) oppure scrivendo posizione e misure in pixel (da tastiera), con proporzioni libere,
+    originali, quadrate, 4:3 o 16:9; luminosità, contrasto e saturazione. Disegnato con il
+    canvas nativo, senza dipendenze. Il risultato è un file nuovo (JPEG e WebP restano tali, il
+    resto diventa PNG) che passa dalla funzione `upload`; senza `upload` diventa un URL `data:`
+    entro il limite dello schema. Un solo passo di annullamento; la larghezza mostrata nel
+    documento mantiene la scala. Le immagini di altri siti si modificano solo se servite con
+    CORS; altrimenti il dialog lo spiega. `openImageEditor`; funzioni pure `rotate`, `flip`,
+    `aspectCrop`, `resizeCrop`, `editMatrix`, `adjustPixels`, `outputType`.
   - `@scriba/plugin-table`: ordinamento delle righe per la colonna del cursore, crescente o
     decrescente, come le tabelle avanzate di TinyMCE (menu Tabella e menu contestuale ▸ Colonna).
     Le righe d'intestazione in alto restano; numeri letti nella lingua del contenuto (`lang`

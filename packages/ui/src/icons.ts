@@ -213,6 +213,28 @@ const ICONS = {
     ['path', 'M7 3v5h8V3'],
     ['path', 'M7 21v-7h10v7'],
   ],
+  crop: [
+    ['path', 'M6 2v14a2 2 0 0 0 2 2h14'],
+    ['path', 'M18 22V8a2 2 0 0 0-2-2H2'],
+  ],
+  rotateLeft: [
+    ['path', 'M3 12a9 9 0 1 0 2.64-6.36L3 8'],
+    ['path', 'M3 3v5h5'],
+  ],
+  rotateRight: [
+    ['path', 'M21 12a9 9 0 1 1-2.64-6.36L21 8'],
+    ['path', 'M21 3v5h-5'],
+  ],
+  flipHorizontal: [
+    ['path', 'M12 3v18'],
+    ['path', 'M9 6 3 18h6z'],
+    ['path', 'm15 6 6 12h-6z'],
+  ],
+  flipVertical: [
+    ['path', 'M3 12h18'],
+    ['path', 'M6 9 18 3v6z'],
+    ['path', 'm6 15 12 6v-6z'],
+  ],
   video: [
     ['path', 'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
     ['path', 'm10 9 5 3-5 3z'],

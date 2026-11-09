@@ -84,6 +84,7 @@ import {
   imageNodes,
   imagePlugins,
   imageContextMenu,
+  imageEditToolbarItems,
   imageToolbarItems,
   type ImageUploadOptions,
 } from '@scriba/plugin-image'
@@ -708,6 +709,7 @@ toolbar.items = [
     [
       ...linkToolbarItems(schema, t),
       ...imageToolbarItems(schema, t, images),
+      ...imageEditToolbarItems(t, images),
       ...tableToolbarItems(schema, t),
       charmapToolbarItem(t),
       taskToolbarItem(schema),

@@ -2288,3 +2288,189 @@ hr.scriba-page-break {
     height: 35vh;
   }
 }
+
+/* Photo editor (plugin-image) */
+.scriba-dialog.scriba-image-editor {
+  width: min(40rem, calc(100vw - 2rem));
+}
+.scriba-image-editor-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.scriba-image-editor-status {
+  margin: 0;
+  min-height: 1.25em;
+  color: var(--scriba-muted);
+  font-size: 0.875rem;
+}
+.scriba-image-editor-tools {
+  display: flex;
+  gap: 4px;
+}
+.scriba-image-editor-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+  background: var(--scriba-bg);
+  color: var(--scriba-text);
+  cursor: pointer;
+}
+.scriba-image-editor-tool:hover:not(:disabled) {
+  background: var(--scriba-accent-bg);
+}
+.scriba-image-editor-stage {
+  position: relative;
+  align-self: center;
+  max-width: 100%;
+  /* room for the handles on the edges */
+  margin: 8px;
+  line-height: 0;
+  background: repeating-conic-gradient(var(--scriba-border) 0 25%, transparent 0 50%) 0 0 / 16px
+    16px;
+}
+.scriba-image-editor-stage canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 50vh;
+  height: auto;
+}
+.scriba-crop-shade {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.scriba-crop-window {
+  position: absolute;
+  /* darkens what is cut away */
+  box-shadow: 0 0 0 100vmax rgb(0 0 0 / 0.5);
+}
+.scriba-crop-box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  outline: 1px solid rgb(0 0 0 / 0.6);
+  cursor: move;
+  touch-action: none;
+}
+.scriba-crop-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  background: #fff;
+  border: 1px solid rgb(0 0 0 / 0.6);
+  border-radius: 2px;
+  touch-action: none;
+}
+/* bigger targets for fingers */
+@media (pointer: coarse) {
+  .scriba-crop-handle {
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+  }
+}
+.scriba-crop-nw {
+  left: 0;
+  top: 0;
+  cursor: nwse-resize;
+}
+.scriba-crop-n {
+  left: 50%;
+  top: 0;
+  cursor: ns-resize;
+}
+.scriba-crop-ne {
+  left: 100%;
+  top: 0;
+  cursor: nesw-resize;
+}
+.scriba-crop-e {
+  left: 100%;
+  top: 50%;
+  cursor: ew-resize;
+}
+.scriba-crop-se {
+  left: 100%;
+  top: 100%;
+  cursor: nwse-resize;
+}
+.scriba-crop-s {
+  left: 50%;
+  top: 100%;
+  cursor: ns-resize;
+}
+.scriba-crop-sw {
+  left: 0;
+  top: 100%;
+  cursor: nesw-resize;
+}
+.scriba-crop-w {
+  left: 0;
+  top: 50%;
+  cursor: ew-resize;
+}
+.scriba-image-editor-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem 0.75rem;
+  border: 1px solid var(--scriba-border);
+  border-radius: 6px;
+}
+.scriba-image-editor-group legend {
+  padding: 0 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.scriba-image-editor-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.5rem;
+}
+.scriba-dialog .scriba-image-editor-numbers input[type='number'] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.scriba-image-editor-link {
+  align-self: flex-start;
+  padding: 0.25rem 0;
+  border: 0;
+  background: none;
+  color: var(--scriba-accent);
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.scriba-image-editor-slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  font-size: 0.875rem;
+}
+.scriba-image-editor-slider output {
+  font-variant-numeric: tabular-nums;
+}
+.scriba-image-editor-slider input[type='range'] {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--scriba-accent);
+}
+.scriba-image-editor-reset {
+  margin-right: auto;
+}
+.scriba-dialog fieldset:disabled {
+  opacity: 0.6;
+}
