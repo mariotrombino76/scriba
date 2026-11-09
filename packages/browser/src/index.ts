@@ -18,7 +18,7 @@ import {
   ADD_TO_HISTORY,
   type Plugin,
 } from '@scriba/core'
-import { createTranslator, type Messages } from '@scriba/i18n'
+import { createTranslator, de, es, fr, type Messages } from '@scriba/i18n'
 import {
   blockStyleMenu,
   clearFormatItem,
@@ -135,7 +135,7 @@ export interface CreateEditorOptions {
    * docked at the top of the window, when there is no room).
    */
   inline?: boolean
-  /** Interface language: `'it'` (default), `'en'`, or a message object. */
+  /** Interface language: `'it'` (default), `'en'`, `'fr'`, `'de'`, `'es'`, or a message object. */
   locale?: string | Messages
   /** Accessible name of the editing area. */
   label?: string
@@ -202,7 +202,12 @@ export function createEditor(
   if (!host) throw new Error(`Scriba.createEditor: no element for ${String(target)}`)
   const full = (options.preset ?? 'full') === 'full'
   const format = options.format ?? 'html'
-  const t = createTranslator(options.locale ?? 'it')
+  const locale = options.locale ?? 'it'
+  // this bundle carries every language: the extra ones are found by name too
+  const extra: Record<string, Messages> = { fr, de, es }
+  const t = createTranslator(
+    typeof locale === 'string' ? (extra[locale.split('-')[0]!.toLowerCase()] ?? locale) : locale,
+  )
   const schema = full ? fullSchema() : basicSchema
   const images: ImageUploadOptions = options.upload ? { upload: options.upload } : {}
 

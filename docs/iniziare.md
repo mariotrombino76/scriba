@@ -165,10 +165,19 @@ In entrambi i casi, **sul server** ripassa ciò che arriva dal client da `@scrib
 
 ## Lingua
 
-L'interfaccia è in italiano e in inglese: `locale: 'en'` (componenti) oppure
-`createTranslator('en')`. Per cambiare singoli testi: `createTranslator('it', { 'editor.label':
-'Testo della nota' })`. Per un'altra lingua passa un oggetto con tutti i messaggi (le chiavi sono
-quelle di `@scriba/i18n`).
+L'interfaccia è in italiano, inglese, francese, tedesco e spagnolo. Italiano e inglese si
+scelgono per nome: `locale: 'en'` (componenti) oppure `createTranslator('en')`. Francese, tedesco
+e spagnolo si importano, così le lingue che non usi restano fuori dal tuo bundle:
+
+```ts
+import { createTranslator, fr } from '@scriba/i18n'
+const t = createTranslator(fr) // nei componenti: locale: fr
+```
+
+Con lo script per il browser (`Scriba.createEditor`) bastano i nomi: `locale: 'fr'`, `'de'`,
+`'es'`. Per cambiare singoli testi: `createTranslator('it', { 'editor.label': 'Testo della nota'
+})`. Per un'altra lingua passa un oggetto con tutti i messaggi (le chiavi sono quelle di
+`@scriba/i18n`).
 
 ## Tema
 

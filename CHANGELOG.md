@@ -289,6 +289,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     prima. Ogni riga si sposta intera con la sua formattazione; il cursore segue la sua riga; un
     passo di annullamento. Non disponibile con celle unite su più righe. `sortTable`,
     `compareCellText`, `parseLocaleNumber`.
+  - `@scriba/i18n`: interfaccia in francese (`fr`), tedesco (`de`) e spagnolo (`es`), con nomi dei
+    tasti locali (Strg, Umschalt, Maj, Mayús…). Si importano come oggetti
+    (`createTranslator(fr)`, `locale: fr` nei componenti), così le lingue non usate restano fuori
+    dal bundle; `createTranslator('it' | 'en')` resta per nome. `@scriba/browser` le riconosce
+    anche per nome (`locale: 'fr'`, `'de-AT'`…). Un test controlla per ogni lingua chiavi,
+    segnaposto `{nome}` e assenza di markup.
   - Modalità inline come quella di TinyMCE: opzione `inline` di `createEditor`
     (`@scriba/browser`) e dei componenti Vue e React, `inlineToolbar(contenitore, toolbar)` in
     `@scriba/ui`. Il testo prende gli stili della pagina (niente riquadro, bordo tratteggiato

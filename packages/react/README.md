@@ -25,19 +25,19 @@ server prima di salvarlo o mostrarlo.
 
 ## Proprietà
 
-| Proprietà   | Default                      | Significato                                                                           |
-| ----------- | ---------------------------- | ------------------------------------------------------------------------------------- |
-| `value`     | `null`                       | Il contenuto (HTML o JSON). Un valore cambiato dall'esterno sostituisce il documento. |
-| `onChange`  | —                            | Chiamata a ogni modifica dell'utente, con il contenuto nel formato scelto.            |
-| `format`    | `'html'`                     | `'html'` o `'json'`.                                                                  |
-| `schema`    | `basicSchema`                | Lo schema (letto alla creazione).                                                     |
-| `plugins`   | —                            | Plugin aggiuntivi (letti alla creazione).                                             |
-| `editable`  | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                              |
-| `label`     | "Editor di testo formattato" | Nome accessibile dell'area di scrittura.                                              |
-| `locale`    | `'it'`                       | Lingua dell'interfaccia (`'it'`, `'en'`…) o un oggetto di messaggi.                   |
-| `toolbar`   | `true`                       | Mostra la toolbar predefinita.                                                        |
-| `nodeViews` | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                         |
-| `className` | —                            | Classe aggiuntiva del contenitore.                                                    |
+| Proprietà   | Default                      | Significato                                                                            |
+| ----------- | ---------------------------- | -------------------------------------------------------------------------------------- |
+| `value`     | `null`                       | Il contenuto (HTML o JSON). Un valore cambiato dall'esterno sostituisce il documento.  |
+| `onChange`  | —                            | Chiamata a ogni modifica dell'utente, con il contenuto nel formato scelto.             |
+| `format`    | `'html'`                     | `'html'` o `'json'`.                                                                   |
+| `schema`    | `basicSchema`                | Lo schema (letto alla creazione).                                                      |
+| `plugins`   | —                            | Plugin aggiuntivi (letti alla creazione).                                              |
+| `editable`  | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                               |
+| `label`     | "Editor di testo formattato" | Nome accessibile dell'area di scrittura.                                               |
+| `locale`    | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba/i18n`). |
+| `toolbar`   | `true`                       | Mostra la toolbar predefinita.                                                         |
+| `nodeViews` | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                          |
+| `className` | —                            | Classe aggiuntiva del contenitore.                                                     |
 
 ## Ref e hook
 

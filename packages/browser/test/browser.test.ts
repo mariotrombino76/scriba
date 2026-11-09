@@ -48,6 +48,15 @@ describe('Scriba.createEditor', () => {
     expect(item(editor)?.getAttribute('aria-label')).toBe('Modello…')
   })
 
+  it('every built-in language by name: it, en, fr, de, es (with region)', () => {
+    const label = (locale: string) =>
+      createEditor(host(), { locale }).view.dom.getAttribute('aria-label')
+    expect(label('de')).toBe('Rich-Text-Editor')
+    expect(label('fr-CA')).toBe('Éditeur de texte enrichi')
+    expect(label('es')).toBe('Editor de texto enriquecido')
+    expect(label('en')).toBe('Rich text editor')
+  })
+
   it('basic preset: only the basic schema (a table becomes text)', () => {
     const editor = createEditor(host(), {
       preset: 'basic',

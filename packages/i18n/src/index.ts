@@ -2,6 +2,13 @@ import { en, type MessageKey, type Messages } from './en.js'
 import { it } from './it.js'
 
 export { en, it, type MessageKey, type Messages }
+/**
+ * French, German, Spanish: imported only when used (pass the object, e.g.
+ * `createTranslator(fr)`), so the other languages stay out of your bundle.
+ */
+export { fr } from './fr.js'
+export { de } from './de.js'
+export { es } from './es.js'
 
 /** Translates a key, filling `{name}` placeholders. */
 export type Translate = (
@@ -9,7 +16,10 @@ export type Translate = (
   params?: Readonly<Record<string, string | number>>,
 ) => string
 
-/** Built-in locales. Others can be passed as message objects. */
+/**
+ * Locales found by name in `createTranslator('it')`. The others (`fr`, `de`,
+ * `es` or your own) are passed as message objects.
+ */
 export const locales: Readonly<Record<string, Messages>> = { it, en }
 
 /**
