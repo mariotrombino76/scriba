@@ -33,18 +33,18 @@ Le voci aggiuntive dei plugin (liste, tabelle, immagini…) si aggiungono all'ar
 
 ## Esportazioni
 
-| Esportazione                                              | Descrizione                                                                           |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `ScribaToolbar`, `defineScribaToolbar()`                  | `<scriba-toolbar>`: proprietà `view`, `items`, `translator`.                          |
-| `ScribaMenubar`, `defineScribaMenubar()`                  | `<scriba-menubar>`: barra dei menu (File, Modifica…), proprietà `view`, `menus`, `translator`. |
-| `defaultToolbarItems(schema)`                             | Le voci predefinite (cronologia, formati, stili dei blocchi…) per lo schema dato.     |
-| `toolbarGroup`, `historyItems`, `markItems`, `blockStyleMenu`, `clearFormatItem`, `selectAllItem`, `nonBreakingSpaceItem`, `clipboardItems` | Costruttori delle singole voci e gruppi. |
-| `ToolbarItem`, `ToolbarButton`, `ToolbarGroup`, `ToolbarMenu`, … | Tipi per scrivere voci proprie (`id`, `label`, `command`, `isActive`, `shortcut`…). |
-| `contextMenu(view, options)`                              | Menu del tasto destro: sezioni che si applicano dove si clicca.                       |
-| `MenuPopup`, `popupEntries`                               | Menu a comparsa riusabili.                                                            |
-| `openDialog`                                              | Dialog modale (focus trap, ritorno del focus).                                        |
-| `inlineToolbar(container, toolbar)`                       | Modalità inline: la barra compare solo mentre si scrive. Restituisce `{ update, destroy }`. |
-| `createIcon`, `formatShortcut`, `isMac`                   | Icone e testo delle scorciatoie (`Mod` = Ctrl o ⌘).                                   |
+| Esportazione                                                                                                                                | Descrizione                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `ScribaToolbar`, `defineScribaToolbar()`                                                                                                    | `<scriba-toolbar>`: proprietà `view`, `items`, `translator`.                                   |
+| `ScribaMenubar`, `defineScribaMenubar()`                                                                                                    | `<scriba-menubar>`: barra dei menu (File, Modifica…), proprietà `view`, `menus`, `translator`. |
+| `defaultToolbarItems(schema)`                                                                                                               | Le voci predefinite (cronologia, formati, stili dei blocchi…) per lo schema dato.              |
+| `toolbarGroup`, `historyItems`, `markItems`, `blockStyleMenu`, `clearFormatItem`, `selectAllItem`, `nonBreakingSpaceItem`, `clipboardItems` | Costruttori delle singole voci e gruppi.                                                       |
+| `ToolbarItem`, `ToolbarButton`, `ToolbarGroup`, `ToolbarMenu`, …                                                                            | Tipi per scrivere voci proprie (`id`, `label`, `command`, `isActive`, `shortcut`…).            |
+| `contextMenu(view, options)`                                                                                                                | Menu del tasto destro: sezioni che si applicano dove si clicca.                                |
+| `MenuPopup`, `popupEntries`                                                                                                                 | Menu a comparsa riusabili.                                                                     |
+| `openDialog`                                                                                                                                | Dialog modale (focus trap, ritorno del focus).                                                 |
+| `inlineToolbar(container, toolbar)`                                                                                                         | Modalità inline: la barra compare solo mentre si scrive. Restituisce `{ update, destroy }`.    |
+| `createIcon`, `formatShortcut`, `isMac`                                                                                                     | Icone e testo delle scorciatoie (`Mod` = Ctrl o ⌘).                                            |
 
 Le voci di un pulsante (`ToolbarButton`) hanno `id`, `label: (t) => string`, `command`,
 facoltativi `icon`, `shortcut`, `isActive`, `isVisible`, `priority` e `run` (azione
@@ -54,8 +54,8 @@ personalizzata, ad esempio per aprire un dialog).
 
 - `role="toolbar"` con navigazione a frecce (un solo punto di tabulazione), stato `aria-pressed`
   sui pulsanti attivi, `aria-haspopup`/`aria-expanded` sui menu, scorciatoie nei suggerimenti.
-- La barra dei menu segue il pattern WAI-ARIA *menubar*; il menu del tasto destro il pattern
-  *menu* (anche da tastiera: tasto Menu e Maiusc+F10).
+- La barra dei menu segue il pattern WAI-ARIA _menubar_; il menu del tasto destro il pattern
+  _menu_ (anche da tastiera: tasto Menu e Maiusc+F10).
 - I dialog hanno il focus trap e restituiscono il focus alla chiusura; Esc li chiude.
 - Con la barra che non entra nello schermo, le voci meno importanti passano in "Altro".
 - Tutti i testi vengono dal traduttore (`@scriba/i18n`), mai stringhe fisse.

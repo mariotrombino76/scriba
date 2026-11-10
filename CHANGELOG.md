@@ -309,6 +309,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     più larga, anche appena oltre il bordo) senza far scorrere la pagina; la barra inline segue
     la parte visibile della finestra (tastiera sullo schermo, zoom); percorso degli elementi e
     maniglia della barra di stato grandi almeno 2rem con il tocco.
+  - Un `README.md` per ogni pacchetto (in italiano): installazione, esempio d'uso, cosa
+    esporta, scorciatoie, note di sicurezza e accessibilità. Gli esempi sono stati compilati
+    con `tsc` contro le API vere.
   - Verifica automatica dell'accessibilità (`e2e/a11y.spec.ts`, axe-core, solo sviluppo):
     WCAG 2.2 A/AA su editor, menu, ogni dialog, tema scuro e pagine inline/CDN/React nei tre
     browser.
