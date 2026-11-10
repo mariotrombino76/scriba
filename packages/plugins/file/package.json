@@ -27,7 +27,7 @@
     "@scriba-editor/view": "workspace:*",
     "@scriba-editor/plugin-markdown": "workspace:*",
     "mammoth": "1.13.0",
-    "docx": "9.8.1",
+    "docx": "9.15.3",
     "jszip": "3.10.2"
   },
   "devDependencies": {
