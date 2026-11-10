@@ -74,6 +74,23 @@ describe('inlineToolbar', () => {
     expect(docked.toolbar.style.left).toBe('25px')
   })
 
+  it('on phones it follows the visible part (keyboard open, zoom): docked under its top', () => {
+    // the visual viewport starts 120px down the window and is 300px tall
+    Object.defineProperty(window, 'visualViewport', {
+      configurable: true,
+      value: { offsetTop: 120, height: 300, addEventListener() {}, removeEventListener() {} },
+    })
+    try {
+      // room above in the window, not in the visible part
+      const { toolbar, text } = setup({ top: 150, bottom: 600 })
+      text.focus()
+      expect(toolbar.dataset['placement']).toBe('docked')
+      expect(toolbar.style.top).toBe('120px')
+    } finally {
+      delete (window as { visualViewport?: unknown }).visualViewport
+    }
+  })
+
   it('Alt+F10 moves the focus into the toolbar', () => {
     const { button, text } = setup({ top: 200, bottom: 400 })
     text.focus()

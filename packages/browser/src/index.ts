@@ -135,6 +135,11 @@ export interface CreateEditorOptions {
    * docked at the top of the window, when there is no room).
    */
   inline?: boolean
+  /**
+   * Keeps the toolbar in sight at the top of the window while a long text
+   * scrolls (TinyMCE's `toolbar_sticky`). Same as the `scriba-sticky` class.
+   */
+  stickyToolbar?: boolean
   /** Interface language: `'it'` (default), `'en'`, `'fr'`, `'de'`, `'es'`, or a message object. */
   locale?: string | Messages
   /** Accessible name of the editing area. */
@@ -349,6 +354,7 @@ export function createEditor(
   }
   const inline = options.inline && toolbar ? inlineToolbar(element, toolbar) : null
   if (options.inline) element.classList.add('scriba-inline')
+  else if (options.stickyToolbar) element.classList.add('scriba-sticky')
 
   return {
     view,

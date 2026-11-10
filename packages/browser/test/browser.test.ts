@@ -37,6 +37,17 @@ describe('Scriba.createEditor', () => {
     )
   })
 
+  it('stickyToolbar: the toolbar stays in sight (scriba-sticky); not with inline', () => {
+    host()
+    const sticky = createEditor('#editor', { stickyToolbar: true })
+    expect(sticky.element.classList.contains('scriba-sticky')).toBe(true)
+    sticky.destroy()
+    host()
+    const inline = createEditor('#editor', { stickyToolbar: true, inline: true })
+    expect(inline.element.classList.contains('scriba-sticky')).toBe(false)
+    inline.destroy()
+  })
+
   it('full preset: "Template…" only when templates are given', () => {
     const item = (editor: { element: HTMLElement }) =>
       editor.element.querySelector('[data-item="template"]')

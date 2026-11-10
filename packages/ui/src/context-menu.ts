@@ -33,7 +33,9 @@ export interface ContextMenu {
  * Right-click menu of the editor, like TinyMCE's `contextmenu`: the sections
  * that apply where you click (link, image, table…) as one menu, with toolbar
  * menus as sub-menus. Where none applies — and with Ctrl (Cmd on macOS) held —
- * the browser's own menu opens (spelling suggestions, paste…). The menu key
+ * the browser's own menu opens (spelling suggestions, paste…). On touch
+ * screens a long press opens it only on an image or another element; on
+ * text the system menu (select, copy, paste) is kept. The menu key
  * and Shift+F10 open it at the cursor. Entries are enabled exactly as in the
  * toolbar (read-only, commenting…).
  */
@@ -89,21 +91,24 @@ export function contextMenu(view: EditorView, options: ContextMenuOptions): Cont
     return true
   }
 
-  /** A right click outside the selection moves the cursor there first (an image gets selected). */
-  const moveSelection = (event: MouseEvent): void => {
-    const pos = view.posAtCoords(event.clientX, event.clientY)
-    if (pos === null) return
-    const { state } = view
+  /** The atom (image, embed, formula…) under the pointer, if the event is on one. */
+  const atomAt = (event: MouseEvent, pos: number): number | null => {
+    const { doc } = view.state
     const target = event.target instanceof Element ? event.target : null
-    let selection: Selection | null = null
+    if (!target) return null
     for (const at of [pos, pos - 1]) {
-      const node = at >= 0 ? state.doc.nodeAt(at) : null
+      const node = at >= 0 ? doc.nodeAt(at) : null
       const dom = node && !node.isText && NodeSelection.isSelectable(node) ? view.nodeDOM(at) : null
-      if (node?.isAtom && dom && target && dom.contains(target)) {
-        selection = NodeSelection.create(state.doc, at)
-        break
-      }
+      if (node?.isAtom && dom?.contains(target)) return at
     }
+    return null
+  }
+
+  /** A right click outside the selection moves the cursor there first (an image gets selected). */
+  const moveSelection = (event: MouseEvent, pos: number): void => {
+    const { state } = view
+    const atom = atomAt(event, pos)
+    let selection: Selection | null = atom === null ? null : NodeSelection.create(state.doc, atom)
     const { from, to, empty } = state.selection
     if (!selection && !empty && from <= pos && pos <= to) return // inside the selection: keep it
     selection ??= Selection.near(state.doc.resolve(pos))
@@ -122,7 +127,10 @@ export function contextMenu(view: EditorView, options: ContextMenuOptions): Cont
       const box = view.coordsAtPos(view.state.selection.head)
       point = [box.left, box.bottom + 4]
     } else {
-      moveSelection(event)
+      const pos = view.posAtCoords(event.clientX, event.clientY)
+      // a long press on text (touch screens) keeps the system menu: select, copy, paste
+      if (pointerType === 'touch' && (pos === null || atomAt(event, pos) === null)) return
+      if (pos !== null) moveSelection(event, pos)
       point = [event.clientX, event.clientY]
     }
     if (openMain()) event.preventDefault()

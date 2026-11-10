@@ -191,7 +191,7 @@ export class MenuPopup {
     if (isButton(anchor)) anchor.setAttribute('aria-expanded', 'true')
     this.focus(Math.max(0, active))
     const doc = this.button.ownerDocument
-    doc.addEventListener('mousedown', this.onOutside, true)
+    doc.addEventListener('pointerdown', this.onOutside, true)
     doc.defaultView?.addEventListener('scroll', this.onViewportChange, true)
     doc.defaultView?.addEventListener('resize', this.onViewportChange)
   }
@@ -201,7 +201,7 @@ export class MenuPopup {
     this.el.hidden = true
     if (isButton(this.anchor)) this.anchor.setAttribute('aria-expanded', 'false')
     const doc = this.button.ownerDocument
-    doc.removeEventListener('mousedown', this.onOutside, true)
+    doc.removeEventListener('pointerdown', this.onOutside, true)
     doc.defaultView?.removeEventListener('scroll', this.onViewportChange, true)
     doc.defaultView?.removeEventListener('resize', this.onViewportChange)
     if (returnFocus) this.anchor.focus({ preventScroll: true })

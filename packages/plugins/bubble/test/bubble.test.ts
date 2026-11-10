@@ -70,4 +70,22 @@ describe('bubble menu', () => {
     select(1, 5)
     expect(bar().hidden).toBe(true)
   })
+
+  it('above a mouse selection, below a touch selection (the system menu goes above)', () => {
+    const { view, bar, select } = setup()
+    view.coordsAtPos = () => ({ left: 100, right: 100, top: 300, bottom: 320 })
+    Object.defineProperty(bar(), 'offsetHeight', { value: 40, configurable: true })
+    const down = (pointerType: string) => {
+      const event = new MouseEvent('pointerdown', { bubbles: true })
+      Object.defineProperty(event, 'pointerType', { value: pointerType })
+      view.dom.dispatchEvent(event)
+    }
+    down('mouse')
+    select(1, 5)
+    expect(bar().style.top).toBe('252px')
+    select(1, 1)
+    down('touch')
+    select(1, 5)
+    expect(bar().style.top).toBe('352px')
+  })
 })

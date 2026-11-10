@@ -15,7 +15,9 @@ export interface InlineToolbarHandle {
  * own styles and the toolbar appears only while the editor has the focus,
  * floating above the area; below it when there is no room above; docked at
  * the top of the window when the area is taller than the visible part and
- * its top has scrolled away. `container` holds both the toolbar and the
+ * its top has scrolled away. "In sight" means the visual viewport: on phones
+ * the on-screen keyboard and the zoom leave only part of the window visible.
+ * `container` holds both the toolbar and the
  * editing area (the toolbar first, as in the page order).
  * Alt+F10 from the text moves the focus into the toolbar (as in TinyMCE);
  * Escape there goes back to the text. Positions are set through CSSOM (strict CSP).
@@ -32,15 +34,20 @@ export function inlineToolbar(container: HTMLElement, toolbar: HTMLElement): Inl
     if (toolbar.hidden || !win) return
     const area = container.getBoundingClientRect()
     const height = toolbar.offsetHeight
+    // the part of the window really in sight: on phones the on-screen keyboard
+    // and the zoom shrink it (the visual viewport), fixed elements do not follow
+    const visual = win.visualViewport
+    const top = visual?.offsetTop ?? 0
+    const bottom = visual ? visual.offsetTop + visual.height : win.innerHeight
     let placement: InlinePlacement
-    if (area.top >= height + GAP) placement = 'above'
-    else if (area.top >= 0 && win.innerHeight - area.bottom >= height + GAP) placement = 'below'
+    if (area.top >= top + height + GAP) placement = 'above'
+    else if (area.top >= top && bottom - area.bottom >= height + GAP) placement = 'below'
     else placement = 'docked'
     toolbar.dataset['placement'] = placement
     toolbar.style.width = `${Math.round(area.width)}px`
     if (placement === 'docked') {
       toolbar.style.position = 'fixed'
-      toolbar.style.top = '0px'
+      toolbar.style.top = `${Math.round(top)}px`
       toolbar.style.left = `${Math.round(area.left)}px`
     } else {
       toolbar.style.position = 'absolute'
@@ -86,6 +93,8 @@ export function inlineToolbar(container: HTMLElement, toolbar: HTMLElement): Inl
   container.addEventListener('focusout', onFocusOut)
   win?.addEventListener('scroll', schedule, true)
   win?.addEventListener('resize', schedule)
+  win?.visualViewport?.addEventListener('scroll', schedule)
+  win?.visualViewport?.addEventListener('resize', schedule)
   const observer = win && 'ResizeObserver' in win ? new win.ResizeObserver(schedule) : null
   observer?.observe(container)
   if (container.contains(doc.activeElement)) show()
@@ -98,6 +107,8 @@ export function inlineToolbar(container: HTMLElement, toolbar: HTMLElement): Inl
       container.removeEventListener('focusout', onFocusOut)
       win?.removeEventListener('scroll', schedule, true)
       win?.removeEventListener('resize', schedule)
+      win?.visualViewport?.removeEventListener('scroll', schedule)
+      win?.visualViewport?.removeEventListener('resize', schedule)
       observer?.disconnect()
       if (frame) win?.cancelAnimationFrame(frame)
       container.classList.remove('scriba-inline')

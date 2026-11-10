@@ -11,13 +11,14 @@ import {
   selectAllItem,
   type ContextMenuSection,
 } from '../src/index.js'
-import { doc, p, schema } from '../../core/test/helpers/schema.js'
+import { doc, img, p, schema } from '../../core/test/helpers/schema.js'
+import type { Node } from '@scriba/core'
 
-function setup(sections: ContextMenuSection[], editable = true) {
+function setup(sections: ContextMenuSection[], editable = true, content?: Node) {
   document.body.textContent = ''
   const place = document.createElement('div')
   document.body.append(place)
-  const d = doc(p('abcdef'))
+  const d = content ?? doc(p('abcdef'))
   const view = new EditorView(place, {
     state: EditorState.create({
       doc: d,
@@ -144,9 +145,38 @@ describe('contextMenu', () => {
   it('a click elsewhere in the editor closes it; destroy removes the listener', () => {
     const { view, menu, rightClick, openMenu } = setup([always('marks', markItems(schema))])
     rightClick()
-    view.dom.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    view.dom.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
     expect(openMenu()).toBeNull()
     menu.destroy()
     expect(rightClick().defaultPrevented).toBe(false)
+  })
+
+  it('touch screens: a long press on text keeps the system menu, on an image opens', () => {
+    const touch = (target: Element) => {
+      const event = new MouseEvent('contextmenu', {
+        button: 2,
+        clientX: 50,
+        clientY: 60,
+        bubbles: true,
+        cancelable: true,
+      })
+      Object.defineProperty(event, 'pointerType', { value: 'touch' })
+      target.dispatchEvent(event)
+      return event
+    }
+    const text = setup([always('marks', markItems(schema).slice(0, 1))])
+    expect(touch(text.view.dom.querySelector('p')!).defaultPrevented).toBe(false)
+    expect(text.openMenu()).toBeNull()
+
+    const image = setup(
+      [always('marks', markItems(schema).slice(0, 1))],
+      true,
+      doc(p('ab', img('x.png'), 'cd')),
+    )
+    image.view.posAtCoords = () => 3
+    expect(touch(image.view.dom.querySelector('img')!).defaultPrevented).toBe(true)
+    expect(image.openMenu()).not.toBeNull()
+    expect(image.view.state.selection.from).toBe(3)
+    expect(image.view.state.selection.to).toBe(4)
   })
 })

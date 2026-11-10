@@ -302,6 +302,17 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     sopra il testo, sotto se sopra non c'è spazio, agganciata in cima alla finestra quando il
     testo è più alto dello schermo e scorre. Alt+F10 dal testo entra nella barra, Esc torna al
     testo. Posizioni via CSSOM (CSP rigida).
+  - Uso con il dito (telefoni e tablet): toccare fuori da un menu lo chiude; la pressione lunga
+    sul testo lascia il menu di sistema (seleziona, copia, incolla) e apre il menu contestuale
+    solo su immagini e altri elementi; il bubble menu dopo un tocco va sotto la selezione, lasciando
+    sopra il posto al menu di sistema; il bordo di una cella si trascina col dito (zona di presa
+    più larga, anche appena oltre il bordo) senza far scorrere la pagina; la barra inline segue
+    la parte visibile della finestra (tastiera sullo schermo, zoom); percorso degli elementi e
+    maniglia della barra di stato grandi almeno 2rem con il tocco.
+  - Barra degli strumenti fissa in alto mentre il testo scorre, come `toolbar_sticky` di
+    TinyMCE: opzione `stickyToolbar` di `createEditor` o classe `scriba-sticky` sul contenitore
+    (Vue: `class`, React: `className`); `--scriba-sticky-offset` lascia spazio a un'intestazione
+    fissa della pagina.
   - `@scriba/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
     TinyMCE (premium). File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
     tuo server (data, autore, etichetta; dalla più recente) e l'anteprima di quella scelta,
@@ -423,6 +434,11 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   battitura trasformata in proposta si annulla con un solo Ctrl+Z.
 - `@scriba/core`, cronologia: sostituire blocchi interi (tabella ricostruita, documento dalla
   vista sorgente) è sempre un passo di annulla a sé, mai unito alla digitazione.
+- `@scriba/plugin-statusbar`, tema: la maniglia per ridimensionare l'editor ha la classe
+  `scriba-statusbar-resize` (prima `scriba-resize-handle`, la stessa delle maniglie delle
+  immagini). **Incompatibile** per chi ne cambiava lo stile.
+- `@scriba/ui`: i menu si chiudono al `pointerdown` fuori da loro (prima `mousedown`, che dopo
+  un tocco arriva in ritardo o non arriva).
 - `@scriba/plugin-code-block`: la scorciatoia è Ctrl+Alt+Maiusc+C, perché Ctrl+Alt+C in Chrome apre
   gli strumenti per sviluppatori.
 
@@ -494,6 +510,10 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Menu della toolbar non più tagliati; la toolbar non scorre più quando un menu prende il
   focus.
 - Dimensione dei file immagine piccoli mostrata in byte.
+- `@scriba/plugin-image`: le maniglie per ridimensionare non comparivano per un'immagine in mezzo al
+  testo di una riga; con la barra di stato avevano anche l'aspetto della sua maniglia.
+- `@scriba/ui`: errore "ResizeObserver loop" nella console sugli schermi stretti, quando la
+  barra (o il bubble menu) spostava pulsanti in "Altro"; ora il calcolo avviene al frame dopo.
 
 ### Sicurezza
 

@@ -11,6 +11,9 @@ export interface BubbleMenuOptions {
   mac?: boolean
 }
 
+/** Space between a touch selection and the bubble: room for the selection handles. */
+const TOUCH_GAP = 32
+
 const bubbles = new WeakMap<EditorView, { show(): boolean; focus(): boolean }>()
 
 /**
@@ -18,6 +21,8 @@ const bubbles = new WeakMap<EditorView, { show(): boolean; focus(): boolean }>()
  * regular `scriba-toolbar` (one tab stop, arrow keys, Escape back to the text),
  * reached with Alt+F10 from the editor (see `bubbleKeymap`). It stays away
  * while the mouse is still selecting, in code blocks and in read-only mode.
+ * After a touch it goes below the selection, leaving the space above it to
+ * the system menu (copy, paste).
  */
 export function bubbleMenu(options: BubbleMenuOptions): Plugin {
   const props: ViewPluginProps = { pluginView: (view) => bubbleView(view, options) }
@@ -49,6 +54,7 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
   bar.view = view
 
   let selecting = false // mouse button down in the editor
+  let touch = false // the last pointer in the editor was a finger
   let dismissed: unknown = null // the selection the user closed the bubble on (Escape)
 
   const wanted = (): boolean => {
@@ -71,9 +77,18 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
     const vw = win?.innerWidth ?? 0
     const w = bar.offsetWidth
     const h = bar.offsetHeight
-    // above the selection, below it when there is no room
-    let y = top - h - 8
-    if (y < 8) y = bottom + 8
+    const vh = win?.innerHeight ?? 0
+    // above the selection, below it when there is no room. After a touch the
+    // system menu (copy, paste) sits above the selection: below, past the
+    // selection handles, unless there is no room there
+    let y: number
+    if (touch) {
+      y = bottom + TOUCH_GAP
+      if (y + h > vh - 8) y = top - h - TOUCH_GAP
+    } else {
+      y = top - h - 8
+      if (y < 8) y = bottom + 8
+    }
     bar.style.top = `${Math.round(y)}px` // CSSOM (strict CSP)
     bar.style.left = `${Math.round(Math.max(8, Math.min(center - w / 2, vw - w - 8)))}px`
   }
@@ -84,6 +99,9 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
     if (show) place()
   }
 
+  const onPointer = (event: PointerEvent) => {
+    touch = event.pointerType === 'touch'
+  }
   const onDown = () => {
     selecting = true
     bar.hidden = true
@@ -102,6 +120,7 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
     }
   }
   const onViewport = () => !bar.hidden && place()
+  view.dom.addEventListener('pointerdown', onPointer)
   view.dom.addEventListener('mousedown', onDown)
   doc.addEventListener('mouseup', onUp)
   view.dom.addEventListener('focusout', onFocusOut)
@@ -122,6 +141,7 @@ function bubbleView(view: EditorView, options: BubbleMenuOptions): PluginView {
   return {
     update,
     destroy() {
+      view.dom.removeEventListener('pointerdown', onPointer)
       view.dom.removeEventListener('mousedown', onDown)
       doc.removeEventListener('mouseup', onUp)
       view.dom.removeEventListener('focusout', onFocusOut)

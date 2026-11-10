@@ -30,8 +30,8 @@ export function resizeView(view: EditorView): PluginView {
     const sel = view.state.selection
     if (!(sel instanceof NodeSelection) || sel.node.type.name !== 'image' || !view.editable)
       return null
-    const { node, offset } = view.domAtPos(sel.from)
-    const img = node.childNodes[offset]
+    // the image's own element (domAtPos would give the text before an image inside a line)
+    const img = view.nodeDOM(sel.from)
     return img instanceof HTMLImageElement ? { pos: sel.from, img } : null
   }
 

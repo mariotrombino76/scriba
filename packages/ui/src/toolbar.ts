@@ -60,6 +60,9 @@ export class ScribaToolbar extends Base {
   private moreButton: HTMLButtonElement | null = null
   private morePopup: MenuPopup | null = null
   private resizeObserver: ResizeObserver | null = null
+  /** Width the overflow was last computed for, and the frame that will compute it again. */
+  private laidOutWidth = -1
+  private layoutFrame = 0
   private focusIndex = 0
   /** Whether `Mod` shortcuts are shown as ⌘. Defaults to platform detection. */
   mac = isMac()
@@ -104,7 +107,17 @@ export class ScribaToolbar extends Base {
     this.addEventListener('keydown', this.onKeyDown)
     this.addEventListener('focusin', this.onFocusIn)
     if (typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(() => this.layout())
+      // In the next frame, not inside the callback: moving controls to "More"
+      // changes the toolbar's own size (a bubble is as wide as its content),
+      // which inside the callback is a "ResizeObserver loop" error. A size the
+      // last layout produced needs no new one.
+      this.resizeObserver = new ResizeObserver(() => {
+        if (this.layoutFrame || this.offsetWidth === this.laidOutWidth) return
+        this.layoutFrame = requestAnimationFrame(() => {
+          this.layoutFrame = 0
+          this.layout()
+        })
+      })
       this.resizeObserver.observe(this)
     }
     this.render()
@@ -115,6 +128,9 @@ export class ScribaToolbar extends Base {
     this.removeEventListener('focusin', this.onFocusIn)
     this.resizeObserver?.disconnect()
     this.resizeObserver = null
+    cancelAnimationFrame(this.layoutFrame)
+    this.layoutFrame = 0
+    this.laidOutWidth = -1
   }
 
   /** Normalizes items into groups (legacy separators split groups). */
@@ -345,6 +361,7 @@ export class ScribaToolbar extends Base {
       }
     }
     this.updateTabStops()
+    this.laidOutWidth = this.offsetWidth
   }
 
   /** Controls reachable with the arrow keys (visible, not moved to the overflow menu). */

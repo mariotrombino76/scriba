@@ -5,6 +5,8 @@ import { MAX_COL_WIDTH, MIN_COL_WIDTH } from './nodes.js'
 
 /** How close (px) to a cell's right border the pointer must be to resize the column. */
 const HANDLE = 6
+/** The same for a finger: less precise, and it may land just past the border. */
+const TOUCH_HANDLE = 12
 
 /**
  * Table helpers for the view:
@@ -54,9 +56,17 @@ export function tableView(view: EditorView): PluginView {
     if (!view.editable || !(event.target instanceof Element)) return null
     const cell = event.target.closest('td, th')
     if (!(cell instanceof HTMLTableCellElement) || !view.dom.contains(cell)) return null
+    const touch = (event as Partial<PointerEvent>).pointerType === 'touch'
+    const grab = touch ? TOUCH_HANDLE : HANDLE
     const r = cell.getBoundingClientRect()
-    return event.clientX >= r.right - HANDLE && event.clientX <= r.right + HANDLE ? cell : null
+    if (event.clientX >= r.right - grab && event.clientX <= r.right + grab) return cell
+    // a finger just past the border lands in the next cell: the column is the one before
+    const before = cell.previousElementSibling
+    return touch && event.clientX <= r.left + grab && before instanceof HTMLTableCellElement
+      ? before
+      : null
   }
+
   const setHover = (cell: HTMLTableCellElement | null) => {
     hover = cell
     view.dom.classList.toggle('scriba-column-resize', !!cell)
@@ -163,6 +173,10 @@ export function tableView(view: EditorView): PluginView {
   view.dom.addEventListener('pointerup', onUp)
   view.dom.addEventListener('pointercancel', onUp)
   view.dom.addEventListener('pointerleave', () => !drag && setHover(null))
+  // a finger on a border resizes the column instead of scrolling the page
+  // (touchstart comes after pointerdown; cancelling it keeps the pointer events coming)
+  const onTouchStart = (event: TouchEvent) => drag && event.cancelable && event.preventDefault()
+  view.dom.addEventListener('touchstart', onTouchStart, { passive: false })
   markCells()
 
   return {
@@ -173,6 +187,7 @@ export function tableView(view: EditorView): PluginView {
       view.dom.removeEventListener('mousedown', onMouseDown)
       view.dom.removeEventListener('pointerup', onUp)
       view.dom.removeEventListener('pointercancel', onUp)
+      view.dom.removeEventListener('touchstart', onTouchStart)
       onSelectUp()
       guide.remove()
     },

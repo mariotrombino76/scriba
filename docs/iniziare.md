@@ -51,6 +51,22 @@ Scriba.createEditor('#articolo', { inline: true, content: articolo.innerHTML })
 
 Per un'interfaccia tua: `inlineToolbar(contenitore, toolbar)` da `@scriba/ui`.
 
+### Barra fissa in alto
+
+Con `stickyToolbar: true` la barra degli strumenti resta in vista in cima alla finestra mentre
+un testo lungo scorre (come `toolbar_sticky` di TinyMCE), comodo soprattutto sui telefoni. Nei
+componenti Vue e React basta la classe `scriba-sticky` (`class` o `className`). Se la pagina ha
+un'intestazione fissa, `--scriba-sticky-offset: 56px` sposta la barra sotto di essa.
+
+### Telefoni e tablet
+
+L'editor si usa anche con il dito: pulsanti e voci di menu sono alti 44px con il tocco, la barra
+che non entra nello schermo mette il resto in "Altro", toccare fuori da un menu lo chiude, le
+maniglie di immagini, ritaglio e colonne delle tabelle si trascinano col dito. La pressione
+lunga sul testo lascia il menu del sistema (seleziona, copia, incolla); su un'immagine apre il
+menu dell'editor. La pagina deve avere `<meta name="viewport" content="width=device-width,
+initial-scale=1">`.
+
 ## Vue 3 e Nuxt
 
 ```bash

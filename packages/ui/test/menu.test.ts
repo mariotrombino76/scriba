@@ -80,10 +80,10 @@ describe('toolbar menus', () => {
     expect(document.activeElement).toBe(button)
   })
 
-  it('closes when clicking outside', () => {
+  it('closes when clicking or touching outside', () => {
     const { button, menu } = setup()
     button.click()
-    document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
     expect(menu.hidden).toBe(true)
   })
 })

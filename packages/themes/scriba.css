@@ -164,6 +164,13 @@ scriba-toolbar {
   border-bottom: 1px solid var(--scriba-border);
   font-family: var(--scriba-font);
 }
+/* Sticky toolbar (TinyMCE's toolbar_sticky): in sight while a long text scrolls.
+   --scriba-sticky-offset leaves room for a fixed page header. */
+.scriba-sticky > scriba-toolbar {
+  position: sticky;
+  top: var(--scriba-sticky-offset, 0px);
+  z-index: 2;
+}
 .scriba-toolbar-group {
   display: flex;
   flex: none;
@@ -798,7 +805,7 @@ scriba-toolbar {
 .scriba-fullscreen .scriba-editor.scriba-sized {
   height: auto !important;
 }
-.scriba-fullscreen .scriba-resize-handle {
+.scriba-fullscreen .scriba-statusbar-resize {
   display: none;
 }
 html.scriba-fullscreen-open,
@@ -2003,10 +2010,10 @@ hr.scriba-page-break {
   background: var(--scriba-code-bg);
 }
 .scriba-element-path button:focus-visible,
-.scriba-resize-handle:focus-visible {
+.scriba-statusbar-resize:focus-visible {
   outline: 2px solid var(--scriba-focus);
 }
-.scriba-resize-handle {
+.scriba-statusbar-resize {
   flex: none;
   width: 1.25rem;
   height: 1.25rem;
@@ -2027,6 +2034,17 @@ hr.scriba-page-break {
   border-radius: 4px;
   cursor: ns-resize;
   touch-action: none;
+}
+/* Touch screens: element path and handle big enough for a finger (WCAG 2.5.8) */
+@media (pointer: coarse) {
+  .scriba-element-path button {
+    min-height: 2rem;
+    padding: 0 0.5rem;
+  }
+  .scriba-statusbar-resize {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 .scriba-editor.scriba-sized {
   box-sizing: border-box;

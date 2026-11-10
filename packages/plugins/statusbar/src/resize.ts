@@ -31,7 +31,7 @@ export function createResizeHandle(
   const step = options.step ?? 20
   const el = doc.createElement('button')
   el.type = 'button'
-  el.className = 'scriba-resize-handle'
+  el.className = 'scriba-statusbar-resize'
   el.setAttribute('aria-label', t('resize.label'))
   el.title = t('resize.label')
 
