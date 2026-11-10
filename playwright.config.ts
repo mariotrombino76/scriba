@@ -6,9 +6,14 @@ export default defineConfig({
   fullyParallel: true,
   // Firefox under WSL becomes unstable with many parallel browsers.
   workers: process.env['CI'] ? 2 : 3,
-  reporter: 'list',
+  // in CI: failures as annotations on the run, plus an HTML report (artifact)
+  reporter: process.env['CI'] ? [['github'], ['list'], ['html', { open: 'never' }]] : 'list',
   // Wide enough for the whole toolbar; overflow tests set a narrower viewport themselves.
-  use: { baseURL: 'http://localhost:4173', viewport: { width: 1600, height: 900 } },
+  use: {
+    baseURL: 'http://localhost:4173',
+    viewport: { width: 1600, height: 900 },
+    trace: process.env['CI'] ? 'retain-on-failure' : 'off',
+  },
   webServer: [
     {
       // @scriba-editor/browser first: its built files are the classic-script page's (cdn.html)
