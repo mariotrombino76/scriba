@@ -13,12 +13,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@scriba/core": "workspace:*",
     "ws": "8.22.0",
@@ -27,11 +28,11 @@
     "@scriba/plugin-collab": "workspace:*",
     "lib0": "0.2.119",
     "@scriba/plugin-comments": "workspace:*",
-    "@scriba/plugin-permissions": "workspace:*"
+    "@scriba/plugin-permissions": "workspace:*",
+    "@types/ws": "8.18.2"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "@types/ws": "^8.18.2"
+    "@types/node": "^26.6.5"
   },
   "publishConfig": {
     "access": "public"
@@ -42,5 +43,17 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/collab-server"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/collab-server#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  }
 }

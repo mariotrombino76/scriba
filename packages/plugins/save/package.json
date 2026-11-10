@@ -12,12 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Save button and Ctrl+S for the Scriba editor, calling your save function.",
   "dependencies": {
     "@scriba/core": "workspace:*",
@@ -34,5 +35,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/plugins/save"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/plugins/save#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

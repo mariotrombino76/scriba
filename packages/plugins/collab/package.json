@@ -12,12 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Real-time collaboration for the Scriba editor (Yjs binding, cursors, WebSocket transport).",
   "dependencies": {
     "@scriba/core": "workspace:*",
@@ -37,5 +38,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/plugins/collab"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/plugins/collab#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

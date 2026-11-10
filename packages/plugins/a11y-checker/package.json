@@ -12,12 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Accessibility checker for the Scriba editor: finds WCAG 2.2 issues in the document and helps fix them.",
   "dependencies": {
     "@scriba/core": "workspace:*",
@@ -38,5 +39,14 @@
     "accessibility",
     "wcag"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/plugins/a11y-checker"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/plugins/a11y-checker#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

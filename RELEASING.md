@@ -12,10 +12,10 @@ da una persona, con 2FA, seguendo questa lista.
    esiste già (un logger di un altro autore): non è un conflitto, è uno spazio diverso.
 2. **2FA** obbligatoria per gli account che pubblicano (impostazione dell'organizzazione:
    "Require two-factor authentication").
-3. **Licenza.** `LICENSE` (MIT, Mario Trombino) è nella radice e copiato in ogni pacchetto (npm
-   include solo il file nella cartella del pacchetto): se cambia, ricopialo in tutti.
-4. **Repository pubblico su GitHub** (da creare) e campi `repository`, `homepage`, `bugs` in ogni
-   `package.json` (da aggiungere con l'URL definitivo). Servono anche per la _provenance_.
+3. **Licenza.** `LICENSE` (Apache 2.0) e `NOTICE` (attribuzione a Mario Trombino) sono nella radice e copiati in ogni pacchetto (npm
+   include solo il file nella cartella del pacchetto): se cambiano, ricopiali in tutti.
+4. **Repository pubblico su GitHub** (https://github.com/mariotrombino76/scriba): campi `repository`, `homepage`, `bugs` in ogni
+   `package.json` (già presenti). Servono anche per la _provenance_.
 5. **Provenance** (CLAUDE.md §5.12): npm la genera solo pubblicando da una CI supportata
    (GitHub Actions o GitLab CI su gitlab.com) con un repository pubblico. Configura su npmjs.com il
    **Trusted Publisher** per ogni pacchetto (pubblicazione via OIDC, senza token salvati).
@@ -61,8 +61,8 @@ git tag v0.1.0
 pnpm -r pack --pack-destination /tmp/scriba-pack
 ```
 
-Ogni archivio deve contenere solo `dist/` (o `scriba.css` per i temi), `package.json`, README e
-LICENSE; le dipendenze `workspace:*` devono essere diventate `0.1.0`. Usa **`pnpm publish`**, mai
+Ogni archivio deve contenere solo `dist/` (o `scriba.css` per i temi), `package.json`, README,
+LICENSE e NOTICE; le dipendenze `workspace:*` devono essere diventate `0.1.0`. Usa **`pnpm publish`**, mai
 `npm publish`: solo pnpm sostituisce `workspace:*`.
 
 ### 4. Pubblicazione (dalla CI)

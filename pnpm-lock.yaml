@@ -99,6 +99,19 @@ importers:
       '@scriba/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@scriba/plugin-image':
+        specifier: workspace:*
+        version: link:../plugins/image
+      '@scriba/plugin-template':
+        specifier: workspace:*
+        version: link:../plugins/template
+      '@scriba/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@scriba/view':
+        specifier: workspace:*
+        version: link:../view
+    devDependencies:
       '@scriba/plugin-a11y-checker':
         specifier: workspace:*
         version: link:../plugins/a11y-checker
@@ -132,9 +145,6 @@ importers:
       '@scriba/plugin-hr':
         specifier: workspace:*
         version: link:../plugins/hr
-      '@scriba/plugin-image':
-        specifier: workspace:*
-        version: link:../plugins/image
       '@scriba/plugin-link':
         specifier: workspace:*
         version: link:../plugins/link
@@ -153,21 +163,12 @@ importers:
       '@scriba/plugin-table':
         specifier: workspace:*
         version: link:../plugins/table
-      '@scriba/plugin-template':
-        specifier: workspace:*
-        version: link:../plugins/template
       '@scriba/plugin-text-style':
         specifier: workspace:*
         version: link:../plugins/text-style
       '@scriba/plugin-toc':
         specifier: workspace:*
         version: link:../plugins/toc
-      '@scriba/ui':
-        specifier: workspace:*
-        version: link:../ui
-      '@scriba/view':
-        specifier: workspace:*
-        version: link:../view
 
   packages/collab-server:
     dependencies:
@@ -183,6 +184,9 @@ importers:
       '@scriba/plugin-permissions':
         specifier: workspace:*
         version: link:../plugins/permissions
+      '@types/ws':
+        specifier: 8.18.2
+        version: 8.18.2
       lib0:
         specifier: 0.2.119
         version: 0.2.119
@@ -199,9 +203,6 @@ importers:
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
-      '@types/ws':
-        specifier: ^8.18.2
-        version: 8.18.2
 
   packages/core: {}
 

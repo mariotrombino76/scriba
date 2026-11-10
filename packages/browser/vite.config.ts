@@ -46,11 +46,18 @@ export default defineConfig(({ mode }) => ({
     emptyOutDir: mode !== 'iife',
     sourcemap: true,
     lib: {
-      entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+      entry: fileURLToPath(new URL('./src/entry.ts', import.meta.url)),
       name: 'Scriba',
       formats: mode === 'iife' ? ['iife'] : ['es'],
       fileName: (format) => (format === 'es' ? 'scriba.js' : 'scriba.iife.js'),
       cssFileName: 'scriba',
+    },
+    // the attribution required by the license (Apache 2.0, NOTICE) travels with the files
+    rolldownOptions: {
+      output: {
+        postBanner:
+          '/*! Scriba | Copyright 2026 Mario Trombino | Apache-2.0 | https://github.com/mariotrombino76/scriba */',
+      },
     },
   },
 }))

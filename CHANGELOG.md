@@ -377,6 +377,21 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Modificato
 
+- **Licenza:** da MIT ad **Apache 2.0**. Ogni pacchetto contiene ora `LICENSE` e `NOTICE`.
+  `NOTICE` attribuisce il progetto a Mario Trombino e va mantenuto in ogni ridistribuzione o
+  opera derivata. Anche `scriba.js` e `scriba.iife.js` (CDN) riportano l'attribuzione in testa.
+- Pacchetti pronti per npm, verificati installando gli archivi in un progetto separato (Vite,
+  Vue, React, script, Node; TypeScript con risoluzione `bundler` e `node16`):
+  - tutti i `package.json` hanno `repository`, `homepage` e `bugs` (GitHub);
+  - `@scriba/collab-server` e `@scriba/sanitize-server` dichiarano `engines.node >= 22`;
+  - `@scriba/browser` include tutto il codice nel proprio bundle, quindi installa come
+    dipendenze solo i pacchetti citati dai suoi tipi (prima erano 25);
+  - nei tipi di `@scriba/browser` non c'è più l'import del CSS;
+  - i tipi di `@scriba/vue` importano `./ScribaEditor.vue.js` e si risolvono anche con
+    `moduleResolution: node16`;
+  - `@scriba/collab-server` dichiara `@types/ws` tra le dipendenze (i suoi tipi usano `ws`);
+  - le mappe sorgente includono il codice TypeScript originale (`inlineSources`): prima
+    puntavano a file `src/` non pubblicati.
 - `@scriba/plugin-permissions`: una selezione che contiene blocchi protetti non viene più
   rifiutata per intero. Scrivere, Canc/Backspace, taglia e incolla cancellano tutto il resto
   (un blocco protetto selezionato solo in parte resta intero) e il testo va dove iniziava la

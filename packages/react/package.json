@@ -13,7 +13,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
@@ -22,7 +23,7 @@
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@scriba/core": "workspace:*",
     "@scriba/i18n": "workspace:*",
@@ -44,5 +45,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/react#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

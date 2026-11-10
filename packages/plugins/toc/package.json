@@ -12,12 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Table of contents for the Scriba editor, kept up to date with the headings.",
   "dependencies": {
     "@scriba/core": "workspace:*",
@@ -35,5 +36,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/plugins/toc"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/plugins/toc#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

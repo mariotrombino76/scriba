@@ -12,12 +12,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node ../../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "Format painter for the Scriba editor: copy the formatting of some text and apply it elsewhere.",
   "dependencies": {
     "@scriba/core": "workspace:*",
@@ -34,5 +35,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/plugins/format-painter"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/plugins/format-painter#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }

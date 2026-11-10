@@ -20,36 +20,18 @@
     "./scriba.css": "./dist/scriba.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "vite build && vite build --mode iife && node ../../node_modules/typescript7/bin/tsc -p tsconfig.build.json"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@scriba/core": "workspace:*",
     "@scriba/i18n": "workspace:*",
-    "@scriba/plugin-blockquote": "workspace:*",
-    "@scriba/plugin-charmap": "workspace:*",
-    "@scriba/plugin-code-block": "workspace:*",
-    "@scriba/plugin-details": "workspace:*",
-    "@scriba/plugin-embed": "workspace:*",
-    "@scriba/plugin-find-replace": "workspace:*",
-    "@scriba/plugin-footnotes": "workspace:*",
-    "@scriba/plugin-a11y-checker": "workspace:*",
     "@scriba/plugin-template": "workspace:*",
-    "@scriba/plugin-format-painter": "workspace:*",
-    "@scriba/plugin-fullscreen": "workspace:*",
-    "@scriba/plugin-hr": "workspace:*",
     "@scriba/plugin-image": "workspace:*",
-    "@scriba/plugin-link": "workspace:*",
-    "@scriba/plugin-list": "workspace:*",
-    "@scriba/plugin-markdown": "workspace:*",
-    "@scriba/plugin-paste-clean": "workspace:*",
-    "@scriba/plugin-source": "workspace:*",
-    "@scriba/plugin-table": "workspace:*",
-    "@scriba/plugin-text-style": "workspace:*",
-    "@scriba/plugin-toc": "workspace:*",
     "@scriba/ui": "workspace:*",
     "@scriba/view": "workspace:*"
   },
@@ -62,5 +44,35 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/browser"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/browser#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  },
+  "devDependencies": {
+    "@scriba/plugin-a11y-checker": "workspace:*",
+    "@scriba/plugin-blockquote": "workspace:*",
+    "@scriba/plugin-charmap": "workspace:*",
+    "@scriba/plugin-code-block": "workspace:*",
+    "@scriba/plugin-details": "workspace:*",
+    "@scriba/plugin-embed": "workspace:*",
+    "@scriba/plugin-find-replace": "workspace:*",
+    "@scriba/plugin-footnotes": "workspace:*",
+    "@scriba/plugin-format-painter": "workspace:*",
+    "@scriba/plugin-fullscreen": "workspace:*",
+    "@scriba/plugin-hr": "workspace:*",
+    "@scriba/plugin-link": "workspace:*",
+    "@scriba/plugin-list": "workspace:*",
+    "@scriba/plugin-markdown": "workspace:*",
+    "@scriba/plugin-paste-clean": "workspace:*",
+    "@scriba/plugin-source": "workspace:*",
+    "@scriba/plugin-table": "workspace:*",
+    "@scriba/plugin-text-style": "workspace:*",
+    "@scriba/plugin-toc": "workspace:*"
+  }
 }

@@ -1,5 +1,6 @@
 {
   "name": "scriba-monorepo",
+  "license": "Apache-2.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.11.0",
@@ -46,5 +47,13 @@
     "vitest": "^5.0.4",
     "vue": "3.5.44",
     "vue-tsc": "3.3.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
   }
 }

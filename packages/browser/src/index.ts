@@ -4,7 +4,6 @@
  *
  *   const editor = Scriba.createEditor('#editor', { content: '<p>Ciao</p>', onChange: save })
  */
-import '../../themes/scriba.css'
 import {
   EditorState,
   Schema,

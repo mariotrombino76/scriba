@@ -9,9 +9,10 @@
     "./scriba.css": "./scriba.css"
   },
   "files": [
-    "scriba.css"
+    "scriba.css",
+    "NOTICE"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
@@ -21,5 +22,14 @@
     "rich-text",
     "wysiwyg"
   ],
-  "author": "Mario Trombino"
+  "author": "Mario Trombino",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariotrombino76/scriba.git",
+    "directory": "packages/themes"
+  },
+  "homepage": "https://github.com/mariotrombino76/scriba/tree/main/packages/themes#readme",
+  "bugs": {
+    "url": "https://github.com/mariotrombino76/scriba/issues"
+  }
 }
