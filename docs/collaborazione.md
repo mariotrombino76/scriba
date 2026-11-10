@@ -1,7 +1,7 @@
 # Collaborazione in tempo reale
 
 Più persone sullo stesso documento, ognuna con il proprio cursore colorato, senza conflitti e
-anche con connessioni lente o interrotte. È incluso, non a pagamento.
+anche con connessioni lente o interrotte.
 
 > In parole semplici: ogni persona ha una copia del documento. Le modifiche viaggiano come
 > piccole "mosse" che si possono applicare in qualsiasi ordine e portano sempre allo stesso

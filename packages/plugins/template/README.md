@@ -1,6 +1,6 @@
 # @scriba/plugin-template
 
-Modelli di documento come il plugin `template` di TinyMCE (`advtemplate` a pagamento): un dialogo con l'elenco dei modelli, descrizione, anteprima di sola lettura e "Inserisci". I modelli possono arrivare dal tuo server.
+Modelli di documento come il plugin `template` di TinyMCE e `advtemplate`: un dialogo con l'elenco dei modelli, descrizione, anteprima di sola lettura e "Inserisci". I modelli possono arrivare dal tuo server.
 
 ```bash
 pnpm add @scriba/plugin-template

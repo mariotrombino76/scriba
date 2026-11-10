@@ -1,7 +1,7 @@
 # @scriba/plugin-a11y-checker
 
 **Verifica dell'accessibilità** del documento per l'editor Scriba, come l'"Accessibility checker"
-di TinyMCE (`a11ycheck`, a pagamento): trova i problemi rispetto a WCAG 2.2, li mostra uno alla
+di TinyMCE (`a11ycheck`): trova i problemi rispetto a WCAG 2.2, li mostra uno alla
 volta nel testo e propone una correzione.
 
 ## Installazione

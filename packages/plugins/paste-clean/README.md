@@ -1,6 +1,6 @@
 # @scriba/plugin-paste-clean
 
-Incolla pulito da Word, Google Docs e pagine web, come il plugin "Paste from Word / PowerPoint" di TinyMCE (`paste`/`powerpaste`, quest'ultimo a pagamento): liste vere al posto di quelle finte di Word, niente involucri Office/Docs, niente font e nero predefiniti.
+Incolla pulito da Word, Google Docs e pagine web, come il plugin "Paste from Word / PowerPoint" di TinyMCE (`paste`/`powerpaste`): liste vere al posto di quelle finte di Word, niente involucri Office/Docs, niente font e nero predefiniti.
 
 ```bash
 pnpm add @scriba/plugin-paste-clean

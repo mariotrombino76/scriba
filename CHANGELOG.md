@@ -255,7 +255,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     i lettori di schermo mentre aspetta. Anche nel preset CDN completo.
   - `@scriba/ui`: `isFormattingMark`, lo stesso criterio di "Rimuovi formattazione".
   - `@scriba/plugin-a11y-checker` (nuovo): verifica accessibilità come l'Accessibility
-    Checker di TinyMCE (premium), su WCAG 2.2 livello A, AA (predefinito) o AAA. Strumenti ▸
+    Checker di TinyMCE, su WCAG 2.2 livello A, AA (predefinito) o AAA. Strumenti ▸
     "Verifica accessibilità…" (anche in sola lettura, senza correzioni) apre un dialog con un
     problema alla volta: selezionato ed evidenziato nel testo, spiegazione semplice, criterio
     WCAG con il link alla pagina del W3C, correzione; Precedente / Successivo / Ignora (per la
@@ -269,7 +269,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
     anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
     CDN completo (pulsante nella toolbar).
-  - `@scriba/plugin-image`: modifica foto come l'Enhanced Image Editing di TinyMCE (premium).
+  - `@scriba/plugin-image`: modifica foto come l'Enhanced Image Editing di TinyMCE.
     Menu contestuale dell'immagine ▸ "Modifica foto…" (o il pulsante contestuale
     `imageEditToolbarItems`) apre un dialog con anteprima: ruota a sinistra/destra, rifletti in
     orizzontale/verticale, ritaglio trascinando il riquadro o le sue maniglie (mouse, penna,
@@ -320,7 +320,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     (Vue: `class`, React: `className`); `--scriba-sticky-offset` lascia spazio a un'intestazione
     fissa della pagina.
   - `@scriba/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
-    TinyMCE (premium). File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
+    TinyMCE. File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
     tuo server (data, autore, etichetta; dalla più recente) e l'anteprima di quella scelta,
     confrontata con il documento attuale: blocchi abbinati, poi parola per parola dentro i
     paragrafi, anche in elenchi e tabelle (righe intere); aggiunto in verde sottolineato, tolto

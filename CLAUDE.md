@@ -1,6 +1,6 @@
 # CLAUDE.md — Editor di testo rich text (nome provvisorio: **Scriba**)
 
-Questo file guida Claude Code nello sviluppo di un editor WYSIWYG con le funzioni di TinyMCE **e** capacità che TinyMCE non ha (o fa pagare).
+Questo file guida Claude Code nello sviluppo di un editor WYSIWYG con le funzioni di TinyMCE **e** capacità che TinyMCE non ha.
 Leggilo per intero prima di ogni sessione di lavoro.
 
 ---
@@ -11,7 +11,7 @@ Costruire un editor rich text:
 - **Parità con TinyMCE**: formattazione, liste, tabelle, immagini, link, incolla da Word/Google Docs, undo/redo, codice sorgente HTML, ricerca e sostituzione, schermo intero, i18n, temi, plugin.
 - **Superiore a TinyMCE**:
   - modello documento strutturato (schema), non HTML "libero" → output sempre valido e prevedibile;
-  - collaborazione in tempo reale (CRDT con Yjs) inclusa, non a pagamento;
+  - collaborazione in tempo reale (CRDT con Yjs) inclusa;
   - input Markdown live (`# ` → titolo, `- ` → lista, `**x**` → grassetto);
   - comandi slash (`/tabella`, `/immagine`) e menu "bubble" sulla selezione;
   - export/import JSON, HTML, Markdown;

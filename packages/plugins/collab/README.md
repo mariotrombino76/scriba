@@ -1,8 +1,7 @@
 # @scriba/plugin-collab
 
 **Collaborazione in tempo reale** per l'editor Scriba, basata su Yjs (CRDT): più persone scrivono
-nello stesso documento, con i cursori degli altri visibili e commenti condivisi. In TinyMCE è una
-funzione a pagamento; qui è inclusa. Si collega a `@scriba/collab-server`.
+nello stesso documento, con i cursori degli altri visibili e commenti condivisi. Si collega a `@scriba/collab-server`.
 
 ## Installazione
 

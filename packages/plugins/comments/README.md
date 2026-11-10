@@ -1,7 +1,7 @@
 # @scriba/plugin-comments
 
 **Commenti** sul testo selezionato e **suggerimenti** (modifiche tracciate) per l'editor Scriba.
-In TinyMCE sono i plugin Comments e Suggested Edits, a pagamento; qui sono inclusi. I commenti
+Come i plugin Comments e Suggested Edits di TinyMCE. I commenti
 vivono in uno _store_ (in memoria, oppure sul tuo server), non nel documento.
 
 ## Installazione

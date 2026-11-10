@@ -1,6 +1,6 @@
 # @scriba/plugin-mention
 
-Menzioni `@persona` come in TinyMCE (plugin Mentions, a pagamento): scrivendo `@` all'inizio di una riga o dopo uno spazio si apre un elenco di persone trovate **dal tuo backend**, e la scelta inserisce un nodo `mention` atomico.
+Menzioni `@persona` come in TinyMCE (plugin Mentions): scrivendo `@` all'inizio di una riga o dopo uno spazio si apre un elenco di persone trovate **dal tuo backend**, e la scelta inserisce un nodo `mention` atomico.
 
 ```bash
 pnpm add @scriba/plugin-mention

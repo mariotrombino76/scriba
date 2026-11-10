@@ -1,6 +1,6 @@
 # @scriba/plugin-task
 
-Attività (to-do) dentro il documento: un blocco con titolo, casella "fatto" e scadenza. TinyMCE ha solo la lista di controllo (`checklist`, a pagamento); qui l'attività è un nodo con dati propri, esportabile in HTML e JSON.
+Attività (to-do) dentro il documento: un blocco con titolo, casella "fatto" e scadenza. TinyMCE ha solo la lista di controllo (`checklist`); qui l'attività è un nodo con dati propri, esportabile in HTML e JSON.
 
 ```bash
 pnpm add @scriba/plugin-task

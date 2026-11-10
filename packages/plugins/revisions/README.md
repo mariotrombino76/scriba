@@ -1,6 +1,6 @@
 # @scriba/plugin-revisions
 
-Cronologia delle versioni, come "Revision History" di TinyMCE (a pagamento): elenco delle versioni salvate, anteprima, confronto con il documento attuale (aggiunto in verde, tolto barrato in rosso) e ripristino con un solo passo annullabile.
+Cronologia delle versioni, come "Revision History" di TinyMCE: elenco delle versioni salvate, anteprima, confronto con il documento attuale (aggiunto in verde, tolto barrato in rosso) e ripristino con un solo passo annullabile.
 
 ```bash
 pnpm add @scriba/plugin-revisions

@@ -1,6 +1,6 @@
 # @scriba/plugin-table
 
-Tabelle con la parità delle tabelle di TinyMCE (e di quelle avanzate, a pagamento): inserimento con selettore di dimensione, righe e colonne, celle unite e divise, intestazioni, selezione di celle, larghezza delle colonne, proprietà di tabella e cella, ordinamento per colonna, incolla di celle come in un foglio di calcolo.
+Tabelle con la parità delle tabelle di TinyMCE (comprese quelle avanzate): inserimento con selettore di dimensione, righe e colonne, celle unite e divise, intestazioni, selezione di celle, larghezza delle colonne, proprietà di tabella e cella, ordinamento per colonna, incolla di celle come in un foglio di calcolo.
 
 ```bash
 pnpm add @scriba/plugin-table

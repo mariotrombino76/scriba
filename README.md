@@ -1,8 +1,7 @@
 # Scriba
 
-Editor di testo formattato (WYSIWYG) per il web, scritto in TypeScript. Ha le funzioni di TinyMCE,
-comprese quelle che TinyMCE fa pagare. In più, il documento è strutturato e sicuro per
-costruzione.
+Editor di testo formattato (WYSIWYG) per il web, scritto in TypeScript. Ha le funzioni di TinyMCE e
+in più un documento strutturato e sicuro per costruzione.
 
 > **Stato:** in preparazione la prima versione pubblica (`0.1.0`). I pacchetti `@scriba/*` non sono
 > ancora su npm.
