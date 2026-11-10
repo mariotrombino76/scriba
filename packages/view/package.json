@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/view",
-  "version": "0.0.0",
+  "name": "@scriba-editor/view",
+  "version": "0.1.0",
   "description": "DOM view for the Scriba editor: contentEditable, beforeinput, IME, selection sync.",
   "type": "module",
   "sideEffects": false,
@@ -21,7 +21,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*"
+    "@scriba-editor/core": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { NodeJSON, Plugin, Schema } from '@scriba/core'
-import { createTranslator, type Messages } from '@scriba/i18n'
-import { defineScribaToolbar, inlineToolbar, type ScribaToolbar } from '@scriba/ui'
-import type { NodeViewFactory } from '@scriba/view'
+import type { NodeJSON, Plugin, Schema } from '@scriba-editor/core'
+import { createTranslator, type Messages } from '@scriba-editor/i18n'
+import { defineScribaToolbar, inlineToolbar, type ScribaToolbar } from '@scriba-editor/ui'
+import type { NodeViewFactory } from '@scriba-editor/view'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { sameContent, type Content, type ContentFormat } from '@scriba/view'
+import { sameContent, type Content, type ContentFormat } from '@scriba-editor/view'
 import { useScriba } from './useScriba.js'
 
 const props = withDefaults(

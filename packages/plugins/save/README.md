@@ -1,16 +1,16 @@
-# @scriba/plugin-save
+# @scriba-editor/plugin-save
 
 Pulsante e scorciatoia "Salva" come nel plugin `save` di TinyMCE: chiama una funzione **tua**, che manda il documento al tuo backend. Il pulsante è attivo solo se c'è qualcosa da salvare.
 
 ```bash
-pnpm add @scriba/plugin-save
+pnpm add @scriba-editor/plugin-save
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
+import { keymap } from '@scriba-editor/core'
+import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba-editor/plugin-save'
 
 const saveOptions: SaveOptions = {
   save: async (doc) => {
@@ -51,6 +51,6 @@ Ctrl/Cmd+S salva e **non apre mai** il "Salva pagina" del browser, nemmeno quand
 
 ## Sicurezza
 
-L'editor non manda nulla da solo: l'invio avviene solo nella tua callback, verso il **tuo backend**. L'HTML ricevuto va **sempre** ripassato da `@scriba/sanitize-server` prima di essere salvato o mostrato, perché chiunque può chiamare l'API senza passare dall'editor. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+L'editor non manda nulla da solo: l'invio avviene solo nella tua callback, verso il **tuo backend**. L'HTML ricevuto va **sempre** ripassato da `@scriba-editor/sanitize-server` prima di essere salvato o mostrato, perché chiunque può chiamare l'API senza passare dall'editor. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
 
-Per le bozze locali e le versioni vedi anche `@scriba/plugin-autosave` e [@scriba/plugin-revisions](../revisions/README.md).
+Per le bozze locali e le versioni vedi anche `@scriba-editor/plugin-autosave` e [@scriba-editor/plugin-revisions](../revisions/README.md).

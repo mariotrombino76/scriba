@@ -8,9 +8,9 @@ const src = (path: string) =>
 export default defineConfig({
   resolve: {
     alias: {
-      '@scriba/core': src('core'),
-      '@scriba/plugin-collab': src('plugins/collab'),
-      '@scriba/collab-server': src('collab-server'),
+      '@scriba-editor/core': src('core'),
+      '@scriba-editor/plugin-collab': src('plugins/collab'),
+      '@scriba-editor/collab-server': src('collab-server'),
     },
   },
   ssr: { noExternal: true },

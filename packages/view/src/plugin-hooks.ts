@@ -1,4 +1,4 @@
-import type { EditorState, Fragment, Node } from '@scriba/core'
+import type { EditorState, Fragment, Node } from '@scriba-editor/core'
 import type { EditorView } from './view.js'
 
 /**

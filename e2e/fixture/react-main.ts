@@ -1,7 +1,7 @@
 // The React wrapper under the same strict CSP as the main fixture.
 import { createElement, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ScribaEditor } from '@scriba/react'
+import { ScribaEditor } from '@scriba-editor/react'
 import '../../packages/themes/scriba.css'
 
 const cspViolations: string[] = []

@@ -9,8 +9,8 @@ Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obb
 **Una pagina qualsiasi** (nessun framework, nessuna build):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.css" />
-<script src="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.iife.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 <div id="editor"></div>
 <script src="/js/editor.js"></script>
 <!-- /js/editor.js: Scriba.createEditor('#editor', { onChange: (html) => salva(html) }) -->
@@ -18,7 +18,7 @@ Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obb
 
 **Vue 3:** `<ScribaEditor v-model="html" />` · **React:** `<ScribaEditor value={html} onChange={setHtml} />`
 
-Poi, sul server, **ripassa sempre l'HTML** da `sanitizeHTML` di `@scriba/sanitize-server` prima di
+Poi, sul server, **ripassa sempre l'HTML** da `sanitizeHTML` di `@scriba-editor/sanitize-server` prima di
 salvarlo o mostrarlo: vedi [Sicurezza](sicurezza.md).
 
 ## Guide

@@ -7,7 +7,7 @@ import {
   type NodeType,
   type Schema,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { MAX_FOOTNOTES } from './nodes.js'
 
 let counter = 0

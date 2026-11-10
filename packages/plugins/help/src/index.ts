@@ -1,6 +1,6 @@
-import type { KeyBindings } from '@scriba/core'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import type { KeyBindings } from '@scriba-editor/core'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { openHelpDialog, type HelpOptions } from './dialog.js'
 
 export { openHelpDialog, type HelpOptions } from './dialog.js'

@@ -8,10 +8,10 @@ import {
   type KeyBindings,
   type Node,
   type Transaction,
-} from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { openDialog, type ToolbarMenu } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { openDialog, type ToolbarMenu } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 import { OPEN_ACCEPT, OpenFileError, formatOf, readDocument, type OpenLimits } from './read.js'
 import { openPreview, printDocument } from './preview.js'
 import { documentBlob, documentTitle, download, fileName, type SaveFormat } from './write.js'

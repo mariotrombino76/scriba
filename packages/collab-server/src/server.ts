@@ -5,7 +5,7 @@ import * as decoding from 'lib0/decoding'
 import * as syncProtocol from 'y-protocols/sync'
 import * as awarenessProtocol from 'y-protocols/awareness'
 import { WebSocketServer, type WebSocket } from 'ws'
-import type { Schema } from '@scriba/core'
+import type { Schema } from '@scriba-editor/core'
 import { applyAnnotationUpdate, applyGuardedUpdate } from './blocks.js'
 import { MESSAGE_COMMENTS, applyCommentOp, publicThreads, type StoredThread } from './comments.js'
 
@@ -37,7 +37,7 @@ export interface AuthResult {
   /** False: the user can follow the document but every change is refused. */
   canWrite: boolean
   /**
-   * Protected blocks (see `@scriba/plugin-permissions`): whether this user may
+   * Protected blocks (see `@scriba-editor/plugin-permissions`): whether this user may
    * change the block with this id. Updates touching a block they may not edit
    * are undone. Needs the `schema` option.
    */

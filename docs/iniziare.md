@@ -4,18 +4,18 @@ Scriba funziona in qualsiasi pagina web. Scegli il modo che corrisponde al tuo p
 
 | Il tuo progetto                                   | Usa                                      | Guida                                        |
 | ------------------------------------------------- | ---------------------------------------- | -------------------------------------------- |
-| Pagina HTML, PHP, .NET, Java, Django… senza build | `@scriba/browser` (script da CDN)        | [qui sotto](#pagina-qualsiasi-script-da-cdn) |
-| Vue 3 o Nuxt                                      | `@scriba/vue`                            | [qui sotto](#vue-3-e-nuxt)                   |
-| React 18 o 19                                     | `@scriba/react`                          | [qui sotto](#react)                          |
-| Bundler (Vite, webpack…) e controllo completo     | `@scriba/core` + `@scriba/view` + plugin | [qui sotto](#su-misura-con-i-pacchetti)      |
+| Pagina HTML, PHP, .NET, Java, Django… senza build | `@scriba-editor/browser` (script da CDN)        | [qui sotto](#pagina-qualsiasi-script-da-cdn) |
+| Vue 3 o Nuxt                                      | `@scriba-editor/vue`                            | [qui sotto](#vue-3-e-nuxt)                   |
+| React 18 o 19                                     | `@scriba-editor/react`                          | [qui sotto](#react)                          |
+| Bundler (Vite, webpack…) e controllo completo     | `@scriba-editor/core` + `@scriba-editor/view` + plugin | [qui sotto](#su-misura-con-i-pacchetti)      |
 
-In ogni caso includi il tema (`@scriba/themes/scriba.css`, o `scriba.css` del pacchetto browser).
+In ogni caso includi il tema (`@scriba-editor/themes/scriba.css`, o `scriba.css` del pacchetto browser).
 
 ## Pagina qualsiasi (script da CDN)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.css" />
-<script src="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.iife.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 
 <form method="post" action="/salva">
   <div id="editor"></div>
@@ -34,7 +34,7 @@ const editor = Scriba.createEditor('#editor', {
 })
 ```
 
-Opzioni, limiti e sicurezza: [README di @scriba/browser](../packages/browser/README.md).
+Opzioni, limiti e sicurezza: [README di @scriba-editor/browser](../packages/browser/README.md).
 
 ### Modalità inline
 
@@ -49,7 +49,7 @@ alla barra, Esc torna al testo.
 Scriba.createEditor('#articolo', { inline: true, content: articolo.innerHTML })
 ```
 
-Per un'interfaccia tua: `inlineToolbar(contenitore, toolbar)` da `@scriba/ui`.
+Per un'interfaccia tua: `inlineToolbar(contenitore, toolbar)` da `@scriba-editor/ui`.
 
 ### Barra fissa in alto
 
@@ -71,14 +71,14 @@ initial-scale=1">`.
 ## Vue 3 e Nuxt
 
 ```bash
-pnpm add @scriba/vue @scriba/themes
+pnpm add @scriba-editor/vue @scriba-editor/themes
 ```
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScribaEditor } from '@scriba/vue'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/vue'
+import '@scriba-editor/themes/scriba.css'
 
 const html = ref('<p>Ciao</p>')
 </script>
@@ -96,19 +96,19 @@ Per un'interfaccia tua: `useScriba(elemento, opzioni)`.
 componente `.client.vue`): durante il rendering sul server non viene disegnato.
 
 Componenti Vue come nodi del documento (es. un'attività con casella e scadenza):
-`vueNodeView(Componente, { t })` nell'opzione `nodeViews`; esempi in `@scriba/vue`
+`vueNodeView(Componente, { t })` nell'opzione `nodeViews`; esempi in `@scriba-editor/vue`
 (`TaskView`, `CalloutView`).
 
 ## React
 
 ```bash
-pnpm add @scriba/react @scriba/themes
+pnpm add @scriba-editor/react @scriba-editor/themes
 ```
 
 ```tsx
 import { useState } from 'react'
-import { ScribaEditor } from '@scriba/react'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/react'
+import '@scriba-editor/themes/scriba.css'
 
 export function Nota() {
   const [html, setHtml] = useState('<p>Ciao</p>')
@@ -116,7 +116,7 @@ export function Nota() {
 }
 ```
 
-Dettagli: [README di @scriba/react](../packages/react/README.md).
+Dettagli: [README di @scriba-editor/react](../packages/react/README.md).
 
 ## Su misura con i pacchetti
 
@@ -132,12 +132,12 @@ import {
   historyKeymap,
   formatKeymap,
   baseKeymap,
-} from '@scriba/core'
-import { EditorView, parseContent, serializeContent } from '@scriba/view'
-import { createTranslator } from '@scriba/i18n'
-import { defineScribaToolbar, defaultToolbarItems } from '@scriba/ui'
-import { listNodes, listKeymap, listToolbarItems } from '@scriba/plugin-list'
-import '@scriba/themes/scriba.css'
+} from '@scriba-editor/core'
+import { EditorView, parseContent, serializeContent } from '@scriba-editor/view'
+import { createTranslator } from '@scriba-editor/i18n'
+import { defineScribaToolbar, defaultToolbarItems } from '@scriba-editor/ui'
+import { listNodes, listKeymap, listToolbarItems } from '@scriba-editor/plugin-list'
+import '@scriba-editor/themes/scriba.css'
 
 const t = createTranslator('it')
 const schema = new Schema({
@@ -177,7 +177,7 @@ con tutti i plugin, è in `demo/main.ts` (`pnpm dev`).
 - **JSON** (`format: 'json'`): la struttura esatta del documento, validata dallo schema quando
   rientra. Utile per salvare in un database documentale o confrontare versioni.
 
-In entrambi i casi, **sul server** ripassa ciò che arriva dal client da `@scriba/sanitize-server`
+In entrambi i casi, **sul server** ripassa ciò che arriva dal client da `@scriba-editor/sanitize-server`
 (HTML) o da `schema.nodeFromJSON` (JSON) prima di salvarlo: vedi [Sicurezza](sicurezza.md).
 
 ## Lingua
@@ -187,14 +187,14 @@ scelgono per nome: `locale: 'en'` (componenti) oppure `createTranslator('en')`. 
 e spagnolo si importano, così le lingue che non usi restano fuori dal tuo bundle:
 
 ```ts
-import { createTranslator, fr } from '@scriba/i18n'
+import { createTranslator, fr } from '@scriba-editor/i18n'
 const t = createTranslator(fr) // nei componenti: locale: fr
 ```
 
 Con lo script per il browser (`Scriba.createEditor`) bastano i nomi: `locale: 'fr'`, `'de'`,
 `'es'`. Per cambiare singoli testi: `createTranslator('it', { 'editor.label': 'Testo della nota'
 })`. Per un'altra lingua passa un oggetto con tutti i messaggi (le chiavi sono quelle di
-`@scriba/i18n`).
+`@scriba-editor/i18n`).
 
 ## Tema
 

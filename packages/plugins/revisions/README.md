@@ -1,9 +1,9 @@
-# @scriba/plugin-revisions
+# @scriba-editor/plugin-revisions
 
 Cronologia delle versioni, come "Revision History" di TinyMCE: elenco delle versioni salvate, anteprima, confronto con il documento attuale (aggiunto in verde, tolto barrato in rosso) e ripristino con un solo passo annullabile.
 
 ```bash
-pnpm add @scriba/plugin-revisions
+pnpm add @scriba-editor/plugin-revisions
 ```
 
 ## Uso
@@ -11,7 +11,7 @@ pnpm add @scriba/plugin-revisions
 Le versioni le conserva il **tuo server**: il plugin chiede solo l'elenco e, quando l'utente ne sceglie una, il contenuto.
 
 ```ts
-import { revisionsToolbarItem, type RevisionOptions } from '@scriba/plugin-revisions'
+import { revisionsToolbarItem, type RevisionOptions } from '@scriba-editor/plugin-revisions'
 
 const revisionOptions: RevisionOptions = {
   locale: 'it',
@@ -51,6 +51,6 @@ Il dialogo ha focus trap e restituisce il focus all'editor. Caricamenti, errori 
 - Il contenuto delle versioni arriva dal server ed è **input non fidato**: l'HTML è letto in un documento inerte e passa dal parser dello schema, il JSON è validato dallo schema (deve essere un documento intero); oltre `MAX_REVISION_LENGTH` viene rifiutato. Una versione illeggibile mostra un errore, non rompe l'editor.
 - Autore ed etichetta sono mostrati **come testo**, mai come HTML.
 - Una risposta lenta per una versione non più selezionata viene ignorata.
-- Chi salva versioni deve comunque sanificarle sul server con `@scriba/sanitize-server`.
+- Chi salva versioni deve comunque sanificarle sul server con `@scriba-editor/sanitize-server`.
 
-Vedi [sicurezza](../../../docs/sicurezza.md), [accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md). Si abbina bene a [@scriba/plugin-save](../save/README.md).
+Vedi [sicurezza](../../../docs/sicurezza.md), [accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md). Si abbina bene a [@scriba-editor/plugin-save](../save/README.md).

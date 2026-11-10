@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
-import { listNodes } from '@scriba/plugin-list'
-import { linkMarks } from '@scriba/plugin-link'
-import { textStyleMarks, withBlockStyles } from '@scriba/plugin-text-style'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
+import { listNodes } from '@scriba-editor/plugin-list'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { textStyleMarks, withBlockStyles } from '@scriba-editor/plugin-text-style'
 import { cleanPastedDOM, detectSource, type PasteCleanOptions } from '../src/index.js'
 
 const schema = new Schema({

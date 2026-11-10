@@ -6,7 +6,7 @@ import {
   type Command,
   type EditorState,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import type { MediaKind } from './media.js'
 import type { EmbedProvider } from './providers.js'
 

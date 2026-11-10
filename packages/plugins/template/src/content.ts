@@ -9,8 +9,8 @@ import {
   type Node,
   type Schema,
   type Transaction,
-} from '@scriba/core'
-import { parseInertHTML } from '@scriba/view'
+} from '@scriba-editor/core'
+import { parseInertHTML } from '@scriba-editor/view'
 
 /** A ready-made content the user can insert (TinyMCE's `templates`). */
 export interface Template {

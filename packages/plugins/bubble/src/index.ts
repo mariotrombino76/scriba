@@ -1,7 +1,7 @@
-import { Plugin, TextSelection, type Command, type KeyBindings } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { defineScribaToolbar, type ScribaToolbar, type ToolbarItem } from '@scriba/ui'
-import type { EditorView, PluginView, ViewPluginProps } from '@scriba/view'
+import { Plugin, TextSelection, type Command, type KeyBindings } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { defineScribaToolbar, type ScribaToolbar, type ToolbarItem } from '@scriba-editor/ui'
+import type { EditorView, PluginView, ViewPluginProps } from '@scriba-editor/view'
 
 export interface BubbleMenuOptions {
   /** Controls of the bubble (e.g. `markItems(schema)` and the link button). */

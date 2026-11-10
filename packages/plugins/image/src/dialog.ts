@@ -1,7 +1,7 @@
-import { NodeSelection, sanitizeUrl, type Node } from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { createIcon, openDialog, type DialogHandle } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import { NodeSelection, sanitizeUrl, type Node } from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { createIcon, openDialog, type DialogHandle } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { MAX_WIDTH, MIN_WIDTH, type ImageAlign } from './nodes.js'
 import {
   DEFAULT_ACCEPT,

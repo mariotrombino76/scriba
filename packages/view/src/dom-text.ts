@@ -1,4 +1,4 @@
-import { Mark, type Node } from '@scriba/core'
+import { Mark, type Node } from '@scriba-editor/core'
 import {
   MarkViewDesc,
   NodeViewDesc,

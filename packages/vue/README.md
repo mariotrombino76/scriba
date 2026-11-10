@@ -1,9 +1,9 @@
-# @scriba/vue
+# @scriba-editor/vue
 
 L'editor Scriba come componente Vue 3 (`<ScribaEditor v-model>`) e composable `useScriba()`.
 
 ```bash
-pnpm add @scriba/vue @scriba/themes
+pnpm add @scriba-editor/vue @scriba-editor/themes
 ```
 
 Richiede `vue` 3.5 o successivo.
@@ -13,8 +13,8 @@ Richiede `vue` 3.5 o successivo.
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScribaEditor } from '@scriba/vue'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/vue'
+import '@scriba-editor/themes/scriba.css'
 
 const html = ref('<p>Ciao</p>')
 </script>
@@ -25,7 +25,7 @@ const html = ref('<p>Ciao</p>')
 ```
 
 Il contenuto (`v-model`, `setContent`) è **input non fidato**: passa sempre dal parser dello
-schema in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba/sanitize-server`
+schema in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server`
 sul server prima di salvarlo o mostrarlo (vedi [Sicurezza](../../docs/sicurezza.md)).
 
 ## Proprietà
@@ -38,7 +38,7 @@ sul server prima di salvarlo o mostrarlo (vedi [Sicurezza](../../docs/sicurezza.
 | `plugins`    | —                            | Plugin aggiuntivi (letti alla creazione).                                                            |
 | `editable`   | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                                             |
 | `label`      | "Editor di testo formattato" | Nome accessibile dell'area di scrittura (tradotto secondo `locale`).                                 |
-| `locale`     | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba/i18n`).               |
+| `locale`     | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`).               |
 | `toolbar`    | `true`                       | Mostra la toolbar predefinita.                                                                       |
 | `inline`     | `false`                      | Modalità inline: stili della pagina, toolbar mobile solo mentre si scrive (letta al montaggio).      |
 | `nodeViews`  | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                                        |
@@ -46,7 +46,7 @@ sul server prima di salvarlo o mostrarlo (vedi [Sicurezza](../../docs/sicurezza.
 Evento: `update:modelValue`, emesso a ogni modifica dell'utente con il contenuto nel formato
 scelto (stringa HTML o oggetto JSON). Il componente espone `getContent()`, `setContent(content)`,
 `focus()`, `view` e `state` (usa un `ref` al componente). Per la barra fissa in cima alla finestra
-aggiungi la classe `scriba-sticky` (vedi [@scriba/themes](../themes/README.md)).
+aggiungi la classe `scriba-sticky` (vedi [@scriba-editor/themes](../themes/README.md)).
 
 Lo schema, i plugin e il formato vengono letti quando l'editor viene creato (al montaggio);
 `editable`, `label` e `locale` seguono le proprietà.
@@ -62,7 +62,7 @@ Per un'interfaccia tutta tua:
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useScriba } from '@scriba/vue'
+import { useScriba } from '@scriba-editor/vue'
 
 const place = ref<HTMLElement | null>(null)
 const scriba = useScriba(place, {
@@ -97,7 +97,7 @@ documento resta la fonte di verità e l'HTML in uscita viene sempre da `toHTML` 
 DOM del componente. Esempi pronti: `TaskView` e `CalloutView`.
 
 ```ts
-import { vueNodeView, TaskView } from '@scriba/vue'
+import { vueNodeView, TaskView } from '@scriba-editor/vue'
 const nodeViews = { task: vueNodeView(TaskView, { t }) }
 ```
 

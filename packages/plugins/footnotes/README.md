@@ -1,17 +1,17 @@
-# @scriba/plugin-footnotes
+# @scriba-editor/plugin-footnotes
 
 Note a piè di pagina per l'editor Scriba: riferimenti numerati nel testo ed elenco delle note in
 fondo al documento, **sempre sincronizzati**. Come il plugin per le note di TinyMCE, ma l'ordine e i
 numeri sono mantenuti dall'editor.
 
 ```bash
-pnpm add @scriba/plugin-footnotes
+pnpm add @scriba-editor/plugin-footnotes
 ```
 
 ## Uso
 
 ```ts
-import { Schema, keymap, basicSchemaSpec } from '@scriba/core'
+import { Schema, keymap, basicSchemaSpec } from '@scriba-editor/core'
 import {
   footnoteGoToItem,
   footnoteNodes,
@@ -19,7 +19,7 @@ import {
   footnotesKeymap,
   footnoteSlashItem,
   footnoteToolbarItem,
-} from '@scriba/plugin-footnotes'
+} from '@scriba-editor/plugin-footnotes'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...footnoteNodes },
@@ -85,6 +85,6 @@ lo schema non ammette il riferimento.
 - La chiave che lega riferimento e nota resta nell'editor, non nell'HTML (solo `[a-z0-9]`, al massimo
   24 caratteri).
 
-L'HTML salvato va comunque ripassato da `@scriba/sanitize-server`: vedi
+L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server`: vedi
 [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md). Per la tastiera e i
 dialoghi vedi [accessibilità](../../../docs/accessibilita.md).

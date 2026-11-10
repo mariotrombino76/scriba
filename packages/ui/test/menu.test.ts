@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, Schema, TextSelection, basicSchemaSpec, serializeHTML } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { textStyleMarks, textStyleToolbarItems, withBlockStyles } from '@scriba/plugin-text-style'
+import { EditorState, Schema, TextSelection, basicSchemaSpec, serializeHTML } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { textStyleMarks, textStyleToolbarItems, withBlockStyles } from '@scriba-editor/plugin-text-style'
 import { defineScribaToolbar, type ScribaToolbar } from '../src/index.js'
 
 defineScribaToolbar()

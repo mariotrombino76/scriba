@@ -1,4 +1,4 @@
-import type { DOMLike, DOMLikeElement, HTMLSpec, NodeSpec } from '@scriba/core'
+import type { DOMLike, DOMLikeElement, HTMLSpec, NodeSpec } from '@scriba-editor/core'
 
 /** Language ids like `javascript`, `c++`, `c#`, `objective-c`. */
 export const LANGUAGE = /^[a-z0-9][a-z0-9+#_-]{0,31}$/

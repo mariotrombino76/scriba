@@ -1,15 +1,15 @@
-# @scriba/plugin-word-count
+# @scriba-editor/plugin-word-count
 
 Conteggio di parole e caratteri come il plugin `wordcount` di TinyMCE: un contatore nella barra di stato e un dialogo con i numeri del documento e della selezione.
 
 ```bash
-pnpm add @scriba/plugin-word-count
+pnpm add @scriba-editor/plugin-word-count
 ```
 
 ## Uso
 
 ```ts
-import { createWordCountStatus, openWordCountDialog } from '@scriba/plugin-word-count'
+import { createWordCountStatus, openWordCountDialog } from '@scriba-editor/plugin-word-count'
 
 // contatore nella barra di stato (un pulsante che apre il dialogo)
 statusbar.append(createWordCountStatus(view, t).el)
@@ -49,4 +49,4 @@ Il contatore è un `<button>` raggiungibile da tastiera; il dialogo ha focus tra
 
 ## Note
 
-Il testo è calcolato dal documento (mai dal DOM) e mostrato come testo. Vedi [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md). Si affianca al percorso e alla maniglia di [@scriba/plugin-statusbar](../statusbar/README.md).
+Il testo è calcolato dal documento (mai dal DOM) e mostrato come testo. Vedi [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md). Si affianca al percorso e alla maniglia di [@scriba-editor/plugin-statusbar](../statusbar/README.md).

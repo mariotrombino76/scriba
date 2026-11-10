@@ -1,5 +1,5 @@
-import type { KeyBindings, Schema } from '@scriba/core'
-import type { ToolbarControl, ToolbarMenuEntry } from '@scriba/ui'
+import type { KeyBindings, Schema } from '@scriba-editor/core'
+import type { ToolbarControl, ToolbarMenuEntry } from '@scriba-editor/ui'
 import {
   exitCodeBlock,
   exitOnTripleEnter,

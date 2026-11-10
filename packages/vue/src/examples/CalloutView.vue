@@ -2,12 +2,12 @@
 /**
  * Example node view with editable content: a callout box whose kind is
  * chosen in a Vue header, while the text inside is edited by the editor
- * (`<NodeViewContent>`). Use with `calloutNodes` from `@scriba/plugin-callout`:
+ * (`<NodeViewContent>`). Use with `calloutNodes` from `@scriba-editor/plugin-callout`:
  * `nodeViews: { callout: vueNodeView(CalloutView, { t }) }`.
  * The header is `contenteditable="false"`: the caret stays in the text.
  */
-import type { Node } from '@scriba/core'
-import { createTranslator, type MessageKey, type Translate } from '@scriba/i18n'
+import type { Node } from '@scriba-editor/core'
+import { createTranslator, type MessageKey, type Translate } from '@scriba-editor/i18n'
 import { computed, ref } from 'vue'
 import { NodeViewContent } from '../NodeViewContent.js'
 

@@ -1,5 +1,5 @@
-import { NodeSelection } from '@scriba/core'
-import type { EditorView, PluginView } from '@scriba/view'
+import { NodeSelection } from '@scriba-editor/core'
+import type { EditorView, PluginView } from '@scriba-editor/view'
 import { MAX_WIDTH, MIN_WIDTH } from './nodes.js'
 
 /**

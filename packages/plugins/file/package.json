@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-file",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-file",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -21,21 +21,21 @@
   "license": "Apache-2.0",
   "description": "File menu for the Scriba editor: new, open (.docx, .html, .md, .txt), download (.html, .md, .txt, .docx), preview and print.",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/ui": "workspace:*",
-    "@scriba/view": "workspace:*",
-    "@scriba/plugin-markdown": "workspace:*",
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/ui": "workspace:*",
+    "@scriba-editor/view": "workspace:*",
+    "@scriba-editor/plugin-markdown": "workspace:*",
     "mammoth": "1.13.0",
     "docx": "9.8.1",
     "jszip": "3.10.2"
   },
   "devDependencies": {
-    "@scriba/plugin-list": "workspace:*",
-    "@scriba/plugin-blockquote": "workspace:*",
-    "@scriba/plugin-link": "workspace:*",
-    "@scriba/plugin-table": "workspace:*",
-    "@scriba/plugin-image": "workspace:*"
+    "@scriba-editor/plugin-list": "workspace:*",
+    "@scriba-editor/plugin-blockquote": "workspace:*",
+    "@scriba-editor/plugin-link": "workspace:*",
+    "@scriba-editor/plugin-table": "workspace:*",
+    "@scriba-editor/plugin-image": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

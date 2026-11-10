@@ -1,4 +1,4 @@
-# @scriba/plugin-comments
+# @scriba-editor/plugin-comments
 
 **Commenti** sul testo selezionato e **suggerimenti** (modifiche tracciate) per l'editor Scriba.
 Come i plugin Comments e Suggested Edits di TinyMCE. I commenti
@@ -7,7 +7,7 @@ vivono in uno _store_ (in memoria, oppure sul tuo server), non nel documento.
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-comments
+pnpm add @scriba-editor/plugin-comments
 ```
 
 ## Uso
@@ -23,7 +23,7 @@ import {
   suggestToolbarItem,
   suggestionMarks,
   suggestionsPlugin,
-} from '@scriba/plugin-comments'
+} from '@scriba-editor/plugin-comments'
 
 // solo in locale: l'autore è chi passi tu. Con più utenti usa un backend (vedi Sicurezza).
 const comments = createMemoryCommentStore({ id: 'local', name: 'Tu' })
@@ -51,7 +51,7 @@ const items = [commentToolbarItem(comments, t), suggestToolbarItem()]
 ```
 
 Con la collaborazione, al posto dello store in memoria usa `collabCommentStore(provider)` di
-[`@scriba/plugin-collab`](../collab/README.md).
+[`@scriba-editor/plugin-collab`](../collab/README.md).
 
 ## Cosa esporta
 

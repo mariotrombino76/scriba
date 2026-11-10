@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-/** @scriba/browser: the classic script (global `Scriba`) on a plain page, under the strict CSP. */
+/** @scriba-editor/browser: the classic script (global `Scriba`) on a plain page, under the strict CSP. */
 test.beforeEach(async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (e) => errors.push(e.message))

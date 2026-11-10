@@ -1,19 +1,19 @@
-# @scriba/plugin-file
+# @scriba-editor/plugin-file
 
 Il menu "File" dell'editor Scriba: nuovo documento, apri (`.docx`, `.html`, `.md`, `.txt`), scarica
 (`.html`, `.md`, `.txt`, `.docx`), anteprima e stampa. Come il menu File di TinyMCE, ma con
 apertura e salvataggio di file veri, tutto nel browser: **nessun dato lascia la pagina**.
 
 ```bash
-pnpm add @scriba/plugin-file
+pnpm add @scriba-editor/plugin-file
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
+import { keymap } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba-editor/plugin-file'
 
 const t = createTranslator('it')
 const fileOptions: FileOptions = { t }
@@ -69,7 +69,7 @@ Senza `onNewDocument`, "Nuovo documento" svuota quello corrente (i blocchi prote
 - Il titolo del file è il primo titolo del documento (o la prima riga), ripulito dai caratteri
   vietati nei nomi di file.
 - Le pagine HTML salvate hanno un'interruzione di pagina in stampa per `hr.scriba-page-break`
-  (vedi `@scriba/plugin-hr`).
+  (vedi `@scriba-editor/plugin-hr`).
 - La stampa aggiunge una copia del solo documento alla pagina; il browser permette anche di salvare
   in PDF.
 - Il supporto `.docx` (lettura con `mammoth`, scrittura con `jszip`) viene caricato solo quando serve.
@@ -87,7 +87,7 @@ Un file aperto è **input non fidato**:
   decomprimere; i collegamenti a file esterni di un `.docx` non vengono mai letti.
 - I file salvati sono generati dal serializzatore con escape, mai copiati dal DOM.
 - Il controllo lato client non sostituisce quello del server: l'HTML salvato va comunque ripassato da
-  `@scriba/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md).
+  `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md).
 
 ## Accessibilità
 

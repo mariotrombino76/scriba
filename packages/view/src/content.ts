@@ -1,4 +1,4 @@
-import { parseHTML, serializeHTML, type Node, type NodeJSON, type Schema } from '@scriba/core'
+import { parseHTML, serializeHTML, type Node, type NodeJSON, type Schema } from '@scriba-editor/core'
 import { parseInertHTML } from './trusted-types.js'
 
 export type ContentFormat = 'html' | 'json'

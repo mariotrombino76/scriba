@@ -1,15 +1,15 @@
-# @scriba/plugin-permissions
+# @scriba-editor/plugin-permissions
 
 Permessi per blocco: alcuni blocchi (paragrafi, titoli, tabelle, ...) possono essere resi non modificabili per l'utente corrente. TinyMCE ha solo `contenteditable="false"` a mano, senza regole né controllo lato server.
 
 ```bash
-pnpm add @scriba/plugin-permissions
+pnpm add @scriba-editor/plugin-permissions
 ```
 
 ## Uso
 
 ```ts
-import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
+import { blockPermissions, withBlockIds } from '@scriba-editor/plugin-permissions'
 
 // 1. gli id dei blocchi nello schema (data-block-id in HTML)
 const schema = new Schema({
@@ -42,7 +42,7 @@ Gli id li assegni tu nell'HTML che carichi (`<p data-block-id="lock-intro">`): u
 - `canEdit(id)`: se l'utente può modificare il blocco.
 - `t`: funzione di traduzione.
 - `allowMarks`: mark ammessi anche sul testo protetto (predefinito `['comment']`, così si può ancora commentare).
-- `trusted(tr)`: modifiche applicate comunque (predefinito: modifiche remote di `@scriba/plugin-collab`, che il server di collaborazione verifica con la stessa regola).
+- `trusted(tr)`: modifiche applicate comunque (predefinito: modifiche remote di `@scriba-editor/plugin-collab`, che il server di collaborazione verifica con la stessa regola).
 - `onRefused(tr)`: chiamata quando una modifica è rifiutata.
 
 ## Comportamento e accessibilità

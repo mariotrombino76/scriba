@@ -1,5 +1,5 @@
-import type { Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 
 export interface ResizeOptions {
   /** Smallest height in pixels. Default 120. */

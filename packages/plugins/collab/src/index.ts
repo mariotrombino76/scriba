@@ -1,6 +1,6 @@
 import * as Y from 'yjs'
 import { Awareness } from 'y-protocols/awareness'
-import type { Plugin } from '@scriba/core'
+import type { Plugin } from '@scriba-editor/core'
 import { yBinding } from './binding.js'
 import { collabCursors, type CollabUser } from './cursors.js'
 import { CollabProvider } from './provider.js'
@@ -29,7 +29,7 @@ export {
 } from './provider.js'
 
 export interface CollabSetupOptions {
-  /** Collaboration server URL (see `@scriba/collab-server`). */
+  /** Collaboration server URL (see `@scriba-editor/collab-server`). */
   url: string
   documentName: string
   token: string | (() => string | Promise<string>)

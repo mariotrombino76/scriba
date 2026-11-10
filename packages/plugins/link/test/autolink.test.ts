@@ -10,8 +10,8 @@ import {
   serializeHTML,
   splitBlock,
   undo,
-} from '@scriba/core'
-import { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
 import { addressBefore, autolink, linkMarks } from '../src/index.js'
 
 const schema = new Schema({

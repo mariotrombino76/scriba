@@ -11,8 +11,8 @@ import {
   type Node,
   type Schema,
   type Transaction,
-} from '@scriba/core'
-import type { EditorView, InlineDecoration } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView, InlineDecoration } from '@scriba-editor/view'
 import type { AiBlocks } from './blocks.js'
 
 /** What is sent to your backend (only on an explicit user action, §5.9). */

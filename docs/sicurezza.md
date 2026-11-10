@@ -9,12 +9,12 @@
 ## La regola che non si salta: ripassare l'HTML sul server
 
 La pulizia fatta nel browser è una comodità, non una protezione. Prima di **salvare** o
-**mostrare** l'HTML ricevuto da un client, passalo da `@scriba/sanitize-server` con **lo stesso
+**mostrare** l'HTML ricevuto da un client, passalo da `@scriba-editor/sanitize-server` con **lo stesso
 schema** dell'editor:
 
 ```ts
 // server Node (Express, Fastify, Nest… è uguale)
-import { sanitizeHTML, InputTooLargeError } from '@scriba/sanitize-server'
+import { sanitizeHTML, InputTooLargeError } from '@scriba-editor/sanitize-server'
 import { schema } from './schema.js' // lo stesso usato nel browser
 
 app.post('/api/note', (req, res) => {
@@ -105,7 +105,7 @@ pulsanti radio al posto dei menu a tendina.
 
 ### Media incorporati e file video/audio
 
-Con `@scriba/plugin-embed` l'HTML salvato può contenere:
+Con `@scriba-editor/plugin-embed` l'HTML salvato può contenere:
 
 - un `<iframe>`, ma solo con l'indirizzo esatto del player di un servizio approvato: YouTube in
   modalità privacy avanzata (`www.youtube-nocookie.com/embed/…`), Vimeo
@@ -149,7 +149,7 @@ cookie; altrimenti il dialog lo dice e non modifica nulla.
 
 ## Versioni salvate
 
-Le versioni della cronologia (`@scriba/plugin-revisions`) arrivano dal tuo server ma sono comunque
+Le versioni della cronologia (`@scriba-editor/plugin-revisions`) arrivano dal tuo server ma sono comunque
 input non fidato: l'HTML passa dal parser dello schema in un documento inerte, il JSON da
 `schema.nodeFromJSON`; oltre 5 milioni di caratteri la versione viene rifiutata. Autore ed
 etichetta sono mostrati come testo. Controlla sul server chi può leggere le versioni di un
@@ -157,7 +157,7 @@ documento, come per il documento stesso.
 
 ## Bozze nel browser
 
-`@scriba/plugin-autosave` salva il documento nel `localStorage` **in chiaro**, su quel dispositivo:
+`@scriba-editor/plugin-autosave` salva il documento nel `localStorage` **in chiaro**, su quel dispositivo:
 attivalo solo dove è accettabile (non su computer condivisi per dati sensibili) e chiama
 `clearDraft` dopo il salvataggio e al logout. Una bozza letta dal browser è input non fidato:
 rientra solo se `schema.nodeFromJSON` la accetta.
@@ -165,7 +165,7 @@ rientra solo se `schema.nodeFromJSON` la accetta.
 ## Collaborazione
 
 Gli aggiornamenti degli altri utenti sono input non fidato: il client li valida contro lo schema
-e il server (`@scriba/collab-server`) autentica ogni connessione, controlla i permessi per
+e il server (`@scriba-editor/collab-server`) autentica ogni connessione, controlla i permessi per
 documento, limita dimensione e frequenza dei messaggi e assegna **lui** nomi e autori di cursori
 e commenti. Dettagli in [Collaborazione](collaborazione.md).
 

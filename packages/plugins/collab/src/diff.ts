@@ -1,4 +1,4 @@
-import type { Fragment } from '@scriba/core'
+import type { Fragment } from '@scriba-editor/core'
 
 /** First position where two fragments differ (null when equal). */
 export function diffStart(a: Fragment, b: Fragment, pos = 0): number | null {

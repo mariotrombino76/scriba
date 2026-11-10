@@ -1,4 +1,4 @@
-import { CLOSE_HISTORY, TextSelection, type Command, type Mark } from '@scriba/core'
+import { CLOSE_HISTORY, TextSelection, type Command, type Mark } from '@scriba-editor/core'
 
 /** The case changes of the Format menu (TinyMCE's "case change"). */
 export const LETTER_CASES = ['lower', 'upper', 'title', 'sentence'] as const

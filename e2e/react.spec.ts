@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-/** The React wrapper (`@scriba/react`) in a real browser, under the strict CSP. */
+/** The React wrapper (`@scriba-editor/react`) in a real browser, under the strict CSP. */
 test.beforeEach(async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (e) => errors.push(e.message))

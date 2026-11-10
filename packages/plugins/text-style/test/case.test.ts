@@ -9,7 +9,7 @@ import {
   parseHTML,
   undo,
   serializeHTML,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { caseMenu, changeCase, type LetterCase } from '../src/index.js'
 
 const parse = (html: string) =>

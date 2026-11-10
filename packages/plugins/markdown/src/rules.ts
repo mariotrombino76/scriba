@@ -13,8 +13,8 @@ import {
   type Node,
   type NodeType,
   type Transaction,
-} from '@scriba/core'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 
 /**
  * An input rule (simple picture: a typing shortcut). When the text before the

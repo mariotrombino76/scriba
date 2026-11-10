@@ -1,4 +1,4 @@
-# @scriba/plugin-help
+# @scriba-editor/plugin-help
 
 Il menu "Aiuto" dell'editor Scriba: una finestra con **tutte le scorciatoie da tastiera**, divise
 in gruppi e con un campo di ricerca. Come la finestra "Help" di TinyMCE (Alt+0), ma l'elenco si
@@ -6,13 +6,13 @@ costruisce da solo a partire dai pulsanti e dai menu realmente presenti, quindi 
 sincronia.
 
 ```bash
-pnpm add @scriba/plugin-help
+pnpm add @scriba-editor/plugin-help
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   editingHelp,
   helpItem,
@@ -21,7 +21,7 @@ import {
   navigationHelp,
   shortcutsFromItems,
   type HelpOptions,
-} from '@scriba/plugin-help'
+} from '@scriba-editor/plugin-help'
 
 const helpOptions: HelpOptions = {
   t,
@@ -55,7 +55,7 @@ const entry = helpItem(helpOptions)
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `shortcutsFromItems(items)`                 | Le scorciatoie dei pulsanti e dei menu, con le loro etichette; ogni combinazione compare una sola volta. |
 | `editingHelp({ slash?, mentions? })`        | Tasti senza pulsante: a capo, incolla senza formato, Tab, Maiusc+Tab; `/` e `@` se usati.                |
-| `markdownHelp()`                            | Le scorciatoie Markdown di `@scriba/plugin-markdown` (`# `, `- `, `**testo**`, …).                       |
+| `markdownHelp()`                            | Le scorciatoie Markdown di `@scriba-editor/plugin-markdown` (`# `, `- `, `**testo**`, …).                       |
 | `navigationHelp({ bubble?, contextMenu? })` | Frecce, Esc, Alt+F10 (barra sulla selezione), Maiusc+F10 (menu contestuale).                             |
 
 Un gruppo è `HelpGroup { id, title, shortcuts }` e una riga è `HelpShortcut { keys?, typed?, label }`

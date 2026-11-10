@@ -1,21 +1,21 @@
-# @scriba/plugin-format-painter
+# @scriba-editor/plugin-format-painter
 
 Il **pennello formato** per l'editor Scriba: copia la formattazione di un testo e la applica a un
 altro, come il "Format painter" di TinyMCE e di Word.
 
 ```bash
-pnpm add @scriba/plugin-format-painter
+pnpm add @scriba-editor/plugin-format-painter
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   formatPainter,
   formatPainterItem,
   formatPainterKeymap,
-} from '@scriba/plugin-format-painter'
+} from '@scriba-editor/plugin-format-painter'
 
 // nello stato dell'editor
 plugins: [formatPainter(t), keymap(formatPainterKeymap(), { priority: 85 })]
@@ -40,7 +40,7 @@ viceversa. I link e i commenti **non** vengono copiati né rimossi dal testo di 
 
 | Opzione      | Descrizione                                                                                                                                     |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `marks`      | `(type) => boolean`: quali mark si copiano (default `isFormattingMark` di `@scriba/ui`).                                                        |
+| `marks`      | `(type) => boolean`: quali mark si copiano (default `isFormattingMark` di `@scriba-editor/ui`).                                                        |
 | `blockAttrs` | Attributi del blocco copiati, se entrambi i blocchi li hanno (default `align`, `indent`, `lineHeight`, `dir`, `className`). Mai `id`/`blockId`. |
 | `blockTypes` | Tipi di blocco che possono trasformarsi l'uno nell'altro (default `paragraph`, `heading`).                                                      |
 

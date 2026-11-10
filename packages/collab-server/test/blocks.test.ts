@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
 import * as Y from 'yjs'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML, type Node } from '@scriba/core'
-import { docFromY, updateFragment, writeDoc } from '@scriba/plugin-collab'
-import { withBlockIds } from '@scriba/plugin-permissions'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML, type Node } from '@scriba-editor/core'
+import { docFromY, updateFragment, writeDoc } from '@scriba-editor/plugin-collab'
+import { withBlockIds } from '@scriba-editor/plugin-permissions'
 import { applyAnnotationUpdate, applyGuardedUpdate } from '../src/index.js'
 
 const schema = new Schema({

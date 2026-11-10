@@ -1,4 +1,4 @@
-import type { Command } from '@scriba/core'
+import type { Command } from '@scriba-editor/core'
 
 /** How serious an issue is: errors fail WCAG, warnings probably do, hints are advice. */
 export type A11ySeverity = 'error' | 'warning' | 'info'

@@ -8,8 +8,8 @@ import {
   type NodeSpec,
   type ParseRule,
   type Schema,
-} from '@scriba/core'
-import type { ToolbarMenu, ToolbarMenuEntry } from '@scriba/ui'
+} from '@scriba-editor/core'
+import type { ToolbarMenu, ToolbarMenuEntry } from '@scriba-editor/ui'
 import { markValue, setMarkValue } from './marks.js'
 
 /**

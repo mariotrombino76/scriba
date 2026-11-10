@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { beforeAll, describe, expect, it } from 'vitest'
-import { EditorState } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { historyItems, markItems, toolbarGroup, type ToolbarButton } from '@scriba/ui'
-import { EditorView } from '@scriba/view'
+import { EditorState } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { historyItems, markItems, toolbarGroup, type ToolbarButton } from '@scriba-editor/ui'
+import { EditorView } from '@scriba-editor/view'
 import { doc, p, schema } from '../../../core/test/helpers/schema.js'
 import {
   editingHelp,

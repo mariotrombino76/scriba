@@ -5,10 +5,10 @@ import {
   type HTMLSpec,
   type Node,
   type NodeSpec,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { openDialog, type ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { openDialog, type ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 
 /**
  * Anchors (approved 2026-10-19): an `id` on paragraphs and headings, always with this

@@ -1,15 +1,15 @@
-# @scriba/plugin-visual-aids
+# @scriba-editor/plugin-visual-aids
 
 Aiuti visivi di TinyMCE: **Mostra blocchi** (`visualblocks`) e **Mostra caratteri invisibili** (`visualchars`). Servono solo durante la scrittura e **non finiscono mai nell'HTML**.
 
 ```bash
-pnpm add @scriba/plugin-visual-aids
+pnpm add @scriba-editor/plugin-visual-aids
 ```
 
 ## Uso
 
 ```ts
-import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+import { visualAids, visualAidsItems } from '@scriba-editor/plugin-visual-aids'
 
 const plugins = [
   visualAids(), // oppure visualAids({ blocks: true })
@@ -31,7 +31,7 @@ const plugins = [
 
 ## Come funziona
 
-- **Blocchi**: l'editor riceve la classe `scriba-show-blocks`; contorni e nomi dei blocchi sono disegnati dal CSS del tema (`@scriba/themes`).
+- **Blocchi**: l'editor riceve la classe `scriba-show-blocks`; contorni e nomi dei blocchi sono disegnati dal CSS del tema (`@scriba-editor/themes`).
 - **Caratteri**: spazio non separabile (U+00A0), spazio non separabile stretto (U+202F) e trattino morbido (U+00AD) sono evidenziati con decorazioni (`scriba-char-nbsp`, `scriba-char-shy`); sono calcolati una volta per documento.
 
 ## Accessibilità

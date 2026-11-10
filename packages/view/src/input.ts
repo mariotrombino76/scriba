@@ -19,7 +19,7 @@ import {
   undo,
   type Command,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { handleCopy, handlePaste } from './clipboard.js'
 import { someProp } from './plugin-hooks.js'
 import type { EditorView } from './view.js'

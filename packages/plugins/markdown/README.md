@@ -1,16 +1,16 @@
-# @scriba/plugin-markdown
+# @scriba-editor/plugin-markdown
 
 Markdown per l'editor Scriba: **scorciatoie mentre si scrive** (`# ` diventa titolo, `- ` elenco,
 `**x**` grassetto), **importazione** e **esportazione**. È una capacità che TinyMCE non offre di serie: qui è integrata.
 
 ```bash
-pnpm add @scriba/plugin-markdown
+pnpm add @scriba-editor/plugin-markdown
 ```
 
 ## Uso
 
 ```ts
-import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
+import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba-editor/plugin-markdown'
 
 // nello stato dell'editor: scorciatoie in digitazione + Backspace che le annulla
 plugins: [...markdownShortcuts(schema)]
@@ -67,9 +67,9 @@ L'importazione è **input non fidato**, come un incolla:
   schema non conosce viene scartato, e i link passano dalla whitelist di URL;
 - la lunghezza massima e i limiti di profondità e di nodi evitano il blocco della pagina.
 - Se usi `markdownToHTML` direttamente, passa sempre il risultato dal parser dello schema o da
-  `@scriba/sanitize-server`.
+  `@scriba-editor/sanitize-server`.
 - Nelle regole di digitazione i link passano dalla stessa whitelist (`http`, `https`, `mailto`,
   `tel`, relativi).
 
 Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md); le scorciatoie sono
-elencate anche nella finestra di `@scriba/plugin-help` (`markdownHelp()`).
+elencate anche nella finestra di `@scriba-editor/plugin-help` (`markdownHelp()`).

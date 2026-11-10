@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/ui",
-  "version": "0.0.0",
+  "name": "@scriba-editor/ui",
+  "version": "0.1.0",
   "description": "UI for the Scriba editor as vanilla Web Components (toolbar…).",
   "type": "module",
   "sideEffects": false,
@@ -21,9 +21,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/view": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/view": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

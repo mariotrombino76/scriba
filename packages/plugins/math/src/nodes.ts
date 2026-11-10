@@ -1,4 +1,4 @@
-import type { DOMLike, DOMLikeElement, HTMLSpec, Node, NodeSpec } from '@scriba/core'
+import type { DOMLike, DOMLikeElement, HTMLSpec, Node, NodeSpec } from '@scriba-editor/core'
 import { mathmlSpec } from './mathml.js'
 
 /**

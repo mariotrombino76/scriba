@@ -8,12 +8,12 @@ import {
   history,
   serializeHTML,
   undo,
-} from '@scriba/core'
-import { EditorView, someProp } from '@scriba/view'
-import { listNodes } from '@scriba/plugin-list'
-import { blockquoteNodes } from '@scriba/plugin-blockquote'
-import { codeBlockNodes } from '@scriba/plugin-code-block'
-import { linkMarks } from '@scriba/plugin-link'
+} from '@scriba-editor/core'
+import { EditorView, someProp } from '@scriba-editor/view'
+import { listNodes } from '@scriba-editor/plugin-list'
+import { blockquoteNodes } from '@scriba-editor/plugin-blockquote'
+import { codeBlockNodes } from '@scriba-editor/plugin-code-block'
+import { linkMarks } from '@scriba-editor/plugin-link'
 import { markdownShortcuts, undoInputRule } from '../src/index.js'
 
 const schema = new Schema({

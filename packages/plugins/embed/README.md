@@ -1,4 +1,4 @@
-# @scriba/plugin-embed
+# @scriba-editor/plugin-embed
 
 **Media** per l'editor Scriba: video (YouTube, Vimeo, Dailymotion), musica (Spotify), mappe
 (Google Maps) e file video/audio. Corrisponde al plugin "Media" di TinyMCE, ma con una differenza di
@@ -8,7 +8,7 @@ sempre ricostruito dal plugin, mai copiato da ciò che incolli.
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-embed
+pnpm add @scriba-editor/plugin-embed
 ```
 
 ## Uso
@@ -24,7 +24,7 @@ import {
   mediaFileNodeView,
   mediaNodes,
   type MediaOptions,
-} from '@scriba/plugin-embed'
+} from '@scriba-editor/plugin-embed'
 
 // l'upload dei file è una tua funzione: restituisce l'URL (https o relativo) dato dal server
 const mediaOptions: MediaOptions = { upload: (file) => myServerUpload(file), maxSize: 50_000_000 }

@@ -9,8 +9,8 @@ import {
   ADD_TO_HISTORY,
   type Plugin,
   type Schema,
-} from '@scriba/core'
-import { EditorView, type NodeViewFactory } from '@scriba/view'
+} from '@scriba-editor/core'
+import { EditorView, type NodeViewFactory } from '@scriba-editor/view'
 import {
   onBeforeUnmount,
   onMounted,
@@ -21,7 +21,7 @@ import {
   type Ref,
   type ShallowRef,
 } from 'vue'
-import { parseContent, serializeContent, type Content, type ContentFormat } from '@scriba/view'
+import { parseContent, serializeContent, type Content, type ContentFormat } from '@scriba-editor/view'
 
 export interface UseScribaOptions {
   /** Default: the Phase 1 `basicSchema`. */

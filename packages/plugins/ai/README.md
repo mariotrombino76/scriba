@@ -1,4 +1,4 @@
-# @scriba/plugin-ai — Assistente AI
+# @scriba-editor/plugin-ai — Assistente AI
 
 Assistente AI per l'editor Scriba: migliora, corregge, accorcia, traduce e continua il testo, e
 può creare **blocchi** (tabelle, attività, riquadri) a partire da una selezione.
@@ -57,7 +57,7 @@ Dettagli tecnici:
 consigliato) oppure tutta insieme (`Promise<string>`).
 
 ```ts
-import type { AiComplete } from '@scriba/plugin-ai'
+import type { AiComplete } from '@scriba-editor/plugin-ai'
 
 export const complete: AiComplete = (req) =>
   (async function* () {
@@ -89,8 +89,8 @@ Se `complete` lancia un errore, la barra mostra "L'AI non ha potuto rispondere" 
 ### 2. I plugin
 
 ```ts
-import { EditorState, keymap } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
+import { EditorState, keymap } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
 import {
   aiAssistant,
   aiKeymap,
@@ -98,8 +98,8 @@ import {
   blockAiActions,
   defaultAiActions,
   type AiOptions,
-} from '@scriba/plugin-ai'
-import { parseMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/plugin-ai'
+import { parseMarkdown } from '@scriba-editor/plugin-markdown'
 
 const t = createTranslator('it')
 
@@ -140,7 +140,7 @@ toolbar.items = [/* … */ aiToolbarItem(aiOptions)]
 Puoi lanciare un'azione anche senza il menu, per esempio da un comando "/" o da un pulsante:
 
 ```ts
-import { openAiMenu, runAi } from '@scriba/plugin-ai'
+import { openAiMenu, runAi } from '@scriba-editor/plugin-ai'
 
 openAiMenu(view, aiOptions) // apre il menu dell'assistente
 await runAi(view, aiOptions, { action: 'summarize', mode: 'after' }) // esegue subito
@@ -173,7 +173,7 @@ Il backend riceve la richiesta, sceglie le istruzioni per il modello e restituis
 
 ```ts
 import Anthropic from '@anthropic-ai/sdk'
-import { aiBlocksPrompt } from '@scriba/plugin-ai'
+import { aiBlocksPrompt } from '@scriba-editor/plugin-ai'
 import { schema } from './schema.js' // LO STESSO schema dell'editor
 
 const client = new Anthropic() // legge ANTHROPIC_API_KEY dall'ambiente del server
@@ -277,12 +277,12 @@ con una selezione la risposta la sostituisce, senza selezione va al cursore.
 Un'azione è un oggetto `AiAction`:
 
 ```ts
-import type { AiAction } from '@scriba/plugin-ai'
+import type { AiAction } from '@scriba-editor/plugin-ai'
 
 const formale: AiAction = {
   id: 'formal', // arriva al backend come `action`
   label: () => 'Rendi formale', // o una chiave di traduzione: (t) => t('…')
-  icon: 'sparkles', // facoltativa, un'icona di @scriba/ui
+  icon: 'sparkles', // facoltativa, un'icona di @scriba-editor/ui
   mode: 'replace', // 'replace' | 'after' | 'cursor'
   needsSelection: true, // disabilitata senza selezione
 }
@@ -356,7 +356,7 @@ Due funzioni calcolano dallo schema dell'editor cosa dire al modello, così back
 restano allineati:
 
 ```ts
-import { aiBlocksJsonSchema, aiBlocksPrompt } from '@scriba/plugin-ai'
+import { aiBlocksJsonSchema, aiBlocksPrompt } from '@scriba-editor/plugin-ai'
 
 // testo da aggiungere al system prompt: formato, tipi di nodo, attributi, mark ammessi
 const istruzioni = aiBlocksPrompt(schema, { nodes: ['table'] })
@@ -397,7 +397,7 @@ il JSON della risposta.
 `blocksParser(blocks)` è un normale `AiParse`: puoi usarlo anche fuori dalle azioni.
 
 ```ts
-import { blocksParser } from '@scriba/plugin-ai'
+import { blocksParser } from '@scriba-editor/plugin-ai'
 
 const parse = blocksParser({ nodes: ['task'] })
 const fragment = parse(rispostaDelModello, schema) // nodi già validati
@@ -409,7 +409,7 @@ Un'azione può proporre **più versioni** della risposta: l'utente le confronta 
 tiene quella che preferisce.
 
 ```ts
-import { variantAiActions } from '@scriba/plugin-ai'
+import { variantAiActions } from '@scriba-editor/plugin-ai'
 
 actions: [...defaultAiActions, ...variantAiActions()] // Riscrivi (3 proposte), Riassumi (3 proposte)
 // oppure su misura:
@@ -433,9 +433,9 @@ actions: [...defaultAiActions, ...variantAiActions()] // Riscrivi (3 proposte), 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScribaEditor } from '@scriba/vue'
-import { aiAssistant, aiKeymap } from '@scriba/plugin-ai'
-import { keymap } from '@scriba/core'
+import { ScribaEditor } from '@scriba-editor/vue'
+import { aiAssistant, aiKeymap } from '@scriba-editor/plugin-ai'
+import { keymap } from '@scriba-editor/core'
 import { aiOptions, schema } from './ai' // lo schema con i blocchi usati dall'AI
 
 const plugins = [...aiAssistant(aiOptions), keymap(aiKeymap(aiOptions), { priority: 90 })]
@@ -499,7 +499,7 @@ Con il composable: `useScriba(target, { schema, plugins })`.
   prompt) e non dare al modello strumenti che agiscono fuori dall'editor.
 - **Privacy**: informa gli utenti su quale servizio riceve il testo e per quanto lo conserva.
 - **Salvataggio**: l'HTML del documento, con o senza parti scritte dall'AI, va comunque
-  ripassato da `@scriba/sanitize-server` prima di salvarlo o mostrarlo.
+  ripassato da `@scriba-editor/sanitize-server` prima di salvarlo o mostrarlo.
 
 ## Riferimento API
 
@@ -528,7 +528,7 @@ Tipi: `AiOptions`, `AiAction`, `AiBlocks`, `AiRequest`, `AiComplete`, `AiParse`,
 
 ## Personalizzare testi e aspetto
 
-**Testi**: le etichette vengono da `@scriba/i18n` (chiavi `ai.*`, es. `ai.action.improve`,
+**Testi**: le etichette vengono da `@scriba-editor/i18n` (chiavi `ai.*`, es. `ai.action.improve`,
 `ai.privacy`). Per cambiarle senza toccare il pacchetto:
 
 ```ts
@@ -538,7 +538,7 @@ const t = createTranslator('it', {
 })
 ```
 
-**Aspetto**: classi del tema `@scriba/themes`, modificabili con variabili CSS o regole proprie:
+**Aspetto**: classi del tema `@scriba-editor/themes`, modificabili con variabili CSS o regole proprie:
 
 | Classe               | Elemento                             |
 | -------------------- | ------------------------------------ |

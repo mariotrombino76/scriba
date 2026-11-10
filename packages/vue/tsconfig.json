@@ -5,12 +5,12 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-      "@scriba/core": ["../core/src/index.ts"],
-      "@scriba/view": ["../view/src/index.ts"],
-      "@scriba/ui": ["../ui/src/index.ts"],
-      "@scriba/i18n": ["../i18n/src/index.ts"],
-      "@scriba/plugin-task": ["../plugins/task/src/index.ts"],
-      "@scriba/plugin-callout": ["../plugins/callout/src/index.ts"]
+      "@scriba-editor/core": ["../core/src/index.ts"],
+      "@scriba-editor/view": ["../view/src/index.ts"],
+      "@scriba-editor/ui": ["../ui/src/index.ts"],
+      "@scriba-editor/i18n": ["../i18n/src/index.ts"],
+      "@scriba-editor/plugin-task": ["../plugins/task/src/index.ts"],
+      "@scriba-editor/plugin-callout": ["../plugins/callout/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts"]

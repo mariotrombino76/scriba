@@ -6,10 +6,10 @@ import {
   type Node,
   type NodeSpec,
   type Plugin,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarMenu, ToolbarMenuEntry } from '@scriba/ui'
-import { createSuggestion, type SuggestItem, type Suggestion } from '@scriba/plugin-mention'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarMenu, ToolbarMenuEntry } from '@scriba-editor/ui'
+import { createSuggestion, type SuggestItem, type Suggestion } from '@scriba-editor/plugin-mention'
 
 /**
  * Merge tags (approved 2026-10-26), like TinyMCE's: `{{cliente.nome}}` placeholders

@@ -1,12 +1,12 @@
-# @scriba/view
+# @scriba-editor/view
 
 La "vetrina" di Scriba: mostra un `EditorState` nel browser con un `contentEditable` controllato, intercetta `beforeinput`, gestisce la composizione IME e sincronizza la selezione tra DOM e modello.
 
 ```bash
-pnpm add @scriba/view @scriba/core
+pnpm add @scriba-editor/view @scriba-editor/core
 ```
 
-`@scriba/view` non conosce i plugin specifici: parla con il core tramite stato e transazioni.
+`@scriba-editor/view` non conosce i plugin specifici: parla con il core tramite stato e transazioni.
 
 ## Uso
 
@@ -19,9 +19,9 @@ import {
   historyKeymap,
   formatKeymap,
   baseKeymap,
-} from '@scriba/core'
-import { EditorView, parseContent, serializeContent } from '@scriba/view'
-import '@scriba/themes/scriba.css'
+} from '@scriba-editor/core'
+import { EditorView, parseContent, serializeContent } from '@scriba-editor/view'
+import '@scriba-editor/themes/scriba.css'
 
 const state = EditorState.create({
   doc: parseContent(basicSchema, '<p>Ciao</p>', 'html'),
@@ -88,7 +88,7 @@ Altre esportazioni: `renderSpec`, `parseInertHTML`, `TRUSTED_TYPES_POLICY`, `Dec
 - Con `require-trusted-types-for 'script'` consenti la policy `scriba` (`TRUSTED_TYPES_POLICY`)
   nella direttiva `trusted-types`: serve solo a leggere l'HTML in un documento inerte.
 - L'HTML in uscita nasce dal documento, ma quello **salvato** va sempre ripassato sul server da
-  `@scriba/sanitize-server`.
+  `@scriba-editor/sanitize-server`.
 
 Dettagli: [Sicurezza](../../docs/sicurezza.md), [Accessibilità](../../docs/accessibilita.md),
 [Concetti](../../docs/concetti.md).

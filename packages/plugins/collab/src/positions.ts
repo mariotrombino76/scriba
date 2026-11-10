@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import type { Node } from '@scriba/core'
+import type { Node } from '@scriba-editor/core'
 
 /**
  * Document positions ↔ Yjs relative positions. A relative position sticks to

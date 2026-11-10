@@ -1,4 +1,4 @@
-import { normalizeColor, type Node } from '@scriba/core'
+import { normalizeColor, type Node } from '@scriba-editor/core'
 import type { ResolvedOptions, Rule } from './rule.js'
 import { embedRules, defaultGenericLinkTexts, imageRules, linkRules } from './rules-content.js'
 import { headingRules, listRules, tableRules } from './rules-structure.js'

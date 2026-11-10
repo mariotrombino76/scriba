@@ -1,17 +1,17 @@
-# @scriba/plugin-link
+# @scriba-editor/plugin-link
 
 Link con dialogo accessibile per l'editor Scriba, più **autolink** (indirizzi digitati che diventano
 link) e **ancore** (id di destinazione per i link interni). Come il plugin Link, Autolink e Anchor di
 TinyMCE.
 
 ```bash
-pnpm add @scriba/plugin-link
+pnpm add @scriba-editor/plugin-link
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   anchorToolbarItem,
   autolink,
@@ -20,7 +20,7 @@ import {
   linkMarks,
   linkToolbarItems,
   withAnchors,
-} from '@scriba/plugin-link'
+} from '@scriba-editor/plugin-link'
 
 // schema: marks: { ...linkMarks, ...basicSchemaSpec.marks },
 //         nodes: withAnchors({ ...basicSchemaSpec.nodes })   // anchor su paragrafi e titoli
@@ -70,7 +70,7 @@ Un'ancora è un `id` su un paragrafo o un titolo, sempre con il prefisso fisso `
   contestuale apre con `noopener,noreferrer`.
 - Gli id delle ancore hanno un prefisso fisso e un formato rigido: niente DOM clobbering.
 
-L'HTML salvato va ripassato da `@scriba/sanitize-server`: vedi
+L'HTML salvato va ripassato da `@scriba-editor/sanitize-server`: vedi
 [sicurezza](../../../docs/sicurezza.md).
 
 ## Accessibilità

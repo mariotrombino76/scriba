@@ -1,4 +1,4 @@
-import { Fragment, type Node, type NodeType } from '@scriba/core'
+import { Fragment, type Node, type NodeType } from '@scriba-editor/core'
 
 /** A cell placed on the grid. `pos` is relative to the table's content start. */
 export interface GridCell {

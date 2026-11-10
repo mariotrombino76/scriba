@@ -1,6 +1,6 @@
-import { Selection, TextSelection, type Node } from '@scriba/core'
-import { wrapInList } from '@scriba/plugin-list'
-import { toggleHeader } from '@scriba/plugin-table'
+import { Selection, TextSelection, type Node } from '@scriba-editor/core'
+import { wrapInList } from '@scriba-editor/plugin-list'
+import { toggleHeader } from '@scriba-editor/plugin-table'
 import type { Rule } from './rule.js'
 import type { A11yAction } from './types.js'
 import {

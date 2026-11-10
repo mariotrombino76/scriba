@@ -1,4 +1,4 @@
-# @scriba/plugin-a11y-checker
+# @scriba-editor/plugin-a11y-checker
 
 **Verifica dell'accessibilità** del documento per l'editor Scriba, come l'"Accessibility checker"
 di TinyMCE (`a11ycheck`): trova i problemi rispetto a WCAG 2.2, li mostra uno alla
@@ -7,13 +7,13 @@ volta nel testo e propone una correzione.
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-a11y-checker
+pnpm add @scriba-editor/plugin-a11y-checker
 ```
 
 ## Uso
 
 ```ts
-import { a11yChecker, a11yCheckerItem, checkAccessibility } from '@scriba/plugin-a11y-checker'
+import { a11yChecker, a11yCheckerItem, checkAccessibility } from '@scriba-editor/plugin-a11y-checker'
 
 const state = EditorState.create({
   schema,
@@ -75,6 +75,6 @@ intestazione, unire link adiacenti, colore suggerito, allineamento a sinistra…
   focus trap e ritorno del focus all'editor. Vedi [accessibilità](../../../docs/accessibilita.md).
 - Sicurezza: la finestra è costruita solo con `createElement` e `textContent`, nessun `innerHTML`;
   le correzioni passano da comandi del modello. Vedi [sicurezza](../../../docs/sicurezza.md).
-- I testi delle verifiche sono nelle traduzioni (`a11y.*`, pacchetto `@scriba/i18n`). Per l'uso
+- I testi delle verifiche sono nelle traduzioni (`a11y.*`, pacchetto `@scriba-editor/i18n`). Per l'uso
   nella tua pagina vedi [plugin](../../../docs/plugin.md).
 - Il controllo copre il **contenuto del documento**, non l'accessibilità della pagina che lo ospita.

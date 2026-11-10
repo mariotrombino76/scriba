@@ -8,15 +8,18 @@ alla versione `0.x`, l'API pubblica può cambiare anche tra versioni minori: ogn
 incompatibile è comunque segnalata qui nella sezione **Modificato**, con l'indicazione
 **incompatibile**.
 
-Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati pubblicati.
-
 ## Non rilasciato
+
+## 0.1.0 — 2026-11-10
+
+Prima versione pubblica. Tutti i pacchetti `@scriba-editor/*` escono con lo stesso numero di
+versione.
 
 ### Aggiunto
 
 #### Fondamenta (Fase 1)
 
-- `@scriba/core`
+- `@scriba-editor/core`
   - Schema con espressioni di contenuto, nodi e mark immutabili, posizioni intere, `Slice` e
     algoritmo di replace validato dallo schema.
   - Step invertibili: `ReplaceStep`, `ReplaceAroundStep`, `AddMarkStep`, `RemoveMarkStep`,
@@ -28,7 +31,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - Stili tipizzati: whitelist di proprietà con validatori rigidi, helper `withStyle`.
   - `insertContent`: adatta il contenuto incollato al punto di inserimento.
   - Opzione `serialize: false` per i mark: visibili nell'editor, esclusi dall'HTML.
-- `@scriba/view`
+- `@scriba-editor/view`
   - `contentEditable` controllato via `beforeinput`, riconciliazione per nodo, selezione
     sincronizzata in entrambe le direzioni, composizione IME.
   - Appunti sanificati; incolla come testo semplice con Ctrl/Cmd+Maiusc+V.
@@ -36,55 +39,55 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - Viste dei nodi dei plugin; `posAtCoords`, `coordsAtPos`, `subscribe()`.
   - Hook: `transformPastedDOM`, `handleDrop`, `handlePasteFiles`, `handlePasteContent`,
     `handleDoubleClickNode`, `handleTextInput`.
-- `@scriba/sanitize-server`: stesso schema del core lato server (Node, `parse5`).
-- `@scriba/ui`
+- `@scriba-editor/sanitize-server`: stesso schema del core lato server (Node, `parse5`).
+- `@scriba-editor/ui`
   - `<scriba-toolbar>` Web Component senza Shadow DOM, pattern WAI-ARIA toolbar.
   - Gruppi con nome, menu che mostrano il valore attuale, sottomenu e "Altre opzioni" quando
     lo spazio non basta, voci `menuitemcheckbox`, icone SVG.
   - Dialog generico con focus trap e ritorno del focus.
   - API `toolbarGroup`, `historyItems`, `markItems`, `blockStyleMenu`.
-- `@scriba/vue`: `<ScribaEditor v-model>` (HTML o JSON) e composable `useScriba()`.
-- `@scriba/i18n`: messaggi tipizzati in italiano e inglese, con fallback e override.
-- `@scriba/themes`: `scriba.css` con variabili CSS, temi chiaro e scuro, contrasti WCAG
+- `@scriba-editor/vue`: `<ScribaEditor v-model>` (HTML o JSON) e composable `useScriba()`.
+- `@scriba-editor/i18n`: messaggi tipizzati in italiano e inglese, con fallback e override.
+- `@scriba-editor/themes`: `scriba.css` con variabili CSS, temi chiaro e scuro, contrasti WCAG
   verificati da test.
 
 #### Parità TinyMCE (Fase 2)
 
-- `@scriba/plugin-list`: elenchi puntati e numerati annidati, Tab/Maiusc+Tab, Ctrl+Maiusc+8/7.
-- `@scriba/plugin-blockquote`: citazioni.
-- `@scriba/plugin-link`: mark link con whitelist URL, dialog accessibile, Ctrl+K.
-- `@scriba/plugin-text-style`: allineamento, rientro, colore del testo, evidenziazione,
+- `@scriba-editor/plugin-list`: elenchi puntati e numerati annidati, Tab/Maiusc+Tab, Ctrl+Maiusc+8/7.
+- `@scriba-editor/plugin-blockquote`: citazioni.
+- `@scriba-editor/plugin-link`: mark link con whitelist URL, dialog accessibile, Ctrl+K.
+- `@scriba-editor/plugin-text-style`: allineamento, rientro, colore del testo, evidenziazione,
   carattere e dimensione.
-- `@scriba/plugin-code-block`: blocchi di codice con evidenziazione sintassi (`lowlight`
+- `@scriba-editor/plugin-code-block`: blocchi di codice con evidenziazione sintassi (`lowlight`
   trasformato in decorazioni) e scelta del linguaggio.
-- `@scriba/plugin-paste-clean`: incolla pulito da Word, Google Docs e pagine web.
-- `@scriba/plugin-image`: immagini con file picker, trascinamento, incolla, ridimensionamento,
+- `@scriba-editor/plugin-paste-clean`: incolla pulito da Word, Google Docs e pagine web.
+- `@scriba-editor/plugin-image`: immagini con file picker, trascinamento, incolla, ridimensionamento,
   testo alternativo e allineamento. L'upload è una callback dell'integratore.
-- `@scriba/plugin-table`: tabelle con selezione di celle, unione e divisione, righe e colonne
+- `@scriba-editor/plugin-table`: tabelle con selezione di celle, unione e divisione, righe e colonne
   di intestazione, ridimensionamento colonne, didascalia, proprietà di tabella e celle,
   griglia di inserimento, copia e incolla di celle.
-- `@scriba/plugin-word-count`: conteggio parole e caratteri con `Intl.Segmenter`.
-- `@scriba/plugin-fullscreen`: schermo intero (Ctrl+Maiusc+F).
-- `@scriba/plugin-source`: vista e modifica del sorgente HTML.
-- `@scriba/plugin-find-replace`: trova e sostituisci, anche con regex.
-- `@scriba/plugin-charmap`: caratteri speciali ed emoji con ricerca in italiano e inglese.
+- `@scriba-editor/plugin-word-count`: conteggio parole e caratteri con `Intl.Segmenter`.
+- `@scriba-editor/plugin-fullscreen`: schermo intero (Ctrl+Maiusc+F).
+- `@scriba-editor/plugin-source`: vista e modifica del sorgente HTML.
+- `@scriba-editor/plugin-find-replace`: trova e sostituisci, anche con regex.
+- `@scriba-editor/plugin-charmap`: caratteri speciali ed emoji con ricerca in italiano e inglese.
 
 #### Oltre TinyMCE (Fase 3)
 
-- `@scriba/plugin-markdown`: scorciatoie Markdown durante la digitazione, `serializeMarkdown`
+- `@scriba-editor/plugin-markdown`: scorciatoie Markdown durante la digitazione, `serializeMarkdown`
   (CommonMark + tabelle GFM), `parseMarkdown` e `markdownToHTML`.
-- `@scriba/plugin-slash`: comandi slash con elenco filtrabile e combobox accessibile.
-- `@scriba/plugin-bubble`: toolbar compatta sopra il testo selezionato (Alt+F10).
-- `@scriba/plugin-collab`
+- `@scriba-editor/plugin-slash`: comandi slash con elenco filtrabile e combobox accessibile.
+- `@scriba-editor/plugin-bubble`: toolbar compatta sopra il testo selezionato (Alt+F10).
+- `@scriba-editor/plugin-collab`
   - `yBinding({ ydoc })`: sincronizzazione documento ↔ Yjs.
   - `collabCursors`: cursori e selezioni degli altri utenti.
   - `CollabProvider` e `collab({ url, documentName, token, user })`: trasporto WebSocket con
     riconnessione e stato osservabile; `collabStatusElement`.
   - `collabCommentStore(provider)`: commenti condivisi tramite il server.
-- `@scriba/collab-server`: server di collaborazione compatibile con `y-websocket`, con
+- `@scriba-editor/collab-server`: server di collaborazione compatibile con `y-websocket`, con
   autenticazione, permessi per documento, limiti e persistenza (`attachCollabServer`,
   `listenCollabServer`, `documentFromYjs`).
-- `@scriba/plugin-ai`: `aiAssistant({ complete, parse, t, actions })`, risposte in streaming
+- `@scriba-editor/plugin-ai`: `aiAssistant({ complete, parse, t, actions })`, risposte in streaming
   con Accetta (un solo passo di annulla), Scarta, Stop e Riprova.
   - Generative UI nel documento: azioni che rispondono con blocchi (`blockAiActions`: Crea una
     tabella, Estrai le attività, Metti in un riquadro). Il modello risponde in NDJSON (un nodo
@@ -99,19 +102,19 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     tre proposte), `selectVariant`, `MAX_VARIANTS`.
   - Per il backend: la richiesta porta `output: "blocks"` e `blocks`; `aiBlocksPrompt` e
     `aiBlocksJsonSchema` descrivono il formato al modello.
-- `@scriba/plugin-comments`
+- `@scriba-editor/plugin-comments`
   - Commenti con discussioni, risposte, risolvi/riapri e pannello laterale (Ctrl/Cmd+Alt+M).
   - `CommentStore` e `createMemoryCommentStore`.
   - Modifiche proposte (track changes): `suggestionMarks`, `suggestionsPlugin`,
     `resolveSuggestion`, `resolveAllSuggestions`.
-- `@scriba/plugin-mention`: menzioni `@persona` con sorgente dati asincrona.
+- `@scriba-editor/plugin-mention`: menzioni `@persona` con sorgente dati asincrona.
   - Nodo `mention` (`mentionNodes`) inline e atomico, con `id` e `label`; in HTML
     `<span class="scriba-mention" data-mention-id="…">@Nome</span>`, in Markdown `@Nome`.
   - `mentions({ search, t, debounce, maxResults, timeout })` e `mentionKeymap()`: "@" a inizio
     riga o dopo uno spazio apre l'elenco; `search(query, signal)` è dell'integratore, una
     ricerca più recente annulla la precedente e le risposte in ritardo vengono ignorate.
   - Scegliere una menzione è un passo di annulla a sé.
-- `@scriba/plugin-permissions`: blocchi protetti.
+- `@scriba-editor/plugin-permissions`: blocchi protetti.
   - `withBlockIds`: id opzionale dei blocchi (`data-block-id`), assegnato dall'integratore.
   - `blockPermissions({ canEdit, t, allowMarks, trusted, onRefused })`: un blocco con
     `canEdit(id) === false` non si modifica, non si cancella e non si duplica. Restano possibili
@@ -120,19 +123,19 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - Gli id incollati vengono tolti; quando un blocco viene diviso, l'id resta a un solo pezzo.
   - `checkBlockEdits(prima, dopo, regole)` per il server, `transactionAllowed(tr, regole)`.
 - Node view (nodi disegnati da un componente):
-  - `@scriba/view`: opzione `nodeViews` per i nodi atomici (`dom`, `update`, `selectNode`,
+  - `@scriba-editor/view`: opzione `nodeViews` per i nodi atomici (`dom`, `update`, `selectNode`,
     `deselectNode`, `stopEvent`, `destroy`) e `view.nodeDOM(pos)`. Mutazioni ed eventi dei
     controlli interni restano al componente. L'HTML esce sempre da `toHTML`.
-  - `@scriba/vue`: `vueNodeView(Componente, { t, appContext })`, opzione `nodeViews` di
+  - `@scriba-editor/vue`: `vueNodeView(Componente, { t, appContext })`, opzione `nodeViews` di
     `useScriba` e di `<ScribaEditor>`, componente d'esempio `TaskView`.
   - Node view con contenuto modificabile: la node view fornisce `contentDOM`, dove l'editor
     disegna e modifica il contenuto del nodo come altrove; il resto resta del componente
     (`contenteditable="false"`). In Vue: `<NodeViewContent />`.
-  - `@scriba/ui`: barra dei menu `<scriba-menubar>` sopra la toolbar, come TinyMCE (File, Modifica,
+  - `@scriba-editor/ui`: barra dei menu `<scriba-menubar>` sopra la toolbar, come TinyMCE (File, Modifica,
     Visualizza, Inserisci, Formato, Strumenti, Tabella). Pattern WAI-ARIA menubar; riusa i controlli
     della toolbar (i menu diventano sottomenu, stessi permessi); `'|'` separa i gruppi. Nuove voci
     `clearFormatItem` (rimuovi formattazione, link e commenti restano) e `selectAllItem`.
-  - Menu del tasto destro come TinyMCE: `contextMenu(view, { sections })` in `@scriba/ui`,
+  - Menu del tasto destro come TinyMCE: `contextMenu(view, { sections })` in `@scriba-editor/ui`,
     sezioni `linkContextMenu` (modifica, rimuovi, apri in nuova scheda con `noopener`),
     `imageContextMenu` (il clic destro seleziona l'immagine) e `tableContextMenu` (sottomenu
     Cella, Riga, Colonna; proprietà ed elimina tabella). Dove nessuna sezione si applica, e con
@@ -142,59 +145,59 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     (`clipboardItems`). Copia e taglia usano l'evento `copy` del browser (riempito dal
     serializzatore), poi l'API Clipboard; Incolla legge gli appunti con l'API Clipboard (il
     browser può chiedere il permesso) e, se il browser rifiuta, un messaggio indica Ctrl+V.
-- `@scriba/view`: `view.clipboardContent()` e `view.paste({ html, text, files })`: stesso
+- `@scriba-editor/view`: `view.clipboardContent()` e `view.paste({ html, text, files })`: stesso
   percorso dell'evento `paste` (documento inerte, pulizia dei plugin, parser dello schema).
-- `@scriba/plugin-hr`: linea orizzontale (`<hr>`) e interruzione di pagina
+- `@scriba-editor/plugin-hr`: linea orizzontale (`<hr>`) e interruzione di pagina
   (`<hr class="scriba-page-break">`, nuova pagina in stampa e in Word), come i plugin hr e
   pagebreak di TinyMCE. Menu Inserisci, comandi "/", Markdown `---`. Nessun attributo: altre
   classi e attributi di un `<hr>` vengono scartati, anche da `sanitize-server`.
-- `@scriba/plugin-datetime`: Inserisci ▸ Data/ora, come insertdatetime di TinyMCE: ora, data
+- `@scriba-editor/plugin-datetime`: Inserisci ▸ Data/ora, come insertdatetime di TinyMCE: ora, data
   ISO, data estesa e breve nella lingua della pagina, inserite come testo semplice. Le voci
-  mostrano l'ora del momento in cui si apre il menu (`live` nelle voci dei menu di `@scriba/ui`).
-- `@scriba/react`: wrapper React 18/19, `<ScribaEditor value onChange>` (HTML o JSON, `editable`,
+  mostrano l'ora del momento in cui si apre il menu (`live` nelle voci dei menu di `@scriba-editor/ui`).
+- `@scriba-editor/react`: wrapper React 18/19, `<ScribaEditor value onChange>` (HTML o JSON, `editable`,
   `locale`, `toolbar`, `ref` con `getContent`/`setContent`/`focus`) e hook `useScriba()`; funziona
   con `StrictMode`. Testato in jsdom e nei tre browser con la CSP rigida (`e2e/react.spec.ts`).
-- `@scriba/view`: `parseContent`, `serializeContent` e `sameContent` (prima nel wrapper Vue, che
+- `@scriba-editor/view`: `parseContent`, `serializeContent` e `sameContent` (prima nel wrapper Vue, che
   continua a esportarli), condivisi da Vue, React e build CDN.
-- `@scriba/browser`: Scriba in qualsiasi pagina senza framework né build: `scriba.iife.js`
+- `@scriba-editor/browser`: Scriba in qualsiasi pagina senza framework né build: `scriba.iife.js`
   (globale `Scriba`, ~84 KB gzip con il preset completo), `scriba.js` (modulo ES) e `scriba.css`;
   `Scriba.createEditor(destinazione, { content, preset, toolbar, locale, onChange, upload })`.
   Testato in jsdom e nei tre browser con la CSP rigida (`e2e/cdn.spec.ts`).
 - Preparazione alla pubblicazione su npm: `publishConfig.access: public` in tutti i pacchetti e
   guida `RELEASING.md` (organizzazione npm, 2FA, provenance dalla CI, verifiche, versione).
 - Formattazione mancante rispetto a TinyMCE (tag, attributi e valori approvati il 2026-10-19):
-  - `@scriba/core`: mark `superscript`/`subscript` (`<sup>`/`<sub>`, si escludono), Ctrl/Cmd+. e
+  - `@scriba-editor/core`: mark `superscript`/`subscript` (`<sup>`/`<sub>`, si escludono), Ctrl/Cmd+. e
     Ctrl/Cmd+,; `insertNonBreakingSpace` (Ctrl/Cmd+Maiusc+Spazio); stili tipizzati `line-height`
     (1, 1.15, 1.5, 2) e `list-style-type` (disc, circle, square).
-  - `@scriba/plugin-text-style`: interlinea (`lineHeightMenu`, `setLineHeight`) e direzione del
+  - `@scriba-editor/plugin-text-style`: interlinea (`lineHeightMenu`, `setLineHeight`) e direzione del
     testo (`directionItems`, `setTextDirection`: `dir="rtl"`; da sinistra a destra è il
     default e non scrive l'attributo, così il `dir="ltr"` di Google Docs non sporca l'HTML).
-  - `@scriba/plugin-list`: stili degli elenchi come advlist (`listStyleMenus`, `setListStyle`):
+  - `@scriba-editor/plugin-list`: stili degli elenchi come advlist (`listStyleMenus`, `setListStyle`):
     puntato disc/circle/square, numerato 1/a/A/i/I (attributo `type`), letti anche dagli stili
     di Word.
-  - `@scriba/ui`: pulsanti Apice e Pedice in `markItems`, `nonBreakingSpaceItem`.
-  - `@scriba/plugin-file`: apice e pedice anche nell'export Word.
-  - `@scriba/plugin-link`: ancore come anchor di TinyMCE (`withAnchors`, `anchorToolbarItem`,
+  - `@scriba-editor/ui`: pulsanti Apice e Pedice in `markItems`, `nonBreakingSpaceItem`.
+  - `@scriba-editor/plugin-file`: apice e pedice anche nell'export Word.
+  - `@scriba-editor/plugin-link`: ancore come anchor di TinyMCE (`withAnchors`, `anchorToolbarItem`,
     `setAnchor`): `id="anchor-<nome>"` su paragrafi e titoli, solo con il prefisso fisso e un nome
     sicuro (contro il DOM clobbering); nome unico nel documento; i link puntano a `#anchor-<nome>`.
-  - `@scriba/plugin-autosave` (nuovo): bozza salvata nel browser mentre si scrive, come autosave di
+  - `@scriba-editor/plugin-autosave` (nuovo): bozza salvata nel browser mentre si scrive, come autosave di
     TinyMCE (`autosave`, solo dopo la prima modifica, chiave per documento, limite di dimensione);
     "Ripristina l'ultima bozza" nel menu File (`restoreDraftItem`, annullabile); la bozza rientra
     solo tramite `nodeFromJSON` (input non fidato); `clearDraft` dopo il salvataggio vero.
-  - `@scriba/plugin-link`: link automatici come autolink di TinyMCE (`autolink`): dopo uno spazio
+  - `@scriba-editor/plugin-link`: link automatici come autolink di TinyMCE (`autolink`): dopo uno spazio
     o Invio, `https://…`, `www.…` e gli indirizzi email diventano link (whitelist degli URL; mai
     altri protocolli, mai nel codice); Ctrl+Z dopo lo spazio toglie il link e lascia il testo.
-  - `@scriba/plugin-details` (nuovo): sezioni comprimibili come accordion di TinyMCE
+  - `@scriba-editor/plugin-details` (nuovo): sezioni comprimibili come accordion di TinyMCE
     (`<details>`/`<summary>`, solo l'attributo `open`): `detailsNodes`, `insertDetails`,
     `removeDetails`, `toggleDetailsOpen`, `detailsToolbarItem`, `detailsSlashItem`. Nell'editor
     una vista (`detailsNodeView`) con il pulsante apri/chiudi; Invio nel titolo passa al
     contenuto, Backspace in una sezione vuota la toglie, `detailsAutoOpen` apre la sezione quando
     il cursore entra nel contenuto nascosto (ricerca, annulla). Incluso nel preset di
-    `@scriba/browser`.
-  - `@scriba/plugin-visual-aids` (nuovo): "Mostra blocchi" e "Mostra caratteri invisibili" come
+    `@scriba-editor/browser`.
+  - `@scriba-editor/plugin-visual-aids` (nuovo): "Mostra blocchi" e "Mostra caratteri invisibili" come
     visualblocks e visualchars di TinyMCE (`visualAids`, `visualAidsItems`), solo nell'editor:
     l'HTML non cambia.
-  - `@scriba/plugin-embed` (nuovo): media come il plugin media di TinyMCE, con whitelist.
+  - `@scriba-editor/plugin-embed` (nuovo): media come il plugin media di TinyMCE, con whitelist.
     - Servizi in `<iframe>` (`embedNodes`): YouTube in modalità privacy avanzata, Vimeo,
       Dailymotion, Spotify (brani, album, playlist, episodi) e Google Maps; solo l'indirizzo esatto
       del player, ricostruito dal riferimento controllato, con `sandbox`, `referrerpolicy` e
@@ -206,55 +209,55 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     - Dialog unico Inserisci ▸ Media (`openMediaDialog`): accetta i link soliti (youtube.com/watch,
       youtu.be, vimeo.com, dai.ly, open.spotify.com), il codice «Incorpora» di Google Maps,
       l'indirizzo di un file, oppure carica un file con la tua funzione `upload`.
-  - `@scriba/plugin-statusbar` (nuovo): barra di stato come quella di TinyMCE: percorso
+  - `@scriba-editor/plugin-statusbar` (nuovo): barra di stato come quella di TinyMCE: percorso
     dell'elemento (`createElementPath`, un pulsante per blocco che lo seleziona) e maniglia di
     ridimensionamento (`createResizeHandle`: trascinamento, frecce, Esc per l'altezza automatica;
     altezza impostata via CSSOM).
-  - `@scriba/plugin-save` (nuovo): pulsante Salva e Ctrl/Cmd+S come il plugin save di TinyMCE
+  - `@scriba-editor/plugin-save` (nuovo): pulsante Salva e Ctrl/Cmd+S come il plugin save di TinyMCE
     (`savePlugin`, `saveKeymap`, `saveItem`): chiama la tua funzione, attivo solo con modifiche
     non salvate, mai due salvataggi insieme; un errore lascia il documento "non salvato".
-  - `@scriba/plugin-text-style`: maiuscole e minuscole come Case Change di TinyMCE (`caseMenu`,
+  - `@scriba-editor/plugin-text-style`: maiuscole e minuscole come Case Change di TinyMCE (`caseMenu`,
     `changeCase`: minuscolo, MAIUSCOLO, Iniziali Maiuscole, Maiuscola a inizio frase), con le
     regole della lingua, la formattazione mantenuta e un passo di annullamento ciascuno.
-  - `@scriba/plugin-text-style`: stili con le classi del sito come style_formats di TinyMCE
+  - `@scriba-editor/plugin-text-style`: stili con le classi del sito come style_formats di TinyMCE
     (`withBlockClasses`, `classMarks`, `classFormatsMenu`, `setBlockClass`): solo le classi
     elencate dall'integratore (approvato il 2026-10-26), una per blocco o per testo.
-  - `@scriba/plugin-footnotes` (nuovo): note a piè di pagina come Footnotes di TinyMCE: richiami
+  - `@scriba-editor/plugin-footnotes` (nuovo): note a piè di pagina come Footnotes di TinyMCE: richiami
     `<sup><a href="#fn-N" id="fnref-N">`, elenco `<ol class="scriba-footnotes">` in fondo;
     numeri in ordine di lettura e note allineate in automatico (anche dopo incolla, annulla,
     collaborazione), Ctrl+Alt+F, vai alla nota e ritorno.
-  - `@scriba/plugin-toc` (nuovo): indice dei contenuti come Table of Contents di TinyMCE
+  - `@scriba-editor/plugin-toc` (nuovo): indice dei contenuti come Table of Contents di TinyMCE
     (`<ol class="scriba-toc">` di link alle ancore dei titoli), aggiornato con i titoli; i titoli
     senza ancora la ricevono, quelle esistenti non cambiano.
-  - `@scriba/plugin-merge-tags` (nuovo): campi di unione come Merge Tags di TinyMCE
+  - `@scriba-editor/plugin-merge-tags` (nuovo): campi di unione come Merge Tags di TinyMCE
     (`<span data-merge-tag="nome">{{nome}}</span>`): menu, suggerimenti dopo `{{`,
     `fillMergeTags` per l'unione (valori come testo), `mergeTagsIn`.
-  - `@scriba/plugin-mention`: il menu di suggerimenti è ora un motore generico
+  - `@scriba-editor/plugin-mention`: il menu di suggerimenti è ora un motore generico
     (`createSuggestion`), usato da `@` e da `{{`; API delle menzioni invariata.
-  - `@scriba/core`: `withAttr` e `withClass` per decorare l'output di altri nodi (prima copiati in
+  - `@scriba-editor/core`: `withAttr` e `withClass` per decorare l'output di altri nodi (prima copiati in
     più plugin); il parser, quando il nodo di una regola non può stare in quel punto, prova la
     regola successiva (niente testo perso).
-  - `@scriba/plugin-math` (nuovo): formule come il plugin math di TinyMCE: LaTeX nel documento,
+  - `@scriba-editor/plugin-math` (nuovo): formule come il plugin math di TinyMCE: LaTeX nel documento,
     MathML nell'HTML generato da KaTeX 0.19.0 (approvato il 2026-10-26; passato dall'integratore
     con `createMathNodes(katex)`), `trust: false`, limiti contro le macro ricorsive, cache delle
     formule già disegnate. Dell'HTML in ingresso si legge solo l'annotazione LaTeX. Dialog con
     anteprima dal vivo, in linea o su una riga a sé; nell'editor il MathML vero.
-  - `@scriba/sanitize-server`: l'adattatore parse5 espone gli elementi MathML come il DOM del
+  - `@scriba-editor/sanitize-server`: l'adattatore parse5 espone gli elementi MathML come il DOM del
     browser (il parser legge da un `<math>` solo l'annotazione LaTeX, se lo schema ha le
     formule; altrimenti lo scarta).
-  - `@scriba/core`: il parser accetta `<iframe>`, `<video>`, `<audio>` e `<math>` solo come
+  - `@scriba-editor/core`: il parser accetta `<iframe>`, `<video>`, `<audio>` e `<math>` solo come
     nodo foglia di uno schema che ha una regola per essi (senza leggerne il contenuto come testo); regola URL
     `media` (solo https o relativo); il serializzatore non scrive mai `srcdoc` né `autoplay` e
     rifiuta un `<iframe>` senza `sandbox`.
-  - `@scriba/plugin-format-painter` (nuovo): copia formato come il Format Painter di TinyMCE.
+  - `@scriba-editor/plugin-format-painter` (nuovo): copia formato come il Format Painter di TinyMCE.
     Il pulsante copia la formattazione al cursore e la dà al clic o alla selezione successiva
     (una volta; Esc o di nuovo il pulsante per annullare); Ctrl+Alt+C copia, Ctrl+Alt+V
     applica. Copia i mark di formattazione (non link né commenti) e, per i blocchi selezionati
     per intero, tipo (paragrafo/titolo e livello), allineamento, rientro, interlinea,
     direzione e classe; mai `id`. Un passo di annullamento; cursore del tema e messaggio per
     i lettori di schermo mentre aspetta. Anche nel preset CDN completo.
-  - `@scriba/ui`: `isFormattingMark`, lo stesso criterio di "Rimuovi formattazione".
-  - `@scriba/plugin-a11y-checker` (nuovo): verifica accessibilità come l'Accessibility
+  - `@scriba-editor/ui`: `isFormattingMark`, lo stesso criterio di "Rimuovi formattazione".
+  - `@scriba-editor/plugin-a11y-checker` (nuovo): verifica accessibilità come l'Accessibility
     Checker di TinyMCE, su WCAG 2.2 livello A, AA (predefinito) o AAA. Strumenti ▸
     "Verifica accessibilità…" (anche in sola lettura, senza correzioni) apre un dialog con un
     problema alla volta: selezionato ed evidenziato nel testo, spiegazione semplice, criterio
@@ -269,7 +272,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     un passo di annullamento. `checkAccessibility(doc, options)` è pura e senza DOM: serve
     anche sul server, per esempio per non salvare un documento con errori. Anche nel preset
     CDN completo (pulsante nella toolbar).
-  - `@scriba/plugin-image`: modifica foto come l'Enhanced Image Editing di TinyMCE.
+  - `@scriba-editor/plugin-image`: modifica foto come l'Enhanced Image Editing di TinyMCE.
     Menu contestuale dell'immagine ▸ "Modifica foto…" (o il pulsante contestuale
     `imageEditToolbarItems`) apre un dialog con anteprima: ruota a sinistra/destra, rifletti in
     orizzontale/verticale, ritaglio trascinando il riquadro o le sue maniglie (mouse, penna,
@@ -281,7 +284,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     documento mantiene la scala. Le immagini di altri siti si modificano solo se servite con
     CORS; altrimenti il dialog lo spiega. `openImageEditor`; funzioni pure `rotate`, `flip`,
     `aspectCrop`, `resizeCrop`, `editMatrix`, `adjustPixels`, `outputType`.
-  - `@scriba/plugin-table`: ordinamento delle righe per la colonna del cursore, crescente o
+  - `@scriba-editor/plugin-table`: ordinamento delle righe per la colonna del cursore, crescente o
     decrescente, come le tabelle avanzate di TinyMCE (menu Tabella e menu contestuale ▸ Colonna).
     Le righe d'intestazione in alto restano; numeri letti nella lingua del contenuto (`lang`
     attorno all'editor: 1.234,5 in italiano), testo in ordine alfabetico senza badare a maiuscole
@@ -289,15 +292,15 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     prima. Ogni riga si sposta intera con la sua formattazione; il cursore segue la sua riga; un
     passo di annullamento. Non disponibile con celle unite su più righe. `sortTable`,
     `compareCellText`, `parseLocaleNumber`.
-  - `@scriba/i18n`: interfaccia in francese (`fr`), tedesco (`de`) e spagnolo (`es`), con nomi dei
+  - `@scriba-editor/i18n`: interfaccia in francese (`fr`), tedesco (`de`) e spagnolo (`es`), con nomi dei
     tasti locali (Strg, Umschalt, Maj, Mayús…). Si importano come oggetti
     (`createTranslator(fr)`, `locale: fr` nei componenti), così le lingue non usate restano fuori
-    dal bundle; `createTranslator('it' | 'en')` resta per nome. `@scriba/browser` le riconosce
+    dal bundle; `createTranslator('it' | 'en')` resta per nome. `@scriba-editor/browser` le riconosce
     anche per nome (`locale: 'fr'`, `'de-AT'`…). Un test controlla per ogni lingua chiavi,
     segnaposto `{nome}` e assenza di markup.
   - Modalità inline come quella di TinyMCE: opzione `inline` di `createEditor`
-    (`@scriba/browser`) e dei componenti Vue e React, `inlineToolbar(contenitore, toolbar)` in
-    `@scriba/ui`. Il testo prende gli stili della pagina (niente riquadro, bordo tratteggiato
+    (`@scriba-editor/browser`) e dei componenti Vue e React, `inlineToolbar(contenitore, toolbar)` in
+    `@scriba-editor/ui`. Il testo prende gli stili della pagina (niente riquadro, bordo tratteggiato
     solo con il focus); la barra compare solo mentre l'editor ha il focus (anche nei suoi menu),
     sopra il testo, sotto se sopra non c'è spazio, agganciata in cima alla finestra quando il
     testo è più alto dello schermo e scorre. Alt+F10 dal testo entra nella barra, Esc torna al
@@ -319,7 +322,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     TinyMCE: opzione `stickyToolbar` di `createEditor` o classe `scriba-sticky` sul contenitore
     (Vue: `class`, React: `className`); `--scriba-sticky-offset` lascia spazio a un'intestazione
     fissa della pagina.
-  - `@scriba/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
+  - `@scriba-editor/plugin-revisions` (nuovo): cronologia versioni come la Revision History di
     TinyMCE. File ▸ "Cronologia versioni…" apre un dialog con le versioni salvate dal
     tuo server (data, autore, etichetta; dalla più recente) e l'anteprima di quella scelta,
     confrontata con il documento attuale: blocchi abbinati, poi parola per parola dentro i
@@ -331,7 +334,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     lunghezza); versioni caricate quando scelte, risposte lente ignorate. Funzioni pure
     `diffDocs`, `diffSequence`, `slideEdits`, `parseRevision`. La demo tiene le ultime 20
     versioni salvate nel browser.
-  - `@scriba/plugin-template` (nuovo): modelli di documento come il plugin template di
+  - `@scriba-editor/plugin-template` (nuovo): modelli di documento come il plugin template di
     TinyMCE. Inserisci ▸ "Modello…" apre un dialog con l'elenco dei modelli (pulsanti radio,
     si sceglie con le frecce), la descrizione e un'anteprima in sola lettura disegnata da una
     `EditorView`; Invio o "Inserisci" lo mette al cursore. I blocchi del modello restano
@@ -345,12 +348,12 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     documento inerte e parser dello schema, massimo `MAX_TEMPLATE_LENGTH` caratteri.
     `parseTemplate`, `insertTemplate`, `fillPlaceholders`, `templateToolbarItem`,
     `openTemplateDialog`. Nel preset CDN completo con l'opzione `templates`; icona `template`
-    in `@scriba/ui`.
-- `@scriba/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
+    in `@scriba-editor/ui`.
+- `@scriba-editor/plugin-help`: menu "Aiuto" con le scorciatoie da tastiera, come il plugin help di
   TinyMCE (Alt+0, anche in sola lettura). `helpItem`, `helpKeymap`, `openHelpDialog`; gruppi
   `shortcutsFromItems` (le scorciatoie di toolbar e menu, con le loro etichette),
   `editingHelp`, `markdownHelp`, `navigationHelp`. Dialog con una tabella per gruppo e ricerca.
-- `@scriba/plugin-file`: menu "File" come in TinyMCE, tutto nel browser.
+- `@scriba-editor/plugin-file`: menu "File" come in TinyMCE, tutto nel browser.
   - Apri (.docx, .html, .md, .txt), anche trascinando il file; prima chiede conferma se ci sono
     modifiche non salvate.
   - Scarica come HTML, Word (.docx), Markdown e testo; anteprima e stampa (da cui il PDF).
@@ -358,14 +361,14 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   - Dipendenze nuove solo del plugin, caricate quando servono: `mammoth` 1.13.0 (lettura .docx),
     `docx` 9.8.1 (scrittura .docx), `jszip` 3.10.2. Override `mammoth>argparse` 2.0.1: argparse
     serve solo alla riga di comando di mammoth e toglie `sprintf-js` (GHSA-hp3w-g68c-fv3c).
-- `@scriba/plugin-callout`: riquadro (`<aside class="scriba-callout" data-callout>`, tipi
+- `@scriba-editor/plugin-callout`: riquadro (`<aside class="scriba-callout" data-callout>`, tipi
   info, consiglio, avviso, pericolo), `toggleCallout`, voce toolbar e voce slash; componente
-  d'esempio `CalloutView` in `@scriba/vue`, con il tipo scelto da un gruppo di pulsanti radio.
-  - `@scriba/plugin-task`: nodo `task` (titolo, fatto, scadenza), `insertTask`, `taskKeymap`
+  d'esempio `CalloutView` in `@scriba-editor/vue`, con il tipo scelto da un gruppo di pulsanti radio.
+  - `@scriba-editor/plugin-task`: nodo `task` (titolo, fatto, scadenza), `insertTask`, `taskKeymap`
     (Invio entra nei campi, Spazio segna fatto), voce toolbar e voce slash.
-- `@scriba/core`: `arrowAtom` nella `baseKeymap`. Con le frecce si entra in un blocco atomico
+- `@scriba-editor/core`: `arrowAtom` nella `baseKeymap`. Con le frecce si entra in un blocco atomico
   (viene selezionato) e se ne esce verso il testo vicino, invece di saltarlo.
-- `@scriba/collab-server`: `canEditBlock` in `AuthResult` e opzioni `schema`/`field`. Un
+- `@scriba-editor/collab-server`: `canEditBlock` in `AuthResult` e opzioni `schema`/`field`. Un
   aggiornamento che tocca un blocco protetto viene annullato per tutti, mittente compreso
   (`applyGuardedUpdate`).
 
@@ -377,22 +380,27 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 
 ### Modificato
 
+- **Nome dei pacchetti:** da `@scriba/*` a **`@scriba-editor/*`**, perché lo scope `@scriba` su npm
+  appartiene a un altro autore. Cambia solo il nome da installare e da importare; il prodotto si
+  chiama ancora Scriba e il globale dello script CDN resta `Scriba`.
+- CI su GitHub Actions: controlli ed e2e a ogni push; pubblicazione su npm con _provenance_
+  da un tag `v*` (`RELEASING.md`). Dependabot per dipendenze e azioni.
 - **Licenza:** da MIT ad **Apache 2.0**. Ogni pacchetto contiene ora `LICENSE` e `NOTICE`.
   `NOTICE` attribuisce il progetto a Mario Trombino e va mantenuto in ogni ridistribuzione o
   opera derivata. Anche `scriba.js` e `scriba.iife.js` (CDN) riportano l'attribuzione in testa.
 - Pacchetti pronti per npm, verificati installando gli archivi in un progetto separato (Vite,
   Vue, React, script, Node; TypeScript con risoluzione `bundler` e `node16`):
   - tutti i `package.json` hanno `repository`, `homepage` e `bugs` (GitHub);
-  - `@scriba/collab-server` e `@scriba/sanitize-server` dichiarano `engines.node >= 22`;
-  - `@scriba/browser` include tutto il codice nel proprio bundle, quindi installa come
+  - `@scriba-editor/collab-server` e `@scriba-editor/sanitize-server` dichiarano `engines.node >= 22`;
+  - `@scriba-editor/browser` include tutto il codice nel proprio bundle, quindi installa come
     dipendenze solo i pacchetti citati dai suoi tipi (prima erano 25);
-  - nei tipi di `@scriba/browser` non c'è più l'import del CSS;
-  - i tipi di `@scriba/vue` importano `./ScribaEditor.vue.js` e si risolvono anche con
+  - nei tipi di `@scriba-editor/browser` non c'è più l'import del CSS;
+  - i tipi di `@scriba-editor/vue` importano `./ScribaEditor.vue.js` e si risolvono anche con
     `moduleResolution: node16`;
-  - `@scriba/collab-server` dichiara `@types/ws` tra le dipendenze (i suoi tipi usano `ws`);
+  - `@scriba-editor/collab-server` dichiara `@types/ws` tra le dipendenze (i suoi tipi usano `ws`);
   - le mappe sorgente includono il codice TypeScript originale (`inlineSources`): prima
     puntavano a file `src/` non pubblicati.
-- `@scriba/plugin-permissions`: una selezione che contiene blocchi protetti non viene più
+- `@scriba-editor/plugin-permissions`: una selezione che contiene blocchi protetti non viene più
   rifiutata per intero. Scrivere, Canc/Backspace, taglia e incolla cancellano tutto il resto
   (un blocco protetto selezionato solo in parte resta intero) e il testo va dove iniziava la
   selezione, in un solo passo di annullamento; Ctrl+A e poi scrivere funziona anche con un blocco
@@ -400,78 +408,78 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   `pasteKeepingLocked`. Il controllo finale resta `transactionAllowed`: se il risultato toccasse
   un blocco protetto, la modifica viene rifiutata come prima (test fuzz in
   `permissions/test/edit.test.ts`, nella suite di sicurezza).
-- `@scriba/plugin-permissions`: anche la formattazione (grassetto, corsivo, colori…) di una
+- `@scriba-editor/plugin-permissions`: anche la formattazione (grassetto, corsivo, colori…) di una
   selezione che contiene blocchi protetti si applica al resto invece di essere rifiutata; Ctrl+B
   una seconda volta toglie il grassetto anche se il testo protetto non lo ha mai avuto.
   `marksAroundLocked`. Il blocco protetto da solo resta non formattabile.
-- `@scriba/core`: nuovo hook dei plugin `rewriteTransaction(tr, state)`: prima del filtro un
+- `@scriba-editor/core`: nuovo hook dei plugin `rewriteTransaction(tr, state)`: prima del filtro un
   plugin può sostituire la transazione con una equivalente che accetta (eredita metadati e
   tempo e passa comunque da tutti i `filterTransaction`). `toggleMark` segna la sua
   transazione con il metadato `TOGGLE_MARK`.
-- `@scriba/view`: nuova prop dei plugin `handleDeleteSelection(view)`, chiamata prima di
+- `@scriba-editor/view`: nuova prop dei plugin `handleDeleteSelection(view)`, chiamata prima di
   cancellare una selezione per taglia o per un evento di input del browser.
-- **Incompatibile** — `@scriba/plugin-image`: l'attributo `alt` delle immagini è `null` quando
+- **Incompatibile** — `@scriba-editor/plugin-image`: l'attributo `alt` delle immagini è `null` quando
   il testo alternativo manca e `''` quando l'immagine è decorativa. Prima un'immagine senza
   `alt` diventava `alt=""` (decorativa) e nessuno se ne accorgeva; ora resta senza `alt`
   nell'HTML finché qualcuno non la descrive, e la verifica accessibilità la segnala. Anche
   l'upload senza testo alternativo lascia `alt` a `null`.
-- `@scriba/view`: il nodo selezionato riceve `scriba-selected-node` anche quando l'editor non
+- `@scriba-editor/view`: il nodo selezionato riceve `scriba-selected-node` anche quando l'editor non
   ha il focus (per esempio se lo seleziona un dialog).
-- `@scriba/themes`: variabile `--scriba-warning` (contrasto AA in chiaro e in scuro).
+- `@scriba-editor/themes`: variabile `--scriba-warning` (contrasto AA in chiaro e in scuro).
 
 - Prestazioni con documenti grandi (un tasto in 1 MB di testo, mediane: Chromium ~10 ms,
   Firefox da ~14–22 a ~11 ms, WebKit da ~15–17 a ~12 ms):
-  - `@scriba/view`: la riconciliazione salta i blocchi identici all'inizio e alla fine e lavora
+  - `@scriba-editor/view`: la riconciliazione salta i blocchi identici all'inizio e alla fine e lavora
     solo sulla parte cambiata; l'evidenziazione del nodo selezionato non cerca più in tutto il
     documento; `contenteditable` e `aria-readonly` si riscrivono solo quando cambiano.
-  - `@scriba/ui`: la toolbar scrive attributi, testi e `tabIndex` solo quando cambiano.
-  - `@scriba/core`: `canReplace` per le espressioni come `"block+"` controlla solo i nodi nuovi
+  - `@scriba-editor/ui`: la toolbar scrive attributi, testi e `tabIndex` solo quando cambiano.
+  - `@scriba-editor/core`: `canReplace` per le espressioni come `"block+"` controlla solo i nodi nuovi
     e il conteggio, non tutti i figli (i pulsanti elenco/citazione/codice si aggiornano a ogni
     tasto); stesso esito del confronto completo.
 
 - Ruolo "commentatore" (sola lettura, ma può commentare):
-  - `@scriba/core`: opzione `annotation` dei mark (il mark commento la usa), `isAnnotationOnly(tr)`,
+  - `@scriba-editor/core`: opzione `annotation` dei mark (il mark commento la usa), `isAnnotationOnly(tr)`,
     `runKeymaps(..., { readOnly, canAnnotate })`.
-  - `@scriba/view`: opzione `canAnnotate`. I commentatori hanno il cursore (selezione da tastiera)
+  - `@scriba-editor/view`: opzione `canAnnotate`. I commentatori hanno il cursore (selezione da tastiera)
     con `aria-readonly`; in sola lettura nessun testo scritto dal browser (IME, correttore) cambia
     il documento.
-  - `@scriba/ui`: voci `annotates`, attive per i commentatori; passano solo transazioni che
+  - `@scriba-editor/ui`: voci `annotates`, attive per i commentatori; passano solo transazioni che
     toccano annotazioni.
-  - `@scriba/collab-server`: `canComment` in `AuthResult`; livello `comment` comunicato al client
+  - `@scriba-editor/collab-server`: `canComment` in `AuthResult`; livello `comment` comunicato al client
     (`provider.canComment`); aggiornamenti dei commentatori accettati solo se toccano annotazioni
     (`applyAnnotationUpdate`), altrimenti annullati per tutti; canale commenti aperto ai
     commentatori.
 - Sola lettura (`editable: () => false`):
-  - `@scriba/core`: opzione `readOnly` di `keymap()` e di `runKeymaps()`. In sola lettura girano
+  - `@scriba-editor/core`: opzione `readOnly` di `keymap()` e di `runKeymaps()`. In sola lettura girano
     solo le keymap marcate `readOnly: true`, e nessuna transazione che cambia il documento.
-  - `@scriba/ui`: voci `readOnly` per pulsanti e menu (trova, schermo intero, sorgente),
+  - `@scriba-editor/ui`: voci `readOnly` per pulsanti e menu (trova, schermo intero, sorgente),
     attive anche in sola lettura.
-  - `@scriba/view`: l'area resta raggiungibile con Tab (`tabindex="0"`).
+  - `@scriba-editor/view`: l'area resta raggiungibile con Tab (`tabindex="0"`).
   - Da registrare con `readOnly: true`: `findReplaceKeymap` e `fullscreenKeymap`.
-- `@scriba/plugin-markdown`: le foglie inline con `leafText` (es. menzioni) escono come testo.
-- `@scriba/core`: `textBetween` separa anche i blocchi atomici (es. attività) dal testo vicino.
-- `@scriba/core`, cronologia: le transazioni aggiunte dai plugin (`appendTransaction`) fanno
+- `@scriba-editor/plugin-markdown`: le foglie inline con `leafText` (es. menzioni) escono come testo.
+- `@scriba-editor/core`: `textBetween` separa anche i blocchi atomici (es. attività) dal testo vicino.
+- `@scriba-editor/core`, cronologia: le transazioni aggiunte dai plugin (`appendTransaction`) fanno
   parte dello stesso passo di annulla della transazione che le ha generate. Esempio: una
   battitura trasformata in proposta si annulla con un solo Ctrl+Z.
-- `@scriba/core`, cronologia: sostituire blocchi interi (tabella ricostruita, documento dalla
+- `@scriba-editor/core`, cronologia: sostituire blocchi interi (tabella ricostruita, documento dalla
   vista sorgente) è sempre un passo di annulla a sé, mai unito alla digitazione.
-- `@scriba/plugin-statusbar`, tema: la maniglia per ridimensionare l'editor ha la classe
+- `@scriba-editor/plugin-statusbar`, tema: la maniglia per ridimensionare l'editor ha la classe
   `scriba-statusbar-resize` (prima `scriba-resize-handle`, la stessa delle maniglie delle
   immagini). **Incompatibile** per chi ne cambiava lo stile.
-- `@scriba/ui`: i menu si chiudono al `pointerdown` fuori da loro (prima `mousedown`, che dopo
+- `@scriba-editor/ui`: i menu si chiudono al `pointerdown` fuori da loro (prima `mousedown`, che dopo
   un tocco arriva in ritardo o non arriva).
-- `@scriba/plugin-code-block`: la scorciatoia è Ctrl+Alt+Maiusc+C, perché Ctrl+Alt+C in Chrome apre
+- `@scriba-editor/plugin-code-block`: la scorciatoia è Ctrl+Alt+Maiusc+C, perché Ctrl+Alt+C in Chrome apre
   gli strumenti per sviluppatori.
 
 ### Corretto
 
-- `@scriba/plugin-autosave`: "Ripristina l'ultima bozza" non faceva nulla in un documento con
+- `@scriba-editor/plugin-autosave`: "Ripristina l'ultima bozza" non faceva nulla in un documento con
   blocchi protetti, perché sostituiva tutto il documento. Ora cambia solo i blocchi diversi
   (`draftTransaction`); se la bozza cambia davvero un blocco protetto, con il traduttore
   (`restoreDraftItem(options, t)`) un dialog spiega perché non si può ripristinare. La bozza ora
   viene scritta subito anche quando si ricarica o si chiude la pagina (`pagehide`) o la si
   nasconde (`visibilitychange`): prima le modifiche degli ultimi istanti andavano perse.
-- `@scriba/plugin-file`: "Nuovo documento" e "Apri" in un documento con blocchi protetti
+- `@scriba-editor/plugin-file`: "Nuovo documento" e "Apri" in un documento con blocchi protetti
   (`blockPermissions`) non facevano nulla dopo "Continua senza salvare": la sostituzione veniva
   rifiutata in silenzio. Ora l'editor lo verifica prima di chiedere e mostra un dialog che spiega
   perché il documento non si può sostituire.
@@ -479,31 +487,31 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   delle modifiche non salvate) invece di svuotare il documento, così l'applicazione crea un
   documento davvero nuovo, con il suo id e i suoi permessi. La demo la usa con un nuovo
   `EditorState`.
-- Dipendenze: `markdown-it` 15.0.3 in `@scriba/plugin-markdown` (due avvisi di negazione del
+- Dipendenze: `markdown-it` 15.0.3 in `@scriba-editor/plugin-markdown` (due avvisi di negazione del
   servizio su 15.0.0–15.0.2, uno alto) e `undici` 8.12.2 per jsdom, solo nei test (tre avvisi su
   8.0.0–8.12.1). `pnpm audit`: nessuna vulnerabilità nota.
-- `@scriba/sanitize-server`: l'HTML era analizzato come frammento, mentre l'editor lo analizza
+- `@scriba-editor/sanitize-server`: l'HTML era analizzato come frammento, mentre l'editor lo analizza
   come documento intero (`DOMParser`); con un `<noscript>` all'inizio i due risultati
   divergevano (il browser recuperava il contenuto, il server lo scartava). Ora anche il server
   analizza un documento e ne legge il `<body>`: stesso albero da entrambe le parti, regola
   contro la mutation XSS.
-- `@scriba/ui`: scorrere dentro un menu (es. un menu Formato lungo) chiudeva il sottomenu appena
+- `@scriba-editor/ui`: scorrere dentro un menu (es. un menu Formato lungo) chiudeva il sottomenu appena
   aperto; ora lo scorrimento interno a un menu non chiude gli altri, quello della pagina sì.
-- `@scriba/core` (parser HTML): il testo libero dentro un nodo che inizia con un titolo
+- `@scriba-editor/core` (parser HTML): il testo libero dentro un nodo che inizia con un titolo
   obbligatorio (es. `<details>`) finiva in un secondo titolo e veniva scartato; ora va in un
   paragrafo. Un nodo a cui manca il primo figlio obbligatorio (es. `<details>` senza `<summary>`)
   perdeva tutto il contenuto; ora riceve un titolo vuoto e tiene il contenuto.
 
-- `@scriba/view`: dopo aver selezionato un blocco o un'immagine (clic sopra), un clic nel testo
+- `@scriba-editor/view`: dopo aver selezionato un blocco o un'immagine (clic sopra), un clic nel testo
   non spostava la selezione: quello che si scriveva dopo sostituiva il nodo. Ora il clic sposta il
   cursore.
-- `@scriba/view`: scrivere con un blocco selezionato (linea, tabella…) metteva il testo nel
+- `@scriba-editor/view`: scrivere con un blocco selezionato (linea, tabella…) metteva il testo nel
   paragrafo precedente; ora il blocco diventa un paragrafo con il testo, al suo posto.
-- `@scriba/core`: Invio con un blocco selezionato crea un paragrafo dopo (prima, se è il primo
+- `@scriba-editor/core`: Invio con un blocco selezionato crea un paragrafo dopo (prima, se è il primo
   blocco: così si può scrivere sopra una linea o una tabella in cima). Nuovo comando
   `createParagraphNear` nella `baseKeymap`.
 
-- `@scriba/plugin-ai`: Accetta e Scarta di una risposta fatta di blocchi in mezzo a un paragrafo
+- `@scriba-editor/plugin-ai`: Accetta e Scarta di una risposta fatta di blocchi in mezzo a un paragrafo
   (che lo spezza) fallivano o ricucivano male il testo; ora il ripristino usa i blocchi interi
   che la contenevano, mappati come l'intervallo della risposta. Il ripiego per un blocco che non
   può stare dove va inserisce il testo già validato, mai la risposta grezza.
@@ -517,7 +525,7 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
   da `handleTextInput` uno alla volta, come se fossero digitati.
 - IME: una composizione che iniziava subito dopo un'altra (spazio, poi una lettera) veniva
   interrotta. La view rileggeva e ridisegnava il blocco mentre l'IME ci stava ancora scrivendo.
-- `@scriba/core`: `lift` (e quindi `toggleWrap`/`toggleBlockquote`) andava in `TypeError` con
+- `@scriba-editor/core`: `lift` (e quindi `toggleWrap`/`toggleBlockquote`) andava in `TypeError` con
   una selezione tra due blocchi; ora usa i limiti dell'intervallo.
 - Firefox: il primo clic in un editor senza focus metteva il cursore nella posizione
   precedente invece che nel punto cliccato.
@@ -531,19 +539,19 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Menu della toolbar non più tagliati; la toolbar non scorre più quando un menu prende il
   focus.
 - Dimensione dei file immagine piccoli mostrata in byte.
-- `@scriba/plugin-image`: le maniglie per ridimensionare non comparivano per un'immagine in mezzo al
+- `@scriba-editor/plugin-image`: le maniglie per ridimensionare non comparivano per un'immagine in mezzo al
   testo di una riga; con la barra di stato avevano anche l'aspetto della sua maniglia.
 - Accessibilità (revisione con axe-core):
-  - `@scriba/ui`: le voci di menu prendono il nome dal testo visibile (prima un `aria-label`
+  - `@scriba-editor/ui`: le voci di menu prendono il nome dal testo visibile (prima un `aria-label`
     che non comprendeva la scorciatoia mostrata, WCAG 2.5.3); `aria-keyshortcuts` dei menu nel
     formato ARIA (`Control+K`, prima `Mod-k`).
   - Tema: link nel testo leggibili nel tema scuro (prima il blu del browser su fondo scuro);
     pannello dei commenti e barra di stato con lo sfondo del tema; caselle e pulsanti di
     scelta nei dialog da 18px (2.5.8); con la barra fissa il cursore non finisce sotto di essa.
-  - `@scriba/plugin-help`: l'elenco delle scorciatoie, che scorre, si raggiunge da tastiera.
-  - `@scriba/plugin-word-count`: la cella d'angolo vuota della tabella non è più
+  - `@scriba-editor/plugin-help`: l'elenco delle scorciatoie, che scorre, si raggiunge da tastiera.
+  - `@scriba-editor/plugin-word-count`: la cella d'angolo vuota della tabella non è più
     un'intestazione.
-- `@scriba/ui`: errore "ResizeObserver loop" nella console sugli schermi stretti, quando la
+- `@scriba-editor/ui`: errore "ResizeObserver loop" nella console sugli schermi stretti, quando la
   barra (o il bubble menu) spostava pulsanti in "Altro"; ora il calcolo avviene al frame dopo.
 
 ### Sicurezza

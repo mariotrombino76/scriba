@@ -5,10 +5,10 @@ import {
   type EditorState,
   type KeyBindings,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { withoutPressed, type ContextMenuSection, type ToolbarControl } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { withoutPressed, type ContextMenuSection, type ToolbarControl } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 import { openImageDialog } from './dialog.js'
 import { openImageEditor } from './edit-dialog.js'
 import { resizeView } from './resize.js'

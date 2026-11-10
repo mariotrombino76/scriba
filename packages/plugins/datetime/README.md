@@ -1,4 +1,4 @@
-# @scriba/plugin-datetime
+# @scriba-editor/plugin-datetime
 
 Menu **Data/ora** per l'editor Scriba: inserisce la data o l'ora correnti nel formato scelto.
 Come il plugin "Insert date/time" di TinyMCE, con le stesse quattro scelte di partenza.
@@ -6,13 +6,13 @@ Come il plugin "Insert date/time" di TinyMCE, con le stesse quattro scelte di pa
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-datetime
+pnpm add @scriba-editor/plugin-datetime
 ```
 
 ## Uso
 
 ```ts
-import { dateTimeMenu } from '@scriba/plugin-datetime'
+import { dateTimeMenu } from '@scriba-editor/plugin-datetime'
 
 menubar.menus = [
   {

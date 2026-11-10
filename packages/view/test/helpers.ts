@@ -7,7 +7,7 @@ import {
   historyKeymap,
   keymap,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { EditorView } from '../src/index.js'
 import { schema } from '../../core/test/helpers/schema.js'
 

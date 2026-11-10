@@ -5,7 +5,7 @@ import {
   type EditorState,
   type Node,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { CellSelection, cellPosAt, tableAt } from './cell-selection.js'
 import { TableGrid, buildTable, toBuildCells } from './grid.js'
 

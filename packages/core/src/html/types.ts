@@ -6,7 +6,7 @@ import type { StyleDecls } from './css.js'
 /**
  * The minimal DOM shape the parser reads. A browser `Node` from an inert
  * document (`DOMParser`, `<template>`) fits as is; on the server an adapter
- * wraps `parse5` nodes (see `@scriba/sanitize-server`).
+ * wraps `parse5` nodes (see `@scriba-editor/sanitize-server`).
  */
 export interface DOMLike {
   /** 1 = element, 3 = text, 9 = document, 11 = fragment; others are ignored. */

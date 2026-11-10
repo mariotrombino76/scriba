@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /**
  * Example node view: a task (done, title, due date) drawn by Vue.
- * Use with `taskNodes` from `@scriba/plugin-task`:
+ * Use with `taskNodes` from `@scriba-editor/plugin-task`:
  * `nodeViews: { task: vueNodeView(TaskView, { t }) }`.
  * Changes go through `updateAttrs` (validated by the schema, undoable);
  * the title is committed on Enter or when leaving the field, not per key.
  */
-import type { Node } from '@scriba/core'
-import { createTranslator, type Translate } from '@scriba/i18n'
+import type { Node } from '@scriba-editor/core'
+import { createTranslator, type Translate } from '@scriba-editor/i18n'
 import { computed, ref, useId } from 'vue'
 
 // The props of every `vueNodeView` component (see NodeViewProps), declared

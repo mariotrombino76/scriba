@@ -1,11 +1,11 @@
-# @scriba/plugin-math
+# @scriba-editor/plugin-math
 
 Formule matematiche per l'editor Scriba: nel documento resta il sorgente **LaTeX**, nell'HTML c'è
 **MathML** generato da KaTeX (lo mostra ogni browser, senza script). Un'uscita standard e senza script,
 al posto di immagini o HTML libero.
 
 ```bash
-pnpm add @scriba/plugin-math
+pnpm add @scriba-editor/plugin-math
 ```
 
 KaTeX è una dipendenza di **questo plugin soltanto** (il resto dell'editor non lo usa): lo importi tu
@@ -16,9 +16,9 @@ serve (`await import('katex')`).
 
 ```ts
 import katex from 'katex'
-import { EditorState, Schema, keymap, basicSchemaSpec } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
+import { EditorState, Schema, keymap, basicSchemaSpec } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
 import {
   createMathNodes,
   mathKeymap,
@@ -26,7 +26,7 @@ import {
   mathPlugins,
   mathSlashItem,
   mathToolbarItem,
-} from '@scriba/plugin-math'
+} from '@scriba-editor/plugin-math'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...createMathNodes(katex) },
@@ -85,7 +85,7 @@ a capo e tabulazione).
   nell'annotazione.
 - Il rendering di ogni formula è messo in cache (al massimo 500 voci).
 
-L'HTML salvato va ripassato da `@scriba/sanitize-server`: vedi
+L'HTML salvato va ripassato da `@scriba-editor/sanitize-server`: vedi
 [sicurezza](../../../docs/sicurezza.md).
 
 ## Accessibilità

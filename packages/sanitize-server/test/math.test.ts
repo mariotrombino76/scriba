@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import katex from 'katex'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import { linkMarks } from '../../plugins/link/src/index.js'
 import { createMathNodes } from '../../plugins/math/src/nodes.js'
 import { sanitizeHTML } from '../src/index.js'

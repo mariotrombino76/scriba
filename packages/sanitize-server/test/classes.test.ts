@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import {
   classMarks,
   textStyleMarks,

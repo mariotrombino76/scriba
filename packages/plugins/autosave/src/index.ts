@@ -5,10 +5,10 @@ import {
   type NodeJSON,
   type Schema,
   type Transaction,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { openDialog, type ToolbarButton } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { openDialog, type ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 
 /** Where drafts are kept: `localStorage` by default (or any object with these methods). */
 export type DraftStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>

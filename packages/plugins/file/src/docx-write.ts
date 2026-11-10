@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 
 type Docx = typeof import('docx')
 type Run = import('docx').ParagraphChild

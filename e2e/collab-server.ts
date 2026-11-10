@@ -1,5 +1,5 @@
 // Collaboration server for the e2e tests (port 4174). Test users only.
-import { listenCollabServer } from '@scriba/collab-server'
+import { listenCollabServer } from '@scriba-editor/collab-server'
 
 const USERS: Record<string, { id: string; name: string; canWrite: boolean }> = {
   'tok-anna': { id: 'u1', name: 'Anna', canWrite: true },

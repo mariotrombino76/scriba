@@ -93,95 +93,95 @@ importers:
 
   packages/browser:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@scriba/plugin-image':
+      '@scriba-editor/plugin-image':
         specifier: workspace:*
         version: link:../plugins/image
-      '@scriba/plugin-template':
+      '@scriba-editor/plugin-template':
         specifier: workspace:*
         version: link:../plugins/template
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../view
     devDependencies:
-      '@scriba/plugin-a11y-checker':
+      '@scriba-editor/plugin-a11y-checker':
         specifier: workspace:*
         version: link:../plugins/a11y-checker
-      '@scriba/plugin-blockquote':
+      '@scriba-editor/plugin-blockquote':
         specifier: workspace:*
         version: link:../plugins/blockquote
-      '@scriba/plugin-charmap':
+      '@scriba-editor/plugin-charmap':
         specifier: workspace:*
         version: link:../plugins/charmap
-      '@scriba/plugin-code-block':
+      '@scriba-editor/plugin-code-block':
         specifier: workspace:*
         version: link:../plugins/code-block
-      '@scriba/plugin-details':
+      '@scriba-editor/plugin-details':
         specifier: workspace:*
         version: link:../plugins/details
-      '@scriba/plugin-embed':
+      '@scriba-editor/plugin-embed':
         specifier: workspace:*
         version: link:../plugins/embed
-      '@scriba/plugin-find-replace':
+      '@scriba-editor/plugin-find-replace':
         specifier: workspace:*
         version: link:../plugins/find-replace
-      '@scriba/plugin-footnotes':
+      '@scriba-editor/plugin-footnotes':
         specifier: workspace:*
         version: link:../plugins/footnotes
-      '@scriba/plugin-format-painter':
+      '@scriba-editor/plugin-format-painter':
         specifier: workspace:*
         version: link:../plugins/format-painter
-      '@scriba/plugin-fullscreen':
+      '@scriba-editor/plugin-fullscreen':
         specifier: workspace:*
         version: link:../plugins/fullscreen
-      '@scriba/plugin-hr':
+      '@scriba-editor/plugin-hr':
         specifier: workspace:*
         version: link:../plugins/hr
-      '@scriba/plugin-link':
+      '@scriba-editor/plugin-link':
         specifier: workspace:*
         version: link:../plugins/link
-      '@scriba/plugin-list':
+      '@scriba-editor/plugin-list':
         specifier: workspace:*
         version: link:../plugins/list
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../plugins/markdown
-      '@scriba/plugin-paste-clean':
+      '@scriba-editor/plugin-paste-clean':
         specifier: workspace:*
         version: link:../plugins/paste-clean
-      '@scriba/plugin-source':
+      '@scriba-editor/plugin-source':
         specifier: workspace:*
         version: link:../plugins/source
-      '@scriba/plugin-table':
+      '@scriba-editor/plugin-table':
         specifier: workspace:*
         version: link:../plugins/table
-      '@scriba/plugin-text-style':
+      '@scriba-editor/plugin-text-style':
         specifier: workspace:*
         version: link:../plugins/text-style
-      '@scriba/plugin-toc':
+      '@scriba-editor/plugin-toc':
         specifier: workspace:*
         version: link:../plugins/toc
 
   packages/collab-server:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
-      '@scriba/plugin-collab':
+      '@scriba-editor/plugin-collab':
         specifier: workspace:*
         version: link:../plugins/collab
-      '@scriba/plugin-comments':
+      '@scriba-editor/plugin-comments':
         specifier: workspace:*
         version: link:../plugins/comments
-      '@scriba/plugin-permissions':
+      '@scriba-editor/plugin-permissions':
         specifier: workspace:*
         version: link:../plugins/permissions
       '@types/ws':
@@ -210,132 +210,132 @@ importers:
 
   packages/plugins/a11y-checker:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/plugin-list':
+      '@scriba-editor/plugin-list':
         specifier: workspace:*
         version: link:../list
-      '@scriba/plugin-table':
+      '@scriba-editor/plugin-table':
         specifier: workspace:*
         version: link:../table
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/ai:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-link':
+      '@scriba-editor/plugin-link':
         specifier: workspace:*
         version: link:../link
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
 
   packages/plugins/autosave:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/blockquote:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
 
   packages/plugins/bubble:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/callout:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
 
   packages/plugins/charmap:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/code-block:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
       lowlight:
@@ -348,16 +348,16 @@ importers:
 
   packages/plugins/collab:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/plugin-comments':
+      '@scriba-editor/plugin-comments':
         specifier: workspace:*
         version: link:../comments
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
       lib0:
@@ -372,79 +372,79 @@ importers:
 
   packages/plugins/comments:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/datetime:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/details:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/embed:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/file:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
       docx:
@@ -457,160 +457,160 @@ importers:
         specifier: 1.13.0
         version: 1.13.0
     devDependencies:
-      '@scriba/plugin-blockquote':
+      '@scriba-editor/plugin-blockquote':
         specifier: workspace:*
         version: link:../blockquote
-      '@scriba/plugin-image':
+      '@scriba-editor/plugin-image':
         specifier: workspace:*
         version: link:../image
-      '@scriba/plugin-link':
+      '@scriba-editor/plugin-link':
         specifier: workspace:*
         version: link:../link
-      '@scriba/plugin-list':
+      '@scriba-editor/plugin-list':
         specifier: workspace:*
         version: link:../list
-      '@scriba/plugin-table':
+      '@scriba-editor/plugin-table':
         specifier: workspace:*
         version: link:../table
 
   packages/plugins/find-replace:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/footnotes:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/format-painter:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/fullscreen:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/help:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/hr:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/image:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/link:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/list:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
 
   packages/plugins/markdown:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
       markdown-it:
@@ -619,16 +619,16 @@ importers:
 
   packages/plugins/math:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
       katex:
@@ -637,272 +637,272 @@ importers:
 
   packages/plugins/mention:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
 
   packages/plugins/merge-tags:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/plugin-mention':
+      '@scriba-editor/plugin-mention':
         specifier: workspace:*
         version: link:../mention
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/paste-clean:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-link':
+      '@scriba-editor/plugin-link':
         specifier: workspace:*
         version: link:../link
-      '@scriba/plugin-list':
+      '@scriba-editor/plugin-list':
         specifier: workspace:*
         version: link:../list
-      '@scriba/plugin-text-style':
+      '@scriba-editor/plugin-text-style':
         specifier: workspace:*
         version: link:../text-style
 
   packages/plugins/permissions:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-blockquote':
+      '@scriba-editor/plugin-blockquote':
         specifier: workspace:*
         version: link:../blockquote
 
   packages/plugins/revisions:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/save:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/slash:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/source:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/statusbar:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/table:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/task:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
     devDependencies:
-      '@scriba/plugin-markdown':
+      '@scriba-editor/plugin-markdown':
         specifier: workspace:*
         version: link:../markdown
 
   packages/plugins/template:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/text-style:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
 
   packages/plugins/toc:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/plugin-link':
+      '@scriba-editor/plugin-link':
         specifier: workspace:*
         version: link:../link
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/visual-aids:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/plugins/word-count:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../../view
 
   packages/react:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../view
     devDependencies:
@@ -921,7 +921,7 @@ importers:
 
   packages/sanitize-server:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
       parse5:
@@ -939,44 +939,44 @@ importers:
 
   packages/ui:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../view
 
   packages/view:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
 
   packages/vue:
     dependencies:
-      '@scriba/core':
+      '@scriba-editor/core':
         specifier: workspace:*
         version: link:../core
-      '@scriba/i18n':
+      '@scriba-editor/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@scriba/ui':
+      '@scriba-editor/ui':
         specifier: workspace:*
         version: link:../ui
-      '@scriba/view':
+      '@scriba-editor/view':
         specifier: workspace:*
         version: link:../view
       vue:
         specifier: ^3.5.0
         version: 3.5.44(typescript@7.0.2)
     devDependencies:
-      '@scriba/plugin-callout':
+      '@scriba-editor/plugin-callout':
         specifier: workspace:*
         version: link:../plugins/callout
-      '@scriba/plugin-task':
+      '@scriba-editor/plugin-task':
         specifier: workspace:*
         version: link:../plugins/task
 

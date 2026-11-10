@@ -1,6 +1,6 @@
-import { isInNode, Plugin, type Command, type KeyBindings, type Schema } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
+import { isInNode, Plugin, type Command, type KeyBindings, type Schema } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
 import {
   enterFromSummary,
   insertDetails,

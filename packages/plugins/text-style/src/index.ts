@@ -4,15 +4,15 @@ import {
   type KeyBindings,
   type MarkType,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
 import type {
   IconName,
   ToolbarButton,
   ToolbarItem,
   ToolbarMenu,
   ToolbarMenuEntry,
-} from '@scriba/ui'
+} from '@scriba-editor/ui'
 import {
   changeIndent,
   hasLineHeight,
@@ -24,7 +24,7 @@ import {
   type LineHeight,
   type TextAlign,
 } from './blocks.js'
-import { LINE_HEIGHTS } from '@scriba/core'
+import { LINE_HEIGHTS } from '@scriba-editor/core'
 import { markValue, setMarkValue } from './marks.js'
 import { changeCase, LETTER_CASES } from './case.js'
 

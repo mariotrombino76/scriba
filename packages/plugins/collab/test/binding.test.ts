@@ -10,12 +10,12 @@ import {
   parseHTML,
   serializeHTML,
   undo,
-} from '@scriba/core'
-import { EditorView } from '@scriba/view'
-import { listNodes } from '@scriba/plugin-list'
-import { linkMarks } from '@scriba/plugin-link'
-import { imageNodes } from '@scriba/plugin-image'
-import { tableNodes, tableNormalize } from '@scriba/plugin-table'
+} from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
+import { listNodes } from '@scriba-editor/plugin-list'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { imageNodes } from '@scriba-editor/plugin-image'
+import { tableNodes, tableNormalize } from '@scriba-editor/plugin-table'
 import { yBinding } from '../src/index.js'
 
 const schema = new Schema({

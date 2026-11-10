@@ -1,4 +1,4 @@
-import { STYLE_DATA_ATTR } from '@scriba/core'
+import { STYLE_DATA_ATTR } from '@scriba-editor/core'
 
 /**
  * Cleans pasted HTML before the schema parser. Runs on the body of an INERT

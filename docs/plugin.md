@@ -1,6 +1,6 @@
 # Plugin
 
-Ogni funzione oltre al testo di base è un plugin, in un pacchetto `@scriba/plugin-*`. Un plugin
+Ogni funzione oltre al testo di base è un plugin, in un pacchetto `@scriba-editor/plugin-*`. Un plugin
 porta di solito quattro cose; prendi solo quelle che ti servono:
 
 1. **Nodi o mark** da aggiungere allo **schema** (es. `tableNodes`, `linkMarks`);
@@ -40,7 +40,7 @@ documento.
 
 Salvataggio: `keymap(saveKeymap({ save }), { priority: 90 })` prima di quella del menu File, così
 Ctrl+S chiama la tua funzione invece di scaricare il file; `save(doc)` riceve il documento (usa
-`serializeHTML(doc)`) e il server deve comunque ripassarlo da `@scriba/sanitize-server`.
+`serializeHTML(doc)`) e il server deve comunque ripassarlo da `@scriba-editor/sanitize-server`.
 
 Stili del tuo sito (Formato ▸ Stili): elenca le classi una volta e usa gli stessi elenchi nello
 schema del browser e del server.
@@ -96,7 +96,7 @@ L'HTML contiene MathML, che i browser mostrano da soli, senza script né CSS di 
 | `plugin-format-painter` | Copia formato: dà la formattazione di un testo a un altro (Ctrl+Alt+C / Ctrl+Alt+V)                     | `formatPainter`, `formatPainterKeymap`, `formatPainterItem`, `copyFormat`, `pasteFormat` |
 | `plugin-a11y-checker`   | Verifica accessibilità (WCAG 2.2 A/AA/AAA): un problema alla volta, con spiegazione e correzione        | `a11yChecker`, `a11yCheckerItem`, `openA11yDialog`, `checkAccessibility`, `a11yIssues`   |
 
-Dall'interfaccia (`@scriba/ui`): `<scriba-toolbar>`, `<scriba-menubar>`, `contextMenu(view, {
+Dall'interfaccia (`@scriba-editor/ui`): `<scriba-toolbar>`, `<scriba-menubar>`, `contextMenu(view, {
 sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `historyItems`,
 `markItems`, `blockStyleMenu`.
 
@@ -116,7 +116,7 @@ L'editor non salva versioni da solo: le conserva il tuo server (per esempio a og
 Gli dai due funzioni:
 
 ```ts
-import { revisionsToolbarItem } from '@scriba/plugin-revisions'
+import { revisionsToolbarItem } from '@scriba-editor/plugin-revisions'
 
 const revisions = {
   locale: 'it',

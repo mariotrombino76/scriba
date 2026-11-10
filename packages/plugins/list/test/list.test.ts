@@ -8,8 +8,8 @@ import {
   serializeHTML,
   type Command,
   type Node,
-} from '@scriba/core'
-import { blockquoteNodes } from '@scriba/plugin-blockquote'
+} from '@scriba-editor/core'
+import { blockquoteNodes } from '@scriba-editor/plugin-blockquote'
 import { JSDOM } from 'jsdom'
 import {
   liftListItem,

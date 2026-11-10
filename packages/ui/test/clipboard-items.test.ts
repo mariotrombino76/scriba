@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { EditorState, TextSelection, serializeHTML } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
+import { EditorState, TextSelection, serializeHTML } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
 import { clipboardItems, type ToolbarButton } from '../src/index.js'
 import { controlUsable } from '../src/items.js'
 import { b, doc, p } from '../../core/test/helpers/schema.js'

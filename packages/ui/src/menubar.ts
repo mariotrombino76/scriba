@@ -1,5 +1,5 @@
-import { createTranslator, type MessageKey, type Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+import { createTranslator, type MessageKey, type Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 import type { ToolbarMenu } from './items.js'
 import { MenuPopup } from './menu.js'
 import { popupEntries, type MenuItem } from './popup-entries.js'

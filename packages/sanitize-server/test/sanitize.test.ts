@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
-import { HTMLLimitError } from '@scriba/core'
+import { HTMLLimitError } from '@scriba-editor/core'
 import { InputTooLargeError, sanitizeHTML } from '../src/index.js'
 import { schema } from '../../core/test/helpers/schema.js'
 import { clean as cleanInBrowser } from '../../core/test/helpers/html.js'

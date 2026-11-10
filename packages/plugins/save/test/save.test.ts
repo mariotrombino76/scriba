@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, basicSchema, parseHTML, serializeHTML, type Node } from '@scriba/core'
-import { EditorView } from '@scriba/view'
+import { EditorState, basicSchema, parseHTML, serializeHTML, type Node } from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
 import {
   isDirty,
   isSaving,

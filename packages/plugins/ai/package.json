@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-ai",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-ai",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -21,14 +21,14 @@
   "license": "Apache-2.0",
   "description": "AI assistant hooks for the Scriba editor (bring your own backend; responses are untrusted and undoable).",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/ui": "workspace:*",
-    "@scriba/view": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/ui": "workspace:*",
+    "@scriba-editor/view": "workspace:*"
   },
   "devDependencies": {
-    "@scriba/plugin-markdown": "workspace:*",
-    "@scriba/plugin-link": "workspace:*"
+    "@scriba-editor/plugin-markdown": "workspace:*",
+    "@scriba-editor/plugin-link": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

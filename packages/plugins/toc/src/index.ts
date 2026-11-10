@@ -11,17 +11,17 @@ import {
   type NodeSpec,
   type Schema,
   type Transaction,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
-import { ANCHOR_PREFIX, anchorName, isAnchorName } from '@scriba/plugin-link'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import { ANCHOR_PREFIX, anchorName, isAnchorName } from '@scriba-editor/plugin-link'
 
 /**
  * Table of contents, like TinyMCE's: a list of the document's headings, each
  * a link to the heading's anchor, kept up to date by `tableOfContents()`.
  * HTML: `<ol class="scriba-toc"><li><a href="#anchor-intro">Intro</a><ol>…</ol></li></ol>`
  * (only tags, classes and ids already allowed: lists, links, `anchor-` ids).
- * Needs `withAnchors` (from `@scriba/plugin-link`) on headings.
+ * Needs `withAnchors` (from `@scriba-editor/plugin-link`) on headings.
  */
 export const TOC_CLASS = 'scriba-toc'
 export const MAX_TOC_ENTRIES = 500

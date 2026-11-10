@@ -1,7 +1,7 @@
-import type { Node } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { createIcon } from '@scriba/ui'
-import type { NodeViewFactory } from '@scriba/view'
+import type { Node } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { createIcon } from '@scriba-editor/ui'
+import type { NodeViewFactory } from '@scriba-editor/view'
 import { embedTitle } from './nodes.js'
 import { pageUrl, providerKind, type EmbedProvider } from './providers.js'
 

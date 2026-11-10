@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EditorState, Schema, TextSelection, basicSchemaSpec, parseHTML } from '@scriba/core'
+import { EditorState, Schema, TextSelection, basicSchemaSpec, parseHTML } from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import { countRange, countState, countString } from '../src/index.js'
 

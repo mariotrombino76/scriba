@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, serializeHTML } from '@scriba/core'
-import { linkMarks } from '@scriba/plugin-link'
-import { imageNodes } from '@scriba/plugin-image'
+import { Schema, basicSchemaSpec, serializeHTML } from '@scriba-editor/core'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { imageNodes } from '@scriba-editor/plugin-image'
 import { readDocument } from '../src/index.js'
 
 /** Opened files are untrusted input (CLAUDE.md §5.2): Word files too. */

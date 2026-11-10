@@ -1,16 +1,16 @@
-# @scriba/plugin-slash
+# @scriba-editor/plugin-slash
 
 Menu a comandi con `/` (`/tabella`, `/immagine`, `/titolo`): una funzione che TinyMCE non offre di serie. Si scrive `/` a inizio riga o dopo uno spazio, si filtra scrivendo e si sceglie la voce.
 
 ```bash
-pnpm add @scriba/plugin-slash
+pnpm add @scriba-editor/plugin-slash
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
+import { keymap } from '@scriba-editor/core'
+import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba-editor/plugin-slash'
 
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema), // paragrafo e titoli 1-3

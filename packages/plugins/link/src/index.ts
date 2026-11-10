@@ -8,15 +8,15 @@ import {
   type MarkSpec,
   type MarkType,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
 import {
   openDialog,
   withoutPressed,
   type ContextMenuSection,
   type ToolbarControl,
-} from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 
 /** The link mark. `href` is checked against the URL whitelist (§5.3) wherever it is created. */
 export const linkMarks = {

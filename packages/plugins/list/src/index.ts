@@ -1,6 +1,6 @@
-import type { Command, KeyBindings, Schema } from '@scriba/core'
-import type { MessageKey } from '@scriba/i18n'
-import type { ToolbarControl, ToolbarMenu } from '@scriba/ui'
+import type { Command, KeyBindings, Schema } from '@scriba-editor/core'
+import type { MessageKey } from '@scriba-editor/i18n'
+import type { ToolbarControl, ToolbarMenu } from '@scriba-editor/ui'
 import {
   isInList,
   listAttr,

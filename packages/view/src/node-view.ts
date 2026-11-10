@@ -1,4 +1,4 @@
-import type { Node } from '@scriba/core'
+import type { Node } from '@scriba-editor/core'
 import type { EditorView } from './view.js'
 
 /**

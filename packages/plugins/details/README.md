@@ -1,4 +1,4 @@
-# @scriba/plugin-details
+# @scriba-editor/plugin-details
 
 **Sezioni comprimibili** (fisarmonica) per l'editor Scriba: un titolo cliccabile che mostra o
 nasconde i blocchi sotto di sé. Nell'HTML sono i nativi `<details>` e `<summary>`. Come il plugin
@@ -7,7 +7,7 @@ nasconde i blocchi sotto di sé. Nell'HTML sono i nativi `<details>` e `<summary
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-details
+pnpm add @scriba-editor/plugin-details
 ```
 
 ## Uso
@@ -21,7 +21,7 @@ import {
   detailsSlashItem,
   detailsToggleItem,
   detailsToolbarItem,
-} from '@scriba/plugin-details'
+} from '@scriba-editor/plugin-details'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...detailsNodes },
@@ -66,4 +66,4 @@ HTML: `<details open><summary>Titolo</summary><p>…</p></details>`. Un `<detail
   [accessibilità](../../../docs/accessibilita.md).
 - Sicurezza: l'unico attributo è il booleano `open`, validato dallo schema; non ci sono stili o
   script. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
-- L'aspetto (sezione nascosta quando chiusa) viene dal CSS del tema (`@scriba/themes`).
+- L'aspetto (sezione nascosta quando chiusa) viene dal CSS del tema (`@scriba-editor/themes`).

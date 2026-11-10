@@ -8,7 +8,7 @@ import {
   serializeHTML,
   type Node,
   type NodeSpec,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { EditorView, type NodeView } from '../src/index.js'
 
 const widgetNodes = {

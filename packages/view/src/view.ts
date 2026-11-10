@@ -5,7 +5,7 @@ import {
   TextSelection,
   type EditorState,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { renderContent, updateDesc, type RenderContext } from './build.js'
 import { DecorationIndex, stateDecorations } from './decorations.js'
 import { NodeViewDesc, descAt, domFromPos, posFromDOM, textblockDescOf } from './desc.js'
@@ -37,7 +37,7 @@ export interface EditorViewOptions {
   label?: string
   /**
    * Custom views of atomic node types, by type name (e.g. a Vue component,
-   * see `vueNodeView` in `@scriba/vue`). Other node types use `toHTML`.
+   * see `vueNodeView` in `@scriba-editor/vue`). Other node types use `toHTML`.
    */
   nodeViews?: Readonly<Record<string, NodeViewFactory>>
 }

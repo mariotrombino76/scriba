@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, Plugin, PluginKey, TextSelection, type Node } from '@scriba/core'
+import { EditorState, Plugin, PluginKey, TextSelection, type Node } from '@scriba-editor/core'
 import { EditorView, type InlineDecoration } from '../src/index.js'
 import { b, beforeInput, doc, p, schema } from './helpers.js'
 

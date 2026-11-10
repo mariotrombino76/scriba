@@ -1,12 +1,12 @@
-# @scriba/browser
+# @scriba-editor/browser
 
 Scriba in qualsiasi pagina web, senza framework e senza build: un foglio di stile e uno script.
 
 ## Con un tag `<script>` (CDN)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.css" />
-<script src="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.iife.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 
 <div id="editor"></div>
 <script src="/js/editor.js"></script>
@@ -28,8 +28,8 @@ Indica sempre una **versione esatta** nell'URL e, se puoi, aggiungi `integrity` 
 ## Come modulo ES
 
 ```js
-import { createEditor } from '@scriba/browser'
-import '@scriba/browser/scriba.css'
+import { createEditor } from '@scriba-editor/browser'
+import '@scriba-editor/browser/scriba.css'
 
 const editor = createEditor(document.getElementById('editor'), { preset: 'basic' })
 ```
@@ -62,7 +62,7 @@ Per comporre un editor su misura, lo stesso file espone anche i mattoni: `Scriba
 - Il contenuto passato a `createEditor`/`setContent`, e quello incollato o trascinato, è
   **input non fidato**: passa dal parser dello schema in un documento inerte. Nessuno script,
   attributo `on*` o URL non ammesso entra nel documento.
-- L'HTML che salvi va **sempre** ripassato sul server da `@scriba/sanitize-server` (Node) prima
+- L'HTML che salvi va **sempre** ripassato sul server da `@scriba-editor/sanitize-server` (Node) prima
   di salvarlo o mostrarlo: chiunque può inviare HTML al tuo server senza passare dall'editor.
 - Funziona con una CSP rigida (`script-src 'self'` più l'origine del CDN, niente
   `unsafe-inline` né `unsafe-eval`) e con `require-trusted-types-for 'script'` (policy `scriba`).
@@ -80,4 +80,4 @@ Per comporre un editor su misura, lo stesso file espone anche i mattoni: `Scriba
   servi i file dal tuo sito e usa la versione modulo ES (`scriba.js`), accanto alla cartella
   `assets/`.
 - **Pesi:** `scriba.iife.js` ~84 KB gzip (preset `full` compreso), `scriba.css` ~6 KB gzip.
-  Per un pacchetto più leggero usa i singoli pacchetti `@scriba/*` con il tuo bundler.
+  Per un pacchetto più leggero usa i singoli pacchetti `@scriba-editor/*` con il tuo bundler.

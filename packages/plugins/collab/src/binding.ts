@@ -1,6 +1,6 @@
 import type * as Y from 'yjs'
-import { ADD_TO_HISTORY, Plugin, PluginKey, type Node, type Transaction } from '@scriba/core'
-import type { EditorView, PluginView, ViewPluginProps } from '@scriba/view'
+import { ADD_TO_HISTORY, Plugin, PluginKey, type Node, type Transaction } from '@scriba-editor/core'
+import type { EditorView, PluginView, ViewPluginProps } from '@scriba-editor/view'
 import { diffEnd, diffStart } from './diff.js'
 import { docFromY, updateFragment, writeDoc } from './mapping.js'
 

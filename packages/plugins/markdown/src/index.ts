@@ -1,4 +1,4 @@
-import { keymap, type Plugin, type Schema } from '@scriba/core'
+import { keymap, type Plugin, type Schema } from '@scriba-editor/core'
 import { inputRules, markdownInputRules, undoInputRule } from './rules.js'
 export { serializeMarkdown } from './serialize.js'
 export {

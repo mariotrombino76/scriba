@@ -13,6 +13,6 @@ export default defineConfig({
       fileName: 'index',
     },
     emptyOutDir: false,
-    rollupOptions: { external: ['vue', /^@scriba\//] },
+    rollupOptions: { external: ['vue', /^@scriba-editor\//] },
   },
 })

@@ -13,8 +13,8 @@ import {
   splitBlock,
   toggleMark,
   undo,
-} from '@scriba/core'
-import { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
 import {
   createMemoryCommentStore,
   listSuggestions,
@@ -49,7 +49,7 @@ function setup(html = '<p>ciao mondo</p>', cursor = 5) {
   })
   setSuggesting(view, true)
   const run = (
-    cmd: (s: EditorState, d?: (tr: import('@scriba/core').Transaction) => void) => boolean,
+    cmd: (s: EditorState, d?: (tr: import('@scriba-editor/core').Transaction) => void) => boolean,
   ) => cmd(view.state, (tr) => view.dispatch(tr))
   /** The document with proposals shown as [+x] and [-x]. */
   const show = () => {

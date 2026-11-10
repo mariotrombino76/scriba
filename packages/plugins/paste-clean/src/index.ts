@@ -1,5 +1,5 @@
-import { Plugin } from '@scriba/core'
-import type { TransformPastedDOM } from '@scriba/view'
+import { Plugin } from '@scriba-editor/core'
+import type { TransformPastedDOM } from '@scriba-editor/view'
 import { cleanPastedDOM, type PasteCleanOptions } from './clean.js'
 
 export { cleanPastedDOM, detectSource, type PasteCleanOptions, type PasteSource } from './clean.js'

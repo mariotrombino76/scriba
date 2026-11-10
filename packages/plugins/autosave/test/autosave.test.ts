@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { EditorState, TextSelection, history, serializeHTML, undo } from '@scriba/core'
-import { EditorView } from '@scriba/view'
+import { EditorState, TextSelection, history, serializeHTML, undo } from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
 import { doc, p, schema } from '../../../core/test/helpers/schema.js'
 import {
   autosave,

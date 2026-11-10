@@ -1,5 +1,5 @@
-import type { Translate } from '@scriba/i18n'
-import type { MenuItem, ToolbarItem } from '@scriba/ui'
+import type { Translate } from '@scriba-editor/i18n'
+import type { MenuItem, ToolbarItem } from '@scriba-editor/ui'
 
 /** One line of the help: an action and how to do it from the keyboard. */
 export interface HelpShortcut {
@@ -59,7 +59,7 @@ export function editingHelp(options: { slash?: boolean; mentions?: boolean } = {
   return { id: 'editing', title: (t) => t('help.group.editing'), shortcuts }
 }
 
-/** The Markdown typing shortcuts of `@scriba/plugin-markdown`. */
+/** The Markdown typing shortcuts of `@scriba-editor/plugin-markdown`. */
 export function markdownHelp(): HelpGroup {
   const around = (d: string) => (t: Translate) => `${d}${t('help.sample')}${d}`
   return {

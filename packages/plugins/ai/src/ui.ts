@@ -1,6 +1,6 @@
-import type { MessageKey } from '@scriba/i18n'
-import { createIcon } from '@scriba/ui'
-import type { EditorView, PluginView } from '@scriba/view'
+import type { MessageKey } from '@scriba-editor/i18n'
+import { createIcon } from '@scriba-editor/ui'
+import type { EditorView, PluginView } from '@scriba-editor/view'
 import {
   defaultAiActions,
   retryRequest,

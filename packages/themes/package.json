@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/themes",
-  "version": "0.0.0",
+  "name": "@scriba-editor/themes",
+  "version": "0.1.0",
   "description": "CSS themes for the Scriba editor (light/dark, CSS custom properties).",
   "sideEffects": [
     "*.css"

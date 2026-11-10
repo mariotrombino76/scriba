@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-blockquote",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-blockquote",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -20,8 +20,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/ui": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/ui": "workspace:*"
   },
   "description": "Blockquotes for the Scriba editor.",
   "publishConfig": {

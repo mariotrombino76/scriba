@@ -11,8 +11,8 @@ import {
   serializeHTML,
   undo,
   type Transaction,
-} from '@scriba/core'
-import { listNodes } from '@scriba/plugin-list'
+} from '@scriba-editor/core'
+import { listNodes } from '@scriba-editor/plugin-list'
 import { footnoteNodes, footnotes, goToFootnote, insertFootnote } from '../src/index.js'
 
 const schema = new Schema({

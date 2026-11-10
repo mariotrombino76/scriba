@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML } from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import {
   SearchRunner,

@@ -10,7 +10,7 @@
     "test:watch": "vitest",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "typecheck": "node ./node_modules/typescript7/bin/tsc -p tsconfig.json --noEmit && pnpm --filter @scriba/vue typecheck",
+    "typecheck": "node ./node_modules/typescript7/bin/tsc -p tsconfig.json --noEmit && pnpm --filter @scriba-editor/vue typecheck",
     "bench": "vitest bench --run",
     "size": "node scripts/size.mjs",
     "test:perf": "playwright test --config playwright.perf.config.ts",

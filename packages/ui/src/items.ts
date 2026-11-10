@@ -12,9 +12,9 @@ import {
   type Schema,
   type Transaction,
   insertNonBreakingSpace,
-} from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 import type { IconName } from './icons.js'
 
 /** A toolbar button bound to a command. */

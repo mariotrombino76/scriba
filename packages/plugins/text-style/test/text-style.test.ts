@@ -7,7 +7,7 @@ import {
   parseHTML,
   serializeHTML,
   type Command,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import {
   changeIndent,

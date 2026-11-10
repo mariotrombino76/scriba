@@ -12,10 +12,10 @@ import {
   serializeHTML,
   undo,
   type Command,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { serializeMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { serializeMarkdown } from '@scriba-editor/plugin-markdown'
 import {
   detailsAutoOpen,
   detailsKeymap,

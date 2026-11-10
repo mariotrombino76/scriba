@@ -1,4 +1,4 @@
-# @scriba/plugin-image
+# @scriba-editor/plugin-image
 
 Immagini per l'editor Scriba: inserimento da file (tramite **una tua funzione di upload**) o da
 indirizzo, trascinamento e incolla, ridimensionamento, testo alternativo, allineamento e
@@ -6,7 +6,7 @@ indirizzo, trascinamento e incolla, ridimensionamento, testo alternativo, alline
 plugin immagini di TinyMCE e il suo editor immagini.
 
 ```bash
-pnpm add @scriba/plugin-image
+pnpm add @scriba-editor/plugin-image
 ```
 
 ## Uso
@@ -20,7 +20,7 @@ import {
   imageToolbarItems,
   imageEditToolbarItems,
   type ImageUploadOptions,
-} from '@scriba/plugin-image'
+} from '@scriba-editor/plugin-image'
 
 // Un'app vera invia il file al proprio server e restituisce l'URL pubblico.
 const images: ImageUploadOptions = {
@@ -100,7 +100,7 @@ Il nodo `image` è inline e atomico, con `src`, `alt`, `width` (16–4000 px) e 
 - Larghezza e allineamento sono attributi tipizzati (allineamento con valori enumerati), mai `style`
   libero.
 
-L'HTML salvato va ripassato da `@scriba/sanitize-server`: vedi
+L'HTML salvato va ripassato da `@scriba-editor/sanitize-server`: vedi
 [sicurezza](../../../docs/sicurezza.md).
 
 ## Accessibilità

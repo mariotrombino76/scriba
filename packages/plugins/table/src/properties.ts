@@ -1,7 +1,7 @@
-import { BORDER_STYLES, normalizeColor, type Node } from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { openDialog, type DialogHandle } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import { BORDER_STYLES, normalizeColor, type Node } from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { openDialog, type DialogHandle } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import {
   selectedRect,
   setCellProps,

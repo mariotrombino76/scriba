@@ -5,7 +5,7 @@ import {
   safeTagName,
   type HTMLAttrs,
   type HTMLSpec,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 export interface RenderedSpec {
   dom: HTMLElement

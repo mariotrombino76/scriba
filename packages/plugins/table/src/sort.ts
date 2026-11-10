@@ -1,4 +1,4 @@
-import { Fragment, Selection, type Command, type EditorState, type Node } from '@scriba/core'
+import { Fragment, Selection, type Command, type EditorState, type Node } from '@scriba-editor/core'
 import { selectedRect } from './commands.js'
 import type { TableGrid } from './grid.js'
 

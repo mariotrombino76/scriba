@@ -5,8 +5,8 @@ import {
   sanitizeUrl,
   type EditorState,
   type MarkType,
-} from '@scriba/core'
-import type { ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { ViewPluginProps } from '@scriba-editor/view'
 
 /** An address ending at the cursor: http(s)://…, www.…, mailto:… or an e-mail address. */
 const ADDRESS_AT_END =

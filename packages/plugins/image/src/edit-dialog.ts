@@ -1,7 +1,7 @@
-import { NodeSelection, sanitizeUrl, type Node } from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { createIcon, openDialog, type DialogHandle, type IconName } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import { NodeSelection, sanitizeUrl, type Node } from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { createIcon, openDialog, type DialogHandle, type IconName } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { cropStage } from './edit-crop.js'
 import {
   NO_EDITS,

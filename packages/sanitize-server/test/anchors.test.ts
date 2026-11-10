@@ -6,7 +6,7 @@ import {
   basicSchemaSpec,
   parseHTML,
   serializeHTML,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { anchorName, linkMarks, setAnchor, withAnchors } from '../../plugins/link/src/index.js'
 import { sanitizeHTML } from '../src/index.js'
 import { dom } from '../../core/test/helpers/html.js'

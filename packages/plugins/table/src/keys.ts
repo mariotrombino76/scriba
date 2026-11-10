@@ -6,8 +6,8 @@ import {
   type Command,
   type CommandView,
   type KeyBindings,
-} from '@scriba/core'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView } from '@scriba-editor/view'
 import { CellSelection, cellPosAt, tableAt } from './cell-selection.js'
 import { deleteTable, goToCell } from './commands.js'
 

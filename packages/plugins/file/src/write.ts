@@ -1,5 +1,5 @@
-import { escapeAttr, escapeText, serializeHTML, type Node } from '@scriba/core'
-import { serializeMarkdown } from '@scriba/plugin-markdown'
+import { escapeAttr, escapeText, serializeHTML, type Node } from '@scriba-editor/core'
+import { serializeMarkdown } from '@scriba-editor/plugin-markdown'
 import { documentToDocx } from './docx-write.js'
 
 /** Formats the editor saves. */
@@ -47,7 +47,7 @@ export function documentToHTMLFile(doc: Node, title: string, lang: string): stri
   return (
     `<!doctype html>\n<html lang="${escapeAttr(lang)}">\n<head>\n<meta charset="utf-8">\n` +
     `<title>${escapeText(title)}</title>\n` +
-    // page breaks (@scriba/plugin-hr) start a new page when printed
+    // page breaks (@scriba-editor/plugin-hr) start a new page when printed
     `<style>hr.scriba-page-break{break-after:page}</style>\n</head>\n<body>\n${serializeHTML(doc)}\n</body>\n</html>\n`
   )
 }

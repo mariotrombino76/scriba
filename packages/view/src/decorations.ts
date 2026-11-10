@@ -1,4 +1,4 @@
-import type { EditorState, Node } from '@scriba/core'
+import type { EditorState, Node } from '@scriba-editor/core'
 
 /**
  * A visual-only class on a range of inline content (syntax highlighting,

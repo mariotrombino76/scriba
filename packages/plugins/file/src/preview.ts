@@ -1,7 +1,7 @@
-import { serializeHTML, type Node } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { openDialog } from '@scriba/ui'
-import { parseInertHTML, type EditorView } from '@scriba/view'
+import { serializeHTML, type Node } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { openDialog } from '@scriba-editor/ui'
+import { parseInertHTML, type EditorView } from '@scriba-editor/view'
 
 /**
  * The document as page content: HTML from the serializer, read in an inert

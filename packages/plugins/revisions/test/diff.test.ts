@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML, type Node } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML, type Node } from '@scriba-editor/core'
 import { imageNodes } from '../../image/src/index.js'
 import { listNodes } from '../../list/src/index.js'
 import { tableNodes } from '../../table/src/index.js'

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import { hrNodes } from '../../plugins/hr/src/index.js'
 import { sanitizeHTML } from '../src/index.js'
 import { dom } from '../../core/test/helpers/html.js'

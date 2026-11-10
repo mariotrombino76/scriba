@@ -10,10 +10,10 @@ import {
   type Node,
   type NodeType,
   type Transaction,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { isFormattingMark, type ToolbarButton } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { isFormattingMark, type ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 
 /** The formatting taken from some text: its marks and the look of its block. */
 export interface CopiedFormat {

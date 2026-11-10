@@ -12,9 +12,9 @@ import {
   type MarkType,
   type Node,
   type Transaction,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView, PluginView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView, PluginView, ViewPluginProps } from '@scriba-editor/view'
 import type { CommentStore } from './store.js'
 
 const ID = /^[\w-]{1,64}$/

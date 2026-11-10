@@ -8,7 +8,7 @@ import {
   type ResolvedPos,
   type SelectionJSON,
   type Transform,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { isCell } from './nodes.js'
 import { TableGrid, buildTable, type GridCell, type Rect } from './grid.js'
 

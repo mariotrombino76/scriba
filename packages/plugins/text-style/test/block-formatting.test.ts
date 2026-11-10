@@ -10,7 +10,7 @@ import {
   serializeHTML,
   toggleMark,
   type Command,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import { listNodes, listStyleMenus } from '../../list/src/index.js'
 import {

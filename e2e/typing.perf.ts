@@ -22,11 +22,11 @@ test('1 MB document: a keystroke takes under 16 ms (median)', async ({ page }) =
           : `<h2>Sezione ${i}</h2>`,
       )
     const w = window as unknown as {
-      scriba: { setHTML(h: string): void; view: import('@scriba/view').EditorView }
+      scriba: { setHTML(h: string): void; view: import('@scriba-editor/view').EditorView }
     }
     w.scriba.setHTML(parts.join(''))
     const v = w.scriba.view
-    const Sel = v.state.selection.constructor as typeof import('@scriba/core').Selection
+    const Sel = v.state.selection.constructor as typeof import('@scriba-editor/core').Selection
     v.dispatch(v.state.tr.setSelection(Sel.near(v.state.doc.resolve(v.state.doc.content.size / 2))))
     v.focus()
     return v.state.doc.textContent.length

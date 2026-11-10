@@ -10,9 +10,9 @@ import {
   keymap,
   serializeHTML,
   parseHTML,
-} from '@scriba/core'
-import { EditorView, parseInertHTML } from '@scriba/view'
-import { createTranslator } from '@scriba/i18n'
+} from '@scriba-editor/core'
+import { EditorView, parseInertHTML } from '@scriba-editor/view'
+import { createTranslator } from '@scriba-editor/i18n'
 import {
   blockStyleMenu,
   contextMenu,
@@ -26,7 +26,7 @@ import {
   type ToolbarButton,
   markItems,
   toolbarGroup,
-} from '@scriba/ui'
+} from '@scriba-editor/ui'
 import {
   listIndentCommands,
   listKeymap,
@@ -34,12 +34,12 @@ import {
   listStyleMenus,
   listToolbarItems,
   toggleList,
-} from '@scriba/plugin-list'
+} from '@scriba-editor/plugin-list'
 import {
   blockquoteNodes,
   blockquoteToolbarItems,
   toggleBlockquote,
-} from '@scriba/plugin-blockquote'
+} from '@scriba-editor/plugin-blockquote'
 import {
   alignmentMenu,
   directionItems,
@@ -55,7 +55,7 @@ import {
   textStyleKeymap,
   textStyleMarks,
   withBlockStyles,
-} from '@scriba/plugin-text-style'
+} from '@scriba-editor/plugin-text-style'
 import {
   anchorToolbarItem,
   autolink,
@@ -64,16 +64,16 @@ import {
   linkMarks,
   linkToolbarItems,
   withAnchors,
-} from '@scriba/plugin-link'
+} from '@scriba-editor/plugin-link'
 import {
   codeBlockKeymap,
   toggleCodeBlock,
   codeBlockNodes,
   codeBlockToolbarItems,
   codeHighlight,
-} from '@scriba/plugin-code-block'
+} from '@scriba-editor/plugin-code-block'
 import { common, createLowlight } from 'lowlight'
-import { pasteClean } from '@scriba/plugin-paste-clean'
+import { pasteClean } from '@scriba-editor/plugin-paste-clean'
 import {
   imageKeymap,
   openImageDialog,
@@ -82,7 +82,7 @@ import {
   imageContextMenu,
   imageToolbarItems,
   type ImageUploadOptions,
-} from '@scriba/plugin-image'
+} from '@scriba-editor/plugin-image'
 import {
   insertTable,
   tableKeymap,
@@ -90,16 +90,16 @@ import {
   tablePlugins,
   tableContextMenu,
   tableToolbarItems,
-} from '@scriba/plugin-table'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
-import { createWordCountStatus, openWordCountDialog } from '@scriba/plugin-word-count'
-import { sourceToolbarItem } from '@scriba/plugin-source'
-import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
-import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba/plugin-slash'
-import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
-import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
-import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
-import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+} from '@scriba-editor/plugin-table'
+import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
+import { createWordCountStatus, openWordCountDialog } from '@scriba-editor/plugin-word-count'
+import { sourceToolbarItem } from '@scriba-editor/plugin-source'
+import { charmapToolbarItem, openCharmapDialog } from '@scriba-editor/plugin-charmap'
+import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba-editor/plugin-slash'
+import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba-editor/plugin-mention'
+import { blockPermissions, withBlockIds } from '@scriba-editor/plugin-permissions'
+import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba-editor/plugin-task'
+import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba-editor/plugin-callout'
 import {
   detailsAutoOpen,
   detailsKeymap,
@@ -108,8 +108,8 @@ import {
   detailsSlashItem,
   detailsToggleItem,
   detailsToolbarItem,
-} from '@scriba/plugin-details'
-import { visualAids, visualAidsItems } from '@scriba/plugin-visual-aids'
+} from '@scriba-editor/plugin-details'
+import { visualAids, visualAidsItems } from '@scriba-editor/plugin-visual-aids'
 import {
   footnoteGoToItem,
   footnoteNodes,
@@ -117,9 +117,9 @@ import {
   footnotesKeymap,
   footnoteSlashItem,
   footnoteToolbarItem,
-} from '@scriba/plugin-footnotes'
-import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba/plugin-merge-tags'
-import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba/plugin-toc'
+} from '@scriba-editor/plugin-footnotes'
+import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba-editor/plugin-merge-tags'
+import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba-editor/plugin-toc'
 import katex from 'katex'
 import {
   createMathNodes,
@@ -128,17 +128,17 @@ import {
   mathPlugins,
   mathSlashItem,
   mathToolbarItem,
-} from '@scriba/plugin-math'
-import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
-import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba/plugin-save'
+} from '@scriba-editor/plugin-math'
+import { createElementPath, createResizeHandle } from '@scriba-editor/plugin-statusbar'
+import { saveItem, saveKeymap, savePlugin, type SaveOptions } from '@scriba-editor/plugin-save'
 import {
   formatPainter,
   formatPainterItem,
   formatPainterKeymap,
-} from '@scriba/plugin-format-painter'
-import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
-import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
-import { revisionsToolbarItem, type RevisionOptions } from '@scriba/plugin-revisions'
+} from '@scriba-editor/plugin-format-painter'
+import { a11yChecker, a11yCheckerItem } from '@scriba-editor/plugin-a11y-checker'
+import { templateToolbarItem, type TemplateOptions } from '@scriba-editor/plugin-template'
+import { revisionsToolbarItem, type RevisionOptions } from '@scriba-editor/plugin-revisions'
 import {
   embedKeymap,
   embedNodeView,
@@ -149,14 +149,14 @@ import {
   mediaFileNodeView,
   mediaNodes,
   type MediaOptions,
-} from '@scriba/plugin-embed'
-import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
-import { dateTimeMenu } from '@scriba/plugin-datetime'
-import { autosave, restoreDraftItem } from '@scriba/plugin-autosave'
-import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba/plugin-file'
-import { CalloutView, TaskView, vueNodeView } from '@scriba/vue'
-import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
-import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
+} from '@scriba-editor/plugin-embed'
+import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba-editor/plugin-hr'
+import { dateTimeMenu } from '@scriba-editor/plugin-datetime'
+import { autosave, restoreDraftItem } from '@scriba-editor/plugin-autosave'
+import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba-editor/plugin-file'
+import { CalloutView, TaskView, vueNodeView } from '@scriba-editor/vue'
+import { bubbleKeymap, bubbleMenu } from '@scriba-editor/plugin-bubble'
+import { collab, collabCommentStore, collabStatusElement } from '@scriba-editor/plugin-collab'
 import {
   commentMarks,
   commentToolbarItem,
@@ -167,8 +167,8 @@ import {
   suggestToolbarItem,
   suggestionMarks,
   suggestionsPlugin,
-} from '@scriba/plugin-comments'
-import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/plugin-comments'
+import { markdownShortcuts, parseMarkdown, serializeMarkdown } from '@scriba-editor/plugin-markdown'
 import {
   editingHelp,
   helpItem,
@@ -177,7 +177,7 @@ import {
   navigationHelp,
   shortcutsFromItems,
   type HelpOptions,
-} from '@scriba/plugin-help'
+} from '@scriba-editor/plugin-help'
 import {
   aiAssistant,
   aiKeymap,
@@ -189,12 +189,12 @@ import {
   type AiComplete,
   type AiOptions,
   type AiRequest,
-} from '@scriba/plugin-ai'
+} from '@scriba-editor/plugin-ai'
 import {
   findReplaceKeymap,
   findReplacePlugins,
   findReplaceToolbarItem,
-} from '@scriba/plugin-find-replace'
+} from '@scriba-editor/plugin-find-replace'
 import '../../packages/themes/scriba.css'
 
 // Test fixture only: exposes the view so specs can read the model.

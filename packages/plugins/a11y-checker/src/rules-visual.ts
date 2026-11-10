@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 import { contrastRatio, formatRatio, suggestColor } from './contrast.js'
 import type { Rule } from './rule.js'
 import type { A11yAction } from './types.js'

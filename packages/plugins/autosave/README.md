@@ -1,4 +1,4 @@
-# @scriba/plugin-autosave
+# @scriba-editor/plugin-autosave
 
 **Bozza automatica** per l'editor Scriba, come l'autosave di TinyMCE: mentre scrivi, una copia del
 documento viene tenuta nel browser; se la scheda si chiude per sbaglio puoi ripristinarla da
@@ -7,13 +7,13 @@ documento viene tenuta nel browser; se la scheda si chiude per sbaglio puoi ripr
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-autosave
+pnpm add @scriba-editor/plugin-autosave
 ```
 
 ## Uso
 
 ```ts
-import { autosave, clearDraft, restoreDraftItem } from '@scriba/plugin-autosave'
+import { autosave, clearDraft, restoreDraftItem } from '@scriba-editor/plugin-autosave'
 
 // una chiave per documento: bozze di documenti diversi non si mescolano
 const draftOptions = { key: 'scriba:nota-42', delay: 2000 }

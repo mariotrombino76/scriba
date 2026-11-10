@@ -1,5 +1,5 @@
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
 import { openCharmapDialog, type CharmapOptions } from './picker.js'
 
 export { CHARACTERS, EMOJI_CATEGORIES, type CharEntry, type CategoryId } from './data.js'

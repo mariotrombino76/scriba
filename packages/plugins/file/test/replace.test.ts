@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { beforeAll, describe, expect, it } from 'vitest'
-import { EditorState, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { blockPermissions, withBlockIds } from '@scriba/plugin-permissions'
-import { EditorView } from '@scriba/view'
+import { EditorState, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { blockPermissions, withBlockIds } from '@scriba-editor/plugin-permissions'
+import { EditorView } from '@scriba-editor/view'
 import { newDocument, openFile } from '../src/index.js'
 
 const t = createTranslator('it')

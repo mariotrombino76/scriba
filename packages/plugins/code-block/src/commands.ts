@@ -1,4 +1,4 @@
-import { TextSelection, type Command, type EditorState, type NodeType } from '@scriba/core'
+import { TextSelection, type Command, type EditorState, type NodeType } from '@scriba-editor/core'
 
 function codeType(state: EditorState): NodeType {
   const type = state.schema.nodes['code_block']

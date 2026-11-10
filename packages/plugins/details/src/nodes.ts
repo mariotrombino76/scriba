@@ -1,4 +1,4 @@
-import type { NodeSpec } from '@scriba/core'
+import type { NodeSpec } from '@scriba-editor/core'
 
 /**
  * Collapsible sections (approved 2026-10-19): `<details>` with its `<summary>`

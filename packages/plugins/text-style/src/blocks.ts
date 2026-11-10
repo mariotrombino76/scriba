@@ -11,7 +11,7 @@ import {
   type NodeType,
   type ParseRule,
   withAttr,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 export type TextAlign = 'left' | 'center' | 'right' | 'justify'
 const ALIGNS: readonly string[] = ['left', 'center', 'right', 'justify']

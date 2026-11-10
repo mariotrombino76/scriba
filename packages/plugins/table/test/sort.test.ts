@@ -9,7 +9,7 @@ import {
   serializeHTML,
   undo,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import { compareCellText, parseLocaleNumber, sortTable, tableNodes } from '../src/index.js'
 

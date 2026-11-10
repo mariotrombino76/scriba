@@ -8,8 +8,8 @@ import {
   parseHTML,
   serializeHTML,
   type Command,
-} from '@scriba/core'
-import { EditorView, stateDecorations } from '@scriba/view'
+} from '@scriba-editor/core'
+import { EditorView, stateDecorations } from '@scriba-editor/view'
 import { common, createLowlight } from 'lowlight'
 import {
   codeBlockNodes,

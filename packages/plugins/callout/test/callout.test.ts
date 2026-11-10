@@ -7,8 +7,8 @@ import {
   basicSchemaSpec,
   parseHTML,
   serializeHTML,
-} from '@scriba/core'
-import { serializeMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/core'
+import { serializeMarkdown } from '@scriba-editor/plugin-markdown'
 import { calloutNodes, toggleCallout } from '../src/index.js'
 
 const schema = new Schema({

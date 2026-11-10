@@ -10,16 +10,16 @@ import {
   serializeHTML,
   undo,
   type Fragment,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { imageNodes } from '@scriba/plugin-image'
-import { linkMarks } from '@scriba/plugin-link'
-import { mentionNodes } from '@scriba/plugin-mention'
-import { tableNodes } from '@scriba/plugin-table'
-import { taskNodes } from '@scriba/plugin-task'
-import { calloutNodes } from '@scriba/plugin-callout'
-import { commentMarks } from '@scriba/plugin-comments'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { imageNodes } from '@scriba-editor/plugin-image'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { mentionNodes } from '@scriba-editor/plugin-mention'
+import { tableNodes } from '@scriba-editor/plugin-table'
+import { taskNodes } from '@scriba-editor/plugin-task'
+import { calloutNodes } from '@scriba-editor/plugin-callout'
+import { commentMarks } from '@scriba-editor/plugin-comments'
 import {
   MAX_AI_BLOCKS,
   acceptPending,

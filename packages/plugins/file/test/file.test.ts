@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
-import { listNodes } from '@scriba/plugin-list'
-import { blockquoteNodes } from '@scriba/plugin-blockquote'
-import { linkMarks } from '@scriba/plugin-link'
-import { tableNodes } from '@scriba/plugin-table'
+import { EditorState, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
+import { listNodes } from '@scriba-editor/plugin-list'
+import { blockquoteNodes } from '@scriba-editor/plugin-blockquote'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { tableNodes } from '@scriba-editor/plugin-table'
 import {
   OpenFileError,
   documentBlob,
@@ -17,7 +17,7 @@ import {
   hasUnsavedChanges,
   readDocument,
 } from '../src/index.js'
-import { createTranslator } from '@scriba/i18n'
+import { createTranslator } from '@scriba-editor/i18n'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...listNodes, ...blockquoteNodes, ...tableNodes },

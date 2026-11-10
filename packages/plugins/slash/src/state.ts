@@ -1,7 +1,7 @@
-import { Plugin, PluginKey, type Command, type EditorState, type Transaction } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { IconName } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+import { Plugin, PluginKey, type Command, type EditorState, type Transaction } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { IconName } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 import { slashMenuView } from './menu.js'
 
 /** One entry of the slash menu. */

@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-list",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-list",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -20,9 +20,9 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/ui": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/ui": "workspace:*"
   },
   "description": "Bulleted and numbered lists, nested, with Tab/Shift+Tab, for the Scriba editor.",
   "publishConfig": {

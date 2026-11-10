@@ -1,4 +1,4 @@
-import type { DOMLike, DOMLikeElement, NodeSpec } from '@scriba/core'
+import type { DOMLike, DOMLikeElement, NodeSpec } from '@scriba-editor/core'
 
 /**
  * Footnotes (approved 2026-10-26). A reference in the text and its note in

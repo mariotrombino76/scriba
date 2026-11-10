@@ -1,4 +1,4 @@
-# @scriba/plugin-bubble
+# @scriba-editor/plugin-bubble
 
 **Menu "bubble"** per l'editor Scriba: una piccola barra di formattazione che compare sopra il
 testo selezionato (grassetto, link, commento…). TinyMCE la chiama "quickbars" / selection toolbar.
@@ -6,15 +6,15 @@ testo selezionato (grassetto, link, commento…). TinyMCE la chiama "quickbars" 
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-bubble
+pnpm add @scriba-editor/plugin-bubble
 ```
 
 ## Uso
 
 ```ts
-import { bubbleKeymap, bubbleMenu } from '@scriba/plugin-bubble'
-import { markItems } from '@scriba/ui'
-import { linkToolbarItems } from '@scriba/plugin-link'
+import { bubbleKeymap, bubbleMenu } from '@scriba-editor/plugin-bubble'
+import { markItems } from '@scriba-editor/ui'
+import { linkToolbarItems } from '@scriba-editor/plugin-link'
 
 const state = EditorState.create({
   schema,
@@ -35,7 +35,7 @@ const state = EditorState.create({
 | Opzione | Descrizione                                                                     |
 | ------- | ------------------------------------------------------------------------------- |
 | `items` | I controlli della barra (`ToolbarItem[]`), gli stessi della toolbar principale. |
-| `t`     | Traduttore di `@scriba/i18n` (etichetta della barra: chiave `bubble.label`).    |
+| `t`     | Traduttore di `@scriba-editor/i18n` (etichetta della barra: chiave `bubble.label`).    |
 | `mac`   | Se mostrare le scorciatoie come ⌘ (default: rilevamento della piattaforma).     |
 
 ## Cosa esporta

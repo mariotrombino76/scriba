@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import { taskNodes } from '../../plugins/task/src/nodes.js'
 import { sanitizeHTML } from '../src/index.js'
 import { dom } from '../../core/test/helpers/html.js'

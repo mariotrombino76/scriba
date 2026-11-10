@@ -1,4 +1,4 @@
-# @scriba/plugin-code-block
+# @scriba-editor/plugin-code-block
 
 **Blocchi di codice** per l'editor Scriba, con evidenziazione della sintassi e scelta del
 linguaggio. Come il plugin "Code sample" di TinyMCE, ma l'evidenziazione produce **decorazioni**,
@@ -7,7 +7,7 @@ mai HTML: nessuna stringa dell'evidenziatore arriva alla pagina.
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-code-block lowlight
+pnpm add @scriba-editor/plugin-code-block lowlight
 ```
 
 Il pacchetto dipende da `lowlight` 3.3.0; nell'app crei tu l'istanza con le grammatiche che vuoi
@@ -22,7 +22,7 @@ import {
   codeBlockToolbarItems,
   codeHighlight,
   toggleCodeBlock,
-} from '@scriba/plugin-code-block'
+} from '@scriba-editor/plugin-code-block'
 import { common, createLowlight } from 'lowlight'
 
 const schema = new Schema({
@@ -84,4 +84,4 @@ un secondo argomento a `codeBlockToolbarItems`: `[{ id: 'python', label: 'Python
 - L'evidenziatore usa solo i nomi di classe (limitati a `[\w-]`) e le lunghezze del testo; i
   risultati sono in cache per blocco, quindi i blocchi invariati non si rielaborano. Gli errori
   dell'evidenziatore non interrompono mai la scrittura.
-- I colori dei token vengono dal tema (`@scriba/themes`). Vedi [plugin](../../../docs/plugin.md).
+- I colori dei token vengono dal tema (`@scriba-editor/themes`). Vedi [plugin](../../../docs/plugin.md).

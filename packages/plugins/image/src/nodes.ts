@@ -4,7 +4,7 @@ import {
   type HTMLSpec,
   type NodeSpec,
   type StyleDecls,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 export type ImageAlign = 'left' | 'center' | 'right'
 const ALIGNS: readonly string[] = ['left', 'center', 'right']

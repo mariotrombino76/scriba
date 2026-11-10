@@ -1,13 +1,13 @@
-# @scriba/core
+# @scriba-editor/core
 
 Il cuore di Scriba: modello di documento a schema, transazioni, selezione, comandi e API dei plugin. **Non tocca mai il DOM** e non dipende da alcun framework: funziona anche in Node.
 
 ```bash
-pnpm add @scriba/core
+pnpm add @scriba-editor/core
 ```
 
-Di solito lo usi insieme a `@scriba/view` (il rendering nel browser) e ai plugin; i wrapper
-`@scriba/vue`, `@scriba/react` e `@scriba/browser` lo includono già. Come funziona dentro, in
+Di solito lo usi insieme a `@scriba-editor/view` (il rendering nel browser) e ai plugin; i wrapper
+`@scriba-editor/vue`, `@scriba-editor/react` e `@scriba-editor/browser` lo includono già. Come funziona dentro, in
 parole semplici: [Concetti](../../docs/concetti.md).
 
 ## Uso
@@ -23,7 +23,7 @@ import {
   baseKeymap,
   toggleMark,
   serializeHTML,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 const state = EditorState.create({
   schema: basicSchema,
@@ -70,7 +70,7 @@ serializeHTML(next.doc) // '<p>Ciao</p>'
 L'HTML in ingresso non si copia mai nel documento: `parseHTML(schema, root, options?)` lo legge
 dallo schema e **scarta tutto ciò che lo schema non conosce** (tag, attributi, stili, URL non
 ammessi). `root` deve venire da un documento **inerte** (`DOMParser`, mai `innerHTML` nella
-pagina attiva): `@scriba/view` lo fa per te con `parseContent`. L'output di `serializeHTML` è
+pagina attiva): `@scriba-editor/view` lo fa per te con `parseContent`. L'output di `serializeHTML` è
 generato dal documento, con escape di testo e attributi, mai copiato dal DOM.
 
 - Limiti contro la negazione del servizio: `HTMLParseOptions` ha `maxDepth` (default 256) e
@@ -80,6 +80,6 @@ generato dal documento, con escape di testo e attributi, mai copiato dal DOM.
 - Il JSON si valida con `schema.nodeFromJSON(json)`, che lancia un errore per tutto ciò che lo
   schema rifiuta.
 - Il core esegue solo codice DOM-free: puoi usarlo anche sul server, ma **l'HTML salvato va
-  sempre ripassato da `@scriba/sanitize-server`** con lo stesso schema.
+  sempre ripassato da `@scriba-editor/sanitize-server`** con lo stesso schema.
 
 Dettagli: [Sicurezza](../../docs/sicurezza.md).

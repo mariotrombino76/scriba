@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { EditorState, Schema, TextSelection, basicSchemaSpec, serializeHTML } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
+import { EditorState, Schema, TextSelection, basicSchemaSpec, serializeHTML } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
 import { blockquoteNodes, blockquoteToolbarItems, toggleBlockquote } from '../src/index.js'
 
 const schema = new Schema({

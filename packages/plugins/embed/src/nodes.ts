@@ -1,4 +1,4 @@
-import type { DOMLikeElement, Node, NodeSpec } from '@scriba/core'
+import type { DOMLikeElement, Node, NodeSpec } from '@scriba-editor/core'
 import {
   defaultSize,
   embedFromPlayerUrl,

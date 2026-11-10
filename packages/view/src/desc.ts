@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 import type { NodeView } from './node-view.js'
 
 /** DOM node → its descriptor. */

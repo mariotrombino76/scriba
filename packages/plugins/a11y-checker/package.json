@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-a11y-checker",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-a11y-checker",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -21,12 +21,12 @@
   "license": "Apache-2.0",
   "description": "Accessibility checker for the Scriba editor: finds WCAG 2.2 issues in the document and helps fix them.",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/plugin-list": "workspace:*",
-    "@scriba/plugin-table": "workspace:*",
-    "@scriba/ui": "workspace:*",
-    "@scriba/view": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/plugin-list": "workspace:*",
+    "@scriba-editor/plugin-table": "workspace:*",
+    "@scriba-editor/ui": "workspace:*",
+    "@scriba-editor/view": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

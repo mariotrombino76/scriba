@@ -1,16 +1,16 @@
-# @scriba/plugin-merge-tags
+# @scriba-editor/plugin-merge-tags
 
 Campi di unione come i "merge tags" di TinyMCE: segnaposto `{{cliente.nome}}` che la tua applicazione riempie in seguito (lettere, e-mail, contratti).
 
 ```bash
-pnpm add @scriba/plugin-merge-tags
+pnpm add @scriba-editor/plugin-merge-tags
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba/plugin-merge-tags'
+import { keymap } from '@scriba-editor/core'
+import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba-editor/plugin-merge-tags'
 
 const tags: MergeTag[] = [
   { name: 'cliente.nome', label: 'Nome', group: 'Cliente' },
@@ -46,12 +46,12 @@ const filled = fillMergeTags(state.doc, { 'cliente.nome': 'Anna Rossi' })
 
 ## Tastiera e accessibilità
 
-Con l'elenco `{{` aperto: frecce Su/Giù, Invio o Tab per scegliere, Esc per chiudere. L'elenco è un `listbox` con focus nel testo, come per le menzioni (vedi [@scriba/plugin-mention](../mention/README.md), di cui riusa `createSuggestion`). L'etichetta mostrata è `Gruppo › Etichetta`, a te la traduzione.
+Con l'elenco `{{` aperto: frecce Su/Giù, Invio o Tab per scegliere, Esc per chiudere. L'elenco è un `listbox` con focus nel testo, come per le menzioni (vedi [@scriba-editor/plugin-mention](../mention/README.md), di cui riusa `createSuggestion`). L'etichetta mostrata è `Gruppo › Etichetta`, a te la traduzione.
 
 ## Sicurezza
 
 - Il nome è **solo** `[a-z0-9_.]` (segmenti separati da punto, al massimo 100 caratteri): niente markup, niente spazi. Un nome diverso nell'HTML in ingresso fa scartare il nodo.
 - L'elenco dei tag è configurazione, non input: un nome non valido lancia `RangeError` subito.
-- `fillMergeTags` inserisce i valori **come testo**, mai come HTML. Se li prendi da dati utente, il server deve comunque ripassare l'HTML finale con `@scriba/sanitize-server`.
+- `fillMergeTags` inserisce i valori **come testo**, mai come HTML. Se li prendi da dati utente, il server deve comunque ripassare l'HTML finale con `@scriba-editor/sanitize-server`.
 
 Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

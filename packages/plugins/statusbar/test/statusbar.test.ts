@@ -7,11 +7,11 @@ import {
   TextSelection,
   basicSchemaSpec,
   parseHTML,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { linkMarks } from '@scriba/plugin-link'
-import { listNodes } from '@scriba/plugin-list'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { listNodes } from '@scriba-editor/plugin-list'
 import { SIZED_CLASS, createElementPath, createResizeHandle, elementPath } from '../src/index.js'
 
 const schema = new Schema({

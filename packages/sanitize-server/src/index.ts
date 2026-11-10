@@ -4,7 +4,7 @@ import {
   type HTMLParseOptions,
   type Node,
   type Schema,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { parse, type DefaultTreeAdapterMap } from 'parse5'
 import { adaptParse5 } from './adapter.js'
 

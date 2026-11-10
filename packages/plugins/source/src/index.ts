@@ -5,10 +5,10 @@ import {
   parseHTML,
   type HTMLParseOptions,
   type Node,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { openDialog, type DialogHandle, type ToolbarButton } from '@scriba/ui'
-import { parseInertHTML, type EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { openDialog, type DialogHandle, type ToolbarButton } from '@scriba-editor/ui'
+import { parseInertHTML, type EditorView } from '@scriba-editor/view'
 
 export interface SourceOptions {
   /** Longest HTML accepted on save (characters, default 2 000 000; §5.10). */

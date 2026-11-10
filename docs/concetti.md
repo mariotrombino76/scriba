@@ -24,9 +24,9 @@ nasce dal documento, non dal DOM della pagina. Tutto quello che lo schema non co
 ## Schema
 
 ```ts
-import { Schema, basicSchemaSpec } from '@scriba/core'
-import { tableNodes } from '@scriba/plugin-table'
-import { linkMarks } from '@scriba/plugin-link'
+import { Schema, basicSchemaSpec } from '@scriba-editor/core'
+import { tableNodes } from '@scriba-editor/plugin-table'
+import { linkMarks } from '@scriba-editor/plugin-link'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...tableNodes },
@@ -72,7 +72,7 @@ Un comando è una funzione `(state, dispatch?, view?) => boolean`:
   disabilitano da soli.
 
 ```ts
-import { toggleMark } from '@scriba/core'
+import { toggleMark } from '@scriba-editor/core'
 
 const grassetto = toggleMark(schema.marks.bold!)
 grassetto(view.state) // true se applicabile qui
@@ -95,6 +95,6 @@ blocchi cambiati.
 
 ## Interfaccia
 
-`@scriba/ui` fornisce Web Components accessibili: `<scriba-toolbar>`, `<scriba-menubar>`, menu,
+`@scriba-editor/ui` fornisce Web Components accessibili: `<scriba-toolbar>`, `<scriba-menubar>`, menu,
 dialog e il menu del tasto destro. Parlano con l'editor solo tramite comandi pubblici, quindi
 funzionano con qualsiasi framework (o senza).

@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 
 /**
  * Document → Markdown (CommonMark + GFM tables and strikethrough).

@@ -8,15 +8,15 @@ anche con connessioni lente o interrotte.
 > risultato (è la magia dei CRDT, qui con [Yjs](https://yjs.dev)). Il server fa da centralino e
 > da guardiano: dice chi può entrare, chi può scrivere e salva il documento.
 
-Servono due parti: `@scriba/plugin-collab` nel browser e `@scriba/collab-server` sul tuo server
+Servono due parti: `@scriba-editor/plugin-collab` nel browser e `@scriba-editor/collab-server` sul tuo server
 Node.
 
 ## Nel browser
 
 ```ts
-import { EditorState } from '@scriba/core'
-import { EditorView } from '@scriba/view'
-import { collab, collabStatusElement } from '@scriba/plugin-collab'
+import { EditorState } from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
+import { collab, collabStatusElement } from '@scriba-editor/plugin-collab'
 
 const shared = collab({
   url: 'wss://editor.example.com/collab',
@@ -52,9 +52,9 @@ shared.destroy()
 ## Sul server
 
 ```ts
-import { listenCollabServer, documentFromYjs } from '@scriba/collab-server'
-import { serializeHTML } from '@scriba/core'
-import { sanitizeHTML } from '@scriba/sanitize-server'
+import { listenCollabServer, documentFromYjs } from '@scriba-editor/collab-server'
+import { serializeHTML } from '@scriba-editor/core'
+import { sanitizeHTML } from '@scriba-editor/sanitize-server'
 import { schema } from './schema.js'
 
 listenCollabServer({
@@ -91,7 +91,7 @@ Per agganciarlo a un tuo server HTTP esistente usa `attachCollabServer(wss, opzi
   **permessi per documento**: nessun documento è accessibile solo indovinandone il nome.
 - **Scrittura**: con `canWrite: false` ogni modifica viene rifiutata; con `canComment` passano
   solo i commenti.
-- **Blocchi protetti** (`@scriba/plugin-permissions`): con `canEditBlock(id)` le modifiche ai
+- **Blocchi protetti** (`@scriba-editor/plugin-permissions`): con `canEditBlock(id)` le modifiche ai
   blocchi non consentiti vengono annullate.
 - **Limiti**: dimensione dei messaggi e del documento, frequenza, connessioni per documento,
   tempo per autenticarsi.

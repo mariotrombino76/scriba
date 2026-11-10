@@ -1,6 +1,6 @@
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { openDialog } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { openDialog } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { insertEmbed, insertMediaFile, selectedMedia } from './commands.js'
 import { MEDIA_TYPES, mediaKindOf, mediaKindOfType, safeMediaUrl, type MediaKind } from './media.js'
 import {

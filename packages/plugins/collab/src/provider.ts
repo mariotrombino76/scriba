@@ -27,7 +27,7 @@ export interface CollabProviderOptions {
 type Listener = (status: CollabStatus, info: { canWrite: boolean }) => void
 
 /**
- * WebSocket transport for a Yjs document (talks to `@scriba/collab-server`):
+ * WebSocket transport for a Yjs document (talks to `@scriba-editor/collab-server`):
  * authenticates first, then syncs the document and the cursors; reconnects
  * with exponential backoff; stops for good when the server refuses access.
  */

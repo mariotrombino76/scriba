@@ -1,17 +1,17 @@
-# @scriba/react
+# @scriba-editor/react
 
 L'editor Scriba come componente React (18 e 19).
 
 ```bash
-pnpm add @scriba/react @scriba/themes
+pnpm add @scriba-editor/react @scriba-editor/themes
 ```
 
 ## Uso
 
 ```tsx
 import { useState } from 'react'
-import { ScribaEditor } from '@scriba/react'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/react'
+import '@scriba-editor/themes/scriba.css'
 
 export function Nota() {
   const [html, setHtml] = useState('<p>Ciao</p>')
@@ -20,7 +20,7 @@ export function Nota() {
 ```
 
 Il contenuto (`value`, `setContent`) è **input non fidato**: passa sempre dal parser dello schema
-in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba/sanitize-server` sul
+in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server` sul
 server prima di salvarlo o mostrarlo.
 
 ## Proprietà
@@ -34,7 +34,7 @@ server prima di salvarlo o mostrarlo.
 | `plugins`   | —                            | Plugin aggiuntivi (letti alla creazione).                                              |
 | `editable`  | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                               |
 | `label`     | "Editor di testo formattato" | Nome accessibile dell'area di scrittura.                                               |
-| `locale`    | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba/i18n`). |
+| `locale`    | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`). |
 | `toolbar`   | `true`                       | Mostra la toolbar predefinita.                                                         |
 | `nodeViews` | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                          |
 | `className` | —                            | Classe aggiuntiva del contenitore.                                                     |
@@ -47,7 +47,7 @@ Per un'interfaccia tutta tua c'è l'hook:
 
 ```tsx
 import { useRef } from 'react'
-import { useScriba } from '@scriba/react'
+import { useScriba } from '@scriba-editor/react'
 
 function Editor() {
   const place = useRef<HTMLDivElement>(null)

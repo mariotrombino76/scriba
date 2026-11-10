@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/collab-server",
-  "version": "0.0.0",
+  "name": "@scriba-editor/collab-server",
+  "version": "0.1.0",
   "description": "Collaboration server for Scriba (y-websocket compatible): authentication, permissions, limits, server-assigned identities.",
   "type": "module",
   "sideEffects": false,
@@ -21,14 +21,14 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*",
+    "@scriba-editor/core": "workspace:*",
     "ws": "8.22.0",
     "y-protocols": "1.0.7",
     "yjs": "13.6.33",
-    "@scriba/plugin-collab": "workspace:*",
+    "@scriba-editor/plugin-collab": "workspace:*",
     "lib0": "0.2.119",
-    "@scriba/plugin-comments": "workspace:*",
-    "@scriba/plugin-permissions": "workspace:*",
+    "@scriba-editor/plugin-comments": "workspace:*",
+    "@scriba-editor/plugin-permissions": "workspace:*",
     "@types/ws": "8.18.2"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 // Bundle size (CLAUDE.md §1: core < 60 KB gzip, tree-shakeable). Each entry is bundled
-// minified on its own with Vite (dependencies on other @scriba packages included, so the
+// minified on its own with Vite (dependencies on other @scriba-editor packages included, so the
 // number is what an app really ships for it), then gzipped.
 import console from 'node:console'
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
@@ -15,22 +15,22 @@ const pkg = (name) => join(root, 'packages', name, 'src/index.ts')
 const plugin = (name) => join(root, 'packages/plugins', name, 'src/index.ts')
 
 const ENTRIES = [
-  { name: '@scriba/core', file: pkg('core'), budget: 60 * 1024 },
-  { name: '@scriba/core + view (minimal editor)', file: [pkg('core'), pkg('view')] },
-  { name: '@scriba/ui', file: pkg('ui') },
-  { name: '@scriba/plugin-table', file: plugin('table') },
-  { name: '@scriba/plugin-markdown', file: plugin('markdown') },
+  { name: '@scriba-editor/core', file: pkg('core'), budget: 60 * 1024 },
+  { name: '@scriba-editor/core + view (minimal editor)', file: [pkg('core'), pkg('view')] },
+  { name: '@scriba-editor/ui', file: pkg('ui') },
+  { name: '@scriba-editor/plugin-table', file: plugin('table') },
+  { name: '@scriba-editor/plugin-markdown', file: plugin('markdown') },
 ]
 
 const alias = {
-  '@scriba/core': pkg('core'),
-  '@scriba/view': pkg('view'),
-  '@scriba/ui': pkg('ui'),
-  '@scriba/i18n': pkg('i18n'),
+  '@scriba-editor/core': pkg('core'),
+  '@scriba-editor/view': pkg('view'),
+  '@scriba-editor/ui': pkg('ui'),
+  '@scriba-editor/i18n': pkg('i18n'),
 }
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`
 let failed = false
-console.log('Minified and gzipped, each with the parts of other @scriba packages it uses:')
+console.log('Minified and gzipped, each with the parts of other @scriba-editor packages it uses:')
 for (const entry of ENTRIES) {
   const out = mkdtempSync(join(tmpdir(), 'scriba-size-'))
   const inputs = Array.isArray(entry.file) ? entry.file : [entry.file]
@@ -44,7 +44,7 @@ for (const entry of ENTRIES) {
       lib: { entry: inputs, formats: ['es'] },
       // third-party libraries (markdown-it, lowlight…) are the app's choice: not counted
       rollupOptions: {
-        external: (id) => !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('@scriba/'),
+        external: (id) => !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('@scriba-editor/'),
       },
     },
   })

@@ -1,4 +1,4 @@
-# @scriba/plugin-charmap
+# @scriba-editor/plugin-charmap
 
 **Caratteri speciali ed emoji** per l'editor Scriba: una finestra con categorie, griglia di
 caratteri e ricerca per nome (in italiano o inglese), come il "Special character" di TinyMCE ma con
@@ -7,13 +7,13 @@ emoji e nomi in due lingue. Inserisce testo semplice: nessun markup.
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-charmap
+pnpm add @scriba-editor/plugin-charmap
 ```
 
 ## Uso
 
 ```ts
-import { charmapToolbarItem, openCharmapDialog } from '@scriba/plugin-charmap'
+import { charmapToolbarItem, openCharmapDialog } from '@scriba-editor/plugin-charmap'
 
 // pulsante (barra degli strumenti o menu Inserisci)
 toolbarItems.push(charmapToolbarItem(t))
@@ -28,7 +28,7 @@ const slashItem = {
 }
 ```
 
-`t` è il traduttore di `@scriba/i18n` (`createTranslator('it')`).
+`t` è il traduttore di `@scriba-editor/i18n` (`createTranslator('it')`).
 
 ## Cosa esporta
 

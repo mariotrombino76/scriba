@@ -1,18 +1,18 @@
-# @scriba/plugin-fullscreen
+# @scriba-editor/plugin-fullscreen
 
 Modalità **schermo intero** per l'editor Scriba: il contenitore (barra, area di scrittura, barra di
 stato) copre la finestra e la pagina sotto smette di scorrere. Come il pulsante "Fullscreen" di
 TinyMCE.
 
 ```bash
-pnpm add @scriba/plugin-fullscreen
+pnpm add @scriba-editor/plugin-fullscreen
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
+import { keymap } from '@scriba-editor/core'
+import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
 
 // il contenitore con barra, area di scrittura e barra di stato
 const fullscreen = new Fullscreen(document.getElementById('app')!)
@@ -47,7 +47,7 @@ Il keymap va registrato con `readOnly: true`: lo schermo intero funziona anche i
 ## Note
 
 - Sono solo **classi CSS**: `scriba-fullscreen` sul contenitore e `scriba-fullscreen-open` su
-  `<html>`. Gli stili stanno in `@scriba/themes`.
+  `<html>`. Gli stili stanno in `@scriba-editor/themes`.
 - Non usa la Fullscreen API del browser: niente richieste di permesso, funziona negli iframe e con
   una CSP rigida (nessuno stile inline).
 - Uscendo, la pagina torna alla posizione di scorrimento che aveva.

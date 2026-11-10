@@ -1,10 +1,10 @@
-import type { CommentStore, CommentThread, ThreadKind } from '@scriba/plugin-comments'
+import type { CommentStore, CommentThread, ThreadKind } from '@scriba-editor/plugin-comments'
 import type { CollabProvider } from './provider.js'
 
 const MESSAGE_COMMENTS = 3
 
 /**
- * Comments through `@scriba/collab-server`: every change is checked and
+ * Comments through `@scriba-editor/collab-server`: every change is checked and
  * stamped by the server (ids, author = the authenticated user, date), and
  * everybody receives the new list at once. Offline, operations are refused.
  */

@@ -1,4 +1,4 @@
-import type { DOMLike, NodeSpec } from '@scriba/core'
+import type { DOMLike, NodeSpec } from '@scriba-editor/core'
 
 export const MAX_ID_LENGTH = 200
 export const MAX_LABEL_LENGTH = 100

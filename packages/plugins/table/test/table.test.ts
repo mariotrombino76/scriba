@@ -10,7 +10,7 @@ import {
   undo,
   type Command,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
 import {
   CellSelection,
@@ -486,7 +486,7 @@ describe('cell selection', () => {
 describe('table context menu', () => {
   it('applies in a table: Cell, Row and Column sub-menus, then properties and delete', async () => {
     const { tableContextMenu } = await import('../src/index.js')
-    const { createTranslator } = await import('@scriba/i18n')
+    const { createTranslator } = await import('@scriba-editor/i18n')
     const section = tableContextMenu(schema, createTranslator('it'))
     const doc = parse(`<p>x</p>${TABLE3}`)
     const at = (pos: number) =>

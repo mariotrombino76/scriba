@@ -5,7 +5,7 @@ import {
   type Node,
   type NodeType,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import type { A11yLevel, WcagCriterion } from './types.js'
 
 /** The WCAG 2.2 success criteria the checks refer to. */

@@ -1110,7 +1110,7 @@ html.scriba-fullscreen-open body {
   padding-left: 8px;
 }
 
-/* Task node view (example Vue component in @scriba/vue) */
+/* Task node view (example Vue component in @scriba-editor/vue) */
 .scriba-task-view {
   display: flex;
   flex-wrap: wrap;
@@ -1750,7 +1750,7 @@ scriba-toolbar.scriba-bubble {
   display: none;
 }
 
-/* Horizontal line and page break (@scriba/plugin-hr) */
+/* Horizontal line and page break (@scriba-editor/plugin-hr) */
 .scriba-editor hr,
 .scriba-preview hr {
   margin: 1.25em 0;
@@ -1774,7 +1774,7 @@ hr.scriba-page-break {
   }
 }
 
-/* Collapsible sections (@scriba/plugin-details): editor node view, then the saved HTML */
+/* Collapsible sections (@scriba-editor/plugin-details): editor node view, then the saved HTML */
 .scriba-details {
   position: relative;
   margin: 0.75em 0;
@@ -1827,7 +1827,7 @@ hr.scriba-page-break {
   font-weight: 600;
   cursor: pointer;
 }
-/* Editing aids (@scriba/plugin-visual-aids): only in the editor, never in the saved HTML */
+/* Editing aids (@scriba-editor/plugin-visual-aids): only in the editor, never in the saved HTML */
 .scriba-editor.scriba-show-blocks
   :is(
     p,
@@ -1921,7 +1921,7 @@ hr.scriba-page-break {
   box-shadow: inset 2px 0 0 var(--scriba-accent);
 }
 
-/* Videos (@scriba/plugin-embed): a card in the editor, the player in the saved HTML */
+/* Videos (@scriba-editor/plugin-embed): a card in the editor, the player in the saved HTML */
 .scriba-editor .scriba-embed {
   display: flex;
   align-items: center;
@@ -1989,7 +1989,7 @@ hr.scriba-page-break {
   border: 0;
 }
 
-/* Status bar (@scriba/plugin-statusbar): element path, word count, resize handle */
+/* Status bar (@scriba-editor/plugin-statusbar): element path, word count, resize handle */
 .scriba-statusbar {
   display: flex;
   background: var(--scriba-bg);
@@ -2076,7 +2076,7 @@ hr.scriba-page-break {
   overflow-y: auto;
 }
 
-/* Footnotes (@scriba/plugin-footnotes) */
+/* Footnotes (@scriba-editor/plugin-footnotes) */
 :is(.scriba-editor, .scriba-preview) ol.scriba-footnotes {
   margin: 2em 0 0;
   padding: 0.75em 0 0 1.5em;
@@ -2092,7 +2092,7 @@ hr.scriba-page-break {
   border-radius: 2px;
 }
 
-/* Merge tags (@scriba/plugin-merge-tags) */
+/* Merge tags (@scriba-editor/plugin-merge-tags) */
 .scriba-editor span[data-merge-tag] {
   padding: 0 0.3em;
   font-family: ui-monospace, 'SF Mono', Consolas, monospace;
@@ -2105,7 +2105,7 @@ hr.scriba-page-break {
   outline: 2px solid var(--scriba-accent);
 }
 
-/* Table of contents (@scriba/plugin-toc) */
+/* Table of contents (@scriba-editor/plugin-toc) */
 :is(.scriba-editor, .scriba-preview) ol.scriba-toc,
 :is(.scriba-editor, .scriba-preview) ol.scriba-toc ol {
   list-style: none;
@@ -2127,7 +2127,7 @@ hr.scriba-page-break {
   outline: 2px solid var(--scriba-accent);
 }
 
-/* Formulas (@scriba/plugin-math): MathML drawn by the browser */
+/* Formulas (@scriba-editor/plugin-math): MathML drawn by the browser */
 .scriba-editor .scriba-math {
   padding: 0 0.1em;
   border-radius: 4px;
@@ -2187,7 +2187,7 @@ hr.scriba-page-break {
   outline-offset: 1px;
 }
 
-/* Anchors (@scriba/plugin-link): a discreet mark in the editor, room when jumping to them */
+/* Anchors (@scriba-editor/plugin-link): a discreet mark in the editor, room when jumping to them */
 .scriba-editor [id^='anchor-'] {
   scroll-margin-top: 1rem;
   border-left: 2px dotted var(--scriba-muted);

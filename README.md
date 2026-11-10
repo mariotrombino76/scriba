@@ -3,7 +3,7 @@
 Editor di testo formattato (WYSIWYG) per il web, scritto in TypeScript. Ha le funzioni di TinyMCE e
 in più un documento strutturato e sicuro per costruzione.
 
-> **Stato:** in preparazione la prima versione pubblica (`0.1.0`). I pacchetti `@scriba/*` non sono
+> **Stato:** in preparazione la prima versione pubblica (`0.1.0`). I pacchetti `@scriba-editor/*` non sono
 > ancora su npm.
 
 ## Perché Scriba
@@ -11,7 +11,7 @@ in più un documento strutturato e sicuro per costruzione.
 - **Documento con uno schema, non HTML libero.** Ciò che lo schema non conosce viene scartato:
   l'output è sempre valido, prevedibile e privo di script.
 - **Sicurezza da integratore.** Parser inerte, URL ammessi solo da una lista (whitelist), funziona
-  con una CSP rigida e con Trusted Types. Il pacchetto `@scriba/sanitize-server` riapplica lo stesso
+  con una CSP rigida e con Trusted Types. Il pacchetto `@scriba-editor/sanitize-server` riapplica lo stesso
   schema sul server.
 - **Collaborazione in tempo reale inclusa** (Yjs), con cursori degli altri, commenti, suggerimenti
   (revisioni) e permessi per blocco.
@@ -44,8 +44,11 @@ in più un documento strutturato e sicuro per costruzione.
 **Una pagina qualsiasi** (senza framework né build):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.css" />
-<script src="https://cdn.jsdelivr.net/npm/@scriba/browser@0.1.0/dist/scriba.iife.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 <div id="editor"></div>
 <script>
   Scriba.createEditor('#editor', { content: '<p>Ciao</p>', onChange: (html) => salva(html) })
@@ -59,8 +62,8 @@ in più un documento strutturato e sicuro per costruzione.
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScribaEditor } from '@scriba/vue'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/vue'
+import '@scriba-editor/themes/scriba.css'
 
 const html = ref('<p>Ciao</p>')
 </script>
@@ -74,8 +77,8 @@ const html = ref('<p>Ciao</p>')
 
 ```tsx
 import { useState } from 'react'
-import { ScribaEditor } from '@scriba/react'
-import '@scriba/themes/scriba.css'
+import { ScribaEditor } from '@scriba-editor/react'
+import '@scriba-editor/themes/scriba.css'
 
 export function Nota() {
   const [html, setHtml] = useState('<p>Ciao</p>')
@@ -84,24 +87,24 @@ export function Nota() {
 ```
 
 > **Importante:** sul server ripassa **sempre** l'HTML ricevuto da `sanitizeHTML` di
-> `@scriba/sanitize-server` prima di salvarlo o mostrarlo. Chiunque può inviare HTML alla tua API
+> `@scriba-editor/sanitize-server` prima di salvarlo o mostrarlo. Chiunque può inviare HTML alla tua API
 > senza passare dall'editor. Vedi [Sicurezza](docs/sicurezza.md).
 
 ## Pacchetti
 
-| Pacchetto                                             | Cosa fa                                                                |
-| ----------------------------------------------------- | ---------------------------------------------------------------------- |
-| [`@scriba/core`](packages/core)                       | Schema, documento, transazioni, comandi, undo/redo. Nessun DOM.        |
-| [`@scriba/view`](packages/view)                       | La vista nel browser: `contentEditable` controllato, IME, selezione.   |
-| [`@scriba/ui`](packages/ui)                           | Barra degli strumenti, menu, finestre di dialogo (Web Components).     |
-| [`@scriba/i18n`](packages/i18n)                       | Testi dell'interfaccia: it, en, fr, de, es.                            |
-| [`@scriba/themes`](packages/themes)                   | Tema CSS chiaro e scuro, con variabili personalizzabili.               |
-| [`@scriba/vue`](packages/vue)                         | `<ScribaEditor v-model>` e `useScriba()` per Vue 3.                    |
-| [`@scriba/react`](packages/react)                     | `<ScribaEditor value onChange>` e `useScriba()` per React 18/19.       |
-| [`@scriba/browser`](packages/browser)                 | Tutto in un file per qualsiasi pagina: `Scriba.createEditor()`.        |
-| [`@scriba/sanitize-server`](packages/sanitize-server) | Sanificazione sul server (Node) con lo stesso schema.                  |
-| [`@scriba/collab-server`](packages/collab-server)     | Server WebSocket per la collaborazione: accesso, permessi, limiti.     |
-| [`@scriba/plugin-*`](packages/plugins)                | Un pacchetto per funzione: tabelle, immagini, link, AI, commenti, ecc. |
+| Pacchetto                                                    | Cosa fa                                                                |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [`@scriba-editor/core`](packages/core)                       | Schema, documento, transazioni, comandi, undo/redo. Nessun DOM.        |
+| [`@scriba-editor/view`](packages/view)                       | La vista nel browser: `contentEditable` controllato, IME, selezione.   |
+| [`@scriba-editor/ui`](packages/ui)                           | Barra degli strumenti, menu, finestre di dialogo (Web Components).     |
+| [`@scriba-editor/i18n`](packages/i18n)                       | Testi dell'interfaccia: it, en, fr, de, es.                            |
+| [`@scriba-editor/themes`](packages/themes)                   | Tema CSS chiaro e scuro, con variabili personalizzabili.               |
+| [`@scriba-editor/vue`](packages/vue)                         | `<ScribaEditor v-model>` e `useScriba()` per Vue 3.                    |
+| [`@scriba-editor/react`](packages/react)                     | `<ScribaEditor value onChange>` e `useScriba()` per React 18/19.       |
+| [`@scriba-editor/browser`](packages/browser)                 | Tutto in un file per qualsiasi pagina: `Scriba.createEditor()`.        |
+| [`@scriba-editor/sanitize-server`](packages/sanitize-server) | Sanificazione sul server (Node) con lo stesso schema.                  |
+| [`@scriba-editor/collab-server`](packages/collab-server)     | Server WebSocket per la collaborazione: accesso, permessi, limiti.     |
+| [`@scriba-editor/plugin-*`](packages/plugins)                | Un pacchetto per funzione: tabelle, immagini, link, AI, commenti, ecc. |
 
 ## Documentazione
 

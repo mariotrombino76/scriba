@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/i18n",
-  "version": "0.0.0",
+  "name": "@scriba-editor/i18n",
+  "version": "0.1.0",
   "description": "Translations for the Scriba editor UI (it, en).",
   "type": "module",
   "sideEffects": false,

@@ -1,4 +1,4 @@
-import type { DOMLike } from '@scriba/core'
+import type { DOMLike } from '@scriba-editor/core'
 import type { DefaultTreeAdapterMap } from 'parse5'
 
 type P5Node = DefaultTreeAdapterMap['node']

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import { linkMarks } from '../../plugins/link/src/index.js'
 import { embedNodes } from '../../plugins/embed/src/nodes.js'
 import { mediaNodes } from '../../plugins/embed/src/media.js'

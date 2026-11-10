@@ -1,24 +1,24 @@
-# @scriba/themes
+# @scriba-editor/themes
 
 Il tema CSS di Scriba: un solo foglio di stile, chiaro e scuro, personalizzabile con variabili CSS.
 
 ```bash
-pnpm add @scriba/themes
+pnpm add @scriba-editor/themes
 ```
 
 ## Uso
 
 ```ts
-import '@scriba/themes/scriba.css'
+import '@scriba-editor/themes/scriba.css'
 ```
 
 Oppure da HTML (il file è `scriba.css` nel pacchetto):
 
 ```html
-<link rel="stylesheet" href="/node_modules/@scriba/themes/scriba.css" />
+<link rel="stylesheet" href="/node_modules/@scriba-editor/themes/scriba.css" />
 ```
 
-Con lo script per il browser (`@scriba/browser`) il foglio di stile è già incluso come
+Con lo script per il browser (`@scriba-editor/browser`) il foglio di stile è già incluso come
 `scriba.css` di quel pacchetto. Il tema è un normale foglio di stile: non richiede
 `style-src 'unsafe-inline'` e funziona con una CSP rigida (gli stili dinamici dell'editor
 passano dal CSSOM).

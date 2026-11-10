@@ -1,0 +1,49 @@
+# Publishes every @scriba-editor/* package to npm when a version tag (v0.1.0, …) is
+# pushed. Provenance links each package to this repository and to this run
+# (CLAUDE.md §5.12). See RELEASING.md before the first release.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # npm provenance and trusted publishing (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # the tag must match the version of every package
+      - name: Check the version
+        run: |
+          node -e '
+            const { execSync } = require("node:child_process")
+            const tag = process.env.GITHUB_REF_NAME.replace(/^v/, "")
+            const list = JSON.parse(execSync("pnpm -r ls --depth -1 --json").toString())
+            const wrong = list.filter((p) => !p.private && p.version !== tag)
+            if (wrong.length) {
+              console.error("Version differs from the tag " + tag + ":", wrong.map((p) => p.name + "@" + p.version).join(", "))
+              process.exit(1)
+            }'
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm test:security
+      - run: pnpm build
+      - run: pnpm -r publish --access public --provenance --no-git-checks
+        env:
+          # first release: a granular npm token saved as the NPM_TOKEN secret of the
+          # "npm" environment; afterwards trusted publishing (OIDC) needs no token
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

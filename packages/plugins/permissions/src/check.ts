@@ -6,7 +6,7 @@ import {
   type Node,
   type NodeJSON,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { blockIdOf } from './ids.js'
 
 /** Whether the current user may change the block with this id. */

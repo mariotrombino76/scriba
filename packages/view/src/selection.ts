@@ -1,4 +1,4 @@
-import { NodeSelection, TextSelection, type Selection, type Node } from '@scriba/core'
+import { NodeSelection, TextSelection, type Selection, type Node } from '@scriba-editor/core'
 import { descAt, domFromPos, posFromDOM, type ViewDesc } from './desc.js'
 
 /** Reads the DOM selection as a model selection, or null when it is outside the editor. */

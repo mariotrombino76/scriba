@@ -1,4 +1,4 @@
-# @scriba/plugin-callout
+# @scriba-editor/plugin-callout
 
 **Riquadri evidenziati** (callout) per l'editor Scriba: un box attorno a uno o più blocchi, con un
 tipo (`info`, `tip`, `warning`, `danger`) per segnalare note, suggerimenti, avvisi e pericoli.
@@ -6,14 +6,14 @@ tipo (`info`, `tip`, `warning`, `danger`) per segnalare note, suggerimenti, avvi
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-callout
+pnpm add @scriba-editor/plugin-callout
 ```
 
 ## Uso
 
 ```ts
-import { Schema, basicSchemaSpec } from '@scriba/core'
-import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba/plugin-callout'
+import { Schema, basicSchemaSpec } from '@scriba-editor/core'
+import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba-editor/plugin-callout'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...calloutNodes },
@@ -27,10 +27,10 @@ const item = calloutToolbarItem(schema)
 
 Nell'editor e nell'HTML salvato il riquadro è un `<aside class="scriba-callout" data-callout="…">`,
 con lo stile del tema. Con Vue puoi dargli una vista con la scelta del tipo: il componente di
-esempio `CalloutView` di `@scriba/vue`.
+esempio `CalloutView` di `@scriba-editor/vue`.
 
 ```ts
-import { CalloutView, vueNodeView } from '@scriba/vue'
+import { CalloutView, vueNodeView } from '@scriba-editor/vue'
 
 const view = new EditorView(el, {
   state,
@@ -64,7 +64,7 @@ una pagina web perde il riquadro e conserva solo il contenuto.
 - Se il nodo `callout` manca dallo schema, `toggleCallout` lancia un `RangeError`: aggiungi
   `calloutNodes`.
 - Il plugin definisce solo nodo e comandi: l'aspetto nell'editor lo dà la node view (qui
-  `CalloutView` di `@scriba/vue`, oppure una tua).
+  `CalloutView` di `@scriba-editor/vue`, oppure una tua).
 - Sicurezza: il tipo è una lista chiusa; qualunque altro valore diventa `info`, e l'attributo
   viene validato dallo schema (`isCalloutKind`). Vedi [sicurezza](../../../docs/sicurezza.md).
 - Per scrivere una node view propria vedi [plugin](../../../docs/plugin.md).

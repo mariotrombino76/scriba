@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 import { DecorationIndex } from './decorations.js'
 import {
   DecoViewDesc,

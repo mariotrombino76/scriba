@@ -1,6 +1,6 @@
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import type { RevisionOptions } from './content.js'
 import { openRevisionDialog } from './dialog.js'
 

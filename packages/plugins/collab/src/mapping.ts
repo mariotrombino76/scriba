@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import { Fragment, type Mark, type Node, type Schema } from '@scriba/core'
+import { Fragment, type Mark, type Node, type Schema } from '@scriba-editor/core'
 
 /**
  * Document ↔ Yjs mapping (simple picture: the same LEGO construction written

@@ -9,7 +9,7 @@ Oggetto consigliato: `[SECURITY] Scriba – breve descrizione`
 
 Includi, se possibile:
 
-- pacchetto e versione coinvolti (`@scriba/core`, `@scriba/sanitize-server`, …);
+- pacchetto e versione coinvolti (`@scriba-editor/core`, `@scriba-editor/sanitize-server`, …);
 - descrizione del problema e impatto (es. XSS, esecuzione di codice, accesso a documenti altrui);
 - passi per riprodurlo o un payload minimo;
 - browser / versione di Node usati.
@@ -35,7 +35,7 @@ solo sull'ultima versione pubblicata.
 - XSS o esecuzione di codice tramite contenuto incollato, importato, caricato (`setContent`),
   ricevuto in collaborazione o generato dall'AI;
 - aggiramento della whitelist di URL, tag o attributi;
-- differenze tra la sanificazione del browser e quella di `@scriba/sanitize-server`
+- differenze tra la sanificazione del browser e quella di `@scriba-editor/sanitize-server`
   (mutation XSS);
 - blocchi o consumo eccessivo di risorse (DoS) con input contenuti;
 - accesso o modifica non autorizzata di documenti nella collaborazione in tempo reale.
@@ -44,7 +44,7 @@ solo sull'ultima versione pubblicata.
 
 La sanificazione nel browser è una comodità, **non una protezione**: chiunque può chiamare
 la tua API saltando l'editor. Prima di salvare o mostrare HTML proveniente dai client,
-passalo **sempre** da `@scriba/sanitize-server` con lo stesso schema usato nell'editor.
+passalo **sempre** da `@scriba-editor/sanitize-server` con lo stesso schema usato nell'editor.
 
 L'HTML prodotto può contenere attributi `style`, ma solo **tipizzati e validati**
 (allineamento, rientro, colori, font e dimensione), mai stili liberi. L'editor li applica
@@ -59,7 +59,7 @@ parser dello schema.
 Anche la validazione dei file caricati (tipo reale, dimensione, eventuale antivirus)
 spetta al tuo server.
 
-I **blocchi protetti** (`@scriba/plugin-permissions`) bloccano solo l'editor. Quando salvi un
+I **blocchi protetti** (`@scriba-editor/plugin-permissions`) bloccano solo l'editor. Quando salvi un
 documento, confronta la versione precedente e quella nuova con `checkBlockEdits` e rifiuta il
 salvataggio se restituisce degli id. In collaborazione passa `canEditBlock` da `authenticate` e
 lo `schema` al server: gli aggiornamenti che toccano un blocco protetto vengono annullati per
@@ -76,4 +76,4 @@ annotazione e rifiuta il salvataggio se il resto è cambiato.
 
 To report a vulnerability, email **trombino.mario.ph@gmail.com** privately
 (subject: `[SECURITY] Scriba – short description`). Please do not open public issues.
-Always re-sanitize client HTML on the server with `@scriba/sanitize-server`.
+Always re-sanitize client HTML on the server with `@scriba-editor/sanitize-server`.

@@ -1,16 +1,16 @@
-# @scriba/plugin-statusbar
+# @scriba-editor/plugin-statusbar
 
-La barra di stato di TinyMCE: **percorso degli elementi** (`ul › li › p › strong`) e **maniglia per ridimensionare** l'editor. Non sono plugin dell'editor ma due elementi DOM che metti sotto l'editor; si affiancano al conteggio parole di [@scriba/plugin-word-count](../word-count/README.md).
+La barra di stato di TinyMCE: **percorso degli elementi** (`ul › li › p › strong`) e **maniglia per ridimensionare** l'editor. Non sono plugin dell'editor ma due elementi DOM che metti sotto l'editor; si affiancano al conteggio parole di [@scriba-editor/plugin-word-count](../word-count/README.md).
 
 ```bash
-pnpm add @scriba/plugin-statusbar
+pnpm add @scriba-editor/plugin-statusbar
 ```
 
 ## Uso
 
 ```ts
-import { createElementPath, createResizeHandle } from '@scriba/plugin-statusbar'
-import { createWordCountStatus } from '@scriba/plugin-word-count'
+import { createElementPath, createResizeHandle } from '@scriba-editor/plugin-statusbar'
+import { createWordCountStatus } from '@scriba-editor/plugin-word-count'
 
 const statusbar = document.createElement('div')
 statusbar.className = 'scriba-statusbar'

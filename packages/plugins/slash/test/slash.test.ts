@@ -7,9 +7,9 @@ import {
   keymap,
   runKeymaps,
   serializeHTML,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView, someProp } from '@scriba/view'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView, someProp } from '@scriba-editor/view'
 import {
   basicSlashItems,
   filterItems,

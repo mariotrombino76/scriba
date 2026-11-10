@@ -1,7 +1,7 @@
-import type { Command, KeyBindings, Plugin } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import type { Command, KeyBindings, Plugin } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { openFindPanel, type FindReplaceOptions } from './panel.js'
 import { findPlugin } from './state.js'
 

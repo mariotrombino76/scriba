@@ -1,16 +1,16 @@
-# @scriba/plugin-mention
+# @scriba-editor/plugin-mention
 
 Menzioni `@persona` come in TinyMCE (plugin Mentions): scrivendo `@` all'inizio di una riga o dopo uno spazio si apre un elenco di persone trovate **dal tuo backend**, e la scelta inserisce un nodo `mention` atomico.
 
 ```bash
-pnpm add @scriba/plugin-mention
+pnpm add @scriba-editor/plugin-mention
 ```
 
 ## Uso
 
 ```ts
-import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba/plugin-mention'
-import { keymap } from '@scriba/core'
+import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba-editor/plugin-mention'
+import { keymap } from '@scriba-editor/core'
 
 // la ricerca chiama il tuo server (con la sessione dell'utente)
 const searchPeople: MentionSearch = async (query, signal) => {
@@ -39,14 +39,14 @@ Una voce restituita da `search` ha la forma `{ id, label, detail? }` (`MentionIt
 | `closeMention(tr)`, `getMentionState(state)`, `mentionKey`, `isLoading(state)`                    | Stato dell'elenco                                                                                                              |
 | `cleanResults(raw, max)`                                                                          | Scarta le voci non valide, i doppioni di `id` e oltre `max`                                                                    |
 | `isMentionId`, `isMentionLabel`, `labelFromText`, `MAX_ID_LENGTH` (200), `MAX_LABEL_LENGTH` (100) | Validazioni dei dati                                                                                                           |
-| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Costruttore generico di elenchi a trigger (lo usa anche `@scriba/plugin-merge-tags`)                                           |
+| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Costruttore generico di elenchi a trigger (lo usa anche `@scriba-editor/plugin-merge-tags`)                                           |
 
 ### Opzioni di `mentions()` (`MentionMenuOptions`)
 
 | Opzione      | Descrizione                                                                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `search`     | `(query, signal) => Promise<MentionItem[]>`; `query` è `""` subito dopo `@`; il `signal` si annulla se l'utente continua a scrivere o chiude l'elenco |
-| `t`          | Funzione di traduzione (`createTranslator` di `@scriba/i18n`)                                                                                         |
+| `t`          | Funzione di traduzione (`createTranslator` di `@scriba-editor/i18n`)                                                                                         |
 | `debounce`   | Pausa prima di cercare, in ms (predefinito 150)                                                                                                       |
 | `maxResults` | Voci mostrate al massimo (predefinito 8, massimo 50)                                                                                                  |
 | `timeout`    | Una ricerca più lenta fallisce, in ms (predefinito 10 000)                                                                                            |
@@ -66,4 +66,4 @@ Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md)
 - I risultati arrivano da una **sorgente esterna** e sono input non fidato: `cleanResults` tiene solo voci con `id` (1–200 caratteri, senza spazi) e `label` (1–100 caratteri, una riga) validi, senza caratteri di controllo né segni di direzione.
 - Nome e dettaglio sono mostrati **come testo**, mai come HTML.
 - La `label` è solo testo di visualizzazione: chiunque può incollare una menzione con un nome qualsiasi. Risolvi sempre l'`id` sul server (nome attuale, permessi, notifiche).
-- Prima che l'utente scriva `@` non viene inviato nulla. Il server deve comunque ripassare l'HTML con `@scriba/sanitize-server`.
+- Prima che l'utente scriva `@` non viene inviato nulla. Il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`.

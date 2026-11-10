@@ -15,7 +15,7 @@ import {
   type MarkType,
   type Node,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { lockedTest, transactionAllowed, type BlockRules } from './check.js'
 
 /*

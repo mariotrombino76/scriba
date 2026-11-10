@@ -1,5 +1,5 @@
-import { TextSelection, type Command } from '@scriba/core'
-import type { ToolbarMenu } from '@scriba/ui'
+import { TextSelection, type Command } from '@scriba-editor/core'
+import type { ToolbarMenu } from '@scriba-editor/ui'
 
 /** A format: options for `Intl.DateTimeFormat`, or an ISO form (`2026-10-19`, `14:05:09`). */
 export type DateTimeFormat = Intl.DateTimeFormatOptions | 'iso-date' | 'iso-time'

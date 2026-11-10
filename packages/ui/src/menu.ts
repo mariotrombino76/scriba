@@ -1,6 +1,6 @@
-import { normalizeColor } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+import { normalizeColor } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 import { createIcon } from './icons.js'
 import {
   controlUsable,

@@ -1,4 +1,4 @@
-import { Fragment, Mark, type Node } from '@scriba/core'
+import { Fragment, Mark, type Node } from '@scriba-editor/core'
 
 /**
  * Document comparison, pure (no DOM). The result is one merged document

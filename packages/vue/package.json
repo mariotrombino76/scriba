@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/vue",
-  "version": "0.0.0",
+  "name": "@scriba-editor/vue",
+  "version": "0.1.0",
   "description": "Vue 3 wrapper for the Scriba editor: <ScribaEditor v-model> and useScriba().",
   "type": "module",
   "sideEffects": false,
@@ -25,14 +25,14 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/ui": "workspace:*",
-    "@scriba/view": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/ui": "workspace:*",
+    "@scriba-editor/view": "workspace:*"
   },
   "devDependencies": {
-    "@scriba/plugin-task": "workspace:*",
-    "@scriba/plugin-callout": "workspace:*"
+    "@scriba-editor/plugin-task": "workspace:*",
+    "@scriba-editor/plugin-callout": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

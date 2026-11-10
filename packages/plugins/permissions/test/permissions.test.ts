@@ -12,10 +12,10 @@ import {
   splitBlock,
   type MarkSpec,
   type Transaction,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { blockquoteNodes, toggleBlockquote } from '@scriba/plugin-blockquote'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { blockquoteNodes, toggleBlockquote } from '@scriba-editor/plugin-blockquote'
 import {
   blockPermissions,
   checkBlockEdits,

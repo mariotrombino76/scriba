@@ -1,12 +1,12 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { HTMLLimitError, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
-import { listNodes } from '@scriba/plugin-list'
-import { blockquoteNodes } from '@scriba/plugin-blockquote'
-import { codeBlockNodes } from '@scriba/plugin-code-block'
-import { linkMarks } from '@scriba/plugin-link'
-import { imageNodes } from '@scriba/plugin-image'
-import { tableNodes } from '@scriba/plugin-table'
+import { HTMLLimitError, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
+import { listNodes } from '@scriba-editor/plugin-list'
+import { blockquoteNodes } from '@scriba-editor/plugin-blockquote'
+import { codeBlockNodes } from '@scriba-editor/plugin-code-block'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { imageNodes } from '@scriba-editor/plugin-image'
+import { tableNodes } from '@scriba-editor/plugin-table'
 import { parseMarkdown, serializeMarkdown } from '../src/index.js'
 
 const schema = new Schema({

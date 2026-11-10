@@ -9,7 +9,7 @@ import {
   type Node,
   type NodeType,
   type Schema,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 function types(schema: Schema): { details: NodeType; summary: NodeType } {
   const details = schema.nodes['details']

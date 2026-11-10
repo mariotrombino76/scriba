@@ -10,11 +10,11 @@ import {
   parseHTML,
   serializeHTML,
   undo,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { taskNodes } from '@scriba/plugin-task'
-import { calloutNodes } from '@scriba/plugin-callout'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { taskNodes } from '@scriba-editor/plugin-task'
+import { calloutNodes } from '@scriba-editor/plugin-callout'
 import { CalloutView, TaskView, vueNodeView } from '../src/index.js'
 
 const schema = new Schema({

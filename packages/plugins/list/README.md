@@ -1,23 +1,23 @@
-# @scriba/plugin-list
+# @scriba-editor/plugin-list
 
 Elenchi puntati e numerati, anche annidati, con Tab / Maiusc+Tab, per l'editor Scriba. Include gli
 stili degli elenchi come l'"advlist" di TinyMCE (forma del punto, numerazione `1 a A i I`).
 
 ```bash
-pnpm add @scriba/plugin-list
+pnpm add @scriba-editor/plugin-list
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   listIndentCommands,
   listKeymap,
   listNodes,
   listStyleMenus,
   listToolbarItems,
-} from '@scriba/plugin-list'
+} from '@scriba-editor/plugin-list'
 
 // schema: nodes: { ...basicSchemaSpec.nodes, ...listNodes }
 // (serve un nodo `paragraph`: ogni voce inizia con un paragrafo)
@@ -52,7 +52,7 @@ In lettura sono capiti anche gli stili `list-style-type` usati da Word (`lower-a
 | Ctrl/Cmd+Maiusc+8       | Elenco puntato                                 |
 | Ctrl/Cmd+Maiusc+7       | Elenco numerato                                |
 
-Con `@scriba/plugin-markdown` si può anche digitare `- `, `* `, `+ ` o `1. ` a inizio riga.
+Con `@scriba-editor/plugin-markdown` si può anche digitare `- `, `* `, `+ ` o `1. ` a inizio riga.
 
 ## Esportazioni
 

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { NodeSelection, Plugin, TextSelection } from '@scriba/core'
+import { NodeSelection, Plugin, TextSelection } from '@scriba-editor/core'
 import { b, beforeInput, br, doc, h, img, mount, p, pre, quote, schema, tick } from './helpers.js'
 
 describe('rendering', () => {

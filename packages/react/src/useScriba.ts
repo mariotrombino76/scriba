@@ -9,7 +9,7 @@ import {
   keymap,
   type Plugin,
   type Schema,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import {
   EditorView,
   parseContent,
@@ -17,7 +17,7 @@ import {
   type Content,
   type ContentFormat,
   type NodeViewFactory,
-} from '@scriba/view'
+} from '@scriba-editor/view'
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 
 export interface UseScribaOptions {

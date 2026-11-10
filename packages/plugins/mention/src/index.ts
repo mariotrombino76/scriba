@@ -1,4 +1,4 @@
-import type { KeyBindings, Plugin } from '@scriba/core'
+import type { KeyBindings, Plugin } from '@scriba-editor/core'
 import type { MentionMenuOptions } from './menu.js'
 import {
   canOpenMention,

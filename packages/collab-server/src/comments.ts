@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { cleanCommentText, type CommentThread } from '@scriba/plugin-comments'
+import { cleanCommentText, type CommentThread } from '@scriba-editor/plugin-comments'
 
 /** Comments channel message type (after sync 0, awareness 1, auth 2). */
 export const MESSAGE_COMMENTS = 3

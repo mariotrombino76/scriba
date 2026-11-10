@@ -1,6 +1,6 @@
-import { Plugin, PluginKey, type Command, type EditorState, type Node } from '@scriba/core'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView, InlineDecoration, ViewPluginProps } from '@scriba/view'
+import { Plugin, PluginKey, type Command, type EditorState, type Node } from '@scriba-editor/core'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView, InlineDecoration, ViewPluginProps } from '@scriba-editor/view'
 
 /** Which editing aids are shown. They live in the editor only: never in the HTML. */
 export interface VisualAids {

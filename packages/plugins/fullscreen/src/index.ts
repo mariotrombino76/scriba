@@ -1,5 +1,5 @@
-import type { Command, CommandView, KeyBindings } from '@scriba/core'
-import type { ToolbarButton } from '@scriba/ui'
+import type { Command, CommandView, KeyBindings } from '@scriba-editor/core'
+import type { ToolbarButton } from '@scriba-editor/ui'
 
 export const FULLSCREEN_META = 'fullscreen'
 

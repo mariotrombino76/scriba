@@ -1,6 +1,6 @@
-import type { Translate } from '@scriba/i18n'
-import { createIcon } from '@scriba/ui'
-import type { EditorView, PluginView } from '@scriba/view'
+import type { Translate } from '@scriba-editor/i18n'
+import { createIcon } from '@scriba-editor/ui'
+import type { EditorView, PluginView } from '@scriba-editor/view'
 import { chooseItem, filterItems, getSlashState, type SlashItem } from './state.js'
 
 let ids = 0

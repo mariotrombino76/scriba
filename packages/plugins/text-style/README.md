@@ -1,15 +1,15 @@
-# @scriba/plugin-text-style
+# @scriba-editor/plugin-text-style
 
 Formattazione del testo come in TinyMCE: allineamento, rientro, interlinea, direzione (LTR/RTL), colore del testo e dello sfondo, font e dimensione, maiuscole/minuscole e **stili con classi** del tuo sito (`style_formats`). Colori e font sono mark tipizzati, non `style` libero.
 
 ```bash
-pnpm add @scriba/plugin-text-style
+pnpm add @scriba-editor/plugin-text-style
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   alignmentMenu,
   caseMenu,
@@ -24,7 +24,7 @@ import {
   textStyleMarks,
   withBlockClasses,
   withBlockStyles,
-} from '@scriba/plugin-text-style'
+} from '@scriba-editor/plugin-text-style'
 
 const BLOCK_CLASSES = ['nota-margine', 'avviso'] // classi che il tuo sito stila
 
@@ -88,4 +88,4 @@ I menu mostrano nome, icona e scorciatoia di ogni voce e lo stato attivo (`isAct
 
 ## Sicurezza
 
-Niente `style` libero (CLAUDE.md 5.4): colori solo `#rrggbb`/`rgb()`/nomi normalizzati, famiglie di font e lunghezze validate (`normalizeColor`, `normalizeFontFamily`, `normalizeLength`), interlinea e allineamento da liste chiuse. Le **classi** sono solo quelle che elenchi (`[a-z][a-z0-9-]{0,63}`, mai `scriba-...`; un elenco non valido lancia `RangeError`): ogni altra classe è scartata, quindi `MsoNormal` e simili incollati da Word non entrano mai. Usa gli stessi elenchi sul server con `@scriba/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+Niente `style` libero (CLAUDE.md 5.4): colori solo `#rrggbb`/`rgb()`/nomi normalizzati, famiglie di font e lunghezze validate (`normalizeColor`, `normalizeFontFamily`, `normalizeLength`), interlinea e allineamento da liste chiuse. Le **classi** sono solo quelle che elenchi (`[a-z][a-z0-9-]{0,63}`, mai `scriba-...`; un elenco non valido lancia `RangeError`): ogni altra classe è scartata, quindi `MsoNormal` e simili incollati da Word non entrano mai. Usa gli stessi elenchi sul server con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

@@ -1,5 +1,5 @@
-import { Plugin, PluginKey, type EditorState, type Node } from '@scriba/core'
-import type { InlineDecoration } from '@scriba/view'
+import { Plugin, PluginKey, type EditorState, type Node } from '@scriba-editor/core'
+import type { InlineDecoration } from '@scriba-editor/view'
 import type { Element, ElementContent, Root } from 'hast'
 import type { createLowlight } from 'lowlight'
 

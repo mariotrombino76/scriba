@@ -1,5 +1,5 @@
-import type { Translate } from '@scriba/i18n'
-import type { ClipboardContent, EditorView } from '@scriba/view'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ClipboardContent, EditorView } from '@scriba-editor/view'
 import { openDialog } from './dialog.js'
 import type { ToolbarButton } from './items.js'
 import { formatShortcut, isMac } from './shortcut.js'

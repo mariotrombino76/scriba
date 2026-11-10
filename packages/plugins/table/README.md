@@ -1,22 +1,22 @@
-# @scriba/plugin-table
+# @scriba-editor/plugin-table
 
 Tabelle con la parità delle tabelle di TinyMCE (comprese quelle avanzate): inserimento con selettore di dimensione, righe e colonne, celle unite e divise, intestazioni, selezione di celle, larghezza delle colonne, proprietà di tabella e cella, ordinamento per colonna, incolla di celle come in un foglio di calcolo.
 
 ```bash
-pnpm add @scriba/plugin-table
+pnpm add @scriba-editor/plugin-table
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   tableContextMenu,
   tableKeymap,
   tableNodes,
   tablePlugins,
   tableToolbarItems,
-} from '@scriba/plugin-table'
+} from '@scriba-editor/plugin-table'
 
 const schema = new Schema({ nodes: { ...basicSchemaSpec.nodes, ...tableNodes }, marks })
 
@@ -70,4 +70,4 @@ Il menu "Tabella" e il menu contestuale sono raggiungibili da tastiera; la tabel
 
 ## Sicurezza
 
-Tutti gli attributi sono tipizzati e validati: span da 1 a 100, larghezze 24-2000 px, bordo al massimo 10 px, colori normalizzati (mai `style` libero), didascalia al massimo 500 caratteri, testo nascosto (script, style, ...) escluso. Righe e colonne dell'incolla hanno un tetto (anti-DoS). L'HTML incollato (anche da Word o Google Docs) passa dal parser dello schema; il server deve comunque ripassare l'HTML con `@scriba/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+Tutti gli attributi sono tipizzati e validati: span da 1 a 100, larghezze 24-2000 px, bordo al massimo 10 px, colori normalizzati (mai `style` libero), didascalia al massimo 500 caratteri, testo nascosto (script, style, ...) escluso. Righe e colonne dell'incolla hanno un tetto (anti-DoS). L'HTML incollato (anche da Word o Google Docs) passa dal parser dello schema; il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

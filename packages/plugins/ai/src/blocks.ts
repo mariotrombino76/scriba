@@ -1,4 +1,4 @@
-import { Fragment, type Node, type NodeJSON, type Schema } from '@scriba/core'
+import { Fragment, type Node, type NodeJSON, type Schema } from '@scriba-editor/core'
 import { plainText, type AiParse } from './session.js'
 
 /**

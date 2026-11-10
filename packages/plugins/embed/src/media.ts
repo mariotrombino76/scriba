@@ -1,4 +1,4 @@
-import { sanitizeUrl, type DOMLike, type DOMLikeElement, type NodeSpec } from '@scriba/core'
+import { sanitizeUrl, type DOMLike, type DOMLikeElement, type NodeSpec } from '@scriba-editor/core'
 
 /**
  * Video and audio files (approved 2026-10-26): `<video controls src>` and

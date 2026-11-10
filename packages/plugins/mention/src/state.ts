@@ -1,5 +1,5 @@
-import { CLOSE_HISTORY, PluginKey, type EditorState, type Transaction } from '@scriba/core'
-import type { EditorView } from '@scriba/view'
+import { CLOSE_HISTORY, PluginKey, type EditorState, type Transaction } from '@scriba-editor/core'
+import type { EditorView } from '@scriba-editor/view'
 import { isMentionId, isMentionLabel, MAX_LABEL_LENGTH } from './nodes.js'
 import { isLoading as loading, type SuggestState } from './suggest.js'
 

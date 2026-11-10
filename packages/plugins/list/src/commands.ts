@@ -13,7 +13,7 @@ import {
   type NodeType,
   type ResolvedPos,
   type Transaction,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 /** Range over sibling list items containing the selection. */
 function itemRange(state: EditorState, itemType: NodeType): NodeRange | null {

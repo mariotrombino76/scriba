@@ -5,7 +5,7 @@ import {
   type DOMLikeElement,
   type HTMLSpec,
   type NodeSpec,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 const MAX_START = 1_000_000
 

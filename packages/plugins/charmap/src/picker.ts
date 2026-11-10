@@ -1,6 +1,6 @@
-import type { MessageKey, Translate } from '@scriba/i18n'
-import { openDialog, type DialogHandle } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import { openDialog, type DialogHandle } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import { CHARACTERS, type CategoryId, type CharEntry } from './data.js'
 
 export interface CharmapOptions {

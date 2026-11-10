@@ -1,9 +1,9 @@
-# @scriba/ui
+# @scriba-editor/ui
 
 L'interfaccia di Scriba come Web Components vanilla: barra degli strumenti, barra dei menu, menu, dialog, menu del tasto destro e modalità inline. Funzionano con qualsiasi framework, o senza.
 
 ```bash
-pnpm add @scriba/ui @scriba/view @scriba/core @scriba/i18n @scriba/themes
+pnpm add @scriba-editor/ui @scriba-editor/view @scriba-editor/core @scriba-editor/i18n @scriba-editor/themes
 ```
 
 I componenti parlano con l'editor solo tramite **comandi pubblici**: un pulsante è abilitato
@@ -12,11 +12,11 @@ esattamente quando il suo comando può essere eseguito (e non lo è in sola lett
 ## Uso
 
 ```ts
-import { createTranslator } from '@scriba/i18n'
-import { defineScribaToolbar, defaultToolbarItems } from '@scriba/ui'
-import '@scriba/themes/scriba.css'
+import { createTranslator } from '@scriba-editor/i18n'
+import { defineScribaToolbar, defaultToolbarItems } from '@scriba-editor/ui'
+import '@scriba-editor/themes/scriba.css'
 
-// `view` è l'EditorView di @scriba/view, `schema` lo schema dell'editor
+// `view` è l'EditorView di @scriba-editor/view, `schema` lo schema dell'editor
 const t = createTranslator('it')
 
 defineScribaToolbar() // registra <scriba-toolbar> (una sola volta)
@@ -58,7 +58,7 @@ personalizzata, ad esempio per aprire un dialog).
   _menu_ (anche da tastiera: tasto Menu e Maiusc+F10).
 - I dialog hanno il focus trap e restituiscono il focus alla chiusura; Esc li chiude.
 - Con la barra che non entra nello schermo, le voci meno importanti passano in "Altro".
-- Tutti i testi vengono dal traduttore (`@scriba/i18n`), mai stringhe fisse.
+- Tutti i testi vengono dal traduttore (`@scriba-editor/i18n`), mai stringhe fisse.
 
 Dettagli: [Accessibilità](../../docs/accessibilita.md).
 
@@ -67,4 +67,4 @@ Dettagli: [Accessibilità](../../docs/accessibilita.md).
 I componenti non usano `innerHTML` né stili inline: gli stili dinamici passano dal CSSOM, quindi
 funzionano con una CSP rigida (senza `unsafe-inline`). I testi mostrati (nomi, etichette,
 parametri di traduzione) sono sempre inseriti come **testo**, mai come HTML. Per l'aspetto
-(variabili `--scriba-*`, tocco, barra fissa) vedi [@scriba/themes](../themes/README.md).
+(variabili `--scriba-*`, tocco, barra fissa) vedi [@scriba-editor/themes](../themes/README.md).

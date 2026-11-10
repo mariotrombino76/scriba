@@ -2,8 +2,8 @@
 import { describe, expect, it } from 'vitest'
 import * as Y from 'yjs'
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness'
-import { EditorState, Schema, TextSelection, basicSchemaSpec, parseHTML } from '@scriba/core'
-import { EditorView } from '@scriba/view'
+import { EditorState, Schema, TextSelection, basicSchemaSpec, parseHTML } from '@scriba-editor/core'
+import { EditorView } from '@scriba-editor/view'
 import { collabCursors, cursorsKey, yBinding, type CollabUser } from '../src/index.js'
 
 const schema = new Schema(basicSchemaSpec)

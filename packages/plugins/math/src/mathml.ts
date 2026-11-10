@@ -1,4 +1,4 @@
-import type { HTMLAttrs, HTMLSpec } from '@scriba/core'
+import type { HTMLAttrs, HTMLSpec } from '@scriba-editor/core'
 
 /**
  * The MathML the editor writes (approved 2026-10-26): generated here from

@@ -6,8 +6,8 @@ import {
   type Mark,
   type MarkSpec,
   type Node,
-} from '@scriba/core'
-import type { EditorView, InlineDecoration, PluginView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView, InlineDecoration, PluginView, ViewPluginProps } from '@scriba-editor/view'
 import type { CommentStore, CommentThread } from './store.js'
 
 const ID = /^[\w-]{1,64}$/

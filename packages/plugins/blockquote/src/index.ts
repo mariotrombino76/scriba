@@ -1,5 +1,5 @@
-import { isInNode, toggleWrap, type Command, type NodeSpec, type Schema } from '@scriba/core'
-import type { ToolbarControl } from '@scriba/ui'
+import { isInNode, toggleWrap, type Command, type NodeSpec, type Schema } from '@scriba-editor/core'
+import type { ToolbarControl } from '@scriba-editor/ui'
 
 /** Node specs to add to a schema. Requires a `block` group. */
 export const blockquoteNodes = {

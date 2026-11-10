@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, TextSelection, history } from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
+import { EditorState, TextSelection, history } from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
 import {
   blockStyleMenu,
   contextMenu,
@@ -12,7 +12,7 @@ import {
   type ContextMenuSection,
 } from '../src/index.js'
 import { doc, img, p, schema } from '../../core/test/helpers/schema.js'
-import type { Node } from '@scriba/core'
+import type { Node } from '@scriba-editor/core'
 
 function setup(sections: ContextMenuSection[], editable = true, content?: Node) {
   document.body.textContent = ''

@@ -1,6 +1,6 @@
-import { NodeSelection, type EditorState, type HTMLSpec, type Mark, type Node } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+import { NodeSelection, type EditorState, type HTMLSpec, type Mark, type Node } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 
 /** The HTML tag a node or mark is written as (`p`, `h2`, `strong`…). */
 function tagOf(spec: HTMLSpec | undefined, fallback: string): string {

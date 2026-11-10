@@ -1,17 +1,17 @@
-# @scriba/plugin-hr
+# @scriba-editor/plugin-hr
 
 Linea orizzontale e **interruzione di pagina** per l'editor Scriba (menu Inserisci, come in
 TinyMCE).
 
 ```bash
-pnpm add @scriba/plugin-hr
+pnpm add @scriba-editor/plugin-hr
 ```
 
 ## Uso
 
 ```ts
-import { Schema, basicSchemaSpec } from '@scriba/core'
-import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba/plugin-hr'
+import { Schema, basicSchemaSpec } from '@scriba-editor/core'
+import { hrNodes, hrPlugins, hrSlashItems, hrToolbarItems } from '@scriba-editor/plugin-hr'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...hrNodes },
@@ -46,7 +46,7 @@ Nessuno dei due ha attributi: altre classi o attributi di un `<hr>` vengono scar
 | `hrPlugins(t)`                            | Dà un nome alle interruzioni di pagina per i lettori di schermo.                                                                                                                                               |
 | `PAGE_BREAK_CLASS`                        | La classe fissa `scriba-page-break`.                                                                                                                                                                           |
 
-Con `@scriba/plugin-markdown`, scrivere `---`, `___` o `***` da soli in un paragrafo vuoto inserisce
+Con `@scriba-editor/plugin-markdown`, scrivere `---`, `___` o `***` da soli in un paragrafo vuoto inserisce
 la linea orizzontale.
 
 ## Sicurezza e accessibilità
@@ -55,6 +55,6 @@ la linea orizzontale.
   (vedi [sicurezza](../../../docs/sicurezza.md)).
 - Nell'editor ogni interruzione di pagina riceve un `aria-label` (un `<hr>` da solo è soltanto
   "separatore"); l'etichetta esiste **solo nel DOM dell'editor**, l'HTML salvato resta semplice.
-- Il salvataggio come pagina HTML di `@scriba/plugin-file` e la stampa rispettano l'interruzione.
+- Il salvataggio come pagina HTML di `@scriba-editor/plugin-file` e la stampa rispettano l'interruzione.
 
 Vedi anche [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md).

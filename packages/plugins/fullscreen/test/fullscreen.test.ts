@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, Schema, basicSchemaSpec, type Transaction } from '@scriba/core'
+import { EditorState, Schema, basicSchemaSpec, type Transaction } from '@scriba-editor/core'
 import {
   FULLSCREEN_META,
   Fullscreen,

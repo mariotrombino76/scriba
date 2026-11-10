@@ -1,4 +1,4 @@
-import type { Node } from '@scriba/core'
+import type { Node } from '@scriba-editor/core'
 import type { A11yIssue, A11yLevel, A11yRuleId } from './types.js'
 
 /** Options with their defaults filled in. */

@@ -1,4 +1,4 @@
-import type { Mark, Node } from '@scriba/core'
+import type { Mark, Node } from '@scriba-editor/core'
 import type { Rule } from './rule.js'
 import { WCAG, cleanText, onDoc, plain } from './util.js'
 

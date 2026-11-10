@@ -10,9 +10,9 @@ import {
   serializeHTML,
   undo,
   type Command,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
 import { codeBlockNodes } from '../../code-block/src/index.js'
 import { linkMarks } from '../../link/src/index.js'
 import { textStyleMarks, withBlockStyles } from '../../text-style/src/index.js'

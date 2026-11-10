@@ -1,22 +1,22 @@
-# @scriba/plugin-find-replace
+# @scriba-editor/plugin-find-replace
 
 Trova e sostituisci per l'editor Scriba, con evidenziazione dei risultati nel testo, ricerca con
 maiuscole/minuscole, parola intera ed **espressioni regolari**. Come il plugin "Search and
 Replace" di TinyMCE, ma con le regex eseguite in modo sicuro (vedi sotto).
 
 ```bash
-pnpm add @scriba/plugin-find-replace
+pnpm add @scriba-editor/plugin-find-replace
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
+import { keymap } from '@scriba-editor/core'
 import {
   findReplaceKeymap,
   findReplacePlugins,
   findReplaceToolbarItem,
-} from '@scriba/plugin-find-replace'
+} from '@scriba-editor/plugin-find-replace'
 
 // nello stato dell'editor
 plugins: [...findReplacePlugins(), keymap(findReplaceKeymap(t), { priority: 80, readOnly: true })]

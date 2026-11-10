@@ -1,7 +1,7 @@
 import * as Y from 'yjs'
-import type { Node, NodeJSON, Schema } from '@scriba/core'
-import { docFromY } from '@scriba/plugin-collab'
-import { checkBlockEdits, type BlockRules } from '@scriba/plugin-permissions'
+import type { Node, NodeJSON, Schema } from '@scriba-editor/core'
+import { docFromY } from '@scriba-editor/plugin-collab'
+import { checkBlockEdits, type BlockRules } from '@scriba-editor/plugin-permissions'
 
 /**
  * Applies an update from a user who may not edit some blocks (§5.1, §5.8).

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { WebSocket, WebSocketServer } from 'ws'
 import * as Y from 'yjs'
-import { CollabProvider, collabCommentStore } from '@scriba/plugin-collab'
+import { CollabProvider, collabCommentStore } from '@scriba-editor/plugin-collab'
 import {
   applyCommentOp,
   attachCollabServer,

@@ -1,7 +1,7 @@
-import { EditorState, Plugin, Selection, type Node } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import { openDialog, type DialogHandle } from '@scriba/ui'
-import { EditorView, type InlineDecoration } from '@scriba/view'
+import { EditorState, Plugin, Selection, type Node } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import { openDialog, type DialogHandle } from '@scriba-editor/ui'
+import { EditorView, type InlineDecoration } from '@scriba-editor/view'
 import {
   formatRevisionDate,
   parseRevision,

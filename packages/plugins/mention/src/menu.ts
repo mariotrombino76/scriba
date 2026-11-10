@@ -1,4 +1,4 @@
-import type { Translate } from '@scriba/i18n'
+import type { Translate } from '@scriba-editor/i18n'
 import type { MentionItem } from './state.js'
 
 /**

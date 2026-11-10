@@ -1,7 +1,7 @@
-import { Plugin, type Command, type KeyBindings } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+import { Plugin, type Command, type KeyBindings } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 import { MEDIA_NODES, selectedMedia } from './commands.js'
 import { openMediaDialog, type MediaOptions } from './dialog.js'
 

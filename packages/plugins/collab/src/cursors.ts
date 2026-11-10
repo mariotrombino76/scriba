@@ -1,7 +1,7 @@
 import * as Y from 'yjs'
 import type { Awareness } from 'y-protocols/awareness'
-import { Plugin, PluginKey, type EditorState } from '@scriba/core'
-import type { EditorView, InlineDecoration, PluginView, ViewPluginProps } from '@scriba/view'
+import { Plugin, PluginKey, type EditorState } from '@scriba-editor/core'
+import type { EditorView, InlineDecoration, PluginView, ViewPluginProps } from '@scriba-editor/view'
 import { fromRelative, toRelative } from './positions.js'
 
 /** Who you are for the others (the server may replace it with the authenticated identity). */

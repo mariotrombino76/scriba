@@ -7,7 +7,7 @@ import {
   basicSchemaSpec,
   parseHTML,
   serializeHTML,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import {
   classFormatsMenu,
   classMarks,

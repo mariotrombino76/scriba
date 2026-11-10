@@ -3,9 +3,9 @@ import { WebSocket, WebSocketServer } from 'ws'
 import * as Y from 'yjs'
 import * as encoding from 'lib0/encoding'
 import { Awareness } from 'y-protocols/awareness'
-import { Schema, basicSchemaSpec, serializeHTML } from '@scriba/core'
-import { CollabProvider, docFromY, updateFragment, writeDoc } from '@scriba/plugin-collab'
-import { withBlockIds } from '@scriba/plugin-permissions'
+import { Schema, basicSchemaSpec, serializeHTML } from '@scriba-editor/core'
+import { CollabProvider, docFromY, updateFragment, writeDoc } from '@scriba-editor/plugin-collab'
+import { withBlockIds } from '@scriba-editor/plugin-permissions'
 import {
   CLOSE,
   MESSAGE_AUTH,

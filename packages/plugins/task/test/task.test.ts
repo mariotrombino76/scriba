@@ -10,8 +10,8 @@ import {
   runKeymaps,
   keymap,
   serializeHTML,
-} from '@scriba/core'
-import { serializeMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/core'
+import { serializeMarkdown } from '@scriba-editor/plugin-markdown'
 import { insertTask, isTaskDate, selectedTask, taskKeymap, taskNodes } from '../src/index.js'
 
 const schema = new Schema({

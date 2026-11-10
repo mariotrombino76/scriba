@@ -5,8 +5,8 @@ import {
   type HTMLParseOptions,
   type Node,
   type Schema,
-} from '@scriba/core'
-import { parseInertHTML } from '@scriba/view'
+} from '@scriba-editor/core'
+import { parseInertHTML } from '@scriba-editor/view'
 
 export interface MarkdownParseOptions {
   /** Longest Markdown accepted (characters, default 2 000 000; §5.10). */
@@ -29,7 +29,7 @@ md.core.ruler.push('scriba_trim_code', (state) => {
 /**
  * Markdown → HTML string (CommonMark + GFM tables and strikethrough). The
  * result is NOT safe to show as is: always pass it through the schema parser
- * (as `parseMarkdown` does) or `@scriba/sanitize-server`.
+ * (as `parseMarkdown` does) or `@scriba-editor/sanitize-server`.
  */
 export function markdownToHTML(markdown: string, maxLength = DEFAULT_MAX_MARKDOWN_LENGTH): string {
   if (markdown.length > maxLength)

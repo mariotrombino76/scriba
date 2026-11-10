@@ -1,19 +1,19 @@
-# @scriba/collab-server
+# @scriba-editor/collab-server
 
 Server di collaborazione in tempo reale per Scriba (compatibile con y-websocket, basato su Yjs e `ws`): autenticazione, permessi, limiti e identità assegnate dal server.
 
 ```bash
-pnpm add @scriba/collab-server @scriba/core
+pnpm add @scriba-editor/collab-server @scriba-editor/core
 ```
 
-Lato browser serve `@scriba/plugin-collab`. Guida completa: [Collaborazione](../../docs/collaborazione.md).
+Lato browser serve `@scriba-editor/plugin-collab`. Guida completa: [Collaborazione](../../docs/collaborazione.md).
 
 ## Uso
 
 ```ts
-import { listenCollabServer, documentFromYjs } from '@scriba/collab-server'
-import { serializeHTML } from '@scriba/core'
-import { sanitizeHTML } from '@scriba/sanitize-server'
+import { listenCollabServer, documentFromYjs } from '@scriba-editor/collab-server'
+import { serializeHTML } from '@scriba-editor/core'
+import { sanitizeHTML } from '@scriba-editor/sanitize-server'
 import { schema } from './schema.js' // lo stesso schema usato nel browser
 
 const { close } = listenCollabServer({
@@ -53,13 +53,13 @@ Per agganciarlo a un server HTTP esistente usa `attachCollabServer(wss, options)
 - **Sola lettura**: con `canWrite: false` ogni modifica viene rifiutata. Con `canComment: true`
   (e l'opzione `schema`) passano solo commenti e ancore dei commenti.
 - **Blocchi protetti**: `canEditBlock(id)` (con lo `schema` dotato di id di blocco, vedi
-  `@scriba/plugin-permissions`) annulla le modifiche ai blocchi non consentiti.
+  `@scriba-editor/plugin-permissions`) annulla le modifiche ai blocchi non consentiti.
 - **Identità decise dal server**: nome e colore dei cursori e autore dei commenti vengono
   dall'autenticazione, non dal client (`rewriteAwareness`); i nomi sono testo, mai HTML.
 - **Limiti**: dimensione dei messaggi e del documento, frequenza, connessioni per documento
   (vedi sotto). Un client che li supera viene disconnesso.
 - **Il documento salvato è input non fidato**: ricostruiscilo con `documentFromYjs` (passa dallo
-  schema) e ripassa l'HTML da `@scriba/sanitize-server` prima di salvarlo o mostrarlo.
+  schema) e ripassa l'HTML da `@scriba-editor/sanitize-server` prima di salvarlo o mostrarlo.
 - In produzione metti il server dietro TLS (`wss://`).
 
 ## Opzioni (`CollabServerOptions`)

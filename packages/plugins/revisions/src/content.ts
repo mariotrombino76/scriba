@@ -1,5 +1,5 @@
-import { parseHTML, type Node, type NodeJSON, type Schema } from '@scriba/core'
-import { parseInertHTML } from '@scriba/view'
+import { parseHTML, type Node, type NodeJSON, type Schema } from '@scriba-editor/core'
+import { parseInertHTML } from '@scriba-editor/view'
 
 /** A saved version of the document, as your server lists it. */
 export interface Revision {

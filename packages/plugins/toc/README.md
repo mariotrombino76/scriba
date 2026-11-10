@@ -1,18 +1,18 @@
-# @scriba/plugin-toc
+# @scriba-editor/plugin-toc
 
 Indice dei contenuti come il plugin `toc` di TinyMCE: elenco dei titoli del documento, ognuno un link all'ancora del titolo, **aggiornato da solo** quando i titoli cambiano.
 
 ```bash
-pnpm add @scriba/plugin-toc
+pnpm add @scriba-editor/plugin-toc
 ```
 
 ## Uso
 
-Servono le ancore sui titoli (`withAnchors` di `@scriba/plugin-link`).
+Servono le ancore sui titoli (`withAnchors` di `@scriba-editor/plugin-link`).
 
 ```ts
-import { withAnchors } from '@scriba/plugin-link'
-import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba/plugin-toc'
+import { withAnchors } from '@scriba-editor/plugin-link'
+import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba-editor/plugin-toc'
 
 const schema = new Schema({
   nodes: withAnchors({ ...basicSchemaSpec.nodes, ...tocNodes }),
@@ -47,4 +47,4 @@ I titoli con testo vuoto non compaiono; se mancano `tocNodes` o le ancore sui ti
 
 ## Sicurezza
 
-L'indice è riletto dall'HTML in ingresso con regole rigide: al massimo 500 voci e 6 livelli, testo di al massimo 200 caratteri senza caratteri di controllo, `href` solo `#anchor-<nome>` con nome valido (`isAnchorName`). Una voce non valida viene scartata. L'indice è sempre ricostruito dai titoli reali, e il testo è inserito come testo, mai HTML. Il server deve comunque ripassare l'HTML con `@scriba/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+L'indice è riletto dall'HTML in ingresso con regole rigide: al massimo 500 voci e 6 livelli, testo di al massimo 200 caratteri senza caratteri di controllo, `href` solo `#anchor-<nome>` con nome valido (`isAnchorName`). Una voce non valida viene scartata. L'indice è sempre ricostruito dai titoli reali, e il testo è inserito come testo, mai HTML. Il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

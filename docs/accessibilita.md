@@ -31,7 +31,7 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 | Mod+Alt+C / Mod+Alt+V     | Copia formato / applicalo alla selezione (Esc annulla l'attesa)  |
 | Mod+Alt+0 … 6             | Paragrafo, Titolo 1…6                                            |
 | Mod+K                     | Link                                                             |
-| Mod+S                     | Salva (con `@scriba/plugin-save`)                                |
+| Mod+S                     | Salva (con `@scriba-editor/plugin-save`)                                |
 | Mod+Z, Mod+Y              | Annulla, ripeti                                                  |
 | Maiusc+Invio              | A capo nello stesso paragrafo                                    |
 | Tab, Maiusc+Tab           | Rientro negli elenchi, cella successiva/precedente nelle tabelle |
@@ -81,14 +81,14 @@ hanno i colori del tema. Se ridefinisci le variabili CSS, verifica di nuovo il c
 ## Verifica accessibilità del contenuto
 
 L'editor è accessibile, ma il **documento** dipende da chi scrive: un'immagine senza
-descrizione o un titolo saltato lo rendono difficile da usare. `@scriba/plugin-a11y-checker`
+descrizione o un titolo saltato lo rendono difficile da usare. `@scriba-editor/plugin-a11y-checker`
 controlla il documento come l'Accessibility Checker di TinyMCE.
 
 Pensala come il correttore ortografico, ma per chi usa un lettore di schermo: trova i punti
 dove queste persone si perderebbero, ti spiega perché e ti propone la correzione.
 
 ```ts
-import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
+import { a11yChecker, a11yCheckerItem } from '@scriba-editor/plugin-a11y-checker'
 
 const plugins = [a11yChecker({ level: 'AA' }) /* , … */]
 // nel menu Strumenti o nella toolbar:

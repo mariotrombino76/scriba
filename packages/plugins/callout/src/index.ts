@@ -1,6 +1,6 @@
-import { isInNode, toggleWrap, type Command, type NodeSpec, type Schema } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
+import { isInNode, toggleWrap, type Command, type NodeSpec, type Schema } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
 
 /** The kinds of callout (a closed list: anything else becomes "info"). */
 export const CALLOUT_KINDS = ['info', 'tip', 'warning', 'danger'] as const
@@ -15,7 +15,7 @@ export function isCalloutKind(value: unknown): value is CalloutKind {
  * HTML: `<aside class="scriba-callout" data-callout="warning">…</aside>`;
  * only an `<aside>` with `data-callout` is read as one (a plain `<aside>`
  * from a web page keeps just its content). Its look comes from a node view
- * (e.g. `CalloutView` with `vueNodeView` in `@scriba/vue`).
+ * (e.g. `CalloutView` with `vueNodeView` in `@scriba-editor/vue`).
  */
 export const calloutNodes = {
   callout: {

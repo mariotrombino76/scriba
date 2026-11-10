@@ -1,6 +1,6 @@
-import { NodeSelection, type Node } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView, NodeView, NodeViewFactory } from '@scriba/view'
+import { NodeSelection, type Node } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView, NodeView, NodeViewFactory } from '@scriba-editor/view'
 import {
   defineComponent,
   h,

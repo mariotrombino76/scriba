@@ -5,15 +5,15 @@ import {
   type EditorState,
   type KeyBindings,
   type Node,
-} from '@scriba/core'
-import type { ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 
 export interface SaveOptions {
   /**
    * Your save function (e.g. `fetch` to your API with `serializeHTML(doc)`).
    * The editor waits for its promise; while it runs, saving again is off.
-   * Your server must still sanitize what it receives (`@scriba/sanitize-server`).
+   * Your server must still sanitize what it receives (`@scriba-editor/sanitize-server`).
    */
   save: (doc: Node) => void | Promise<void>
   /** Called when `save` throws or rejects (the document stays "not saved"). */

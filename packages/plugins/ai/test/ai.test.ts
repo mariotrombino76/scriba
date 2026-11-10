@@ -10,11 +10,11 @@ import {
   parseHTML,
   serializeHTML,
   undo,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { EditorView } from '@scriba/view'
-import { linkMarks } from '@scriba/plugin-link'
-import { parseMarkdown } from '@scriba/plugin-markdown'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { EditorView } from '@scriba-editor/view'
+import { linkMarks } from '@scriba-editor/plugin-link'
+import { parseMarkdown } from '@scriba-editor/plugin-markdown'
 import {
   MAX_ANSWER,
   acceptPending,

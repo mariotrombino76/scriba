@@ -1,4 +1,4 @@
-import type { DOMLike, NodeSpec } from '@scriba/core'
+import type { DOMLike, NodeSpec } from '@scriba-editor/core'
 
 export const MAX_TITLE = 200
 
@@ -46,7 +46,7 @@ function textOf(node: DOMLike, depth = 0): string {
 /**
  * The task node: a block, atomic (one unit for the editor: selected,
  * deleted and undone as a whole). Its look comes from a node view (e.g.
- * `TaskView` with `vueNodeView` in `@scriba/vue`); its HTML is always
+ * `TaskView` with `vueNodeView` in `@scriba-editor/vue`); its HTML is always
  * `<div class="scriba-task" data-task data-done="false" data-due="2026-10-20">Title</div>`.
  */
 export const taskNodes = {

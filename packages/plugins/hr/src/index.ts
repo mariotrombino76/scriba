@@ -8,10 +8,10 @@ import {
   type NodeSpec,
   type NodeType,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { IconName, ToolbarButton } from '@scriba/ui'
-import type { EditorView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { IconName, ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView, ViewPluginProps } from '@scriba-editor/view'
 
 /** The one class a page break carries in HTML (fixed: no class comes from outside). */
 export const PAGE_BREAK_CLASS = 'scriba-page-break'

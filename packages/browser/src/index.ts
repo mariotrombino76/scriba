@@ -16,8 +16,8 @@ import {
   keymap,
   ADD_TO_HISTORY,
   type Plugin,
-} from '@scriba/core'
-import { createTranslator, de, es, fr, type Messages } from '@scriba/i18n'
+} from '@scriba-editor/core'
+import { createTranslator, de, es, fr, type Messages } from '@scriba-editor/i18n'
 import {
   blockStyleMenu,
   clearFormatItem,
@@ -29,24 +29,24 @@ import {
   toolbarGroup,
   type ScribaToolbar,
   type ToolbarItem,
-} from '@scriba/ui'
+} from '@scriba-editor/ui'
 import {
   EditorView,
   parseContent,
   serializeContent,
   type Content,
   type ContentFormat,
-} from '@scriba/view'
-import { blockquoteNodes, blockquoteToolbarItems } from '@scriba/plugin-blockquote'
-import { charmapToolbarItem } from '@scriba/plugin-charmap'
-import { codeBlockKeymap, codeBlockNodes, codeBlockToolbarItems } from '@scriba/plugin-code-block'
+} from '@scriba-editor/view'
+import { blockquoteNodes, blockquoteToolbarItems } from '@scriba-editor/plugin-blockquote'
+import { charmapToolbarItem } from '@scriba-editor/plugin-charmap'
+import { codeBlockKeymap, codeBlockNodes, codeBlockToolbarItems } from '@scriba-editor/plugin-code-block'
 import {
   detailsAutoOpen,
   detailsKeymap,
   detailsNodeView,
   detailsNodes,
   detailsToolbarItem,
-} from '@scriba/plugin-details'
+} from '@scriba-editor/plugin-details'
 import {
   embedKeymap,
   embedNodeView,
@@ -55,14 +55,14 @@ import {
   embedToolbarItem,
   mediaFileNodeView,
   mediaNodes,
-} from '@scriba/plugin-embed'
+} from '@scriba-editor/plugin-embed'
 import {
   findReplaceKeymap,
   findReplacePlugins,
   findReplaceToolbarItem,
-} from '@scriba/plugin-find-replace'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba/plugin-fullscreen'
-import { hrNodes, hrPlugins, hrToolbarItems } from '@scriba/plugin-hr'
+} from '@scriba-editor/plugin-find-replace'
+import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
+import { hrNodes, hrPlugins, hrToolbarItems } from '@scriba-editor/plugin-hr'
 import {
   imageContextMenu,
   imageKeymap,
@@ -70,7 +70,7 @@ import {
   imagePlugins,
   imageToolbarItems,
   type ImageUploadOptions,
-} from '@scriba/plugin-image'
+} from '@scriba-editor/plugin-image'
 import {
   anchorToolbarItem,
   autolink,
@@ -79,32 +79,32 @@ import {
   linkMarks,
   linkToolbarItems,
   withAnchors,
-} from '@scriba/plugin-link'
+} from '@scriba-editor/plugin-link'
 import {
   footnoteNodes,
   footnotes,
   footnotesKeymap,
   footnoteToolbarItem,
-} from '@scriba/plugin-footnotes'
-import { tableOfContents, tocNodes, tocToolbarItem } from '@scriba/plugin-toc'
+} from '@scriba-editor/plugin-footnotes'
+import { tableOfContents, tocNodes, tocToolbarItem } from '@scriba-editor/plugin-toc'
 import {
   formatPainter,
   formatPainterItem,
   formatPainterKeymap,
-} from '@scriba/plugin-format-painter'
-import { a11yChecker, a11yCheckerItem } from '@scriba/plugin-a11y-checker'
-import { templateToolbarItem, type TemplateOptions } from '@scriba/plugin-template'
-import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba/plugin-list'
-import { markdownShortcuts } from '@scriba/plugin-markdown'
-import { pasteClean } from '@scriba/plugin-paste-clean'
-import { sourceToolbarItem } from '@scriba/plugin-source'
+} from '@scriba-editor/plugin-format-painter'
+import { a11yChecker, a11yCheckerItem } from '@scriba-editor/plugin-a11y-checker'
+import { templateToolbarItem, type TemplateOptions } from '@scriba-editor/plugin-template'
+import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba-editor/plugin-list'
+import { markdownShortcuts } from '@scriba-editor/plugin-markdown'
+import { pasteClean } from '@scriba-editor/plugin-paste-clean'
+import { sourceToolbarItem } from '@scriba-editor/plugin-source'
 import {
   tableContextMenu,
   tableKeymap,
   tableNodes,
   tablePlugins,
   tableToolbarItems,
-} from '@scriba/plugin-table'
+} from '@scriba-editor/plugin-table'
 import {
   alignmentMenu,
   colorItems,
@@ -113,7 +113,7 @@ import {
   textStyleKeymap,
   textStyleMarks,
   withBlockStyles,
-} from '@scriba/plugin-text-style'
+} from '@scriba-editor/plugin-text-style'
 
 export interface CreateEditorOptions {
   /** Initial content: HTML (default) or JSON. Untrusted: it goes through the schema. */
@@ -196,7 +196,7 @@ function fullSchema(): Schema {
 /**
  * Creates an editor inside `target` (an element or a CSS selector). The content and
  * anything pasted or dropped are untrusted: they go through the schema parser. Save the
- * HTML only after passing it through `@scriba/sanitize-server` on your server.
+ * HTML only after passing it through `@scriba-editor/sanitize-server` on your server.
  */
 export function createEditor(
   target: HTMLElement | string,
@@ -380,7 +380,7 @@ export function createEditor(
 }
 
 /** The building blocks, for pages that compose their own editor. */
-export * as core from '@scriba/core'
-export * as view from '@scriba/view'
-export * as ui from '@scriba/ui'
-export { createTranslator } from '@scriba/i18n'
+export * as core from '@scriba-editor/core'
+export * as view from '@scriba-editor/view'
+export * as ui from '@scriba-editor/ui'
+export { createTranslator } from '@scriba-editor/i18n'

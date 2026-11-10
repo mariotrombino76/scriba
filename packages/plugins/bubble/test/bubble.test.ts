@@ -7,10 +7,10 @@ import {
   basicSchemaSpec,
   keymap,
   runKeymaps,
-} from '@scriba/core'
-import { createTranslator } from '@scriba/i18n'
-import { markItems } from '@scriba/ui'
-import { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import { createTranslator } from '@scriba-editor/i18n'
+import { markItems } from '@scriba-editor/ui'
+import { EditorView } from '@scriba-editor/view'
 import { bubbleKeymap, bubbleMenu } from '../src/index.js'
 
 const schema = new Schema(basicSchemaSpec)

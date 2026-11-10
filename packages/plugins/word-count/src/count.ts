@@ -1,4 +1,4 @@
-import type { EditorState, Node } from '@scriba/core'
+import type { EditorState, Node } from '@scriba-editor/core'
 
 /** What the counter shows. */
 export interface TextCount {

@@ -1,15 +1,15 @@
-# @scriba/plugin-source
+# @scriba-editor/plugin-source
 
 Vista del codice sorgente HTML, come il pulsante "Source code" di TinyMCE: si apre un dialogo con l'HTML del documento, lo si modifica e si salva di nuovo nel documento (un solo passo di undo).
 
 ```bash
-pnpm add @scriba/plugin-source
+pnpm add @scriba-editor/plugin-source
 ```
 
 ## Uso
 
 ```ts
-import { sourceToolbarItem } from '@scriba/plugin-source'
+import { sourceToolbarItem } from '@scriba-editor/plugin-source'
 
 // nella toolbar o nel menu Strumenti
 sourceToolbarItem(t)
@@ -39,4 +39,4 @@ L'HTML scritto qui è **input non fidato**, come un incolla:
 - poi passa dal **parser dello schema**, che scarta ciò che non conosce (`<script>`, `<style>`, handler `on*`, URL non ammessi, attributi sconosciuti);
 - ci sono limiti di lunghezza e di annidamento (profondità e numero di nodi): oltre, il salvataggio è rifiutato con un messaggio.
 
-Il sorgente mostrato è quello del serializzatore (con escape), non una copia del DOM. Questo non sostituisce il controllo lato server: ripassa sempre l'HTML con `@scriba/sanitize-server` prima di salvarlo. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+Il sorgente mostrato è quello del serializzatore (con escape), non una copia del DOM. Questo non sostituisce il controllo lato server: ripassa sempre l'HTML con `@scriba-editor/sanitize-server` prima di salvarlo. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

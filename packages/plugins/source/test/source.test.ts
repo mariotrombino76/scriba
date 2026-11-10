@@ -7,8 +7,8 @@ import {
   basicSchemaSpec,
   parseHTML,
   serializeHTML,
-} from '@scriba/core'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView } from '@scriba-editor/view'
 import { documentSource, parseSource } from '../src/index.js'
 
 const schema = new Schema(basicSchemaSpec)

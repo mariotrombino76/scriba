@@ -7,11 +7,11 @@ import {
   parseHTML,
   serializeHTML,
   type Command,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { JSDOM } from 'jsdom'
-import { createTranslator } from '@scriba/i18n'
-import type { MenuItem, ToolbarButton } from '@scriba/ui'
-import type { EditorView } from '@scriba/view'
+import { createTranslator } from '@scriba-editor/i18n'
+import type { MenuItem, ToolbarButton } from '@scriba-editor/ui'
+import type { EditorView } from '@scriba-editor/view'
 import {
   linkContextMenu,
   linkMarks,

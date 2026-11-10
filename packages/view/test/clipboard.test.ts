@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { EditorState, TextSelection } from '@scriba/core'
+import { EditorState, TextSelection } from '@scriba-editor/core'
 import { EditorView } from '../src/index.js'
 import { b, doc, h, mount, p } from './helpers.js'
 

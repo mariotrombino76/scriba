@@ -1,15 +1,15 @@
-# @scriba/plugin-paste-clean
+# @scriba-editor/plugin-paste-clean
 
 Incolla pulito da Word, Google Docs e pagine web, come il plugin "Paste from Word / PowerPoint" di TinyMCE (`paste`/`powerpaste`): liste vere al posto di quelle finte di Word, niente involucri Office/Docs, niente font e nero predefiniti.
 
 ```bash
-pnpm add @scriba/plugin-paste-clean
+pnpm add @scriba-editor/plugin-paste-clean
 ```
 
 ## Uso
 
 ```ts
-import { pasteClean } from '@scriba/plugin-paste-clean'
+import { pasteClean } from '@scriba-editor/plugin-paste-clean'
 
 const plugins = [
   pasteClean(), // oppure pasteClean({ keepFonts: true, keepColors: false })
@@ -42,4 +42,4 @@ La provenienza è rilevata da `detectSource(body)` (`'word' | 'google-docs' | 'o
 
 ## Sicurezza
 
-Questo plugin migliora la **fedeltà**, non la sicurezza. Gira su un documento **inerte** (nulla viene eseguito) e ciò che lascia passa comunque dal parser dello schema, che scarta tutto ciò che non conosce (script, handler `on*`, URL non ammessi, stili liberi). L'HTML incollato è input non fidato: chi salva HTML deve ripassarlo sempre da `@scriba/sanitize-server` sul server. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+Questo plugin migliora la **fedeltà**, non la sicurezza. Gira su un documento **inerte** (nulla viene eseguito) e ciò che lascia passa comunque dal parser dello schema, che scarta tutto ciò che non conosce (script, handler `on*`, URL non ammessi, stili liberi). L'HTML incollato è input non fidato: chi salva HTML deve ripassarlo sempre da `@scriba-editor/sanitize-server` sul server. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

@@ -6,9 +6,9 @@ import {
   type KeyBindings,
   type Node,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { ToolbarButton } from '@scriba/ui'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { ToolbarButton } from '@scriba-editor/ui'
 import { newFootnoteKey, syncFootnotes } from './sync.js'
 
 export { footnoteNodes, FOOTNOTES_CLASS, MAX_FOOTNOTES } from './nodes.js'

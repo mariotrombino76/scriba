@@ -1,7 +1,7 @@
-import { Plugin, type Schema } from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import type { ContextMenuSection, ToolbarControl, ToolbarMenu, ToolbarMenuEntry } from '@scriba/ui'
-import type { ViewPluginProps } from '@scriba/view'
+import { Plugin, type Schema } from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import type { ContextMenuSection, ToolbarControl, ToolbarMenu, ToolbarMenuEntry } from '@scriba-editor/ui'
+import type { ViewPluginProps } from '@scriba-editor/view'
 import {
   addColumn,
   addRow,
@@ -22,7 +22,7 @@ import { openCellDialog, openTablePropsDialog } from './properties.js'
 import { tableNormalize } from './normalize.js'
 import { tableView } from './table-view.js'
 import { sortTable } from './sort.js'
-import type { Command } from '@scriba/core'
+import type { Command } from '@scriba-editor/core'
 
 export {
   tableNodes,

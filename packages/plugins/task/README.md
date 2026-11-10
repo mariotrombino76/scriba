@@ -1,16 +1,16 @@
-# @scriba/plugin-task
+# @scriba-editor/plugin-task
 
 Attività (to-do) dentro il documento: un blocco con titolo, casella "fatto" e scadenza. TinyMCE ha solo la lista di controllo (`checklist`); qui l'attività è un nodo con dati propri, esportabile in HTML e JSON.
 
 ```bash
-pnpm add @scriba/plugin-task
+pnpm add @scriba-editor/plugin-task
 ```
 
 ## Uso
 
 ```ts
-import { keymap } from '@scriba/core'
-import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba/plugin-task'
+import { keymap } from '@scriba-editor/core'
+import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba-editor/plugin-task'
 
 const schema = new Schema({ nodes: { ...basicSchemaSpec.nodes, ...taskNodes }, marks })
 
@@ -19,7 +19,7 @@ const plugins = [keymap(taskKeymap(), { priority: 70 })]
 // menu "/": taskSlashItem(schema) tra le voci di slashCommands
 ```
 
-Il plugin definisce il **nodo e i comandi**; l'aspetto (casella, campi) è un _node view_ che scegli tu, ad esempio `vueNodeView(TaskView, { t })` di `@scriba/vue` (vedi `demo/main.ts`). Senza node view il nodo è comunque valido e si esporta.
+Il plugin definisce il **nodo e i comandi**; l'aspetto (casella, campi) è un _node view_ che scegli tu, ad esempio `vueNodeView(TaskView, { t })` di `@scriba-editor/vue` (vedi `demo/main.ts`). Senza node view il nodo è comunque valido e si esporta.
 
 ## Esportazioni
 
@@ -41,4 +41,4 @@ Con l'attività selezionata: **Invio** sposta il focus nel primo campo del node 
 
 ## Sicurezza
 
-Il titolo ha al massimo 200 caratteri su una riga, senza caratteri di controllo né segni di direzione (che potrebbero nascondere o riordinare il testo). La scadenza è una data reale `AAAA-MM-GG` (non `2026-02-30`); un valore non valido nell'HTML in ingresso diventa `null`, un `data-done` diverso da `true` è `false`. Tutto è testo e attributi tipizzati, mai HTML. Il server deve comunque ripassare l'HTML con `@scriba/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+Il titolo ha al massimo 200 caratteri su una riga, senza caratteri di controllo né segni di direzione (che potrebbero nascondere o riordinare il testo). La scadenza è una data reale `AAAA-MM-GG` (non `2026-02-30`); un valore non valido nell'HTML in ingresso diventa `null`, un `data-done` diverso da `true` è `false`. Tutto è testo e attributi tipizzati, mai HTML. Il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).

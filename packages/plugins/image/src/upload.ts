@@ -5,9 +5,9 @@ import {
   sanitizeUrl,
   type EditorState,
   type NodeType,
-} from '@scriba/core'
-import type { MessageKey, Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { MessageKey, Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 
 /** What the integrator's upload returns: the public URL, optionally with an alt text. */
 export type UploadResult = string | { src: string; alt?: string }

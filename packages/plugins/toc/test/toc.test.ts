@@ -7,8 +7,8 @@ import {
   basicSchemaSpec,
   parseHTML,
   serializeHTML,
-} from '@scriba/core'
-import { linkMarks, withAnchors } from '@scriba/plugin-link'
+} from '@scriba-editor/core'
+import { linkMarks, withAnchors } from '@scriba-editor/plugin-link'
 import { insertTableOfContents, tableOfContents, tocNodes } from '../src/index.js'
 
 const schema = new Schema({

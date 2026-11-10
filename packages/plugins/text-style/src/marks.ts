@@ -8,7 +8,7 @@ import {
   type HTMLSpec,
   type MarkSpec,
   type MarkType,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 const fontSize = (v: unknown) =>
   typeof v === 'string' ? normalizeLength(v, ['px', 'pt', 'em', 'rem', '%'], 400) : null

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
 import { linkMarks, withAnchors } from '../../plugins/link/src/index.js'
 import { listNodes } from '../../plugins/list/src/index.js'
 import { tocNodes } from '../../plugins/toc/src/index.js'

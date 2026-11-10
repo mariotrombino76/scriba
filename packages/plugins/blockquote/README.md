@@ -1,4 +1,4 @@
-# @scriba/plugin-blockquote
+# @scriba-editor/plugin-blockquote
 
 Blocchi di **citazione** per l'editor Scriba: avvolge uno o più blocchi in una `<blockquote>`, o li
 toglie dalla citazione. Equivale al pulsante "Citazione" di TinyMCE, ma il contenuto resta
@@ -7,18 +7,18 @@ vincolato allo schema (una citazione contiene sempre blocchi, mai testo "libero"
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-blockquote
+pnpm add @scriba-editor/plugin-blockquote
 ```
 
 ## Uso
 
 ```ts
-import { Schema, basicSchemaSpec } from '@scriba/core'
+import { Schema, basicSchemaSpec } from '@scriba-editor/core'
 import {
   blockquoteNodes,
   blockquoteToolbarItems,
   toggleBlockquote,
-} from '@scriba/plugin-blockquote'
+} from '@scriba-editor/plugin-blockquote'
 
 const schema = new Schema({
   nodes: { ...basicSchemaSpec.nodes, ...blockquoteNodes },
@@ -54,7 +54,7 @@ HTML letto e scritto: `<blockquote>…</blockquote>`, senza attributi.
   `toggleBlockquote` e `blockquoteToolbarItems` lanciano un `RangeError`: aggiungi `blockquoteNodes`.
 - Il comando segue la regola `(state, dispatch?) => boolean`: senza `dispatch` dice solo se può
   essere eseguito (serve ad abilitare o disabilitare il pulsante).
-- Il testo del pulsante usa la chiave i18n `block.blockquote` (pacchetto `@scriba/i18n`).
+- Il testo del pulsante usa la chiave i18n `block.blockquote` (pacchetto `@scriba-editor/i18n`).
 - Sicurezza: l'HTML incollato o caricato passa dal parser dello schema, che accetta solo
   `<blockquote>` senza attributi; vedi [sicurezza](../../../docs/sicurezza.md) e
   [plugin](../../../docs/plugin.md).

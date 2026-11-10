@@ -33,11 +33,11 @@ export default defineConfig(({ mode }) => ({
   ...(mode === 'iife' ? { define: { 'import.meta.url': 'undefined' } } : {}),
   resolve: {
     alias: {
-      '@scriba/core': pkg('core'),
-      '@scriba/view': pkg('view'),
-      '@scriba/ui': pkg('ui'),
-      '@scriba/i18n': pkg('i18n'),
-      ...Object.fromEntries(PLUGINS.map((p) => [`@scriba/plugin-${p}`, plugin(p)])),
+      '@scriba-editor/core': pkg('core'),
+      '@scriba-editor/view': pkg('view'),
+      '@scriba-editor/ui': pkg('ui'),
+      '@scriba-editor/i18n': pkg('i18n'),
+      ...Object.fromEntries(PLUGINS.map((p) => [`@scriba-editor/plugin-${p}`, plugin(p)])),
     },
   },
   build: {

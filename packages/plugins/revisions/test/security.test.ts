@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { Schema, basicSchemaSpec, serializeHTML } from '@scriba/core'
+import { Schema, basicSchemaSpec, serializeHTML } from '@scriba-editor/core'
 import { imageNodes } from '../../image/src/index.js'
 import { linkMarks } from '../../link/src/index.js'
 import { MAX_REVISION_LENGTH, parseRevision } from '../src/index.js'

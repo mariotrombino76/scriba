@@ -1,6 +1,6 @@
-import { normalizeColor } from '@scriba/core'
-import { createTranslator, type Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+import { normalizeColor } from '@scriba-editor/core'
+import { createTranslator, type Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 import { createIcon } from './icons.js'
 import {
   controlUsable,
@@ -47,7 +47,7 @@ interface GroupSpec {
  * to the editor. When the toolbar is too narrow, trailing groups move into the
  * "More options" menu instead of wrapping.
  *
- * Light DOM (no shadow root): styles come from `@scriba/themes`, so no inline
+ * Light DOM (no shadow root): styles come from `@scriba-editor/themes`, so no inline
  * `<style>` is needed under a strict CSP.
  */
 export class ScribaToolbar extends Base {

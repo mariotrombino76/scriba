@@ -1,4 +1,4 @@
-import type { EditorView, PluginView } from '@scriba/view'
+import type { EditorView, PluginView } from '@scriba-editor/view'
 import { CellSelection, tableAt } from './cell-selection.js'
 import { setColumnWidths } from './commands.js'
 import { MAX_COL_WIDTH, MIN_COL_WIDTH } from './nodes.js'

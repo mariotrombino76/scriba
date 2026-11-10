@@ -1,6 +1,6 @@
-import { Plugin, keymap, type EditorState, type Node, type Transaction } from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView, PluginView, TransformPastedDOM, ViewPluginProps } from '@scriba/view'
+import { Plugin, keymap, type EditorState, type Node, type Transaction } from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView, PluginView, TransformPastedDOM, ViewPluginProps } from '@scriba-editor/view'
 import { transactionAllowed, type BlockRules } from './check.js'
 import {
   deleteSelectionKeepingLocked,
@@ -22,7 +22,7 @@ export interface BlockPermissionOptions extends BlockRules {
 }
 
 export const LOCKED_CLASS = 'scriba-locked'
-const REMOTE_META = 'collabRemote' // set by @scriba/plugin-collab on remote changes
+const REMOTE_META = 'collabRemote' // set by @scriba-editor/plugin-collab on remote changes
 
 /**
  * Marks protected blocks in the DOM (a CSS class) and says why an edit was

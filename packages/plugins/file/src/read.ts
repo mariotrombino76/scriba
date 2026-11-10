@@ -1,6 +1,6 @@
-import { HTMLLimitError, parseHTML, type Node, type Schema } from '@scriba/core'
-import { parseMarkdown } from '@scriba/plugin-markdown'
-import { parseInertHTML } from '@scriba/view'
+import { HTMLLimitError, parseHTML, type Node, type Schema } from '@scriba-editor/core'
+import { parseMarkdown } from '@scriba-editor/plugin-markdown'
+import { parseInertHTML } from '@scriba-editor/view'
 
 /** Formats the editor opens. */
 export type OpenFormat = 'docx' | 'html' | 'markdown' | 'text'

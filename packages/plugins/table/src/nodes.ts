@@ -8,7 +8,7 @@ import {
   type Node,
   type NodeSpec,
   type StyleDecls,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 
 export const MAX_SPAN = 100
 export const MIN_COL_WIDTH = 24

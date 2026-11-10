@@ -1,12 +1,12 @@
-# @scriba/plugin-collab
+# @scriba-editor/plugin-collab
 
 **Collaborazione in tempo reale** per l'editor Scriba, basata su Yjs (CRDT): più persone scrivono
-nello stesso documento, con i cursori degli altri visibili e commenti condivisi. Si collega a `@scriba/collab-server`.
+nello stesso documento, con i cursori degli altri visibili e commenti condivisi. Si collega a `@scriba-editor/collab-server`.
 
 ## Installazione
 
 ```bash
-pnpm add @scriba/plugin-collab
+pnpm add @scriba-editor/plugin-collab
 ```
 
 Il pacchetto dipende da `yjs`, `y-protocols` e `lib0`, ed è opzionale: il core non lo importa.
@@ -14,7 +14,7 @@ Il pacchetto dipende da `yjs`, `y-protocols` e `lib0`, ed è opzionale: il core 
 ## Uso
 
 ```ts
-import { collab, collabCommentStore, collabStatusElement } from '@scriba/plugin-collab'
+import { collab, collabCommentStore, collabStatusElement } from '@scriba-editor/plugin-collab'
 
 const shared = collab({
   url: 'wss://example.com/collab',
@@ -62,7 +62,7 @@ el.after(collabStatusElement(document, shared.provider, t))
 - `yBinding(options)`, `yBindingKey`, `remoteTransaction`, `REMOTE_META`: sincronizzazione editor e Yjs.
 - `collabCursors(options)`, `cursorsKey`: cursori e selezioni degli altri utenti.
 - `collabCommentStore(provider)`: store dei commenti via server (vedi
-  [`@scriba/plugin-comments`](../comments/README.md)); offline le operazioni sono rifiutate.
+  [`@scriba-editor/plugin-comments`](../comments/README.md)); offline le operazioni sono rifiutate.
 - Utilità di basso livello: `toY`, `nodeFromY`, `docFromY`, `updateFragment`, `writeDoc`,
   `diffStart`, `diffEnd`, `toRelative`, `fromRelative`.
 

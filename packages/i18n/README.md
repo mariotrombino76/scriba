@@ -1,15 +1,15 @@
-# @scriba/i18n
+# @scriba-editor/i18n
 
 Traduzioni dell'interfaccia di Scriba: italiano, inglese, francese, tedesco e spagnolo.
 
 ```bash
-pnpm add @scriba/i18n
+pnpm add @scriba-editor/i18n
 ```
 
 ## Uso
 
 ```ts
-import { createTranslator, fr } from '@scriba/i18n'
+import { createTranslator, fr } from '@scriba-editor/i18n'
 
 const t = createTranslator('it')
 t('editor.label') // "Editor di testo formattato"
@@ -20,7 +20,7 @@ const tFr = createTranslator(fr)
 
 Nei componenti basta indicare la lingua: `locale="en"` (Vue), `locale: 'en'` (React e script per
 il browser). Per fr, de, es passa l'oggetto nei componenti Vue e React (`locale: fr`); con lo
-script `@scriba/browser` bastano i nomi (`'fr'`, `'de'`, `'es'`).
+script `@scriba-editor/browser` bastano i nomi (`'fr'`, `'de'`, `'es'`).
 
 ## Esportazioni
 
@@ -56,7 +56,7 @@ Passa un oggetto con tutti i messaggi, di tipo `Messages` (le chiavi sono quelle
 compilatore ti segnala quelle mancanti):
 
 ```ts
-import { en, createTranslator, type Messages } from '@scriba/i18n'
+import { en, createTranslator, type Messages } from '@scriba-editor/i18n'
 
 const pt: Messages = { ...en, 'editor.label': 'Editor de texto formatado' /* … */ }
 const t = createTranslator(pt)

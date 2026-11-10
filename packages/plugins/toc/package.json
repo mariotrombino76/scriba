@@ -1,6 +1,6 @@
 {
-  "name": "@scriba/plugin-toc",
-  "version": "0.0.0",
+  "name": "@scriba-editor/plugin-toc",
+  "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -21,11 +21,11 @@
   "license": "Apache-2.0",
   "description": "Table of contents for the Scriba editor, kept up to date with the headings.",
   "dependencies": {
-    "@scriba/core": "workspace:*",
-    "@scriba/i18n": "workspace:*",
-    "@scriba/ui": "workspace:*",
-    "@scriba/view": "workspace:*",
-    "@scriba/plugin-link": "workspace:*"
+    "@scriba-editor/core": "workspace:*",
+    "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/ui": "workspace:*",
+    "@scriba-editor/view": "workspace:*",
+    "@scriba-editor/plugin-link": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

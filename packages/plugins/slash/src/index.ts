@@ -4,9 +4,9 @@ import {
   type KeyBindings,
   type Plugin,
   type Schema,
-} from '@scriba/core'
-import type { Translate } from '@scriba/i18n'
-import type { EditorView } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { Translate } from '@scriba-editor/i18n'
+import type { EditorView } from '@scriba-editor/view'
 import {
   chooseItem,
   closeSlash,

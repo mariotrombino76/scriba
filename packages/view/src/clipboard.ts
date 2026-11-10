@@ -7,7 +7,7 @@ import {
   insertContent,
   parseHTML,
   type Node,
-} from '@scriba/core'
+} from '@scriba-editor/core'
 import { someProp } from './plugin-hooks.js'
 import { parseInertHTML } from './trusted-types.js'
 import type { EditorView } from './view.js'

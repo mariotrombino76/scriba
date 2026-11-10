@@ -6,8 +6,8 @@ import {
   type EditorState,
   type KeyBindings,
   type Transaction,
-} from '@scriba/core'
-import type { EditorView, PluginView, ViewPluginProps } from '@scriba/view'
+} from '@scriba-editor/core'
+import type { EditorView, PluginView, ViewPluginProps } from '@scriba-editor/view'
 
 /** An entry of a suggestion list (from your source: checked by `clean`). */
 export interface SuggestItem {
