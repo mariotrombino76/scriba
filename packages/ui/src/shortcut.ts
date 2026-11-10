@@ -35,3 +35,11 @@ export function formatShortcut(binding: string, t: Translate, mac = isMac()): st
   )
   return names.join(mac ? '' : '+')
 }
+
+/** A key binding (`Mod-Shift-z`) in the `aria-keyshortcuts` format (`Control+Shift+Z`). */
+export function ariaShortcut(binding: string, mac: boolean): string {
+  const parts = binding.split(/-(?!$)/)
+  const key = parts.pop()!
+  const mods = parts.map((p) => (/^mod$/i.test(p) ? (mac ? 'Meta' : 'Control') : p))
+  return [...mods, key.length === 1 ? key.toUpperCase() : key].join('+')
+}

@@ -73,10 +73,12 @@ export function openWordCountDialog(
       const table = doc.createElement('table')
       table.className = 'scriba-count-table'
       const head = table.createTHead().insertRow()
-      for (const key of ['', 'wordcount.document', 'wordcount.selection'] as const) {
+      // the empty corner is a data cell: an empty header would name nothing
+      head.appendChild(doc.createElement('td'))
+      for (const key of ['wordcount.document', 'wordcount.selection'] as const) {
         const th = doc.createElement('th')
         th.scope = 'col'
-        th.textContent = key ? t(key) : ''
+        th.textContent = t(key)
         head.appendChild(th)
       }
       const body = table.createTBody()

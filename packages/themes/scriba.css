@@ -125,6 +125,11 @@
 .scriba-editor:focus-visible {
   box-shadow: inset 0 0 0 2px var(--scriba-focus);
 }
+/* Links readable on the theme's background (the browser's blue is unreadable in the dark
+   theme). Zero specificity: a page's own link style still wins; inline mode keeps the page's. */
+:where(.scriba-editor:not(.scriba-inline *)) a {
+  color: var(--scriba-accent);
+}
 .scriba-editor[aria-readonly='true'] {
   cursor: default;
 }
@@ -170,6 +175,11 @@ scriba-toolbar {
   position: sticky;
   top: var(--scriba-sticky-offset, 0px);
   z-index: 2;
+}
+/* The browser brings the caret into view below the sticky toolbar, not under it
+   (WCAG 2.4.11 Focus Not Obscured): 3.5rem is the toolbar's height with touch targets. */
+html:has(.scriba-sticky) {
+  scroll-padding-top: calc(var(--scriba-sticky-offset, 0px) + 3.5rem);
 }
 .scriba-toolbar-group {
   display: flex;
@@ -644,6 +654,14 @@ scriba-toolbar {
   margin: 0;
   padding: 0;
   border: 0;
+}
+/* Radio buttons and checkboxes in dialogs: big enough to hit (WCAG 2.5.8) */
+.scriba-dialog input[type='radio'],
+.scriba-dialog input[type='checkbox'] {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0 0.375rem 0 0;
+  vertical-align: middle;
 }
 .scriba-radio-group legend {
   margin-bottom: 4px;
@@ -1538,6 +1556,8 @@ scriba-toolbar.scriba-bubble {
   font-family: var(--scriba-font);
   font-size: 0.875rem;
   color: var(--scriba-text);
+  /* its own background: the panel sits in the page, the text color comes from the theme */
+  background: var(--scriba-bg);
 }
 .scriba-comments h2 {
   margin: 0 0 6px;
@@ -1674,6 +1694,10 @@ scriba-toolbar.scriba-bubble {
 .scriba-help-groups {
   max-height: min(60vh, 32rem);
   overflow-y: auto;
+}
+.scriba-help-groups:focus-visible {
+  outline: 2px solid var(--scriba-focus);
+  outline-offset: 2px;
 }
 .scriba-help-groups section[hidden] {
   display: none;
@@ -1968,6 +1992,7 @@ hr.scriba-page-break {
 /* Status bar (@scriba/plugin-statusbar): element path, word count, resize handle */
 .scriba-statusbar {
   display: flex;
+  background: var(--scriba-bg);
   align-items: center;
   gap: 0.5rem;
   min-height: 1.75rem;
@@ -2292,6 +2317,7 @@ hr.scriba-page-break {
 }
 .scriba-template-list {
   flex-direction: column;
+  gap: 8px;
   flex-wrap: nowrap;
   max-height: 50vh;
   overflow-y: auto;

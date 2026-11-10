@@ -63,7 +63,10 @@ describe('<scriba-toolbar>', () => {
     const h2 = menu.querySelector<HTMLButtonElement>('[data-entry="heading-2"]')!
     expect(h2.classList.contains('scriba-preview-h2')).toBe(true)
     expect(h2.textContent).toContain('Ctrl+Alt+2')
-    expect(menu.querySelector('[aria-checked=true]')?.getAttribute('aria-label')).toBe('Paragrafo')
+    const checked = menu.querySelector('[aria-checked=true]')!
+    expect(checked.querySelector('.scriba-toolbar-menu-text')?.textContent).toBe('Paragrafo')
+    // the shortcut is shown, hidden from the name, given in the ARIA format
+    expect(checked.getAttribute('aria-keyshortcuts')).toBe('Control+Alt+0')
     h2.click()
     expect(view.state.doc.eq(doc(h(2, 'ab')))).toBe(true)
   })

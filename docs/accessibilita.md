@@ -50,10 +50,33 @@ Nella barra di stato: il **percorso dell'elemento** è una navigazione con un pu
 (seleziona quel blocco), un solo punto di tabulazione e frecce sinistra/destra per spostarsi; la **maniglia di ridimensionamento** è un pulsante che cambia l'altezza
 con le frecce su e giù (Pag su/giù per passi più grandi), Esc torna all'altezza automatica.
 
+## Verifica automatica
+
+Ogni modifica passa da `e2e/a11y.spec.ts`: axe-core controlla le regole WCAG 2.0, 2.1 e 2.2 di
+livello A e AA (più le buone pratiche) su editor, bubble menu, menu contestuale, ogni menu della
+barra, ogni finestra che si apre dai menu, tema scuro e le pagine inline, script classico e
+React, in Chromium, Firefox e WebKit. Il test fallisce alla prima violazione. Non sostituisce la
+prova con un lettore di schermo (NVDA, VoiceOver), che resta da fare a mano prima di ogni
+rilascio.
+
+Alcuni punti curati in particolare:
+
+- **Etichetta nel nome** (2.5.3): le voci di menu prendono il nome dal testo visibile; la
+  scorciatoia accanto è nascosta ai lettori di schermo e dichiarata in `aria-keyshortcuts`
+  nel formato ARIA (`Control+Alt+0`, `Meta+K` su macOS).
+- **Dimensione dei bersagli** (2.5.8): almeno 24px; con il tocco pulsanti e voci di menu 44px.
+- **Focus non coperto** (2.4.11): con la barra fissa in alto il cursore resta visibile sotto la
+  barra.
+- **Aree che scorrono** raggiungibili da tastiera (elenco delle scorciatoie).
+- **Trascinamenti** (2.5.7): ogni azione che si fa trascinando ha un'alternativa: larghezza
+  dell'immagine nel suo dialog, colonne dal menu Tabella, ritaglio con i campi numerici, altezza
+  dell'editor con le frecce sulla maniglia.
+
 ## Contrasto e temi
 
 I colori del tema rispettano il contrasto AA in chiaro e in scuro (il tema segue le preferenze
-del sistema). Se ridefinisci le variabili CSS, verifica di nuovo il contrasto.
+del sistema). Anche i link nel testo e i pannelli fuori dall'editor (commenti, barra di stato)
+hanno i colori del tema. Se ridefinisci le variabili CSS, verifica di nuovo il contrasto.
 
 ## Verifica accessibilità del contenuto
 

@@ -309,6 +309,9 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
     più larga, anche appena oltre il bordo) senza far scorrere la pagina; la barra inline segue
     la parte visibile della finestra (tastiera sullo schermo, zoom); percorso degli elementi e
     maniglia della barra di stato grandi almeno 2rem con il tocco.
+  - Verifica automatica dell'accessibilità (`e2e/a11y.spec.ts`, axe-core, solo sviluppo):
+    WCAG 2.2 A/AA su editor, menu, ogni dialog, tema scuro e pagine inline/CDN/React nei tre
+    browser.
   - Barra degli strumenti fissa in alto mentre il testo scorre, come `toolbar_sticky` di
     TinyMCE: opzione `stickyToolbar` di `createEditor` o classe `scriba-sticky` sul contenitore
     (Vue: `class`, React: `className`); `--scriba-sticky-offset` lascia spazio a un'intestazione
@@ -512,6 +515,16 @@ Tutti i pacchetti `@scriba/*` sono ancora alla versione `0.0.0` e non sono stati
 - Dimensione dei file immagine piccoli mostrata in byte.
 - `@scriba/plugin-image`: le maniglie per ridimensionare non comparivano per un'immagine in mezzo al
   testo di una riga; con la barra di stato avevano anche l'aspetto della sua maniglia.
+- Accessibilità (revisione con axe-core):
+  - `@scriba/ui`: le voci di menu prendono il nome dal testo visibile (prima un `aria-label`
+    che non comprendeva la scorciatoia mostrata, WCAG 2.5.3); `aria-keyshortcuts` dei menu nel
+    formato ARIA (`Control+K`, prima `Mod-k`).
+  - Tema: link nel testo leggibili nel tema scuro (prima il blu del browser su fondo scuro);
+    pannello dei commenti e barra di stato con lo sfondo del tema; caselle e pulsanti di
+    scelta nei dialog da 18px (2.5.8); con la barra fissa il cursore non finisce sotto di essa.
+  - `@scriba/plugin-help`: l'elenco delle scorciatoie, che scorre, si raggiunge da tastiera.
+  - `@scriba/plugin-word-count`: la cella d'angolo vuota della tabella non è più
+    un'intestazione.
 - `@scriba/ui`: errore "ResizeObserver loop" nella console sugli schermi stretti, quando la
   barra (o il bubble menu) spostava pulsanti in "Altro"; ora il calcolo avviene al frame dopo.
 

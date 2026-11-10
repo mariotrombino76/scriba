@@ -8,7 +8,7 @@ import {
   type ToolbarMenu,
   type ToolbarMenuEntry,
 } from './items.js'
-import { formatShortcut } from './shortcut.js'
+import { ariaShortcut, formatShortcut } from './shortcut.js'
 
 let menuCount = 0
 
@@ -121,13 +121,16 @@ export class MenuPopup {
         text.className = 'scriba-toolbar-menu-text'
         text.textContent = entry.text ?? entry.label(t)
         el.appendChild(text)
+        // the visible text is the name (the shortcut next to it is aria-hidden): an
+        // aria-label equal to it would only hide the label-in-name match (WCAG 2.5.3)
+        if (entry.text === undefined) el.removeAttribute('aria-label')
         if (entry.shortcut) {
           const key = doc.createElement('span')
           key.className = 'scriba-toolbar-menu-key'
           key.setAttribute('aria-hidden', 'true')
           key.textContent = formatShortcut(entry.shortcut, t, mac)
           el.appendChild(key)
-          el.setAttribute('aria-keyshortcuts', entry.shortcut)
+          el.setAttribute('aria-keyshortcuts', ariaShortcut(entry.shortcut, mac))
         }
         if (entry.hasPopup) {
           el.setAttribute('aria-haspopup', 'menu')
@@ -176,7 +179,7 @@ export class MenuPopup {
       if (entry.live) {
         // labels that change over time (e.g. the current time): computed again now
         const label = entry.label(this.t)
-        el.setAttribute('aria-label', label)
+        if (el.hasAttribute('aria-label')) el.setAttribute('aria-label', label)
         const text = el.querySelector('.scriba-toolbar-menu-text')
         if (text && entry.text === undefined) text.textContent = label
       }

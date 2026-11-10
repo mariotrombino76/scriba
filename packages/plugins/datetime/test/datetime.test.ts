@@ -57,7 +57,6 @@ describe('dateTimeMenu', () => {
     now = new Date(2026, 9, 19, 9, 6, 0)
     popup.open()
     expect(first().textContent).toBe('09:06:00')
-    expect(first().getAttribute('aria-label')).toBe('09:06:00')
     ;(first() as HTMLButtonElement).click()
     expect(serializeHTML(view.state.doc)).toBe('<p>x09:06:00</p>')
   })

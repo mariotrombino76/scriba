@@ -20,6 +20,7 @@
     "collab": "vite build --config e2e/collab.vite.config.ts && (node e2e/.collab/server.mjs & vite --config demo/vite.config.ts)"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "^9.39.0",
     "@playwright/test": "1.64.1",
     "@types/jsdom": "^30.0.0",

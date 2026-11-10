@@ -11,7 +11,7 @@ import {
   type ToolbarItem,
 } from './items.js'
 import { MenuPopup, type PopupEntry } from './menu.js'
-import { formatShortcut, isMac } from './shortcut.js'
+import { ariaShortcut, formatShortcut, isMac } from './shortcut.js'
 
 const OVERFLOW = 'scriba-toolbar-overflow'
 const overflowed = (c: { el: HTMLElement }) => c.el.classList.contains(OVERFLOW)
@@ -496,13 +496,6 @@ export class ScribaToolbar extends Base {
     this.view!.dom.id = id
     return id
   }
-}
-
-function ariaShortcut(binding: string, mac: boolean): string {
-  const parts = binding.split(/-(?!$)/)
-  const key = parts.pop()!
-  const mods = parts.map((p) => (/^mod$/i.test(p) ? (mac ? 'Meta' : 'Control') : p))
-  return [...mods, key.length === 1 ? key.toUpperCase() : key].join('+')
 }
 
 /** Registers `<scriba-toolbar>` (idempotent). */

@@ -45,9 +45,10 @@ describe('toolbar menus', () => {
     expect(first.getAttribute('aria-label')).toBe('Nero')
     expect(first.title).toBe('Nero')
     expect(first.style.backgroundColor).toBe('rgb(0, 0, 0)')
-    expect(menu.querySelector('[data-entry=none]')?.getAttribute('aria-label')).toBe(
-      'Rimuovi colore',
-    )
+    // a list entry is named by its visible text (no aria-label hiding the shortcut match)
+    const none = menu.querySelector('[data-entry=none]')!
+    expect(none.hasAttribute('aria-label')).toBe(false)
+    expect(none.textContent).toBe('Rimuovi colore')
   })
 
   it('opens, navigates with arrows, chooses with Enter/click and closes', () => {

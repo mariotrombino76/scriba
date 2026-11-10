@@ -49,6 +49,10 @@ export function openHelpDialog(view: EditorView, options: HelpOptions): DialogHa
       const list = doc.createElement('div')
       list.className = 'scriba-help-groups'
       list.id = `${id}-groups`
+      // it scrolls: reachable from the keyboard (arrows, Page Up/Down), named after the dialog
+      list.tabIndex = 0
+      list.setAttribute('role', 'region')
+      list.setAttribute('aria-label', t('help.title'))
       search.setAttribute('aria-controls', list.id)
       const empty = doc.createElement('p')
       empty.className = 'scriba-help-empty'

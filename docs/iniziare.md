@@ -56,7 +56,8 @@ Per un'interfaccia tua: `inlineToolbar(contenitore, toolbar)` da `@scriba/ui`.
 Con `stickyToolbar: true` la barra degli strumenti resta in vista in cima alla finestra mentre
 un testo lungo scorre (come `toolbar_sticky` di TinyMCE), comodo soprattutto sui telefoni. Nei
 componenti Vue e React basta la classe `scriba-sticky` (`class` o `className`). Se la pagina ha
-un'intestazione fissa, `--scriba-sticky-offset: 56px` sposta la barra sotto di essa.
+un'intestazione fissa, `:root { --scriba-sticky-offset: 56px }` sposta la barra sotto di essa.
+Il browser porta il cursore in vista sotto la barra, non sotto di essa (WCAG 2.4.11).
 
 ### Telefoni e tablet
 
