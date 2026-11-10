@@ -1,4 +1,10 @@
-import { Plugin, PluginKey, type Command, type EditorState, type Transaction } from '@scriba-editor/core'
+import {
+  Plugin,
+  PluginKey,
+  type Command,
+  type EditorState,
+  type Transaction,
+} from '@scriba-editor/core'
 import type { Translate } from '@scriba-editor/i18n'
 import type { IconName } from '@scriba-editor/ui'
 import type { EditorView, ViewPluginProps } from '@scriba-editor/view'

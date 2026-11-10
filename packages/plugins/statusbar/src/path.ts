@@ -1,4 +1,10 @@
-import { NodeSelection, type EditorState, type HTMLSpec, type Mark, type Node } from '@scriba-editor/core'
+import {
+  NodeSelection,
+  type EditorState,
+  type HTMLSpec,
+  type Mark,
+  type Node,
+} from '@scriba-editor/core'
 import type { Translate } from '@scriba-editor/i18n'
 import type { EditorView } from '@scriba-editor/view'
 

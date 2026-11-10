@@ -9,7 +9,12 @@ pnpm add @scriba-editor/plugin-mention
 ## Uso
 
 ```ts
-import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba-editor/plugin-mention'
+import {
+  mentionKeymap,
+  mentionNodes,
+  mentions,
+  type MentionSearch,
+} from '@scriba-editor/plugin-mention'
 import { keymap } from '@scriba-editor/core'
 
 // la ricerca chiama il tuo server (con la sessione dell'utente)
@@ -39,14 +44,14 @@ Una voce restituita da `search` ha la forma `{ id, label, detail? }` (`MentionIt
 | `closeMention(tr)`, `getMentionState(state)`, `mentionKey`, `isLoading(state)`                    | Stato dell'elenco                                                                                                              |
 | `cleanResults(raw, max)`                                                                          | Scarta le voci non valide, i doppioni di `id` e oltre `max`                                                                    |
 | `isMentionId`, `isMentionLabel`, `labelFromText`, `MAX_ID_LENGTH` (200), `MAX_LABEL_LENGTH` (100) | Validazioni dei dati                                                                                                           |
-| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Costruttore generico di elenchi a trigger (lo usa anche `@scriba-editor/plugin-merge-tags`)                                           |
+| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Costruttore generico di elenchi a trigger (lo usa anche `@scriba-editor/plugin-merge-tags`)                                    |
 
 ### Opzioni di `mentions()` (`MentionMenuOptions`)
 
 | Opzione      | Descrizione                                                                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `search`     | `(query, signal) => Promise<MentionItem[]>`; `query` è `""` subito dopo `@`; il `signal` si annulla se l'utente continua a scrivere o chiude l'elenco |
-| `t`          | Funzione di traduzione (`createTranslator` di `@scriba-editor/i18n`)                                                                                         |
+| `t`          | Funzione di traduzione (`createTranslator` di `@scriba-editor/i18n`)                                                                                  |
 | `debounce`   | Pausa prima di cercare, in ms (predefinito 150)                                                                                                       |
 | `maxResults` | Voci mostrate al massimo (predefinito 8, massimo 50)                                                                                                  |
 | `timeout`    | Una ricerca più lenta fallisce, in ms (predefinito 10 000)                                                                                            |

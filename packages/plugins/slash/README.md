@@ -10,7 +10,12 @@ pnpm add @scriba-editor/plugin-slash
 
 ```ts
 import { keymap } from '@scriba-editor/core'
-import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba-editor/plugin-slash'
+import {
+  basicSlashItems,
+  slashCommands,
+  slashKeymap,
+  type SlashItem,
+} from '@scriba-editor/plugin-slash'
 
 const slashItems: SlashItem[] = [
   ...basicSlashItems(schema), // paragrafo e titoli 1-3

@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
-import { HTMLLimitError, Schema, basicSchemaSpec, parseHTML, serializeHTML } from '@scriba-editor/core'
+import {
+  HTMLLimitError,
+  Schema,
+  basicSchemaSpec,
+  parseHTML,
+  serializeHTML,
+} from '@scriba-editor/core'
 import { listNodes } from '@scriba-editor/plugin-list'
 import { blockquoteNodes } from '@scriba-editor/plugin-blockquote'
 import { codeBlockNodes } from '@scriba-editor/plugin-code-block'

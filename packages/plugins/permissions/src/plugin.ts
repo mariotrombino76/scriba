@@ -1,6 +1,11 @@
 import { Plugin, keymap, type EditorState, type Node, type Transaction } from '@scriba-editor/core'
 import type { Translate } from '@scriba-editor/i18n'
-import type { EditorView, PluginView, TransformPastedDOM, ViewPluginProps } from '@scriba-editor/view'
+import type {
+  EditorView,
+  PluginView,
+  TransformPastedDOM,
+  ViewPluginProps,
+} from '@scriba-editor/view'
 import { transactionAllowed, type BlockRules } from './check.js'
 import {
   deleteSelectionKeepingLocked,

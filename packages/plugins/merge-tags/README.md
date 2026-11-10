@@ -10,7 +10,12 @@ pnpm add @scriba-editor/plugin-merge-tags
 
 ```ts
 import { keymap } from '@scriba-editor/core'
-import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba-editor/plugin-merge-tags'
+import {
+  mergeTagMenu,
+  mergeTagNodes,
+  mergeTags,
+  type MergeTag,
+} from '@scriba-editor/plugin-merge-tags'
 
 const tags: MergeTag[] = [
   { name: 'cliente.nome', label: 'Nome', group: 'Cliente' },

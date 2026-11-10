@@ -2,11 +2,11 @@
 
 Scriba funziona in qualsiasi pagina web. Scegli il modo che corrisponde al tuo progetto.
 
-| Il tuo progetto                                   | Usa                                      | Guida                                        |
-| ------------------------------------------------- | ---------------------------------------- | -------------------------------------------- |
-| Pagina HTML, PHP, .NET, Java, Django… senza build | `@scriba-editor/browser` (script da CDN)        | [qui sotto](#pagina-qualsiasi-script-da-cdn) |
-| Vue 3 o Nuxt                                      | `@scriba-editor/vue`                            | [qui sotto](#vue-3-e-nuxt)                   |
-| React 18 o 19                                     | `@scriba-editor/react`                          | [qui sotto](#react)                          |
+| Il tuo progetto                                   | Usa                                                    | Guida                                        |
+| ------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------- |
+| Pagina HTML, PHP, .NET, Java, Django… senza build | `@scriba-editor/browser` (script da CDN)               | [qui sotto](#pagina-qualsiasi-script-da-cdn) |
+| Vue 3 o Nuxt                                      | `@scriba-editor/vue`                                   | [qui sotto](#vue-3-e-nuxt)                   |
+| React 18 o 19                                     | `@scriba-editor/react`                                 | [qui sotto](#react)                          |
 | Bundler (Vite, webpack…) e controllo completo     | `@scriba-editor/core` + `@scriba-editor/view` + plugin | [qui sotto](#su-misura-con-i-pacchetti)      |
 
 In ogni caso includi il tema (`@scriba-editor/themes/scriba.css`, o `scriba.css` del pacchetto browser).
@@ -14,7 +14,10 @@ In ogni caso includi il tema (`@scriba-editor/themes/scriba.css`, o `scriba.css`
 ## Pagina qualsiasi (script da CDN)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+/>
 <script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 
 <form method="post" action="/salva">

@@ -21,7 +21,12 @@ import {
   type Ref,
   type ShallowRef,
 } from 'vue'
-import { parseContent, serializeContent, type Content, type ContentFormat } from '@scriba-editor/view'
+import {
+  parseContent,
+  serializeContent,
+  type Content,
+  type ContentFormat,
+} from '@scriba-editor/view'
 
 export interface UseScribaOptions {
   /** Default: the Phase 1 `basicSchema`. */

@@ -40,7 +40,7 @@ viceversa. I link e i commenti **non** vengono copiati né rimossi dal testo di 
 
 | Opzione      | Descrizione                                                                                                                                     |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `marks`      | `(type) => boolean`: quali mark si copiano (default `isFormattingMark` di `@scriba-editor/ui`).                                                        |
+| `marks`      | `(type) => boolean`: quali mark si copiano (default `isFormattingMark` di `@scriba-editor/ui`).                                                 |
 | `blockAttrs` | Attributi del blocco copiati, se entrambi i blocchi li hanno (default `align`, `indent`, `lineHeight`, `dir`, `className`). Mai `id`/`blockId`. |
 | `blockTypes` | Tipi di blocco che possono trasformarsi l'uno nell'altro (default `paragraph`, `heading`).                                                      |
 

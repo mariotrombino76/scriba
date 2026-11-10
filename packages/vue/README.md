@@ -38,7 +38,7 @@ sul server prima di salvarlo o mostrarlo (vedi [Sicurezza](../../docs/sicurezza.
 | `plugins`    | —                            | Plugin aggiuntivi (letti alla creazione).                                                            |
 | `editable`   | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                                             |
 | `label`      | "Editor di testo formattato" | Nome accessibile dell'area di scrittura (tradotto secondo `locale`).                                 |
-| `locale`     | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`).               |
+| `locale`     | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`).        |
 | `toolbar`    | `true`                       | Mostra la toolbar predefinita.                                                                       |
 | `inline`     | `false`                      | Modalità inline: stili della pagina, toolbar mobile solo mentre si scrive (letta al montaggio).      |
 | `nodeViews`  | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                                        |

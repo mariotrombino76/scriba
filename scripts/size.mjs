@@ -44,7 +44,8 @@ for (const entry of ENTRIES) {
       lib: { entry: inputs, formats: ['es'] },
       // third-party libraries (markdown-it, lowlight…) are the app's choice: not counted
       rollupOptions: {
-        external: (id) => !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('@scriba-editor/'),
+        external: (id) =>
+          !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('@scriba-editor/'),
       },
     },
   })

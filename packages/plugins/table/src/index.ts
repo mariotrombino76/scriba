@@ -1,6 +1,11 @@
 import { Plugin, type Schema } from '@scriba-editor/core'
 import type { MessageKey, Translate } from '@scriba-editor/i18n'
-import type { ContextMenuSection, ToolbarControl, ToolbarMenu, ToolbarMenuEntry } from '@scriba-editor/ui'
+import type {
+  ContextMenuSection,
+  ToolbarControl,
+  ToolbarMenu,
+  ToolbarMenuEntry,
+} from '@scriba-editor/ui'
 import type { ViewPluginProps } from '@scriba-editor/view'
 import {
   addColumn,

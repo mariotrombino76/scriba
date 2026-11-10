@@ -39,7 +39,11 @@ import {
 } from '@scriba-editor/view'
 import { blockquoteNodes, blockquoteToolbarItems } from '@scriba-editor/plugin-blockquote'
 import { charmapToolbarItem } from '@scriba-editor/plugin-charmap'
-import { codeBlockKeymap, codeBlockNodes, codeBlockToolbarItems } from '@scriba-editor/plugin-code-block'
+import {
+  codeBlockKeymap,
+  codeBlockNodes,
+  codeBlockToolbarItems,
+} from '@scriba-editor/plugin-code-block'
 import {
   detailsAutoOpen,
   detailsKeymap,
@@ -61,7 +65,11 @@ import {
   findReplacePlugins,
   findReplaceToolbarItem,
 } from '@scriba-editor/plugin-find-replace'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
+import {
+  Fullscreen,
+  fullscreenKeymap,
+  fullscreenToolbarItem,
+} from '@scriba-editor/plugin-fullscreen'
 import { hrNodes, hrPlugins, hrToolbarItems } from '@scriba-editor/plugin-hr'
 import {
   imageContextMenu,
@@ -94,7 +102,12 @@ import {
 } from '@scriba-editor/plugin-format-painter'
 import { a11yChecker, a11yCheckerItem } from '@scriba-editor/plugin-a11y-checker'
 import { templateToolbarItem, type TemplateOptions } from '@scriba-editor/plugin-template'
-import { listIndentCommands, listKeymap, listNodes, listToolbarItems } from '@scriba-editor/plugin-list'
+import {
+  listIndentCommands,
+  listKeymap,
+  listNodes,
+  listToolbarItems,
+} from '@scriba-editor/plugin-list'
 import { markdownShortcuts } from '@scriba-editor/plugin-markdown'
 import { pasteClean } from '@scriba-editor/plugin-paste-clean'
 import { sourceToolbarItem } from '@scriba-editor/plugin-source'

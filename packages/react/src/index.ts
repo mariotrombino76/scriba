@@ -5,4 +5,9 @@ export {
   type UseScriba,
   type UseScribaOptions,
 } from './useScriba.js'
-export { parseContent, serializeContent, type Content, type ContentFormat } from '@scriba-editor/view'
+export {
+  parseContent,
+  serializeContent,
+  type Content,
+  type ContentFormat,
+} from '@scriba-editor/view'

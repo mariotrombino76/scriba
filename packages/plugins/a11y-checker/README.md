@@ -13,7 +13,11 @@ pnpm add @scriba-editor/plugin-a11y-checker
 ## Uso
 
 ```ts
-import { a11yChecker, a11yCheckerItem, checkAccessibility } from '@scriba-editor/plugin-a11y-checker'
+import {
+  a11yChecker,
+  a11yCheckerItem,
+  checkAccessibility,
+} from '@scriba-editor/plugin-a11y-checker'
 
 const state = EditorState.create({
   schema,

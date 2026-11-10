@@ -14,7 +14,11 @@ import {
 } from '@scriba-editor/core'
 import { createTranslator } from '@scriba-editor/i18n'
 import { codeBlockNodes } from '@scriba-editor/plugin-code-block'
-import { markdownInputRules, parseMarkdown, serializeMarkdown } from '@scriba-editor/plugin-markdown'
+import {
+  markdownInputRules,
+  parseMarkdown,
+  serializeMarkdown,
+} from '@scriba-editor/plugin-markdown'
 import { EditorView, parseInertHTML } from '@scriba-editor/view'
 import {
   hrNodes,

@@ -5,7 +5,10 @@ Scriba in qualsiasi pagina web, senza framework e senza build: un foglio di stil
 ## Con un tag `<script>` (CDN)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+/>
 <script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 
 <div id="editor"></div>

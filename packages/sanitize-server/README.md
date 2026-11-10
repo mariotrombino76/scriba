@@ -41,13 +41,13 @@ lancia un errore per tutto ciò che lo schema rifiuta.
 
 ## API
 
-| Esportazione                                | Descrizione                                                                             |
-| ------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `sanitizeHTML(schema, html, options?)`      | Analizza l'HTML con lo schema e lo serializza di nuovo: restituisce una stringa pulita. |
+| Esportazione                                | Descrizione                                                                                    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `sanitizeHTML(schema, html, options?)`      | Analizza l'HTML con lo schema e lo serializza di nuovo: restituisce una stringa pulita.        |
 | `parseHTMLOnServer(schema, html, options?)` | Come sopra, ma restituisce il documento (`Node` di `@scriba-editor/core`) senza serializzarlo. |
-| `SanitizeOptions`                           | Opzioni (vedi sotto).                                                                   |
-| `InputTooLargeError`                        | Errore (`RangeError`) lanciato se l'input supera `maxInputLength`.                      |
-| `adaptParse5(node)`                         | Espone un nodo `parse5` come `DOMLike` per il parser del core (uso avanzato).           |
+| `SanitizeOptions`                           | Opzioni (vedi sotto).                                                                          |
+| `InputTooLargeError`                        | Errore (`RangeError`) lanciato se l'input supera `maxInputLength`.                             |
+| `adaptParse5(node)`                         | Espone un nodo `parse5` come `DOMLike` per il parser del core (uso avanzato).                  |
 
 ### Opzioni
 

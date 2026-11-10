@@ -9,7 +9,10 @@ Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obb
 **Una pagina qualsiasi** (nessun framework, nessuna build):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+/>
 <script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
 <div id="editor"></div>
 <script src="/js/editor.js"></script>

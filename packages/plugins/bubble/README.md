@@ -32,11 +32,11 @@ const state = EditorState.create({
 
 ## Opzioni (`BubbleMenuOptions`)
 
-| Opzione | Descrizione                                                                     |
-| ------- | ------------------------------------------------------------------------------- |
-| `items` | I controlli della barra (`ToolbarItem[]`), gli stessi della toolbar principale. |
-| `t`     | Traduttore di `@scriba-editor/i18n` (etichetta della barra: chiave `bubble.label`).    |
-| `mac`   | Se mostrare le scorciatoie come ⌘ (default: rilevamento della piattaforma).     |
+| Opzione | Descrizione                                                                         |
+| ------- | ----------------------------------------------------------------------------------- |
+| `items` | I controlli della barra (`ToolbarItem[]`), gli stessi della toolbar principale.     |
+| `t`     | Traduttore di `@scriba-editor/i18n` (etichetta della barra: chiave `bubble.label`). |
+| `mac`   | Se mostrare le scorciatoie come ⌘ (default: rilevamento della piattaforma).         |
 
 ## Cosa esporta
 

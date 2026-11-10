@@ -12,7 +12,11 @@ pnpm add @scriba-editor/plugin-fullscreen
 
 ```ts
 import { keymap } from '@scriba-editor/core'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
+import {
+  Fullscreen,
+  fullscreenKeymap,
+  fullscreenToolbarItem,
+} from '@scriba-editor/plugin-fullscreen'
 
 // il contenitore con barra, area di scrittura e barra di stato
 const fullscreen = new Fullscreen(document.getElementById('app')!)

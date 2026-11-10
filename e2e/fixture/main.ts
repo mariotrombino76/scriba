@@ -91,12 +91,26 @@ import {
   tableContextMenu,
   tableToolbarItems,
 } from '@scriba-editor/plugin-table'
-import { Fullscreen, fullscreenKeymap, fullscreenToolbarItem } from '@scriba-editor/plugin-fullscreen'
+import {
+  Fullscreen,
+  fullscreenKeymap,
+  fullscreenToolbarItem,
+} from '@scriba-editor/plugin-fullscreen'
 import { createWordCountStatus, openWordCountDialog } from '@scriba-editor/plugin-word-count'
 import { sourceToolbarItem } from '@scriba-editor/plugin-source'
 import { charmapToolbarItem, openCharmapDialog } from '@scriba-editor/plugin-charmap'
-import { basicSlashItems, slashCommands, slashKeymap, type SlashItem } from '@scriba-editor/plugin-slash'
-import { mentionKeymap, mentionNodes, mentions, type MentionSearch } from '@scriba-editor/plugin-mention'
+import {
+  basicSlashItems,
+  slashCommands,
+  slashKeymap,
+  type SlashItem,
+} from '@scriba-editor/plugin-slash'
+import {
+  mentionKeymap,
+  mentionNodes,
+  mentions,
+  type MentionSearch,
+} from '@scriba-editor/plugin-mention'
 import { blockPermissions, withBlockIds } from '@scriba-editor/plugin-permissions'
 import { taskKeymap, taskNodes, taskSlashItem, taskToolbarItem } from '@scriba-editor/plugin-task'
 import { calloutNodes, calloutSlashItem, calloutToolbarItem } from '@scriba-editor/plugin-callout'
@@ -118,7 +132,12 @@ import {
   footnoteSlashItem,
   footnoteToolbarItem,
 } from '@scriba-editor/plugin-footnotes'
-import { mergeTagMenu, mergeTagNodes, mergeTags, type MergeTag } from '@scriba-editor/plugin-merge-tags'
+import {
+  mergeTagMenu,
+  mergeTagNodes,
+  mergeTags,
+  type MergeTag,
+} from '@scriba-editor/plugin-merge-tags'
 import { tableOfContents, tocNodes, tocSlashItem, tocToolbarItem } from '@scriba-editor/plugin-toc'
 import katex from 'katex'
 import {

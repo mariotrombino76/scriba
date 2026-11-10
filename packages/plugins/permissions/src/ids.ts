@@ -1,4 +1,10 @@
-import { withAttr, type HTMLSpec, type Node, type NodeSpec, type ParseRule } from '@scriba-editor/core'
+import {
+  withAttr,
+  type HTMLSpec,
+  type Node,
+  type NodeSpec,
+  type ParseRule,
+} from '@scriba-editor/core'
 
 /** Name of the block id attribute in the model. */
 export const BLOCK_ID = 'blockId'

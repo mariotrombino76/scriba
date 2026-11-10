@@ -1,7 +1,12 @@
 import type { Plugin, Schema } from '@scriba-editor/core'
 import { createTranslator, type Messages } from '@scriba-editor/i18n'
 import { defineScribaToolbar, inlineToolbar, type ScribaToolbar } from '@scriba-editor/ui'
-import { sameContent, type Content, type ContentFormat, type NodeViewFactory } from '@scriba-editor/view'
+import {
+  sameContent,
+  type Content,
+  type ContentFormat,
+  type NodeViewFactory,
+} from '@scriba-editor/view'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 import { useScriba, type UseScriba } from './useScriba.js'
 

@@ -1,4 +1,10 @@
-import { Plugin, PluginKey, type Command, type EditorState, type Transaction } from '@scriba-editor/core'
+import {
+  Plugin,
+  PluginKey,
+  type Command,
+  type EditorState,
+  type Transaction,
+} from '@scriba-editor/core'
 import type { InlineDecoration } from '@scriba-editor/view'
 import { checkAccessibility, resolveOptions, targetStart } from './check.js'
 import type { A11yIssue, A11yOptions, A11yRuleId, A11yTarget } from './types.js'

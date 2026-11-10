@@ -55,7 +55,7 @@ const entry = helpItem(helpOptions)
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `shortcutsFromItems(items)`                 | Le scorciatoie dei pulsanti e dei menu, con le loro etichette; ogni combinazione compare una sola volta. |
 | `editingHelp({ slash?, mentions? })`        | Tasti senza pulsante: a capo, incolla senza formato, Tab, Maiusc+Tab; `/` e `@` se usati.                |
-| `markdownHelp()`                            | Le scorciatoie Markdown di `@scriba-editor/plugin-markdown` (`# `, `- `, `**testo**`, …).                       |
+| `markdownHelp()`                            | Le scorciatoie Markdown di `@scriba-editor/plugin-markdown` (`# `, `- `, `**testo**`, …).                |
 | `navigationHelp({ bubble?, contextMenu? })` | Frecce, Esc, Alt+F10 (barra sulla selezione), Maiusc+F10 (menu contestuale).                             |
 
 Un gruppo è `HelpGroup { id, title, shortcuts }` e una riga è `HelpShortcut { keys?, typed?, label }`

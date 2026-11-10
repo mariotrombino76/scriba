@@ -31,7 +31,7 @@ uso, è nel menu **Aiuto ▸ Scorciatoie da tastiera** (Alt+0).
 | Mod+Alt+C / Mod+Alt+V     | Copia formato / applicalo alla selezione (Esc annulla l'attesa)  |
 | Mod+Alt+0 … 6             | Paragrafo, Titolo 1…6                                            |
 | Mod+K                     | Link                                                             |
-| Mod+S                     | Salva (con `@scriba-editor/plugin-save`)                                |
+| Mod+S                     | Salva (con `@scriba-editor/plugin-save`)                         |
 | Mod+Z, Mod+Y              | Annulla, ripeti                                                  |
 | Maiusc+Invio              | A capo nello stesso paragrafo                                    |
 | Tab, Maiusc+Tab           | Rientro negli elenchi, cella successiva/precedente nelle tabelle |
