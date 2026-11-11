@@ -46,7 +46,7 @@ jobs:
         with:
           ref: ${{ inputs.version && format('refs/tags/v{0}', inputs.version) || github.ref }}
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
