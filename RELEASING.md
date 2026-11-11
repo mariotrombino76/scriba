@@ -94,7 +94,7 @@ Il tag avvia `release.yml`, che:
 
 1. controlla che il tag corrisponda alla versione di tutti i pacchetti;
 2. ripete lint, tipi, test e test di sicurezza;
-3. costruisce ed esegue `pnpm -r publish --access public --provenance`.
+3. costruisce e pubblica i pacchetti uno alla volta con `--provenance`, saltando quelli già pubblicati.
 
 Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository restano uguali.
 
@@ -115,7 +115,12 @@ Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository r
 - **Il workflow fallisce prima di `publish`:** non è uscito nulla. Correggi, cancella il tag
   (`git push github :v0.1.0` e `git tag -d v0.1.0`) e ricrealo.
 - **Il workflow fallisce a metà della pubblicazione:** alcuni pacchetti sono usciti e altri no. Si
-  rilancia il job (Re-run): `pnpm publish` salta le versioni già presenti.
+  rilancia il job (Re-run): il workflow salta le versioni già presenti.
+- **npm risponde `429 Too Many Requests`:** npm limita quanti pacchetti _nuovi_ si creano in poco
+  tempo (succede al primo rilascio). Su GitHub: Actions ▸ Release ▸ Run workflow, branch `main`,
+  versione `0.1.0` e una pausa tra un pacchetto e l'altro (per esempio 5 minuti). Il workflow usa
+  il codice del tag, salta i pacchetti già pubblicati e, se un pacchetto fallisce, riprova dopo
+  20 minuti (fino a 4 volte). Se si ferma lo stesso, rilancialo più tardi.
 - **Una versione pubblicata ha un problema:** non si cancella e non si ripubblica. Si pubblica la
   versione successiva con la correzione e si segna quella difettosa con
   `npm deprecate @scriba-editor/<pacchetto>@<versione> "motivo"`.
