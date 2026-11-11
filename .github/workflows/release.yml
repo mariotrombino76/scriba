@@ -42,7 +42,7 @@ jobs:
       DELAY_MINUTES: ${{ inputs.delay_minutes || '0' }}
     steps:
       # a manual run publishes exactly the code of the tag, not the tip of the branch
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.version && format('refs/tags/v{0}', inputs.version) || github.ref }}
       - uses: pnpm/action-setup@v4
