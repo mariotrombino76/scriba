@@ -288,6 +288,34 @@ describe('clicking in the text after selecting a node', () => {
   })
 })
 
+describe('leaving the editor right after selecting', () => {
+  it('reads the DOM selection on blur, before selectionchange arrives', () => {
+    // Shift+Home, then the focus moves at once to the menu bar: selectionchange is async
+    // and is ignored once the editor has lost the focus, so a command would act on the
+    // old caret (bold stored as a mark instead of applied to the selected text)
+    const view = mount(doc(p('testo')), 6)
+    view.dom.focus()
+    const text = view.dom.querySelector('p')!.firstChild!
+    document.getSelection()!.setBaseAndExtent(text, 5, text, 0)
+    const outside = document.body.appendChild(document.createElement('button'))
+    outside.focus()
+    expect(view.hasFocus()).toBe(false)
+    expect(view.state.selection.anchor).toBe(6)
+    expect(view.state.selection.head).toBe(1)
+  })
+
+  it('ignores a DOM selection outside the editor', () => {
+    const view = mount(doc(p('testo')), 3)
+    view.dom.focus()
+    const outside = document.body.appendChild(document.createElement('p'))
+    outside.textContent = 'fuori'
+    document.getSelection()!.collapse(outside.firstChild!, 2)
+    outside.tabIndex = -1
+    outside.focus()
+    expect(view.state.selection.from).toBe(3)
+  })
+})
+
 describe('selected node without focus', () => {
   it('is marked while the focus is elsewhere (e.g. in a dialog), and unmarked after', () => {
     const view = mount(doc(p('a', img('x.png'), 'bcd')))

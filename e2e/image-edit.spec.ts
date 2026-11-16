@@ -180,8 +180,11 @@ test('nothing changed: Save only closes; Escape cancels', async ({ page }) => {
 
 test('an image that cannot be read says so', async ({ page }) => {
   await setHTML(page, '<p>x <img src="/manca.png" alt="bandiera" width="80"></p>')
-  // the broken image still has its box to click on
-  await editor(page).getByRole('img', { name: 'bandiera' }).click({ button: 'right', force: true })
+  // the broken image still has its box to click on, once the browser has given up loading
+  // it (until then it may have no size, and the click lands "outside of the viewport")
+  const img = editor(page).getByRole('img', { name: 'bandiera' })
+  await expect.poll(async () => (await img.boundingBox())?.height ?? 0).toBeGreaterThan(0)
+  await img.click({ button: 'right', force: true })
   await contextMenu(page).getByRole('menuitem', { name: 'Modifica foto…' }).click()
   const d = dialog(page)
   await expect(d.getByText('Impossibile aprire la foto')).toBeVisible()

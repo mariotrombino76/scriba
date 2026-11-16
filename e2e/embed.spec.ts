@@ -1,3 +1,4 @@
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test, type Page } from '@playwright/test'
 
 type Scriba = { html(): string; setHTML(source: string): void; cspViolations: string[] }
@@ -34,9 +35,7 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
   // the editor shows a card: no frame is loaded, so the strict CSP (no frame-src) is never hit
-  expect(
-    await page.evaluate(() => (window as unknown as { scriba: Scriba }).scriba.cspViolations),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scriba')
 })
 
 test('Inserisci ▸ Media from a YouTube link: a card in the editor, the player in the HTML', async ({
@@ -123,11 +122,7 @@ test('pasted iframes: only the allowed players, rebuilt; anything else is droppe
   expect(await editor(page).locator('iframe').count()).toBe(0)
   expect(await page.evaluate(() => (window as unknown as { __xss?: number }).__xss)).toBeUndefined()
   // the same Chromium report, for the inert document (nothing ran: see __xss)
-  await page.evaluate(() => {
-    const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })
 
 async function openMedia(page: Page) {
@@ -215,9 +210,5 @@ test('pasted <video>: autoplay, poster and handlers are dropped; http is refused
   })
   await expect.poll(() => html(page)).toBe('<p>a</p><p>b</p>')
   expect(await page.evaluate(() => (window as unknown as { __xss?: number }).__xss)).toBeUndefined()
-  await page.evaluate(() => {
-    const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })

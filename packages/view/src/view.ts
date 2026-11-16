@@ -270,9 +270,13 @@ export class EditorView {
     else this.syncSelectedNode()
   }
 
-  /** @internal Reads the DOM selection into the model (after clicks, arrow keys…). */
-  syncSelectionFromDOM(): void {
-    if (this.composing || !this.hasFocus()) return
+  /**
+   * @internal Reads the DOM selection into the model (after clicks, arrow keys…).
+   * `leaving`: called on blur, when the focus is already elsewhere but the DOM selection
+   * still holds what the user selected (selectionchange may not have arrived yet).
+   */
+  syncSelectionFromDOM(leaving = false): void {
+    if (this.composing || (!leaving && !this.hasFocus())) return
     const sel = readDOMSelection(this.rootDesc, this.state.doc, this.document.getSelection())
     // a click in the text moves the selection even off a selected node (which otherwise
     // survives the browser reading its DOM selection back as a nearby caret)

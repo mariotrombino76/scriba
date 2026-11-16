@@ -1,3 +1,4 @@
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test, type Page } from '@playwright/test'
 
 type Scriba = { html(): string; setHTML(source: string): void; cspViolations: string[] }
@@ -28,9 +29,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
-  expect(
-    await page.evaluate(() => (window as unknown as { scriba: Scriba }).scriba.cspViolations),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scriba')
 })
 
 test('Inserisci ▸ Formula: LaTeX with a live preview, MathML in the editor and the HTML', async ({
@@ -97,9 +96,5 @@ test('a formula pasted from a web page keeps its LaTeX; its own MathML is not ke
   expect(await html(page)).not.toContain('FALSO')
   await expect(editor(page).getByRole('math', { name: 'Formula: E = mc^2' })).toBeVisible()
   expect(await page.evaluate(() => (window as unknown as { __xss?: number }).__xss)).toBeUndefined()
-  await page.evaluate(() => {
-    const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })

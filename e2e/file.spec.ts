@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test, type Page } from '@playwright/test'
 
 type Scriba = { html(): string; setReadOnly(on: boolean): void; cspViolations: string[] }
@@ -35,9 +36,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
-  expect(
-    await page.evaluate(() => (window as unknown as { scriba: Scriba }).scriba.cspViolations),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scriba')
 })
 
 test('open a Markdown file; unsaved changes are confirmed first', async ({ page }) => {
@@ -88,11 +87,7 @@ test('hostile HTML file: opened through the schema, nothing runs', async ({ page
   await editor(page).getByText('l', { exact: true }).click()
   expect(await page.evaluate(() => (window as unknown as { alerts: number }).alerts)).toBe(0)
   // the same Chromium report, as a securitypolicyviolation event: drop only that one
-  await page.evaluate(() => {
-    const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
   await openWith(page, 'x.pdf', '%PDF')
   await expect(page.getByRole('alert')).toHaveText(/tipo di file non supportato/)
 })

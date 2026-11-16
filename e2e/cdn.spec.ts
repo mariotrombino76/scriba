@@ -1,3 +1,4 @@
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test } from '@playwright/test'
 
 /** @scriba-editor/browser: the classic script (global `Scriba`) on a plain page, under the strict CSP. */
@@ -12,12 +13,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
-  expect(
-    await page.evaluate(
-      () =>
-        (window as unknown as { scribaCdn: { cspViolations: string[] } }).scribaCdn.cspViolations,
-    ),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scribaCdn')
 })
 
 test('createEditor: toolbar, typing, onChange; setContent goes through the schema', async ({
@@ -47,10 +43,5 @@ test('createEditor: toolbar, typing, onChange; setContent goes through the schem
   await page.getByRole('button', { name: 'Carica' }).click()
   await expect(editor.getByRole('heading', { name: 'Da fuori' })).toBeVisible()
   await expect(editor.locator('img[onerror]')).toHaveCount(0)
-  await page.evaluate(() => {
-    const list = (window as unknown as { scribaCdn: { cspViolations: string[] } }).scribaCdn
-      .cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })

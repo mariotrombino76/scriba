@@ -304,6 +304,9 @@ export function attachInputHandlers(view: EditorView): () => void {
     ],
     [dom, 'dblclick', (e) => onDoubleClick(view, e as MouseEvent)],
     [dom, 'focus', () => !pointerDown && view.syncSelectionToDOM()],
+    // selectionchange is async and ignored without focus: a selection made just before the
+    // focus moves (Shift+Home, then straight to the menu bar) must not be lost
+    [dom, 'blur', () => view.syncSelectionFromDOM(true)],
     [doc, 'selectionchange', () => view.syncSelectionFromDOM()],
   ]
   // events from form controls inside node views belong to them, not to the editor

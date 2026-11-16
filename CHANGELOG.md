@@ -10,6 +10,13 @@ incompatibile è comunque segnalata qui nella sezione **Modificato**, con l'indi
 
 ## Non rilasciato
 
+### Corretto
+
+- **view:** una selezione fatta subito prima di lasciare l'editor (per esempio Maiusc+Home e poi
+  subito il menu o la barra degli strumenti da tastiera) non va più persa: il comando agiva sul
+  vecchio cursore, e il grassetto restava "in attesa" invece di applicarsi al testo selezionato.
+  L'editor ora legge la selezione anche quando perde il focus.
+
 ## 0.1.0 — 2026-11-10
 
 Prima versione pubblica. Tutti i pacchetti `@scriba-editor/*` escono con lo stesso numero di

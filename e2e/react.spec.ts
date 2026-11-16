@@ -1,3 +1,4 @@
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test } from '@playwright/test'
 
 /** The React wrapper (`@scriba-editor/react`) in a real browser, under the strict CSP. */
@@ -12,13 +13,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
-  expect(
-    await page.evaluate(
-      () =>
-        (window as unknown as { scribaReact: { cspViolations: string[] } }).scribaReact
-          .cspViolations,
-    ),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scribaReact')
 })
 
 test('typing updates the React state; content from outside goes through the schema', async ({
@@ -53,12 +48,7 @@ test('typing updates the React state; content from outside goes through the sche
   await page.keyboard.press('End')
   await page.keyboard.type('.')
   await expect(page.getByTestId('value')).toContainText('<p>fine.</p>')
-  await page.evaluate(() => {
-    const list = (window as unknown as { scribaReact: { cspViolations: string[] } }).scribaReact
-      .cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })
 
 test('read-only can be switched by the React app', async ({ page }) => {

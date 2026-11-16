@@ -1,3 +1,4 @@
+import { allowInertHandlerReport, expectNoCspViolations } from './csp.js'
 import { expect, test, type Page } from '@playwright/test'
 
 type Scriba = {
@@ -34,9 +35,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
   expect((page as unknown as { errors: string[] }).errors).toEqual([])
-  expect(
-    await page.evaluate(() => (window as unknown as { scriba: Scriba }).scriba.cspViolations),
-  ).toEqual([])
+  await expectNoCspViolations(page, 'scriba')
 })
 
 test('Modifica menu like TinyMCE; read-only: only copy', async ({ page }) => {
@@ -161,9 +160,5 @@ test('paste from the menu: hostile clipboard HTML is sanitized, nothing runs', a
   // as text: only the plain text
   await editMenu(page, 'Incolla come testo')
   await expect.poll(() => html(page)).toBe('<p>xok<img src="x">lok l</p>')
-  await page.evaluate(() => {
-    const list = (window as unknown as { scriba: Scriba }).scriba.cspViolations
-    for (let i = list.length - 1; i >= 0; i--)
-      if (list[i] === 'script-src-attr: inline') list.splice(i, 1)
-  })
+  allowInertHandlerReport(page) // its Chromium report may come later: see csp.ts
 })
