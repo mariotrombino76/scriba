@@ -1,5 +1,6 @@
 import {
   LINE_HEIGHTS,
+  TextSelection,
   styleValue,
   withStyle,
   type Command,
@@ -162,6 +163,22 @@ export function changeIndent(delta: number): Command {
     }
     return true
   }
+}
+
+/**
+ * Backspace at the very start of an indented block removes one level of indentation
+ * (Word, Google Docs, TinyMCE); the block keeps its type. Without it, the first block of
+ * the document would turn into a paragraph and lose its indentation in one keystroke.
+ */
+export const outdentAtStart: Command = (state, dispatch) => {
+  const sel = state.selection
+  const $cursor = sel instanceof TextSelection ? sel.$cursor : null
+  if (!$cursor || $cursor.parentOffset > 0) return false
+  const block = $cursor.parent
+  const indent = block.attrs['indent']
+  if (typeof indent !== 'number' || indent <= 0) return false
+  dispatch?.(state.tr.setNodeAttrs($cursor.before(), { indent: indent - 1 }).scrollIntoView())
+  return true
 }
 
 /** True when every selected block has this alignment (null alignment counts as left). */

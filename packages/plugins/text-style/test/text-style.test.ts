@@ -13,6 +13,7 @@ import {
   changeIndent,
   isAligned,
   markValue,
+  outdentAtStart,
   setMarkValue,
   setTextAlign,
   textStyleMarks,
@@ -59,6 +60,20 @@ describe('block styles', () => {
     )
     expect(run('<p>a</p>', 1, 1, changeIndent(1))).toBe('<p style="margin-left: 2em">a</p>')
     expect(run('<p>a</p>', 1, 1, changeIndent(-1))).toBeNull()
+  })
+
+  it('Backspace at the start of an indented block removes one level, keeps the block type', () => {
+    // bug: an indented heading lost both its indentation and its heading level
+    expect(run('<h1 style="margin-left: 4em">Titolo</h1>', 1, 1, outdentAtStart)).toBe(
+      '<h1 style="margin-left: 2em">Titolo</h1>',
+    )
+    expect(run('<p>a</p><p style="margin-left: 2em">b</p>', 4, 4, outdentAtStart)).toBe(
+      '<p>a</p><p>b</p>',
+    )
+    // not at the start, not indented, or a range: the usual Backspace
+    expect(run('<h1 style="margin-left: 2em">Titolo</h1>', 2, 2, outdentAtStart)).toBeNull()
+    expect(run('<h1>Titolo</h1>', 1, 1, outdentAtStart)).toBeNull()
+    expect(run('<p style="margin-left: 2em">ab</p>', 1, 2, outdentAtStart)).toBeNull()
   })
 
   it('reports alignment', () => {

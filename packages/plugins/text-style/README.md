@@ -52,24 +52,24 @@ const items = [
 
 ## Esportazioni
 
-| Nome                                                                                                                                | Cosa fa                                                                                                                         |
-| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `textStyleMarks`                                                                                                                    | Mark `text_color`, `background_color`, `font_family`, `font_size` (valori validati e normalizzati)                              |
-| `withBlockStyles(nodes, names?)`                                                                                                    | Aggiunge `align`, `indent` (0-8, 2em a livello), `lineHeight` e `dir` ai blocchi di testo (predefiniti: `paragraph`, `heading`) |
-| `withBlockClasses(nodes, classes, names?)`                                                                                          | Aggiunge `className` (solo dall'elenco) ai blocchi                                                                              |
-| `classMarks(classes)`                                                                                                               | Mark `text_class`: un `<span class>` con una delle classi                                                                       |
-| `textStyleKeymap(options?)`                                                                                                         | Allineamento (Maiusc+Mod+L/E/R/J) e rientro (Mod+] / Mod+[)                                                                     |
-| `textStyleToolbarItems(schema, options?)`                                                                                           | Allineamento, rientri, colori e font in un colpo solo                                                                           |
-| `alignmentMenu()`, `indentItems(options?)`, `colorItems(schema, options?)`, `fontItems(schema, options?)`                           | Controlli singoli                                                                                                               |
-| `lineHeightMenu()`                                                                                                                  | Interlinea: tema predefinito e valori ammessi (1, 1.15, 1.5, 2)                                                                 |
-| `directionItems()`                                                                                                                  | Pulsanti da sinistra a destra e da destra a sinistra (`dir-ltr`, `dir-rtl`)                                                     |
-| `caseMenu(locale?)`, `changeCase(kind, locale?)`, `LETTER_CASES`                                                                    | minuscolo, MAIUSCOLO, Iniziali Maiuscole, Come in una frase                                                                     |
-| `classFormatsMenu(schema, formats)`, `ClassFormat`                                                                                  | Menu Formato ▸ Stili con le tue classi (`kind: 'block'` o `'inline'`)                                                           |
-| `setTextAlign`, `changeIndent`, `setLineHeight`, `setTextDirection`, `isAligned`, `hasLineHeight`, `hasTextDirection`, `MAX_INDENT` | Comandi e controlli sui blocchi                                                                                                 |
-| `setMarkValue(type, attrs \| null)`, `markValue(state, type, attr)`                                                                 | Applica, toglie e legge un mark con valore                                                                                      |
-| `setBlockClass(name \| null)`, `hasBlockClass`, `CLASS_NAME`                                                                        | Classi sui blocchi                                                                                                              |
-| `defaultTextColors`, `defaultBackgroundColors`, `defaultFontFamilies`, `defaultFontSizes`                                           | Elenchi predefiniti (i colori del testo hanno contrasto almeno 4,5:1 su bianco)                                                 |
-| `TextStyleOptions`, `ColorOption`                                                                                                   | `textColors`, `backgroundColors`, `fontFamilies`, `fontSizes`, `indent`                                                         |
+| Nome                                                                                                                                                  | Cosa fa                                                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `textStyleMarks`                                                                                                                                      | Mark `text_color`, `background_color`, `font_family`, `font_size` (valori validati e normalizzati)                              |
+| `withBlockStyles(nodes, names?)`                                                                                                                      | Aggiunge `align`, `indent` (0-8, 2em a livello), `lineHeight` e `dir` ai blocchi di testo (predefiniti: `paragraph`, `heading`) |
+| `withBlockClasses(nodes, classes, names?)`                                                                                                            | Aggiunge `className` (solo dall'elenco) ai blocchi                                                                              |
+| `classMarks(classes)`                                                                                                                                 | Mark `text_class`: un `<span class>` con una delle classi                                                                       |
+| `textStyleKeymap(options?)`                                                                                                                           | Allineamento (Maiusc+Mod+L/E/R/J), rientro (Mod+] / Mod+[) e Backspace che toglie il rientro                                    |
+| `textStyleToolbarItems(schema, options?)`                                                                                                             | Allineamento, rientri, colori e font in un colpo solo                                                                           |
+| `alignmentMenu()`, `indentItems(options?)`, `colorItems(schema, options?)`, `fontItems(schema, options?)`                                             | Controlli singoli                                                                                                               |
+| `lineHeightMenu()`                                                                                                                                    | Interlinea: tema predefinito e valori ammessi (1, 1.15, 1.5, 2)                                                                 |
+| `directionItems()`                                                                                                                                    | Pulsanti da sinistra a destra e da destra a sinistra (`dir-ltr`, `dir-rtl`)                                                     |
+| `caseMenu(locale?)`, `changeCase(kind, locale?)`, `LETTER_CASES`                                                                                      | minuscolo, MAIUSCOLO, Iniziali Maiuscole, Come in una frase                                                                     |
+| `classFormatsMenu(schema, formats)`, `ClassFormat`                                                                                                    | Menu Formato ▸ Stili con le tue classi (`kind: 'block'` o `'inline'`)                                                           |
+| `setTextAlign`, `changeIndent`, `outdentAtStart`, `setLineHeight`, `setTextDirection`, `isAligned`, `hasLineHeight`, `hasTextDirection`, `MAX_INDENT` | Comandi e controlli sui blocchi                                                                                                 |
+| `setMarkValue(type, attrs \| null)`, `markValue(state, type, attr)`                                                                                   | Applica, toglie e legge un mark con valore                                                                                      |
+| `setBlockClass(name \| null)`, `hasBlockClass`, `CLASS_NAME`                                                                                          | Classi sui blocchi                                                                                                              |
+| `defaultTextColors`, `defaultBackgroundColors`, `defaultFontFamilies`, `defaultFontSizes`                                                             | Elenchi predefiniti (i colori del testo hanno contrasto almeno 4,5:1 su bianco)                                                 |
+| `TextStyleOptions`, `ColorOption`                                                                                                                     | `textColors`, `backgroundColors`, `fontFamilies`, `fontSizes`, `indent`                                                         |
 
 ### Opzioni (`TextStyleOptions`)
 
@@ -77,10 +77,11 @@ const items = [
 
 ## Tastiera
 
-| Tasti                    | Azione                                                 |
-| ------------------------ | ------------------------------------------------------ |
-| Maiusc+Mod+L / E / R / J | Allinea a sinistra / al centro / a destra / giustifica |
-| Mod+] / Mod+[            | Aumenta / riduce il rientro                            |
+| Tasti                     | Azione                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| Maiusc+Mod+L / E / R / J  | Allinea a sinistra / al centro / a destra / giustifica                       |
+| Mod+] / Mod+[             | Aumenta / riduce il rientro                                                  |
+| Backspace a inizio blocco | Toglie un livello di rientro; il blocco resta com'è (un titolo resta titolo) |
 
 ## Accessibilità
 

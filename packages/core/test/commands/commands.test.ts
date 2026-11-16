@@ -19,6 +19,9 @@ import {
   liftEmptyBlock,
   NodeSelection,
   deleteSelectedBlock,
+  Schema,
+  basicSchemaSpec,
+  type NodeSpec,
 } from '../../src/index.js'
 import { b, br, doc, h, img, p, pre, quote, schema } from '../helpers/schema.js'
 import { nodeStateAt, run, stateAt } from '../helpers/state.js'
@@ -57,6 +60,26 @@ describe('joinBackward / joinForward', () => {
   it('turns a heading at the start of the doc into a paragraph', () => {
     expect(run(stateAt(doc(h(1, 'ab')), 1), joinBackward)!.doc.eq(doc(p('ab')))).toBe(true)
     expect(run(stateAt(doc(p('ab')), 1), joinBackward)).toBeNull()
+  })
+
+  it('keeps the attributes the paragraph shares with the heading (alignment…)', () => {
+    const withAlign = (spec: NodeSpec): NodeSpec => ({
+      ...spec,
+      attrs: { ...spec.attrs, align: { default: null } },
+    })
+    const s = new Schema({
+      nodes: {
+        ...basicSchemaSpec.nodes,
+        paragraph: withAlign(basicSchemaSpec.nodes['paragraph']!),
+        heading: withAlign(basicSchemaSpec.nodes['heading']!),
+      },
+      marks: basicSchemaSpec.marks,
+    })
+    const heading = s.nodes['heading']!.create({ level: 1, align: 'center' }, s.text('ab'))
+    const r = run(stateAt(s.nodes['doc']!.create(null, heading), 1), joinBackward)!
+    const block = r.doc.firstChild!
+    expect(block.type.name).toBe('paragraph')
+    expect(block.attrs).toEqual({ align: 'center' })
   })
 
   it('only works at the block edge', () => {

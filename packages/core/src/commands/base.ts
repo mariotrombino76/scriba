@@ -173,7 +173,11 @@ function resetBlockType(
   const match = parent.type.contentExpr.matchFragment(parent.content, undefined, 0, $pos.index())
   const def = match && parent.type.contentExpr.defaultType(match)
   if (!block || !def || !def.isTextblock || block.type === def) return false
-  dispatch?.(state.tr.setBlockType(pos, pos + block.nodeSize, def))
+  // keep what both types have (alignment, indentation…): only the block type goes
+  const attrs: Record<string, unknown> = {}
+  for (const name of Object.keys(def.spec.attrs ?? {}))
+    if (name in block.attrs) attrs[name] = block.attrs[name]
+  dispatch?.(state.tr.setBlockType(pos, pos + block.nodeSize, def, attrs))
   return true
 }
 

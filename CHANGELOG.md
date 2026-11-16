@@ -16,6 +16,13 @@ incompatibile è comunque segnalata qui nella sezione **Modificato**, con l'indi
   subito il menu o la barra degli strumenti da tastiera) non va più persa: il comando agiva sul
   vecchio cursore, e il grassetto restava "in attesa" invece di applicarsi al testo selezionato.
   L'editor ora legge la selezione anche quando perde il focus.
+- **text-style:** Backspace all'inizio di un blocco rientrato toglie un livello di rientro, come in
+  Word, Google Docs e TinyMCE. Prima, su un titolo all'inizio del documento, toglieva in un colpo
+  solo rientro e titolo (diventava un paragrafo). Nuovo comando `outdentAtStart`, già incluso in
+  `textStyleKeymap`.
+- **core:** quando Backspace trasforma il primo blocco del documento in paragrafo, il paragrafo
+  conserva gli attributi che ha in comune con il blocco di prima (allineamento, rientro,
+  direzione).
 
 ## 0.1.0 — 2026-11-10
 

@@ -18,6 +18,7 @@ import {
   hasLineHeight,
   hasTextDirection,
   isAligned,
+  outdentAtStart,
   setLineHeight,
   setTextAlign,
   setTextDirection,
@@ -94,7 +95,7 @@ export const defaultFontSizes = ['10pt', '12pt', '14pt', '18pt', '24pt', '36pt']
 
 /**
  * Keys (Google Docs / TinyMCE style): Shift+Mod+L/E/R/J alignment,
- * Mod+] / Mod+[ indentation.
+ * Mod+] / Mod+[ indentation, Backspace at the start of an indented block outdents it.
  */
 export function textStyleKeymap(options: Pick<TextStyleOptions, 'indent'> = {}): KeyBindings {
   const { more, less } = indentCommands(options)
@@ -105,6 +106,7 @@ export function textStyleKeymap(options: Pick<TextStyleOptions, 'indent'> = {}):
     'Shift-Mod-j': setTextAlign('justify'),
     'Mod-]': more,
     'Mod-[': less,
+    Backspace: outdentAtStart,
   }
 }
 

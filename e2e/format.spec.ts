@@ -42,6 +42,43 @@ test('alignment from the toolbar and indentation', async ({ page }) => {
   expect(await html(page)).toBe('<p style="text-align: center; margin-left: 2em">titolo</p>')
 })
 
+test('Backspace at the start of an indented heading removes the indentation, not the heading', async ({
+  page,
+}) => {
+  // the steps of the report: text, Titolo 1, more indentation, click at the start, Backspace
+  await page.keyboard.type('Titolo')
+  const menubar = page.getByRole('menubar', { name: 'Menu' })
+  await menubar.getByRole('menuitem', { name: 'Formato' }).click()
+  await page
+    .getByRole('menu', { name: 'Formato' })
+    .getByRole('menuitem', { name: 'Stile paragrafo' })
+    .click()
+  await page
+    .getByRole('menu', { name: 'Stile paragrafo' })
+    .getByRole('menuitemradio', { name: 'Titolo 1' })
+    .click()
+  await button(page, 'Aumenta rientro').click()
+  await button(page, 'Aumenta rientro').click()
+  expect(await html(page)).toBe('<h1 style="margin-left: 4em">Titolo</h1>')
+  const start = await editor(page)
+    .locator('h1')
+    .evaluate((el) => {
+      const range = document.createRange()
+      range.setStart(el.firstChild!, 0)
+      range.setEnd(el.firstChild!, 1)
+      const box = range.getBoundingClientRect()
+      return { x: box.left + 1, y: box.top + box.height / 2 }
+    })
+  await page.mouse.click(start.x, start.y)
+  await page.keyboard.press('Backspace')
+  expect(await html(page)).toBe('<h1 style="margin-left: 2em">Titolo</h1>')
+  await page.keyboard.press('Backspace')
+  expect(await html(page)).toBe('<h1>Titolo</h1>')
+  // no indentation left: the first block of the document becomes a paragraph, as before
+  await page.keyboard.press('Backspace')
+  expect(await html(page)).toBe('<p>Titolo</p>')
+})
+
 test('text color through the menu, keyboard only', async ({ page }) => {
   await page.keyboard.type('rosso')
   await page.keyboard.press('Shift+Home')
