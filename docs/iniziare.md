@@ -43,6 +43,12 @@ const editor = Scriba.createEditor('#editor', {
 })
 ```
 
+`/js/editor.js` non fa parte di Scriba: è un **file tuo**, che crei nel tuo sito e servi come
+ogni altro JavaScript (nome e percorso a tua scelta). `scriba.iife.js` crea l'oggetto globale
+`Scriba`; il tuo file lo usa per montare l'editor. Sta in un file separato, e non in un
+`<script>` scritto nella pagina, perché una CSP rigida (`script-src 'self'`, senza
+`unsafe-inline`) blocca gli script in linea.
+
 Opzioni, limiti e sicurezza: [README di @scriba-editor/browser](../packages/browser/README.md).
 
 ### Modalità inline

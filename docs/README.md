@@ -25,6 +25,9 @@ Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obb
 <!-- /js/editor.js: Scriba.createEditor('#editor', { onChange: (html) => salva(html) }) -->
 ```
 
+`/js/editor.js` è un file tuo (non di Scriba), separato dalla pagina per funzionare con una CSP
+rigida: vedi [Iniziare](iniziare.md#pagina-qualsiasi-script-da-cdn).
+
 **Vue 3:** `<ScribaEditor v-model="html" />` · **React:** `<ScribaEditor value={html} onChange={setHtml} />`
 
 Poi, sul server, **ripassa sempre l'HTML** da `sanitizeHTML` di `@scriba-editor/sanitize-server` prima di

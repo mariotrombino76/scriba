@@ -61,7 +61,9 @@ in più un documento strutturato e sicuro per costruzione.
 </script>
 ```
 
-> In un sito con una CSP rigida, sposta lo script in linea in un file `.js`.
+> L'ultimo `<script>` è il tuo codice. In un sito con una CSP rigida (`script-src 'self'`) gli
+> script in linea sono bloccati: spostalo in un file `.js` tuo, per esempio
+> `<script src="/js/editor.js"></script>`. Vedi [Iniziare](docs/iniziare.md#pagina-qualsiasi-script-da-cdn).
 
 **Vue 3:**
 
