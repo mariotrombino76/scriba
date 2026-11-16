@@ -94,8 +94,9 @@ pnpm build && pnpm -r pack --pack-destination /tmp/scriba-pack
 ```
 
 Ogni archivio deve contenere solo `dist/` (o `scriba.css` per i temi), `package.json`, README,
-LICENSE e NOTICE. Le dipendenze `workspace:*` devono essere diventate `0.1.0`. Usa sempre **`pnpm
-publish`**, mai `npm publish`: solo pnpm sostituisce `workspace:*`.
+LICENSE e NOTICE. Le dipendenze `workspace:*` devono essere diventate `0.1.0`. Non pubblicare
+mai con `npm publish` dalla cartella di un pacchetto: solo `pnpm pack` sostituisce `workspace:*`.
+`release.yml` pubblica con `npm publish` l'archivio prodotto da `pnpm pack`.
 
 ### 4. Pubblicazione
 
@@ -108,7 +109,8 @@ Il tag avvia `release.yml`, che:
 
 1. controlla che il tag corrisponda alla versione di tutti i pacchetti;
 2. ripete lint, tipi, test e test di sicurezza;
-3. costruisce e pubblica i pacchetti uno alla volta con `--provenance`, saltando quelli già pubblicati.
+3. costruisce i pacchetti e li pubblica uno alla volta (`pnpm pack`, poi `npm publish` con
+   `--provenance` e autenticazione OIDC del Trusted Publisher), saltando quelli già pubblicati.
 
 Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository restano uguali.
 
@@ -117,11 +119,15 @@ Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository r
 - `npm view @scriba-editor/core@0.1.0`: la pagina del pacchetto mostra il badge "Provenance".
 - Prova in un progetto vuoto: `pnpm add @scriba-editor/react @scriba-editor/themes` e l'esempio
   del README.
-- **CDN:** apri `https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js`
-  e calcola l'hash per l'attributo `integrity` da indicare nella documentazione:
+- **CDN:** calcola gli hash per l'attributo `integrity` dai file serviti da jsDelivr (non dalla
+  build locale) e aggiornali, insieme alla versione negli URL, in `README.md`, `docs/README.md`,
+  `docs/iniziare.md` e `packages/browser/README.md`:
 
   ```bash
-  openssl dgst -sha384 -binary packages/browser/dist/scriba.iife.js | openssl base64 -A
+  for f in scriba.iife.js scriba.css; do
+    curl -sL "https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/$f" \
+      | openssl dgst -sha384 -binary | openssl base64 -A; echo "  $f"
+  done
   ```
 
 ## Se qualcosa va storto

@@ -8,8 +8,14 @@ Scriba in qualsiasi pagina web, senza framework e senza build: un foglio di stil
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+  integrity="sha384-bCFNutcDIpxCiQSC0BSWyqdqJn83GqK1gCHnWU2On4iJI3DFadguiLg7XWQt8Tka"
+  crossorigin="anonymous"
 />
-<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"
+  integrity="sha384-awy+OAUb3MAF7xONl9xV4XRN4qeGq/Um5XJJdZ6Z8Hpyf6LHK0eouDun9gUHSo2U"
+  crossorigin="anonymous"
+></script>
 
 <div id="editor"></div>
 <script src="/js/editor.js"></script>
@@ -25,8 +31,14 @@ const editor = Scriba.createEditor('#editor', {
 })
 ```
 
-Indica sempre una **versione esatta** nell'URL e, se puoi, aggiungi `integrity` (SRI) e
-`crossorigin="anonymous"` ai tag: così il browser rifiuta un file diverso da quello atteso.
+Indica sempre una **versione esatta** nell'URL e tieni `integrity` (SRI) e
+`crossorigin="anonymous"` sui tag: così il browser rifiuta un file diverso da quello atteso. Gli
+hash qui sopra valgono solo per la 0.1.0; per un'altra versione calcolali dal file scaricato:
+
+```bash
+curl -sL https://cdn.jsdelivr.net/npm/@scriba-editor/browser@<versione>/dist/scriba.iife.js \
+  | openssl dgst -sha384 -binary | openssl base64 -A
+```
 
 ## Come modulo ES
 

@@ -17,8 +17,14 @@ In ogni caso includi il tema (`@scriba-editor/themes/scriba.css`, o `scriba.css`
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+  integrity="sha384-bCFNutcDIpxCiQSC0BSWyqdqJn83GqK1gCHnWU2On4iJI3DFadguiLg7XWQt8Tka"
+  crossorigin="anonymous"
 />
-<script src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"
+  integrity="sha384-awy+OAUb3MAF7xONl9xV4XRN4qeGq/Um5XJJdZ6Z8Hpyf6LHK0eouDun9gUHSo2U"
+  crossorigin="anonymous"
+></script>
 
 <form method="post" action="/salva">
   <div id="editor"></div>
