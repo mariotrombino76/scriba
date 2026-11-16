@@ -1,3 +1,5 @@
+[English](../accessibility.md) · **Italiano**
+
 # Accessibilità
 
 Scriba punta a WCAG 2.2 livello AA: ogni funzione si raggiunge da tastiera e ha un nome per i

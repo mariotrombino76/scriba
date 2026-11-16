@@ -1,37 +1,41 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-collab
 
-**Collaborazione in tempo reale** per l'editor Scriba, basata su Yjs (CRDT): più persone scrivono
-nello stesso documento, con i cursori degli altri visibili e commenti condivisi. Si collega a `@scriba-editor/collab-server`.
+**Real-time collaboration** for the Scriba editor, based on Yjs (CRDT): several people write in
+the same document, with the other people's cursors visible and shared comments. It connects to
+`@scriba-editor/collab-server`.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-collab
 ```
 
-Il pacchetto dipende da `yjs`, `y-protocols` e `lib0`, ed è opzionale: il core non lo importa.
+The package depends on `yjs`, `y-protocols` and `lib0`, and it is optional: the core does not
+import it.
 
-## Uso
+## Usage
 
 ```ts
 import { collab, collabCommentStore, collabStatusElement } from '@scriba-editor/plugin-collab'
 
 const shared = collab({
   url: 'wss://example.com/collab',
-  documentName: 'nota-42',
-  // il token della sessione dell'utente: il server lo verifica
+  documentName: 'note-42',
+  // the user's session token: the server verifies it
   token: () => fetch('/api/collab-token').then((r) => r.text()),
 })
 
-// commenti condivisi, con autore deciso dal server
+// shared comments, with the author decided by the server
 const comments = collabCommentStore(shared.provider)
 
 const state = EditorState.create({
   schema,
-  plugins: [...shared.plugins /* sincronizzazione e cursori */, commentsPlugin(comments) /* … */],
+  plugins: [...shared.plugins /* sync and cursors */, commentsPlugin(comments) /* … */],
 })
 
-// modificabile solo quando il server concede la scrittura
+// editable only when the server grants write access
 const view = new EditorView(el, {
   state,
   editable: () => shared.provider.status === 'connected' && shared.provider.canWrite,
@@ -41,58 +45,57 @@ shared.provider.onStatus(() => view.updateState(view.state))
 el.after(collabStatusElement(document, shared.provider, t))
 ```
 
-## Opzioni di `collab()`
+## `collab()` options
 
-| Opzione        | Descrizione                                                                                        |
-| -------------- | -------------------------------------------------------------------------------------------------- |
-| `url`          | Indirizzo del server (il nome del documento è aggiunto in fondo).                                  |
-| `documentName` | Il documento a cui unirsi.                                                                         |
-| `token`        | Stringa, o funzione (anche asincrona) che la restituisce.                                          |
-| `user`         | Nome e colore (slot 0-7) mostrati agli altri; il server li sostituisce con l'identità autenticata. |
-| `field`        | Nome del frammento Yjs condiviso (default `scriba`).                                               |
+| Option         | Description                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| `url`          | Server address (the document name is appended at the end).                                               |
+| `documentName` | The document to join.                                                                                    |
+| `token`        | A string, or a function (async too) that returns it.                                                     |
+| `user`         | Name and color (slot 0-7) shown to the others; the server replaces them with the authenticated identity. |
+| `field`        | Name of the shared Yjs fragment (default `scriba`).                                                      |
 
-`collab()` restituisce `{ ydoc, awareness, provider, plugins, destroy() }`.
+`collab()` returns `{ ydoc, awareness, provider, plugins, destroy() }`.
 
-## Cosa esporta
+## Exports
 
-- `collab(options)`, `CollabProvider`, `collabStatusElement(doc, provider, t)`: tutto in una chiamata.
-  Il provider ha `status` (`connecting`, `connected`, `disconnected`, `denied`), `canWrite`,
-  `canComment`, `synced`, `onStatus(listener)` e `destroy()`. Opzioni extra di `CollabProvider`:
-  `maxBackoffMs` (default 30 000) e `WebSocket`.
-- `yBinding(options)`, `yBindingKey`, `remoteTransaction`, `REMOTE_META`: sincronizzazione editor e Yjs.
-- `collabCursors(options)`, `cursorsKey`: cursori e selezioni degli altri utenti.
-- `collabCommentStore(provider)`: store dei commenti via server (vedi
-  [`@scriba-editor/plugin-comments`](../comments/README.md)); offline le operazioni sono rifiutate.
-- Utilità di basso livello: `toY`, `nodeFromY`, `docFromY`, `updateFragment`, `writeDoc`,
+- `collab(options)`, `CollabProvider`, `collabStatusElement(doc, provider, t)`: everything in one
+  call. The provider has `status` (`connecting`, `connected`, `disconnected`, `denied`),
+  `canWrite`, `canComment`, `synced`, `onStatus(listener)` and `destroy()`. Extra
+  `CollabProvider` options: `maxBackoffMs` (default 30,000) and `WebSocket`.
+- `yBinding(options)`, `yBindingKey`, `remoteTransaction`, `REMOTE_META`: editor and Yjs sync.
+- `collabCursors(options)`, `cursorsKey`: the other users' cursors and selections.
+- `collabCommentStore(provider)`: comment store through the server (see
+  [`@scriba-editor/plugin-comments`](../comments/README.md)); offline, operations are rejected.
+- Low-level utilities: `toY`, `nodeFromY`, `docFromY`, `updateFragment`, `writeDoc`,
   `diffStart`, `diffEnd`, `toRelative`, `fromRelative`.
 
-## Comportamento
+## Behavior
 
-- Le modifiche locali diventano operazioni Yjs minime (due persone che scrivono nello stesso
-  paragrafo conservano entrambe il loro testo).
-- Le modifiche degli altri sono applicate come un solo passo **fuori dalla cronologia**: Ctrl+Z
-  annulla solo le tue.
-- Alla connessione, finché la prima sincronizzazione non è finita non si scrive nulla: vince il
-  contenuto del server; il contenuto iniziale dell'editor è condiviso solo se il documento del
-  server è vuoto.
-- Riconnessione automatica con attesa crescente; se il server rifiuta l'accesso lo stato diventa
-  `denied` e non si riprova.
+- Local changes become minimal Yjs operations (two people writing in the same paragraph both
+  keep their text).
+- The other people's changes are applied as a single step **outside the history**: Ctrl+Z undoes
+  only yours.
+- On connection, nothing is written until the first sync is finished: the server content wins;
+  the initial editor content is shared only if the server document is empty.
+- Automatic reconnection with increasing wait; if the server denies access the status becomes
+  `denied` and there are no more retries.
 
-## Sicurezza
+## Security
 
-- **Gli aggiornamenti degli altri utenti sono input non fidato.** Il documento remoto è ricostruito
-  attraverso lo schema (`docFromY`): nodi e attributi non validi vengono scartati.
-- **Il server deve autenticare** ogni connessione e controllare i permessi per documento
-  (lettura, scrittura, commento): `canWrite` e `canComment` li decide lui. Il token viaggia come
-  primo messaggio, mai nell'URL. Il server applica anche i limiti di dimensione e frequenza. Vedi
-  [collaborazione](../../../docs/collaborazione.md).
-- **Nomi dei cursori** mostrati come testo (una riga, max 60 caratteri), mai HTML; il colore è uno
-  slot numerico 0-7, non uno stile libero.
-- **Autore dei commenti:** assegnato dal server, non dal client.
-- Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+- **Updates from other users are untrusted input.** The remote document is rebuilt through the
+  schema (`docFromY`): invalid nodes and attributes are dropped.
+- **The server must authenticate** every connection and check the permissions per document
+  (read, write, comment): `canWrite` and `canComment` are decided by the server. The token
+  travels as the first message, never in the URL. The server also enforces the size and rate
+  limits. See [collaboration](../../../docs/collaboration.md).
+- **Cursor names** are shown as text (one line, max 60 characters), never as HTML; the color is a
+  numeric slot 0-7, not a free-form style.
+- **Comment author:** assigned by the server, not by the client.
+- See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).
 
-## Accessibilità
+## Accessibility
 
-`collabStatusElement` è una regione `role="status"` (testi `collab.*`): chi usa uno screen reader
-sente quando la connessione cade o torna, o se il documento è in sola lettura. Vedi
-[accessibilità](../../../docs/accessibilita.md).
+`collabStatusElement` is a `role="status"` region (`collab.*` texts): screen reader users hear
+when the connection drops or comes back, or if the document is read-only. See
+[accessibility](../../../docs/accessibility.md).

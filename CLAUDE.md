@@ -32,7 +32,7 @@ Costruire un editor rich text:
 - **Test:** Vitest (unità) + Playwright (end-to-end su Chromium, Firefox, WebKit).
 - **Lint/format:** ESLint + Prettier.
 - **Collaborazione:** Yjs + y-websocket (pacchetto opzionale).
-- **Docs/playground:** documentazione in Markdown in `/docs`; playground = demo Vite senza framework in `/demo` (`pnpm dev`). Niente Nuxt/PrimeVue (decisione del 2026-10-19: PrimeVue 5 è a licenza commerciale e Nuxt portava avvisi di sicurezza senza correzione).
+- **Docs/playground:** documentazione in Markdown in `/docs` (inglese) e `/docs/it` (italiano); playground = demo Vite senza framework in `/demo` (`pnpm dev`). Niente Nuxt/PrimeVue (decisione del 2026-10-19: PrimeVue 5 è a licenza commerciale e Nuxt portava avvisi di sicurezza senza correzione).
 
 ```
 /packages
@@ -48,7 +48,7 @@ Costruire un editor rich text:
   /i18n          # file di traduzione (it, en per primi)
   /themes        # temi CSS (variabili CSS custom)
 /demo            # playground: tutte le funzioni, per provare a mano (pnpm dev)
-/docs            # documentazione (Markdown, in italiano)
+/docs            # documentazione in inglese; /docs/it la stessa in italiano
 /e2e             # test Playwright
 ```
 
@@ -215,11 +215,12 @@ Pensa all'editor come a una **casa di LEGO**:
 
 ## 8. Convenzioni di codice
 
-- **Lingua:** codice, nomi di API e commenti JSDoc pubblici in **inglese** (libreria distribuibile); documentazione utente e commit in **italiano**.
+- **Lingua:** codice, nomi di API e commenti JSDoc pubblici in **inglese** (libreria distribuibile); commit in **italiano**.
+- **Documentazione in due lingue** (decisione del 2026-11-16): l'inglese è la lingua principale (`README.md`, `docs/*.md`, README dei pacchetti, `SECURITY.md`, `CHANGELOG.md`, `RELEASING.md`), l'italiano sta accanto (`*.it.md`, `docs/it/`). Ogni file ha in cima il link all'altra lingua. Ogni modifica alla documentazione si fa **in entrambe le lingue nello stesso commit**.
 - **Commit:** Conventional Commits con descrizione in italiano. Es.: `feat(table): aggiunta unione celle`, `fix(view): corretto cursore dopo IME`.
 - Funzioni pure dove possibile; stato immutabile nel core.
 - Niente classi "dio": un file = una responsabilità, < 400 righe indicative.
-- Ogni comando pubblico ha: tipo, test unitario, voce nella documentazione.
+- Ogni comando pubblico ha: tipo, test unitario, voce nella documentazione (inglese e italiana).
 - Nel wrapper Vue: Composition API, `<script setup lang="ts">`, composable `useScriba()`, testi tramite i18n (mai stringhe fisse nella UI).
 - Nessuna nuova dipendenza runtime nel core senza chiedere prima.
 

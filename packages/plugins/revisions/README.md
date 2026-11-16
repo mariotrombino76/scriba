@@ -1,56 +1,58 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-revisions
 
-Cronologia delle versioni, come "Revision History" di TinyMCE: elenco delle versioni salvate, anteprima, confronto con il documento attuale (aggiunto in verde, tolto barrato in rosso) e ripristino con un solo passo annullabile.
+Version history, like TinyMCE's "Revision History": list of saved versions, preview, comparison with the current document (added in green, removed struck through in red) and restore in a single undoable step.
 
 ```bash
 pnpm add @scriba-editor/plugin-revisions
 ```
 
-## Uso
+## Usage
 
-Le versioni le conserva il **tuo server**: il plugin chiede solo l'elenco e, quando l'utente ne sceglie una, il contenuto.
+The versions are stored by **your server**: the plugin only asks for the list and, when the user picks one, its content.
 
 ```ts
 import { revisionsToolbarItem, type RevisionOptions } from '@scriba-editor/plugin-revisions'
 
 const revisionOptions: RevisionOptions = {
   locale: 'it',
-  revisions: () => fetch('/api/versioni').then((r) => r.json()), // più recente per prima
-  content: (revision) => fetch(`/api/versioni/${revision.id}`).then((r) => r.text()), // HTML o JSON
+  revisions: () => fetch('/api/versions').then((r) => r.json()), // most recent first
+  content: (revision) => fetch(`/api/versions/${revision.id}`).then((r) => r.text()), // HTML or JSON
 }
 
-// nel menu File o nella toolbar:
+// in the File menu or in the toolbar:
 revisionsToolbarItem(t, revisionOptions)
 ```
 
-Una `Revision` ha la forma `{ id, createdAt, author?, label? }` (`createdAt` può essere `Date`, stringa ISO o timestamp).
+A `Revision` has the shape `{ id, createdAt, author?, label? }` (`createdAt` can be a `Date`, an ISO string or a timestamp).
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                                  | Cosa fa                                                                                                                        |
-| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `revisionsToolbarItem(t, options)`                                                                                    | Pulsante "Cronologia versioni…"; disponibile anche in sola lettura (si può guardare e confrontare, "Ripristina" è disattivato) |
-| `openRevisionDialog(view, t, options)`                                                                                | Apre il dialogo da codice e restituisce l'handle                                                                               |
-| `RevisionOptions`                                                                                                     | `revisions()`, `content(revision)`, `locale?` (predefinito: quello del browser)                                                |
-| `Revision`                                                                                                            | Tipo di una versione                                                                                                           |
-| `parseRevision(schema, source)`                                                                                       | Legge il contenuto di una versione attraverso lo schema; lancia errore se lo schema la rifiuta                                 |
-| `MAX_REVISION_LENGTH`                                                                                                 | 5 000 000 caratteri: un HTML più grande viene rifiutato, non tagliato                                                          |
-| `formatRevisionDate(value, locale?)`                                                                                  | Data breve (stringa vuota se non valida)                                                                                       |
-| `diffDocs(old, new)`, `diffSequence`, `slideEdits`, `MAX_COMPARISONS`, `DocDiff`, `Change`, `ChangeKind`, `Highlight` | Il confronto tra documenti, riusabile da solo                                                                                  |
+| Name                                                                                                                  | What it does                                                                                                  |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `revisionsToolbarItem(t, options)`                                                                                    | "Version history…" button; also available in read-only mode (you can view and compare, "Restore" is disabled) |
+| `openRevisionDialog(view, t, options)`                                                                                | Opens the dialog from code and returns the handle                                                             |
+| `RevisionOptions`                                                                                                     | `revisions()`, `content(revision)`, `locale?` (default: the browser's)                                        |
+| `Revision`                                                                                                            | Type of a version                                                                                             |
+| `parseRevision(schema, source)`                                                                                       | Reads the content of a version through the schema; throws an error if the schema rejects it                   |
+| `MAX_REVISION_LENGTH`                                                                                                 | 5,000,000 characters: larger HTML is rejected, not truncated                                                  |
+| `formatRevisionDate(value, locale?)`                                                                                  | Short date (empty string if invalid)                                                                          |
+| `diffDocs(old, new)`, `diffSequence`, `slideEdits`, `MAX_COMPARISONS`, `DocDiff`, `Change`, `ChangeKind`, `Highlight` | The document comparison, reusable on its own                                                                  |
 
-## Come si usa il dialogo
+## Using the dialog
 
-Le versioni sono un gruppo di radio (frecce per muoversi); quella scelta si carica in un'anteprima di sola lettura. "Evidenzia le differenze con il documento attuale" mostra cosa è stato aggiunto o tolto _dopo_ quella versione, con "Differenza precedente/successiva" per scorrerle. "Ripristina questa versione" sostituisce il documento con un solo passo di undo.
+The versions are a radio group (arrow keys to move); the chosen one loads in a read-only preview. "Highlight the differences with the current document" shows what was added or removed _since_ that version, with "Previous/Next difference" to step through them. "Restore this version" replaces the document with a single undo step.
 
-## Accessibilità
+## Accessibility
 
-Il dialogo ha focus trap e restituisce il focus all'editor. Caricamenti, errori e conteggio delle differenze sono in regioni `role="status"` / `role="alert"`; ogni differenza raggiunta con Precedente/Successiva è letta ("Differenza 2 di 5, aggiunto dopo: «...»", testo tagliato a 120 caratteri); dopo il ripristino un messaggio "Versione ripristinata" è annunciato.
+The dialog has a focus trap and returns focus to the editor. Loading, errors and the difference count are in `role="status"` / `role="alert"` regions; each difference reached with Previous/Next is read out ("Difference 2 of 5, added since: “...”", text truncated to 120 characters); after a restore, a "Version restored" message is announced.
 
-## Sicurezza
+## Security
 
-- Il contenuto delle versioni arriva dal server ed è **input non fidato**: l'HTML è letto in un documento inerte e passa dal parser dello schema, il JSON è validato dallo schema (deve essere un documento intero); oltre `MAX_REVISION_LENGTH` viene rifiutato. Una versione illeggibile mostra un errore, non rompe l'editor.
-- Autore ed etichetta sono mostrati **come testo**, mai come HTML.
-- Una risposta lenta per una versione non più selezionata viene ignorata.
-- Chi salva versioni deve comunque sanificarle sul server con `@scriba-editor/sanitize-server`.
+- The content of the versions comes from the server and is **untrusted input**: HTML is read in an inert document and goes through the schema parser, JSON is validated by the schema (it must be a whole document); beyond `MAX_REVISION_LENGTH` it is rejected. An unreadable version shows an error, it does not break the editor.
+- Author and label are displayed **as text**, never as HTML.
+- A slow response for a version that is no longer selected is ignored.
+- Whoever saves versions must still sanitize them on the server with `@scriba-editor/sanitize-server`.
 
-Vedi [sicurezza](../../../docs/sicurezza.md), [accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md). Si abbina bene a [@scriba-editor/plugin-save](../save/README.md).
+See [security](../../../docs/security.md), [accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md). It pairs well with [@scriba-editor/plugin-save](../save/README.md).

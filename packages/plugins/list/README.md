@@ -1,13 +1,15 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-list
 
-Elenchi puntati e numerati, anche annidati, con Tab / Maiusc+Tab, per l'editor Scriba. Include gli
-stili degli elenchi come l'"advlist" di TinyMCE (forma del punto, numerazione `1 a A i I`).
+Bulleted and numbered lists, nested too, with Tab / Shift+Tab, for the Scriba editor. It includes
+list styles like TinyMCE's "advlist" (bullet shape, `1 a A i I` numbering).
 
 ```bash
 pnpm add @scriba-editor/plugin-list
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -20,58 +22,59 @@ import {
 } from '@scriba-editor/plugin-list'
 
 // schema: nodes: { ...basicSchemaSpec.nodes, ...listNodes }
-// (serve un nodo `paragraph`: ogni voce inizia con un paragrafo)
+// (a `paragraph` node is required: every item starts with a paragraph)
 
-// stato dell'editor: priorità più alta del keymap di base
+// editor state: higher priority than the base keymap
 plugins: [keymap(listKeymap(schema), { priority: 50 })]
 
-// barra degli strumenti: senza i pulsanti di rientro, se li fornisce plugin-text-style
+// toolbar: without the indent buttons, if plugin-text-style provides them
 const items = listToolbarItems(schema, { indent: false })
-const menus = listStyleMenus(schema) // forma del punto, numerazione
-const indent = listIndentCommands(schema) // { more, less } da unire al rientro dei blocchi
+const menus = listStyleMenus(schema) // bullet shape, numbering
+const indent = listIndentCommands(schema) // { more, less } to merge with block indentation
 ```
 
-## Nodi (`listNodes`)
+## Nodes (`listNodes`)
 
-| Nodo           | HTML   | Attributi                                                          |
+| Node           | HTML   | Attributes                                                         |
 | -------------- | ------ | ------------------------------------------------------------------ |
-| `bullet_list`  | `<ul>` | `bullet`: `null` (disco), `circle`, `square`                       |
+| `bullet_list`  | `<ul>` | `bullet`: `null` (disc), `circle`, `square`                        |
 | `ordered_list` | `<ol>` | `start` (0–1 000 000), `numbering`: `null` (1), `a`, `A`, `i`, `I` |
-| `list_item`    | `<li>` | contenuto `paragraph block*`                                       |
+| `list_item`    | `<li>` | content `paragraph block*`                                         |
 
-In lettura sono capiti anche gli stili `list-style-type` usati da Word (`lower-alpha`,
-`upper-roman`…), ma l'output usa solo gli attributi tipizzati.
+When reading, the `list-style-type` styles used by Word (`lower-alpha`, `upper-roman`…) are also
+understood, but the output uses only the typed attributes.
 
-## Scorciatoie (`listKeymap`)
+## Shortcuts (`listKeymap`)
 
-| Tasto                   | Azione                                         |
-| ----------------------- | ---------------------------------------------- |
-| Invio                   | Nuova voce; in una voce vuota esce dall'elenco |
-| Tab / Maiusc+Tab        | Annida / disannida la voce                     |
-| Backspace a inizio voce | Disannida                                      |
-| Ctrl/Cmd+Maiusc+8       | Elenco puntato                                 |
-| Ctrl/Cmd+Maiusc+7       | Elenco numerato                                |
+| Key                               | Action                                      |
+| --------------------------------- | ------------------------------------------- |
+| Enter                             | New item; in an empty item, leaves the list |
+| Tab / Shift+Tab                   | Nest / unnest the item                      |
+| Backspace at the start of an item | Unnest                                      |
+| Ctrl/Cmd+Shift+8                  | Bulleted list                               |
+| Ctrl/Cmd+Shift+7                  | Numbered list                               |
 
-Con `@scriba-editor/plugin-markdown` si può anche digitare `- `, `* `, `+ ` o `1. ` a inizio riga.
+With `@scriba-editor/plugin-markdown` you can also type `- `, `* `, `+ ` or `1. ` at the start of
+a line.
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                                                       | Cosa fa                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| `listNodes`, `NUMBERINGS`, `Numbering`, `BulletStyle`                                                                                      | Nodi e tipi.                                                   |
-| `listKeymap(schema)`                                                                                                                       | Le scorciatoie sopra.                                          |
-| `listToolbarItems(schema, { indent? })`                                                                                                    | Pulsanti: puntato, numerato e (salvo `indent: false`) rientro. |
-| `listStyleMenus(schema)`                                                                                                                   | Menu "stile punto" e "numerazione".                            |
-| `listIndentCommands(schema)`                                                                                                               | `{ more, less }`: comandi di rientro delle voci.               |
-| `toggleList`, `wrapInList`, `splitListItem`, `sinkListItem`, `liftListItem`, `liftListItemAtStart`, `setListStyle`, `isInList`, `listAttr` | Comandi `(state, dispatch?) => boolean`.                       |
+| Name                                                                                                                                       | What it does                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `listNodes`, `NUMBERINGS`, `Numbering`, `BulletStyle`                                                                                      | Nodes and types.                                                      |
+| `listKeymap(schema)`                                                                                                                       | The shortcuts above.                                                  |
+| `listToolbarItems(schema, { indent? })`                                                                                                    | Buttons: bulleted, numbered and (unless `indent: false`) indentation. |
+| `listStyleMenus(schema)`                                                                                                                   | "Bullet style" and "Numbering" menus.                                 |
+| `listIndentCommands(schema)`                                                                                                               | `{ more, less }`: indentation commands for items.                     |
+| `toggleList`, `wrapInList`, `splitListItem`, `sinkListItem`, `liftListItem`, `liftListItemAtStart`, `setListStyle`, `isInList`, `listAttr` | `(state, dispatch?) => boolean` commands.                             |
 
-`toggleList` fuori da un elenco lo crea, in un elenco dello stesso tipo ne toglie le voci, in uno di
-altro tipo cambia il tipo.
+`toggleList` outside a list creates one, in a list of the same type removes its items from it, in a
+list of another type changes the type.
 
-## Note
+## Notes
 
-- I comandi chiamati senza `dispatch` dicono solo se sono eseguibili (abilitano i pulsanti).
-- Gli attributi degli elenchi sono validati dallo schema (valori enumerati, intero limitato per
-  `start`): niente `style` libero in uscita. Vedi [sicurezza](../../../docs/sicurezza.md).
-- I pulsanti hanno `aria-pressed` quando il cursore è in un elenco di quel tipo. Vedi
-  [accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+- Commands called without `dispatch` only tell whether they can run (they enable the buttons).
+- List attributes are validated by the schema (enumerated values, bounded integer for `start`): no
+  free-form `style` in the output. See [security](../../../docs/security.md).
+- Buttons have `aria-pressed` when the cursor is in a list of that type. See
+  [accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).

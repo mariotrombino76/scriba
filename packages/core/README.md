@@ -1,16 +1,19 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/core
 
-Il cuore di Scriba: modello di documento a schema, transazioni, selezione, comandi e API dei plugin. **Non tocca mai il DOM** e non dipende da alcun framework: funziona anche in Node.
+The heart of Scriba: schema-based document model, transactions, selection, commands and plugin
+API. It **never touches the DOM** and does not depend on any framework: it works in Node too.
 
 ```bash
 pnpm add @scriba-editor/core
 ```
 
-Di solito lo usi insieme a `@scriba-editor/view` (il rendering nel browser) e ai plugin; i wrapper
-`@scriba-editor/vue`, `@scriba-editor/react` e `@scriba-editor/browser` lo includono già. Come funziona dentro, in
-parole semplici: [Concetti](../../docs/concetti.md).
+You usually use it together with `@scriba-editor/view` (rendering in the browser) and the
+plugins; the `@scriba-editor/vue`, `@scriba-editor/react` and `@scriba-editor/browser` wrappers
+already include it. How it works inside, in plain words: [Concepts](../../docs/concepts.md).
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -35,51 +38,52 @@ const state = EditorState.create({
   ],
 })
 
-// una transazione è una "mossa": il documento vecchio resta intatto
-const tr = state.tr.insertText('Ciao', 1)
+// a transaction is a "move": the old document stays intact
+const tr = state.tr.insertText('Hello', 1)
 const next = state.apply(tr)
 
-// un comando senza `dispatch` dice solo se si può eseguire
-const grassetto = toggleMark(basicSchema.marks.bold!)
-grassetto(next) // true/false
-serializeHTML(next.doc) // '<p>Ciao</p>'
+// a command without `dispatch` only tells whether it can run
+const bold = toggleMark(basicSchema.marks.bold!)
+bold(next) // true/false
+serializeHTML(next.doc) // '<p>Hello</p>'
 ```
 
-## Le parti principali
+## The main parts
 
-| Parte          | Esportazioni principali                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------------------------- |
-| Schema         | `Schema`, `NodeType`, `MarkType`, `NodeSpec`, `MarkSpec`, `basicSchema`, `basicSchemaSpec`                    |
-| Documento      | `Node`, `Fragment`, `Mark`, `Slice`, `ResolvedPos` (alberi immutabili, posizioni intere)                      |
-| Transazioni    | `Transform`, `Transaction`, `Step`, `ReplaceStep`, `AddMarkStep`, `RemoveMarkStep`, `SetAttrsStep`, `Mapping` |
-| Stato          | `EditorState`, `Selection`, `TextSelection`, `NodeSelection`, `AllSelection`                                  |
-| Plugin         | `Plugin`, `PluginKey`, `PluginSpec`, `StateField`                                                             |
-| Comandi        | `Command`, `chainCommands`, `toggleMark`, `setBlockType`, `wrapIn`, `lift`, `splitBlock`, `undo`, `redo`…     |
-| Scorciatoie    | `keymap`, `baseKeymap`, `historyKeymap`, `formatKeymap`                                                       |
-| Annulla/ripeti | `history`, `undo`, `redo`, `ADD_TO_HISTORY`, `CLOSE_HISTORY`                                                  |
-| HTML           | `parseHTML`, `serializeHTML`, `HTMLParser`, `HTMLSerializer`, `sanitizeUrl`, `HTMLLimitError`                 |
+| Part         | Main exports                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------- |
+| Schema       | `Schema`, `NodeType`, `MarkType`, `NodeSpec`, `MarkSpec`, `basicSchema`, `basicSchemaSpec`                    |
+| Document     | `Node`, `Fragment`, `Mark`, `Slice`, `ResolvedPos` (immutable trees, integer positions)                       |
+| Transactions | `Transform`, `Transaction`, `Step`, `ReplaceStep`, `AddMarkStep`, `RemoveMarkStep`, `SetAttrsStep`, `Mapping` |
+| State        | `EditorState`, `Selection`, `TextSelection`, `NodeSelection`, `AllSelection`                                  |
+| Plugins      | `Plugin`, `PluginKey`, `PluginSpec`, `StateField`                                                             |
+| Commands     | `Command`, `chainCommands`, `toggleMark`, `setBlockType`, `wrapIn`, `lift`, `splitBlock`, `undo`, `redo`…     |
+| Shortcuts    | `keymap`, `baseKeymap`, `historyKeymap`, `formatKeymap`                                                       |
+| Undo/redo    | `history`, `undo`, `redo`, `ADD_TO_HISTORY`, `CLOSE_HISTORY`                                                  |
+| HTML         | `parseHTML`, `serializeHTML`, `HTMLParser`, `HTMLSerializer`, `sanitizeUrl`, `HTMLLimitError`                 |
 
-- Un **comando** è una funzione `(state, dispatch?, view?) => boolean`: senza `dispatch`
-  risponde solo "si può fare?" (serve ad abilitare e disabilitare i pulsanti).
-- Gli **step** sono atomici e invertibili: sono la base di annulla/ripeti e della collaborazione.
-- Ogni plugin porta i suoi nodi o mark (da aggiungere allo schema), i suoi plugin e le sue
-  scorciatoie: vedi [Plugin](../../docs/plugin.md).
+- A **command** is a function `(state, dispatch?, view?) => boolean`: without `dispatch` it only
+  answers "can it be done?" (used to enable and disable buttons).
+- **Steps** are atomic and invertible: they are the basis of undo/redo and of collaboration.
+- Each plugin brings its own nodes or marks (to add to the schema), its own plugins and its own
+  shortcuts: see [Plugins](../../docs/plugins.md).
 
-## Sicurezza
+## Security
 
-L'HTML in ingresso non si copia mai nel documento: `parseHTML(schema, root, options?)` lo legge
-dallo schema e **scarta tutto ciò che lo schema non conosce** (tag, attributi, stili, URL non
-ammessi). `root` deve venire da un documento **inerte** (`DOMParser`, mai `innerHTML` nella
-pagina attiva): `@scriba-editor/view` lo fa per te con `parseContent`. L'output di `serializeHTML` è
-generato dal documento, con escape di testo e attributi, mai copiato dal DOM.
+Incoming HTML is never copied into the document: `parseHTML(schema, root, options?)` reads it
+through the schema and **drops everything the schema does not know** (disallowed tags,
+attributes, styles, URLs). `root` must come from an **inert** document (`DOMParser`, never
+`innerHTML` in the live page): `@scriba-editor/view` does this for you with `parseContent`. The
+output of `serializeHTML` is generated from the document, with text and attribute escaping,
+never copied from the DOM.
 
-- Limiti contro la negazione del servizio: `HTMLParseOptions` ha `maxDepth` (default 256) e
-  `maxNodes` (default 200 000); se superati il parser lancia `HTMLLimitError`.
-- `sanitizeUrl` e gli helper di `css.ts` (`normalizeColor`, `normalizeLength`…) validano URL
-  (whitelist di protocolli) e stili (attributi tipizzati, niente `style` libero).
-- Il JSON si valida con `schema.nodeFromJSON(json)`, che lancia un errore per tutto ciò che lo
-  schema rifiuta.
-- Il core esegue solo codice DOM-free: puoi usarlo anche sul server, ma **l'HTML salvato va
-  sempre ripassato da `@scriba-editor/sanitize-server`** con lo stesso schema.
+- Limits against denial of service: `HTMLParseOptions` has `maxDepth` (default 256) and
+  `maxNodes` (default 200,000); if they are exceeded the parser throws `HTMLLimitError`.
+- `sanitizeUrl` and the `css.ts` helpers (`normalizeColor`, `normalizeLength`…) validate URLs
+  (protocol whitelist) and styles (typed attributes, no free-form `style`).
+- JSON is validated with `schema.nodeFromJSON(json)`, which throws an error for everything the
+  schema rejects.
+- The core runs only DOM-free code: you can use it on the server too, but **saved HTML must
+  always go through `@scriba-editor/sanitize-server`** with the same schema.
 
-Dettagli: [Sicurezza](../../docs/sicurezza.md).
+Details: [Security](../../docs/security.md).

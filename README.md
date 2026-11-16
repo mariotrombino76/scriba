@@ -1,47 +1,50 @@
+**English** · [Italiano](README.it.md)
+
 # Scriba
 
-Editor di testo formattato (WYSIWYG) per il web, scritto in TypeScript. Ha le funzioni di TinyMCE e
-in più un documento strutturato e sicuro per costruzione.
+A rich-text (WYSIWYG) editor for the web, written in TypeScript. It has the features of TinyMCE,
+plus a structured document that is secure by construction.
 
-> **Stato:** in preparazione la prima versione pubblica (`0.1.0`). I pacchetti `@scriba-editor/*` non sono
-> ancora su npm.
+> **Status:** version `0.x`. The `@scriba-editor/*` packages are on npm, published
+> with provenance. While the version is `0.x` the API may change between minor versions: see the
+> [CHANGELOG](CHANGELOG.md).
 
-## Perché Scriba
+## Why Scriba
 
-- **Documento con uno schema, non HTML libero.** Ciò che lo schema non conosce viene scartato:
-  l'output è sempre valido, prevedibile e privo di script.
-- **Sicurezza da integratore.** Parser inerte, URL ammessi solo da una lista (whitelist), funziona
-  con una CSP rigida e con Trusted Types. Il pacchetto `@scriba-editor/sanitize-server` riapplica lo stesso
-  schema sul server.
-- **Collaborazione in tempo reale inclusa** (Yjs), con cursori degli altri, commenti, suggerimenti
-  (revisioni) e permessi per blocco.
-- **Tutte le funzioni di TinyMCE:**
-  - tabelle (unione di celle, ordinamento, ridimensionamento);
-  - immagini con ritaglio e rotazione;
-  - incolla da Word e Google Docs;
-  - trova e sostituisci con regex;
-  - vista sorgente e schermo intero;
-  - formule (KaTeX) e note a piè di pagina;
-  - indice, modelli e campi di unione;
-  - pennello formato e verifica dell'accessibilità;
-  - cronologia delle versioni, import ed export (HTML, Markdown, Word).
-- **Oltre TinyMCE:**
-  - scorciatoie Markdown mentre scrivi;
-  - comandi `/` e menu sulla selezione;
-  - menzioni `@`;
-  - un assistente AI che non ti lega a un fornitore (il testo generato si annulla come ogni
-    modifica).
-- **Accessibile:** punta a WCAG 2.2 AA, verificato in automatico con axe-core. Ogni funzione si usa
-  anche da tastiera.
-- **Leggero e modulare:** il core pesa circa 25 KB gzip, senza dipendenze, e ogni plugin è un
-  pacchetto separato.
-- **Dove vuoi:** una pagina qualsiasi (script da CDN), Vue 3, React 18/19, oppure i pacchetti
-  montati a mano. Interfaccia in italiano, inglese, francese, tedesco e spagnolo, con tema chiaro e
-  scuro.
+- **A document with a schema, not free-form HTML.** Anything the schema does not know is
+  discarded: the output is always valid, predictable and free of scripts.
+- **Security for integrators.** An inert parser, URLs allowed only from a list (whitelist), and it
+  works with a strict CSP and with Trusted Types. The `@scriba-editor/sanitize-server` package
+  applies the same schema again on the server.
+- **Real-time collaboration included** (Yjs), with other users' cursors, comments, suggestions
+  (track changes) and per-block permissions.
+- **All of TinyMCE's features:**
+  - tables (cell merging, sorting, resizing);
+  - images with cropping and rotation;
+  - paste from Word and Google Docs;
+  - find and replace with regex;
+  - source view and fullscreen;
+  - formulas (KaTeX) and footnotes;
+  - table of contents, templates and merge fields;
+  - format painter and accessibility checker;
+  - version history, import and export (HTML, Markdown, Word).
+- **Beyond TinyMCE:**
+  - Markdown shortcuts as you type;
+  - `/` commands and a bubble menu on the selection;
+  - `@` mentions;
+  - an AI assistant that does not lock you into a provider (generated text is undone like any
+    other change).
+- **Accessible:** targets WCAG 2.2 AA, checked automatically with axe-core. Every feature can
+  also be used from the keyboard.
+- **Light and modular:** the core weighs about 25 KB gzip, with no dependencies, and every plugin
+  is a separate package.
+- **Wherever you want:** any page (script from a CDN), Vue 3, React 18/19, or the packages
+  wired up by hand. UI in Italian, English, French, German and Spanish, with a light and dark
+  theme.
 
-## In due minuti
+## In two minutes
 
-**Una pagina qualsiasi** (senza framework né build):
+**Any page** (no framework, no build):
 
 ```html
 <link
@@ -57,13 +60,13 @@ in più un documento strutturato e sicuro per costruzione.
 ></script>
 <div id="editor"></div>
 <script>
-  Scriba.createEditor('#editor', { content: '<p>Ciao</p>', onChange: (html) => salva(html) })
+  Scriba.createEditor('#editor', { content: '<p>Hello</p>', onChange: (html) => save(html) })
 </script>
 ```
 
-> L'ultimo `<script>` è il tuo codice. In un sito con una CSP rigida (`script-src 'self'`) gli
-> script in linea sono bloccati: spostalo in un file `.js` tuo, per esempio
-> `<script src="/js/editor.js"></script>`. Vedi [Iniziare](docs/iniziare.md#pagina-qualsiasi-script-da-cdn).
+> The last `<script>` is your code. On a site with a strict CSP (`script-src 'self'`), inline
+> scripts are blocked: move it into a `.js` file of your own, for example
+> `<script src="/js/editor.js"></script>`. See [Getting started](docs/getting-started.md#any-page-cdn-script).
 
 **Vue 3:**
 
@@ -73,7 +76,7 @@ import { ref } from 'vue'
 import { ScribaEditor } from '@scriba-editor/vue'
 import '@scriba-editor/themes/scriba.css'
 
-const html = ref('<p>Ciao</p>')
+const html = ref('<p>Hello</p>')
 </script>
 
 <template>
@@ -88,62 +91,62 @@ import { useState } from 'react'
 import { ScribaEditor } from '@scriba-editor/react'
 import '@scriba-editor/themes/scriba.css'
 
-export function Nota() {
-  const [html, setHtml] = useState('<p>Ciao</p>')
+export function Note() {
+  const [html, setHtml] = useState('<p>Hello</p>')
   return <ScribaEditor value={html} onChange={(v) => setHtml(v as string)} />
 }
 ```
 
-> **Importante:** sul server ripassa **sempre** l'HTML ricevuto da `sanitizeHTML` di
-> `@scriba-editor/sanitize-server` prima di salvarlo o mostrarlo. Chiunque può inviare HTML alla tua API
-> senza passare dall'editor. Vedi [Sicurezza](docs/sicurezza.md).
+> **Important:** on the server, **always** pass the HTML you receive through `sanitizeHTML` from
+> `@scriba-editor/sanitize-server` before saving or displaying it. Anyone can send HTML to your API
+> without going through the editor. See [Security](docs/security.md).
 
-## Pacchetti
+## Packages
 
-| Pacchetto                                                    | Cosa fa                                                                |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| [`@scriba-editor/core`](packages/core)                       | Schema, documento, transazioni, comandi, undo/redo. Nessun DOM.        |
-| [`@scriba-editor/view`](packages/view)                       | La vista nel browser: `contentEditable` controllato, IME, selezione.   |
-| [`@scriba-editor/ui`](packages/ui)                           | Barra degli strumenti, menu, finestre di dialogo (Web Components).     |
-| [`@scriba-editor/i18n`](packages/i18n)                       | Testi dell'interfaccia: it, en, fr, de, es.                            |
-| [`@scriba-editor/themes`](packages/themes)                   | Tema CSS chiaro e scuro, con variabili personalizzabili.               |
-| [`@scriba-editor/vue`](packages/vue)                         | `<ScribaEditor v-model>` e `useScriba()` per Vue 3.                    |
-| [`@scriba-editor/react`](packages/react)                     | `<ScribaEditor value onChange>` e `useScriba()` per React 18/19.       |
-| [`@scriba-editor/browser`](packages/browser)                 | Tutto in un file per qualsiasi pagina: `Scriba.createEditor()`.        |
-| [`@scriba-editor/sanitize-server`](packages/sanitize-server) | Sanificazione sul server (Node) con lo stesso schema.                  |
-| [`@scriba-editor/collab-server`](packages/collab-server)     | Server WebSocket per la collaborazione: accesso, permessi, limiti.     |
-| [`@scriba-editor/plugin-*`](packages/plugins)                | Un pacchetto per funzione: tabelle, immagini, link, AI, commenti, ecc. |
+| Package                                                                | What it does                                                           |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`@scriba-editor/core`](packages/core/README.md)                       | Schema, document, transactions, commands, undo/redo. No DOM.           |
+| [`@scriba-editor/view`](packages/view/README.md)                       | The view in the browser: controlled `contentEditable`, IME, selection. |
+| [`@scriba-editor/ui`](packages/ui/README.md)                           | Toolbar, menus, dialogs (Web Components).                              |
+| [`@scriba-editor/i18n`](packages/i18n)                                 | UI strings: it, en, fr, de, es.                                        |
+| [`@scriba-editor/themes`](packages/themes/README.md)                   | Light and dark CSS theme, with customizable variables.                 |
+| [`@scriba-editor/vue`](packages/vue/README.md)                         | `<ScribaEditor v-model>` and `useScriba()` for Vue 3.                  |
+| [`@scriba-editor/react`](packages/react/README.md)                     | `<ScribaEditor value onChange>` and `useScriba()` for React 18/19.     |
+| [`@scriba-editor/browser`](packages/browser/README.md)                 | Everything in one file for any page: `Scriba.createEditor()`.          |
+| [`@scriba-editor/sanitize-server`](packages/sanitize-server/README.md) | Server-side sanitization (Node) with the same schema.                  |
+| [`@scriba-editor/collab-server`](packages/collab-server/README.md)     | WebSocket server for collaboration: access, permissions, limits.       |
+| [`@scriba-editor/plugin-*`](packages/plugins)                          | One package per feature: tables, images, links, AI, comments, etc.     |
 
-## Documentazione
+## Documentation
 
-La documentazione è nella cartella [`docs/`](docs/README.md): [Iniziare](docs/iniziare.md),
-[Concetti](docs/concetti.md), [Plugin](docs/plugin.md), [Sicurezza](docs/sicurezza.md),
-[Collaborazione](docs/collaborazione.md), [Accessibilità](docs/accessibilita.md),
-[Prestazioni](docs/prestazioni.md). Ogni pacchetto ha il suo README con esempi.
+The documentation is in the [`docs/`](docs/README.md) folder: [Getting started](docs/getting-started.md),
+[Concepts](docs/concepts.md), [Plugins](docs/plugins.md), [Security](docs/security.md),
+[Collaboration](docs/collaboration.md), [Accessibility](docs/accessibility.md),
+[Performance](docs/performance.md). Every package has its own README with examples.
 
-## Sviluppo
+## Development
 
-Requisiti: Node 22 o successivo e pnpm (tramite `corepack`).
+Requirements: Node 22 or later and pnpm (via `corepack`).
 
 ```bash
 pnpm install
-pnpm dev            # playground con tutte le funzioni
+pnpm dev            # playground with every feature
 pnpm build
 pnpm lint && pnpm test && pnpm test:security
 pnpm test:e2e       # Playwright: Chromium, Firefox, WebKit
 ```
 
-Le modifiche sono descritte nel [CHANGELOG](CHANGELOG.md). Per segnalare una vulnerabilità in
-privato segui [SECURITY.md](SECURITY.md).
+Changes are described in the [CHANGELOG](CHANGELOG.md). To report a vulnerability privately,
+follow [SECURITY.md](SECURITY.md).
 
-## Licenza
+## License
 
-Scriba è rilasciato con la [licenza Apache 2.0](LICENSE). Copyright 2026 **Mario Trombino**.
+Scriba is released under the [Apache 2.0 license](LICENSE). Copyright 2026 **Mario Trombino**.
 
-Puoi usarlo, modificarlo e distribuirlo, anche in prodotti commerciali. La licenza chiede due cose
-a chi distribuisce Scriba o un'opera derivata:
+You can use, modify and distribute it, including in commercial products. The license asks two
+things of anyone who distributes Scriba or a derivative work:
 
-- includere il file [LICENSE](LICENSE);
-- includere il file [NOTICE](NOTICE) con l'attribuzione a Mario Trombino.
+- include the [LICENSE](LICENSE) file;
+- include the [NOTICE](NOTICE) file with the attribution to Mario Trombino.
 
-I file distribuiti via CDN riportano la stessa attribuzione in testa.
+The files distributed via CDN carry the same attribution at the top.

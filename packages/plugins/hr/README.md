@@ -1,13 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-hr
 
-Linea orizzontale e **interruzione di pagina** per l'editor Scriba (menu Inserisci, come in
-TinyMCE).
+Horizontal line and **page break** for the Scriba editor (Insert menu, as in TinyMCE).
 
 ```bash
 pnpm add @scriba-editor/plugin-hr
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { Schema, basicSchemaSpec } from '@scriba-editor/core'
@@ -18,43 +19,43 @@ const schema = new Schema({
   marks: basicSchemaSpec.marks,
 })
 
-// nello stato dell'editor
+// in the editor state
 plugins: [...hrPlugins(t)]
 
-// pulsanti (Inserisci ▸ Linea orizzontale, Interruzione di pagina) e menu slash
+// buttons (Insert ▸ Horizontal line, Page break) and slash menu
 const [hr, pageBreak] = hrToolbarItems(schema)
-const slash = hrSlashItems(schema) // "/linea", "/interruzione"
+const slash = hrSlashItems(schema) // "/line", "/break"
 ```
 
-## Nodi
+## Nodes
 
-| Nodo              | HTML                             | Note                                                                                       |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
-| `horizontal_rule` | `<hr>`                           | Linea orizzontale.                                                                         |
-| `page_break`      | `<hr class="scriba-page-break">` | Qualsiasi viewer mostra una linea; gli stili di stampa del tema iniziano una nuova pagina. |
+| Node              | HTML                             | Notes                                                               |
+| ----------------- | -------------------------------- | ------------------------------------------------------------------- |
+| `horizontal_rule` | `<hr>`                           | Horizontal line.                                                    |
+| `page_break`      | `<hr class="scriba-page-break">` | Any viewer shows a line; the theme's print styles start a new page. |
 
-Nessuno dei due ha attributi: altre classi o attributi di un `<hr>` vengono scartati.
+Neither has attributes: other classes or attributes on an `<hr>` are discarded.
 
-## Esportazioni
+## Exports
 
-| Nome                                      | Cosa fa                                                                                                                                                                                                        |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `hrNodes`                                 | Le due specifiche di nodo.                                                                                                                                                                                     |
-| `insertHorizontalRule`, `insertPageBreak` | Comandi: inseriscono nel cursore (il paragrafo viene diviso, in un paragrafo vuoto lo sostituiscono); il cursore va nel testo dopo, aggiungendo un paragrafo se non c'è. Non funzionano nei blocchi di codice. |
-| `hrToolbarItems(schema)`                  | Due pulsanti: linea e interruzione di pagina.                                                                                                                                                                  |
-| `hrSlashItems(schema)`                    | Due voci del menu slash.                                                                                                                                                                                       |
-| `hrPlugins(t)`                            | Dà un nome alle interruzioni di pagina per i lettori di schermo.                                                                                                                                               |
-| `PAGE_BREAK_CLASS`                        | La classe fissa `scriba-page-break`.                                                                                                                                                                           |
+| Name                                      | What it does                                                                                                                                                                                                |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hrNodes`                                 | The two node specs.                                                                                                                                                                                         |
+| `insertHorizontalRule`, `insertPageBreak` | Commands: insert at the cursor (the paragraph is split; in an empty paragraph they replace it); the cursor moves into the text after, adding a paragraph if there is none. They do not work in code blocks. |
+| `hrToolbarItems(schema)`                  | Two buttons: line and page break.                                                                                                                                                                           |
+| `hrSlashItems(schema)`                    | Two slash menu items.                                                                                                                                                                                       |
+| `hrPlugins(t)`                            | Gives page breaks a name for screen readers.                                                                                                                                                                |
+| `PAGE_BREAK_CLASS`                        | The fixed class `scriba-page-break`.                                                                                                                                                                        |
 
-Con `@scriba-editor/plugin-markdown`, scrivere `---`, `___` o `***` da soli in un paragrafo vuoto inserisce
-la linea orizzontale.
+With `@scriba-editor/plugin-markdown`, typing `---`, `___` or `***` alone in an empty paragraph
+inserts the horizontal line.
 
-## Sicurezza e accessibilità
+## Security and accessibility
 
-- La classe dell'interruzione è **fissa**: nessuna classe proveniente dall'esterno viene accettata
-  (vedi [sicurezza](../../../docs/sicurezza.md)).
-- Nell'editor ogni interruzione di pagina riceve un `aria-label` (un `<hr>` da solo è soltanto
-  "separatore"); l'etichetta esiste **solo nel DOM dell'editor**, l'HTML salvato resta semplice.
-- Il salvataggio come pagina HTML di `@scriba-editor/plugin-file` e la stampa rispettano l'interruzione.
+- The page break class is **fixed**: no class coming from outside is accepted (see
+  [security](../../../docs/security.md)).
+- In the editor every page break gets an `aria-label` (an `<hr>` on its own is just a
+  "separator"); the label exists **only in the editor DOM**, the saved HTML stays plain.
+- Saving as an HTML page with `@scriba-editor/plugin-file` and printing respect the page break.
 
-Vedi anche [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md).
+See also [plugins](../../../docs/plugins.md) and [accessibility](../../../docs/accessibility.md).

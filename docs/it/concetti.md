@@ -1,3 +1,5 @@
+[English](../concepts.md) · **Italiano**
+
 # Concetti
 
 Per usare Scriba con i componenti pronti non serve sapere come funziona dentro. Questa pagina è

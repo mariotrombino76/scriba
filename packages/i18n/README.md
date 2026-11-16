@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/i18n
 
-Traduzioni dell'interfaccia di Scriba: italiano, inglese, francese, tedesco e spagnolo.
+Translations of the Scriba UI: Italian, English, French, German and Spanish.
 
 ```bash
 pnpm add @scriba-editor/i18n
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { createTranslator, fr } from '@scriba-editor/i18n'
@@ -14,46 +16,45 @@ import { createTranslator, fr } from '@scriba-editor/i18n'
 const t = createTranslator('it')
 t('editor.label') // "Editor di testo formattato"
 
-// francese, tedesco e spagnolo si importano: le lingue che non usi restano fuori dal bundle
+// French, German and Spanish are imported: the languages you do not use stay out of the bundle
 const tFr = createTranslator(fr)
 ```
 
-Nei componenti basta indicare la lingua: `locale="en"` (Vue), `locale: 'en'` (React e script per
-il browser). Per fr, de, es passa l'oggetto nei componenti Vue e React (`locale: fr`); con lo
-script `@scriba-editor/browser` bastano i nomi (`'fr'`, `'de'`, `'es'`).
+In the components you just set the language: `locale="en"` (Vue), `locale: 'en'` (React and the
+browser script). For fr, de, es pass the object in the Vue and React components (`locale: fr`);
+with the `@scriba-editor/browser` script the names are enough (`'fr'`, `'de'`, `'es'`).
 
-## Esportazioni
+## Exports
 
-| Esportazione                            | Descrizione                                                                                                  |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `createTranslator(locale?, overrides?)` | Crea una funzione `Translate`. `locale` è un nome (`'it'`, `'en'`) o un oggetto di messaggi; default `'en'`. |
-| `locales`                               | Le lingue trovate per nome: `{ it, en }`.                                                                    |
-| `it`, `en`                              | Messaggi italiani e inglesi.                                                                                 |
-| `fr`, `de`, `es`                        | Messaggi francesi, tedeschi, spagnoli (da passare come oggetto).                                             |
-| `Messages`                              | Tipo: un oggetto con **tutte** le chiavi dei messaggi.                                                       |
-| `MessageKey`                            | Tipo: l'unione delle chiavi (`'editor.label'`, `'mark.bold'`…).                                              |
-| `Translate`                             | Tipo della funzione `(key, params?) => string`.                                                              |
+| Export                                  | Description                                                                                               |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `createTranslator(locale?, overrides?)` | Creates a `Translate` function. `locale` is a name (`'it'`, `'en'`) or a messages object; default `'en'`. |
+| `locales`                               | The languages looked up by name: `{ it, en }`.                                                            |
+| `it`, `en`                              | Italian and English messages.                                                                             |
+| `fr`, `de`, `es`                        | French, German, Spanish messages (to pass as an object).                                                  |
+| `Messages`                              | Type: an object with **all** the message keys.                                                            |
+| `MessageKey`                            | Type: the union of the keys (`'editor.label'`, `'mark.bold'`…).                                           |
+| `Translate`                             | Type of the `(key, params?) => string` function.                                                          |
 
-## Comportamento
+## Behavior
 
-- Un nome di lingua sconosciuto ricade sull'inglese; un codice regionale come `'it-IT'` usa
-  `'it'`.
-- I segnaposto `{nome}` si riempiono con `params`: `t(key, { nome: 'Anna' })`. I parametri sono
-  sempre **testo semplice**, mai markup.
-- Una chiave mancante restituisce la chiave stessa.
+- An unknown language name falls back to English; a regional code like `'it-IT'` uses `'it'`.
+- The `{name}` placeholders are filled with `params`: `t(key, { name: 'Anna' })`. Parameters are
+  always **plain text**, never markup.
+- A missing key returns the key itself.
 
-## Cambiare singoli testi
+## Changing individual texts
 
 ```ts
-const t = createTranslator('it', { 'editor.label': 'Testo della nota' })
+const t = createTranslator('it', { 'editor.label': 'Note text' })
 ```
 
-`overrides` è un `Partial<Messages>`: sostituisce solo i messaggi indicati.
+`overrides` is a `Partial<Messages>`: it replaces only the messages you specify.
 
-## Un'altra lingua
+## Another language
 
-Passa un oggetto con tutti i messaggi, di tipo `Messages` (le chiavi sono quelle di `en`: il
-compilatore ti segnala quelle mancanti):
+Pass an object with all the messages, of type `Messages` (the keys are those of `en`: the compiler
+flags the missing ones):
 
 ```ts
 import { en, createTranslator, type Messages } from '@scriba-editor/i18n'
@@ -62,4 +63,4 @@ const pt: Messages = { ...en, 'editor.label': 'Editor de texto formatado' /* …
 const t = createTranslator(pt)
 ```
 
-Vedi [Iniziare](../../docs/iniziare.md#lingua) per l'uso con i componenti.
+See [Getting started](../../docs/getting-started.md#language) for use with the components.

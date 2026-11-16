@@ -1,14 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-link
 
-Link con dialogo accessibile per l'editor Scriba, più **autolink** (indirizzi digitati che diventano
-link) e **ancore** (id di destinazione per i link interni). Come il plugin Link, Autolink e Anchor di
-TinyMCE.
+Links with an accessible dialog for the Scriba editor, plus **autolink** (typed addresses that
+become links) and **anchors** (target ids for internal links). Like TinyMCE's Link, Autolink and
+Anchor plugins.
 
 ```bash
 pnpm add @scriba-editor/plugin-link
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -23,58 +25,59 @@ import {
 } from '@scriba-editor/plugin-link'
 
 // schema: marks: { ...linkMarks, ...basicSchemaSpec.marks },
-//         nodes: withAnchors({ ...basicSchemaSpec.nodes })   // anchor su paragrafi e titoli
+//         nodes: withAnchors({ ...basicSchemaSpec.nodes })   // anchor on paragraphs and headings
 
-// stato dell'editor
+// editor state
 plugins: [autolink(schema.marks['link']!), keymap(linkKeymap(t))]
 
-// pulsante (Ctrl/Cmd+K), ancora e menu contestuale sul link
+// button (Ctrl/Cmd+K), anchor and context menu on the link
 const items = [...linkToolbarItems(schema, t), anchorToolbarItem(t)]
-const menu = linkContextMenu(schema, t) // modifica, rimuovi, apri
+const menu = linkContextMenu(schema, t) // edit, remove, open
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                                                                    | Cosa fa                                                                                                                                       |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `linkMarks`                                                                                                                                             | Il mark `link` con `href` e `target` (solo `null` o `_blank`).                                                                                |
-| `setLink(schema, href, target?)`                                                                                                                        | Comando: collega la selezione, l'intero link sotto il cursore, o inserisce l'indirizzo come testo collegato. Non fa nulla per URL non sicuri. |
-| `removeLink(schema)`                                                                                                                                    | Comando: toglie il link.                                                                                                                      |
-| `linkRange(state, type)`                                                                                                                                | Estensione del link sotto il cursore o nella selezione.                                                                                       |
-| `normalizeLinkInput(value)`                                                                                                                             | `www.esempio.it` → `https://…`, un indirizzo e-mail → `mailto:…`.                                                                             |
-| `openLinkDialog(view, t)`                                                                                                                               | Il dialogo: indirizzo, "apri in una nuova scheda", salva, rimuovi.                                                                            |
-| `linkKeymap(t)`                                                                                                                                         | Ctrl/Cmd+K apre il dialogo.                                                                                                                   |
-| `linkToolbarItems(schema, t)`                                                                                                                           | Pulsante Link (premuto con il cursore su un link).                                                                                            |
-| `linkContextMenu(schema, t)`                                                                                                                            | Voci del menu contestuale: modifica, rimuovi, apri (apri funziona anche in sola lettura).                                                     |
-| `autolink(type)`, `addressBefore`                                                                                                                       | Plugin dell'autolink.                                                                                                                         |
-| `withAnchors(nodes, names?)`, `setAnchor(name)`, `openAnchorDialog`, `anchorToolbarItem(t)`, `anchorName`, `anchorsIn`, `isAnchorName`, `ANCHOR_PREFIX` | Ancore.                                                                                                                                       |
+| Name                                                                                                                                                    | What it does                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `linkMarks`                                                                                                                                             | The `link` mark with `href` and `target` (only `null` or `_blank`).                                                                   |
+| `setLink(schema, href, target?)`                                                                                                                        | Command: links the selection or the whole link under the cursor, or inserts the address as linked text. Does nothing for unsafe URLs. |
+| `removeLink(schema)`                                                                                                                                    | Command: removes the link.                                                                                                            |
+| `linkRange(state, type)`                                                                                                                                | Extent of the link under the cursor or in the selection.                                                                              |
+| `normalizeLinkInput(value)`                                                                                                                             | `www.example.com` → `https://…`, an e-mail address → `mailto:…`.                                                                      |
+| `openLinkDialog(view, t)`                                                                                                                               | The dialog: address, "Open in a new tab", save, remove.                                                                               |
+| `linkKeymap(t)`                                                                                                                                         | Ctrl/Cmd+K opens the dialog.                                                                                                          |
+| `linkToolbarItems(schema, t)`                                                                                                                           | Link button (pressed when the cursor is on a link).                                                                                   |
+| `linkContextMenu(schema, t)`                                                                                                                            | Context menu items: edit, remove, open (open also works in read-only mode).                                                           |
+| `autolink(type)`, `addressBefore`                                                                                                                       | Autolink plugin.                                                                                                                      |
+| `withAnchors(nodes, names?)`, `setAnchor(name)`, `openAnchorDialog`, `anchorToolbarItem(t)`, `anchorName`, `anchorsIn`, `isAnchorName`, `ANCHOR_PREFIX` | Anchors.                                                                                                                              |
 
 ## Autolink
 
-Dopo uno spazio o Invio, `https://…`, `www.…` (→ `https`), `mailto:…` e indirizzi e-mail (→
-`mailto`) diventano link. La punteggiatura finale della frase non fa parte dell'indirizzo. Dopo lo
-spazio il link è un passo annullabile a sé: Ctrl+Z lascia il testo e toglie il link. Non agisce nei
-blocchi di codice né sul codice in linea.
+After a space or Enter, `https://…`, `www.…` (→ `https`), `mailto:…` and e-mail addresses (→
+`mailto`) become links. Punctuation at the end of the sentence is not part of the address. After
+the space, the link is an undo step of its own: Ctrl+Z keeps the text and removes the link. It
+does not act in code blocks or on inline code.
 
-## Ancore
+## Anchors
 
-Un'ancora è un `id` su un paragrafo o un titolo, sempre con il prefisso fisso `anchor-`
-("Introduzione al Corso" → `#anchor-introduzione-al-corso`). Un nome già in uso viene rifiutato.
+An anchor is an `id` on a paragraph or a heading, always with the fixed prefix `anchor-`
+("Introduction to the Course" → `#anchor-introduction-to-the-course`). A name already in use is
+rejected.
 
-## Sicurezza
+## Security
 
-- **Whitelist di URL, non blacklist**: sono ammessi solo `http:`, `https:`, `mailto:`, `tel:` e URL
-  relativi; tutto il resto è rimosso (non solo `javascript:`), dopo la normalizzazione dell'URL. Il
-  controllo avviene dove il mark viene creato: HTML, JSON, dialogo, autolink, collaborazione.
-- I link con `target="_blank"` ricevono **sempre** `rel="noopener noreferrer"`; "Apri" dal menu
-  contestuale apre con `noopener,noreferrer`.
-- Gli id delle ancore hanno un prefisso fisso e un formato rigido: niente DOM clobbering.
+- **URL whitelist, not blacklist**: only `http:`, `https:`, `mailto:`, `tel:` and relative URLs
+  are allowed; everything else is removed (not just `javascript:`), after URL normalization. The
+  check happens wherever the mark is created: HTML, JSON, dialog, autolink, collaboration.
+- Links with `target="_blank"` **always** get `rel="noopener noreferrer"`; "Open link" in the
+  context menu opens with `noopener,noreferrer`.
+- Anchor ids have a fixed prefix and a strict format: no DOM clobbering.
 
-L'HTML salvato va ripassato da `@scriba-editor/sanitize-server`: vedi
-[sicurezza](../../../docs/sicurezza.md).
+The saved HTML must be re-sanitized with `@scriba-editor/sanitize-server`: see
+[security](../../../docs/security.md).
 
-## Accessibilità
+## Accessibility
 
-Il dialogo ha focus trap, Esc, ritorno del focus all'editor e un errore annunciato
-(`aria-live`, `aria-invalid`) per gli indirizzi non validi. Tutto è raggiungibile da tastiera. Vedi
-[accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+The dialog has a focus trap, Esc, focus return to the editor and an announced error
+(`aria-live`, `aria-invalid`) for invalid addresses. Everything is reachable from the keyboard. See
+[accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).

@@ -1,127 +1,130 @@
-# Rilasciare Scriba su npm
+**English** · [Italiano](RELEASING.it.md)
 
-Questa guida spiega come pubblicare i pacchetti `@scriba-editor/*`. La pubblicazione è un'azione
-**verso l'esterno e non annullabile**: una versione pubblicata non si può ripubblicare con lo stesso
-numero. La avvia una persona, mandando un tag su GitHub; poi il workflow
-`.github/workflows/release.yml` controlla, costruisce e pubblica con la _provenance_.
+# Releasing Scriba on npm
 
-## Una volta sola, prima del primo rilascio
+This guide explains how to publish the `@scriba-editor/*` packages. Publishing is an
+**outward-facing action that cannot be undone**: a published version cannot be republished with
+the same number. A person starts it by pushing a tag to GitHub; then the
+`.github/workflows/release.yml` workflow checks, builds and publishes with _provenance_.
 
-1. **Organizzazione npm.** Su npmjs.com crea l'organizzazione gratuita **`scriba-editor`**, per
-   pacchetti pubblici.
+## Once only, before the first release
 
-   > Lo scope `@scriba` appartiene a un altro autore, con pacchetti pubblicati dal 2023: per questo
-   > i pacchetti si chiamano `@scriba-editor/*`. Il nome del prodotto resta Scriba.
+1. **npm organization.** On npmjs.com create the free organization **`scriba-editor`**, for
+   public packages.
 
-2. **2FA** obbligatoria per chi pubblica. È un'impostazione dell'organizzazione: "Require
-   two-factor authentication".
-3. **Token per il primo rilascio.** I pacchetti non esistono ancora, quindi il _Trusted
-   Publisher_ non si può ancora configurare.
-   - Su npmjs.com crea un **Granular Access Token**:
-     - permesso _Read and write_ sull'organizzazione `scriba-editor`;
-     - scadenza breve (7 giorni);
-     - se npm lo chiede, l'opzione per pubblicare senza 2FA interattiva (la CI non può digitare
-       il codice).
-   - Su GitHub, nel repository: Settings ▸ Environments ▸ crea l'ambiente **`npm`**.
-     - Aggiungi il segreto **`NPM_TOKEN`** con il token.
-     - Se vuoi, aggiungi te stesso tra i _Required reviewers_: ogni rilascio aspetterà la tua
-       approvazione.
-4. **Dopo il primo rilascio**, per ogni pacchetto, su npmjs.com: Settings ▸ Trusted Publisher ▸
-   GitHub Actions, con questi valori:
-   - utente `mariotrombino76`;
+   > The `@scriba` scope belongs to another author, with packages published since 2023: that is
+   > why the packages are named `@scriba-editor/*`. The product name stays Scriba.
+
+2. **2FA** required for whoever publishes. It is an organization setting: "Require two-factor
+   authentication".
+3. **Token for the first release.** The packages do not exist yet, so the _Trusted Publisher_
+   cannot be configured yet.
+   - On npmjs.com create a **Granular Access Token**:
+     - _Read and write_ permission on the `scriba-editor` organization;
+     - short expiration (7 days);
+     - if npm asks, the option to publish without interactive 2FA (CI cannot type the code).
+   - On GitHub, in the repository: Settings ▸ Environments ▸ create the **`npm`** environment.
+     - Add the **`NPM_TOKEN`** secret with the token.
+     - If you want, add yourself to the _Required reviewers_: every release will wait for your
+       approval.
+4. **After the first release**, for each package, on npmjs.com: Settings ▸ Trusted Publisher ▸
+   GitHub Actions, with these values:
+   - user `mariotrombino76`;
    - repository `scriba`;
    - workflow `release.yml`;
-   - ambiente `npm`.
+   - environment `npm`.
 
-   Poi cancella il token e il segreto `NPM_TOKEN`: i rilasci successivi si autenticano con OIDC,
-   senza token salvati.
+   Then delete the token and the `NPM_TOKEN` secret: later releases authenticate with OIDC,
+   without stored tokens.
 
-   Si può fare per tutti i pacchetti insieme da terminale (npm ≥ 11.15, dopo `npm login`, in un
-   terminale vero perché serve la 2FA nel browser):
+   You can do it for all packages at once from the terminal (npm ≥ 11.15, after `npm login`, in
+   a real terminal because 2FA in the browser is needed):
 
    ```bash
-   npm trust github @scriba-editor/<nome> --repo mariotrombino76/scriba --file release.yml \
+   npm trust github @scriba-editor/<name> --repo mariotrombino76/scriba --file release.yml \
      --env npm --allow-publish --yes
    ```
 
-   Ripetilo per ogni pacchetto con 2 secondi di pausa; alla prima 2FA scegli "salta per 5
-   minuti". Controllo: `npm trust list @scriba-editor/<nome>`.
+   Repeat it for each package with a 2-second pause; at the first 2FA choose "skip for 5
+   minutes". Check: `npm trust list @scriba-editor/<name>`.
 
-   > Fatto per la 0.1.0 il 2026-11-16: tutti i 51 pacchetti hanno il Trusted Publisher e
-   > `release.yml` non usa più `NPM_TOKEN`.
+   > Done for 0.1.0 on 2026-11-16: all 51 packages have the Trusted Publisher and `release.yml`
+   > no longer uses `NPM_TOKEN`.
 
-5. **Licenza.** `LICENSE` (Apache 2.0) e `NOTICE` (attribuzione a Mario Trombino) sono nella
-   radice e in ogni pacchetto. npm include solo i file nella cartella del pacchetto: se cambiano,
-   ricopiali in tutti.
+5. **License.** `LICENSE` (Apache 2.0) and `NOTICE` (attribution to Mario Trombino) are in the
+   root and in every package. npm only includes the files in the package folder: if they change,
+   copy them again into all of them.
 
-## A ogni rilascio
+## At every release
 
-### 1. Verifiche
+### 1. Checks
 
-La CI (`.github/workflows/ci.yml`) esegue a ogni push i controlli e gli e2e nei tre browser.
-Prima di un rilascio, controlla che l'ultimo commit di `main` sia verde. Poi, su una macchina
-tranquilla, lancia:
+CI (`.github/workflows/ci.yml`) runs the checks and the e2e tests in the three browsers on every
+push. Before a release, check that the latest commit on `main` is green. Then, on an idle
+machine, run:
 
 ```bash
-pnpm bench         # confronta con il rilascio precedente
-pnpm test:perf     # idem
-pnpm audit         # anche le dipendenze di sviluppo
+pnpm bench         # compare with the previous release
+pnpm test:perf     # same
+pnpm audit         # development dependencies too
 ```
 
-Controlla anche che nessuna dipendenza nuova abbia script di installazione non revisionati.
+Also check that no new dependency has unreviewed install scripts.
 
-### 2. Versione
+### 2. Version
 
-Tutti i pacchetti escono con lo **stesso numero di versione**, secondo il Versionamento Semantico.
-Finché siamo a `0.x`, una versione minore può contenere modifiche incompatibili, segnalate nel
-CHANGELOG.
+All packages ship with the **same version number**, following Semantic Versioning. While we are
+at `0.x`, a minor version can contain breaking changes, flagged in the CHANGELOG.
 
 ```bash
 pnpm -r exec npm version 0.1.0 --no-git-tag-version
 ```
 
-Nel `CHANGELOG.md` sposta "Non rilasciato" sotto `## 0.1.0 — AAAA-MM-GG`, poi fai il commit:
+In `CHANGELOG.md` move "Unreleased" under `## 0.1.0 — YYYY-MM-DD`, then commit:
 
 ```bash
 git commit -am "chore(release): 0.1.0"
 git push origin main && git push github main
 ```
 
-### 3. Prova del contenuto
+### 3. Content check
 
 ```bash
 pnpm build && pnpm -r pack --pack-destination /tmp/scriba-pack
 ```
 
-Ogni archivio deve contenere solo `dist/` (o `scriba.css` per i temi), `package.json`, README,
-LICENSE e NOTICE. Le dipendenze `workspace:*` devono essere diventate `0.1.0`. Non pubblicare
-mai con `npm publish` dalla cartella di un pacchetto: solo `pnpm pack` sostituisce `workspace:*`.
-`release.yml` pubblica con `npm publish` l'archivio prodotto da `pnpm pack`.
+Each archive must contain only `dist/` (or `scriba.css` for the themes), `package.json`, README,
+LICENSE and NOTICE. The `workspace:*` dependencies must have become `0.1.0`. Never publish with
+`npm publish` from a package folder: only `pnpm pack` replaces `workspace:*`. `release.yml`
+publishes with `npm publish` the archive produced by `pnpm pack`.
 
-### 4. Pubblicazione
+### 4. Publishing
 
 ```bash
 git tag v0.1.0
 git push github v0.1.0
 ```
 
-Il tag avvia `release.yml`, che:
+The tag starts `release.yml`, which:
 
-1. controlla che il tag corrisponda alla versione di tutti i pacchetti;
-2. ripete lint, tipi, test e test di sicurezza;
-3. costruisce i pacchetti e li pubblica uno alla volta (`pnpm pack`, poi `npm publish` con
-   `--provenance` e autenticazione OIDC del Trusted Publisher), saltando quelli già pubblicati.
+1. checks that the tag matches the version of all packages;
+2. runs lint, types, tests and security tests again;
+3. builds the packages and publishes them one at a time (`pnpm pack`, then `npm publish` with
+   `--provenance` and the Trusted Publisher's OIDC authentication), skipping those already
+   published.
 
-Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository restano uguali.
+Push the tag to origin too (`git push origin v0.1.0`), so the two repositories stay the same.
 
-### 5. Dopo
+### 5. Afterwards
 
-- `npm view @scriba-editor/core@0.1.0`: la pagina del pacchetto mostra il badge "Provenance".
-- Prova in un progetto vuoto: `pnpm add @scriba-editor/react @scriba-editor/themes` e l'esempio
-  del README.
-- **CDN:** calcola gli hash per l'attributo `integrity` dai file serviti da jsDelivr (non dalla
-  build locale) e aggiornali, insieme alla versione negli URL, in `README.md`, `docs/README.md`,
-  `docs/iniziare.md` e `packages/browser/README.md`:
+- `npm view @scriba-editor/core@0.1.0`: the package page shows the "Provenance" badge.
+- Try it in an empty project: `pnpm add @scriba-editor/react @scriba-editor/themes` and the
+  README example.
+- **CDN:** compute the hashes for the `integrity` attribute from the files served by jsDelivr
+  (not from the local build) and update them, together with the version in the URLs, in the
+  English files `README.md`, `docs/README.md`, `docs/getting-started.md` and
+  `packages/browser/README.md`, and in their Italian counterparts `README.it.md`,
+  `docs/it/README.md`, `docs/it/iniziare.md` and `packages/browser/README.it.md`:
 
   ```bash
   for f in scriba.iife.js scriba.css; do
@@ -130,18 +133,18 @@ Manda il tag anche a origin (`git push origin v0.1.0`), così i due repository r
   done
   ```
 
-## Se qualcosa va storto
+## If something goes wrong
 
-- **Il workflow fallisce prima di `publish`:** non è uscito nulla. Correggi, cancella il tag
-  (`git push github :v0.1.0` e `git tag -d v0.1.0`) e ricrealo.
-- **Il workflow fallisce a metà della pubblicazione:** alcuni pacchetti sono usciti e altri no. Si
-  rilancia il job (Re-run): il workflow salta le versioni già presenti.
-- **npm risponde `429 Too Many Requests`:** npm limita quanti pacchetti _nuovi_ si creano in poco
-  tempo (succede al primo rilascio). Su GitHub: Actions ▸ Release ▸ Run workflow, branch `main`,
-  versione `0.1.0` e una pausa tra un pacchetto e l'altro (per esempio 5 minuti). Il workflow usa
-  il codice del tag, salta i pacchetti già pubblicati e, se un pacchetto fallisce, riprova dopo
-  20 minuti (fino a 4 volte). Se si ferma lo stesso, rilancialo più tardi.
-- **Una versione pubblicata ha un problema:** non si cancella e non si ripubblica. Si pubblica la
-  versione successiva con la correzione e si segna quella difettosa con
-  `npm deprecate @scriba-editor/<pacchetto>@<versione> "motivo"`.
-- **Vulnerabilità:** segui `SECURITY.md`.
+- **The workflow fails before `publish`:** nothing has been released. Fix it, delete the tag
+  (`git push github :v0.1.0` and `git tag -d v0.1.0`) and create it again.
+- **The workflow fails halfway through publishing:** some packages have been released and others
+  have not. Re-run the job (Re-run): the workflow skips the versions already present.
+- **npm responds `429 Too Many Requests`:** npm limits how many _new_ packages are created in a
+  short time (this happens on the first release). On GitHub: Actions ▸ Release ▸ Run workflow,
+  branch `main`, version `0.1.0` and a pause between one package and the next (for example 5
+  minutes). The workflow uses the code of the tag, skips the packages already published and, if a
+  package fails, retries after 20 minutes (up to 4 times). If it still stops, run it again later.
+- **A published version has a problem:** it is not deleted and not republished. Publish the next
+  version with the fix and mark the faulty one with
+  `npm deprecate @scriba-editor/<package>@<version> "reason"`.
+- **Vulnerability:** follow `SECURITY.md`.

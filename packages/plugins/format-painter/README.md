@@ -1,13 +1,15 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-format-painter
 
-Il **pennello formato** per l'editor Scriba: copia la formattazione di un testo e la applica a un
-altro, come il "Format painter" di TinyMCE e di Word.
+The **format painter** for the Scriba editor: it copies the formatting of one piece of text and
+applies it to another, like the "Format painter" in TinyMCE and Word.
 
 ```bash
 pnpm add @scriba-editor/plugin-format-painter
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -17,56 +19,56 @@ import {
   formatPainterKeymap,
 } from '@scriba-editor/plugin-format-painter'
 
-// nello stato dell'editor
+// in the editor state
 plugins: [formatPainter(t), keymap(formatPainterKeymap(), { priority: 85 })]
 
-// nel menu Formato o nella barra degli strumenti
+// in the Format menu or in the toolbar
 const item = formatPainterItem()
 ```
 
-## Come si usa
+## How to use it
 
-1. Metti il cursore (o seleziona) nel testo di cui vuoi copiare l'aspetto.
-2. Premi il pulsante "Pennello formato" (o Ctrl/Cmd+Alt+C per copiare soltanto).
-3. Clicca una parola o seleziona un testo: riceve la stessa formattazione, **in un solo passo
-   annullabile**. Con il cursore in una parola, formatta quella parola (o il testo digitato dopo).
-4. Esc, o il pulsante premuto di nuovo, smette di aspettare senza cambiare niente.
+1. Put the cursor in (or select) the text whose look you want to copy.
+2. Press the "Format painter" button (or Ctrl/Cmd+Alt+C to copy only).
+3. Click a word or select some text: it gets the same formatting, **in a single undoable
+   step**. With the cursor inside a word, it formats that word (or the text typed afterwards).
+4. Esc, or pressing the button again, stops waiting without changing anything.
 
-Si copiano i _mark_ di formattazione (grassetto, corsivo, colori, font…) e l'aspetto del blocco
-(allineamento, rientro, interlinea, direzione, classe). Un paragrafo può diventare titolo e
-viceversa. I link e i commenti **non** vengono copiati né rimossi dal testo di destinazione.
+What gets copied: the formatting _marks_ (bold, italic, colors, font…) and the look of the block
+(alignment, indentation, line height, direction, class). A paragraph can become a heading and
+vice versa. Links and comments are **not** copied, nor removed from the target text.
 
-## Opzioni (`formatPainter(t, options?)`)
+## Options (`formatPainter(t, options?)`)
 
-| Opzione      | Descrizione                                                                                                                                     |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `marks`      | `(type) => boolean`: quali mark si copiano (default `isFormattingMark` di `@scriba-editor/ui`).                                                 |
-| `blockAttrs` | Attributi del blocco copiati, se entrambi i blocchi li hanno (default `align`, `indent`, `lineHeight`, `dir`, `className`). Mai `id`/`blockId`. |
-| `blockTypes` | Tipi di blocco che possono trasformarsi l'uno nell'altro (default `paragraph`, `heading`).                                                      |
+| Option       | Description                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `marks`      | `(type) => boolean`: which marks are copied (default `isFormattingMark` from `@scriba-editor/ui`).                                     |
+| `blockAttrs` | Block attributes copied, if both blocks have them (default `align`, `indent`, `lineHeight`, `dir`, `className`). Never `id`/`blockId`. |
+| `blockTypes` | Block types that can turn into each other (default `paragraph`, `heading`).                                                            |
 
-## Esportazioni
+## Exports
 
-| Nome                                                 | Cosa fa                                                                                                      |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `formatPainter(t, options?)`                         | Il plugin (stato, area per i lettori di schermo, click del mouse).                                           |
-| `formatPainterKeymap()`                              | Scorciatoie (vedi sotto).                                                                                    |
-| `formatPainterItem()`                                | Pulsante, `aria-pressed` mentre aspetta il testo da formattare.                                              |
-| `copyFormat`, `pasteFormat`                          | Comandi: copia / applica il formato.                                                                         |
-| `toggleFormatPainter`, `cancelFormatPainter`         | Comandi: attiva o disattiva l'attesa.                                                                        |
-| `isFormatPainterArmed(state)`, `copiedFormat(state)` | Stato corrente.                                                                                              |
-| `formatPainterKey`, `PAINTING_CLASS`                 | Chiave del plugin e classe `scriba-format-painting` sull'editor mentre aspetta (il tema imposta il cursore). |
+| Name                                                 | What it does                                                                                                |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `formatPainter(t, options?)`                         | The plugin (state, screen reader region, mouse clicks).                                                     |
+| `formatPainterKeymap()`                              | Shortcuts (see below).                                                                                      |
+| `formatPainterItem()`                                | Button, `aria-pressed` while it waits for the text to format.                                               |
+| `copyFormat`, `pasteFormat`                          | Commands: copy / apply the format.                                                                          |
+| `toggleFormatPainter`, `cancelFormatPainter`         | Commands: turn waiting on or off.                                                                           |
+| `isFormatPainterArmed(state)`, `copiedFormat(state)` | Current state.                                                                                              |
+| `formatPainterKey`, `PAINTING_CLASS`                 | Plugin key and the `scriba-format-painting` class on the editor while it waits (the theme sets the cursor). |
 
-## Scorciatoie
+## Shortcuts
 
-| Tasto          | Azione                           |
-| -------------- | -------------------------------- |
-| Ctrl/Cmd+Alt+C | Copia la formattazione           |
-| Ctrl/Cmd+Alt+V | Applica la formattazione copiata |
-| Esc            | Smette di aspettare              |
+| Key            | Action                      |
+| -------------- | --------------------------- |
+| Ctrl/Cmd+Alt+C | Copy the formatting         |
+| Ctrl/Cmd+Alt+V | Apply the copied formatting |
+| Esc            | Stop waiting                |
 
-## Accessibilità
+## Accessibility
 
-Il pulsante ha `aria-pressed`; una regione `status` nascosta annuncia "attivo" e "disattivato", e
-tutto è raggiungibile da tastiera (copia/applica) senza il mouse. Il pulsante e le scorciatoie non
-cambiano il testo, solo i mark e gli attributi consentiti dallo schema: niente stili liberi. Vedi
-[accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+The button has `aria-pressed`; a hidden `status` region announces "on" and "off", and everything
+can be reached from the keyboard (copy/apply) without the mouse. The button and the shortcuts do
+not change the text, only the marks and attributes allowed by the schema: no free-form styles.
+See [accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).

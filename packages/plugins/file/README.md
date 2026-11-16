@@ -1,14 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-file
 
-Il menu "File" dell'editor Scriba: nuovo documento, apri (`.docx`, `.html`, `.md`, `.txt`), scarica
-(`.html`, `.md`, `.txt`, `.docx`), anteprima e stampa. Come il menu File di TinyMCE, ma con
-apertura e salvataggio di file veri, tutto nel browser: **nessun dato lascia la pagina**.
+The "File" menu of the Scriba editor: new document, open (`.docx`, `.html`, `.md`, `.txt`),
+download (`.html`, `.md`, `.txt`, `.docx`), preview and print. Like the TinyMCE File menu, but
+with opening and saving of real files, all in the browser: **no data leaves the page**.
 
 ```bash
 pnpm add @scriba-editor/plugin-file
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -18,80 +20,79 @@ import { fileKeymap, fileMenu, filePlugin, type FileOptions } from '@scriba-edit
 const t = createTranslator('it')
 const fileOptions: FileOptions = { t }
 
-// nello stato dell'editor
+// in the editor state
 plugins: [
   filePlugin(fileOptions),
   keymap(fileKeymap(fileOptions), { priority: 80, readOnly: true }),
 ]
 
-// nella barra dei menu: le voci hanno id new, open, preview, save-html, save-docx,
+// in the menu bar: the items have the ids new, open, preview, save-html, save-docx,
 // save-markdown, save-text, print
-const menu = fileMenu(fileOptions) // ToolbarMenu con `entries`
+const menu = fileMenu(fileOptions) // ToolbarMenu with `entries`
 ```
 
-Il keymap va registrato con `readOnly: true`: salvare e stampare funzionano anche in sola lettura
-(aprire un file no).
+Register the keymap with `readOnly: true`: saving and printing also work in read-only mode
+(opening a file does not).
 
-## Opzioni (`FileOptions`)
+## Options (`FileOptions`)
 
-| Opzione            | Descrizione                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------- |
-| `t`                | Traduttore (obbligatorio).                                                            |
-| `defaultTitle`     | Titolo e nome del file quando il documento non ne ha (default: "Documento" tradotto). |
-| `saveFormat`       | Formato di Ctrl/Cmd+S: `'html'` (default), `'markdown'`, `'text'`, `'docx'`.          |
-| `lang`             | Lingua scritta nelle pagine HTML salvate (default `'it'`).                            |
-| `onNewDocument`    | "Nuovo documento" nella tua app (crea il documento sul server e mostralo).            |
-| `maxFileBytes`     | File più grande accettato in apertura (default 10 MB).                                |
-| `maxUnzippedBytes` | Contenuto decompresso massimo di un `.docx` (default 50 MB, protegge dalle zip bomb). |
-| `maxZipEntries`    | Voci massime in un `.docx` (default 2000).                                            |
+| Option             | Description                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `t`                | Translator (required).                                                             |
+| `defaultTitle`     | Title and file name when the document has none (default: "Document", translated).  |
+| `saveFormat`       | Format for Ctrl/Cmd+S: `'html'` (default), `'markdown'`, `'text'`, `'docx'`.       |
+| `lang`             | Language written into saved HTML pages (default `'it'`).                           |
+| `onNewDocument`    | "New document" in your app (create the document on the server and show it).        |
+| `maxFileBytes`     | Largest file accepted when opening (default 10 MB).                                |
+| `maxUnzippedBytes` | Maximum unzipped content of a `.docx` (default 50 MB, protects against zip bombs). |
+| `maxZipEntries`    | Maximum entries in a `.docx` (default 2000).                                       |
 
-Senza `onNewDocument`, "Nuovo documento" svuota quello corrente (i blocchi protetti da
-`blockPermissions` lo rifiutano: l'utente vede il motivo in un dialogo).
+Without `onNewDocument`, "New document" empties the current one (blocks protected by
+`blockPermissions` refuse it: the user sees the reason in a dialog).
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                              | Cosa fa                                                                        |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `filePlugin(options)`                                                                                             | Tiene traccia delle modifiche non salvate; apre i file trascinati sull'editor. |
-| `fileKeymap(options)`                                                                                             | Ctrl/Cmd+O apri, Ctrl/Cmd+S scarica, Ctrl/Cmd+P stampa.                        |
-| `fileMenu(options)`                                                                                               | Il menu "File" con tutte le voci.                                              |
-| `openFile`, `chooseFile`, `newDocument`, `saveDocument`                                                           | Le azioni, richiamabili da codice.                                             |
-| `hasUnsavedChanges(state)`                                                                                        | `true` se ci sono modifiche dall'ultima apertura, creazione o salvataggio.     |
-| `readDocument(schema, file, limits)`, `formatOf`, `OpenFileError`, `OPEN_ACCEPT`                                  | Lettura di un file in un documento.                                            |
-| `documentBlob`, `documentTitle`, `documentToHTMLFile`, `documentToText`, `documentToDocx`, `download`, `fileName` | Scrittura dei formati.                                                         |
-| `openPreview`, `printDocument`, `renderDocument`                                                                  | Anteprima e stampa.                                                            |
+| Name                                                                                                              | What it does                                                       |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `filePlugin(options)`                                                                                             | Tracks unsaved changes; opens files dropped onto the editor.       |
+| `fileKeymap(options)`                                                                                             | Ctrl/Cmd+O open, Ctrl/Cmd+S download, Ctrl/Cmd+P print.            |
+| `fileMenu(options)`                                                                                               | The "File" menu with all the items.                                |
+| `openFile`, `chooseFile`, `newDocument`, `saveDocument`                                                           | The actions, callable from code.                                   |
+| `hasUnsavedChanges(state)`                                                                                        | `true` if there are changes since the last open, creation or save. |
+| `readDocument(schema, file, limits)`, `formatOf`, `OpenFileError`, `OPEN_ACCEPT`                                  | Reading a file into a document.                                    |
+| `documentBlob`, `documentTitle`, `documentToHTMLFile`, `documentToText`, `documentToDocx`, `download`, `fileName` | Writing the formats.                                               |
+| `openPreview`, `printDocument`, `renderDocument`                                                                  | Preview and print.                                                 |
 
-## Comportamento
+## Behavior
 
-- Prima di sostituire il documento (apri, nuovo) l'editor chiede conferma se ci sono modifiche non
-  salvate; il pulsante predefinito è quello sicuro ("Annulla").
-- La sostituzione è **un solo passo annullabile** (Ctrl+Z).
-- Il titolo del file è il primo titolo del documento (o la prima riga), ripulito dai caratteri
-  vietati nei nomi di file.
-- Le pagine HTML salvate hanno un'interruzione di pagina in stampa per `hr.scriba-page-break`
-  (vedi `@scriba-editor/plugin-hr`).
-- La stampa aggiunge una copia del solo documento alla pagina; il browser permette anche di salvare
-  in PDF.
-- Il supporto `.docx` (lettura con `mammoth`, scrittura con `jszip`) viene caricato solo quando serve.
+- Before replacing the document (open, new) the editor asks for confirmation if there are
+  unsaved changes; the default button is the safe one ("Cancel").
+- The replacement is **a single undoable step** (Ctrl+Z).
+- The file title is the first heading of the document (or the first line), cleaned of the
+  characters not allowed in file names.
+- Saved HTML pages have a page break when printed for `hr.scriba-page-break` (see
+  `@scriba-editor/plugin-hr`).
+- Printing adds a copy of the document alone to the page; the browser also lets you save as PDF.
+- `.docx` support (reading with `mammoth`, writing with `jszip`) is loaded only when needed.
 
-## Sicurezza
+## Security
 
-Un file aperto è **input non fidato**:
+An opened file is **untrusted input**:
 
-- HTML e `.docx` (che diventa HTML) passano da un documento inerte e dal parser dello schema, con
-  limiti di profondità (64) e di nodi (100 000), come un incolla; ciò che lo schema non conosce
-  viene scartato. Il Markdown passa da `parseMarkdown` (HTML grezzo non ammesso).
-- Il tipo è deciso dall'**estensione** (quello dichiarato dal browser non è affidabile); i file di
-  altro tipo sono rifiutati.
-- Dimensione, numero di voci e dimensione decompressa di un `.docx` sono controllati **prima** di
-  decomprimere; i collegamenti a file esterni di un `.docx` non vengono mai letti.
-- I file salvati sono generati dal serializzatore con escape, mai copiati dal DOM.
-- Il controllo lato client non sostituisce quello del server: l'HTML salvato va comunque ripassato da
-  `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md).
+- HTML and `.docx` (which becomes HTML) go through an inert document and the schema parser, with
+  depth (64) and node (100,000) limits, like a paste; whatever the schema does not know is
+  dropped. Markdown goes through `parseMarkdown` (raw HTML not allowed).
+- The type is decided by the **extension** (the one declared by the browser is not reliable);
+  files of other types are rejected.
+- Size, number of entries and unzipped size of a `.docx` are checked **before** unzipping; links
+  to external files in a `.docx` are never read.
+- Saved files are generated by the serializer with escaping, never copied from the DOM.
+- The client-side check does not replace the server-side one: saved HTML must still go through
+  `@scriba-editor/sanitize-server`. See [security](../../../docs/security.md).
 
-## Accessibilità
+## Accessibility
 
-Apertura, salvataggio ed errori sono annunciati ai lettori di schermo (area `status`, o `alert` per
-gli errori). I dialoghi (conferma, anteprima, blocco) sono modali con focus trap e il focus torna
-all'editor alla chiusura; l'anteprima è scorrevole da tastiera. Vedi
-[accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+Opening, saving and errors are announced to screen readers (`status` region, or `alert` for
+errors). The dialogs (confirmation, preview, lock) are modal with a focus trap and focus returns
+to the editor on close; the preview can be scrolled with the keyboard. See
+[accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).

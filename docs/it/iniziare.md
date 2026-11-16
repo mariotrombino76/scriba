@@ -1,3 +1,5 @@
+[English](../getting-started.md) · **Italiano**
+
 # Iniziare
 
 Scriba funziona in qualsiasi pagina web. Scegli il modo che corrisponde al tuo progetto.
@@ -49,7 +51,7 @@ ogni altro JavaScript (nome e percorso a tua scelta). `scriba.iife.js` crea l'og
 `<script>` scritto nella pagina, perché una CSP rigida (`script-src 'self'`, senza
 `unsafe-inline`) blocca gli script in linea.
 
-Opzioni, limiti e sicurezza: [README di @scriba-editor/browser](../packages/browser/README.md).
+Opzioni, limiti e sicurezza: [README di @scriba-editor/browser](../../packages/browser/README.it.md).
 
 ### Modalità inline
 
@@ -131,7 +133,7 @@ export function Nota() {
 }
 ```
 
-Dettagli: [README di @scriba-editor/react](../packages/react/README.md).
+Dettagli: [README di @scriba-editor/react](../../packages/react/README.it.md).
 
 ## Su misura con i pacchetti
 

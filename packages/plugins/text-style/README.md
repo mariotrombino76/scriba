@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-text-style
 
-Formattazione del testo come in TinyMCE: allineamento, rientro, interlinea, direzione (LTR/RTL), colore del testo e dello sfondo, font e dimensione, maiuscole/minuscole e **stili con classi** del tuo sito (`style_formats`). Colori e font sono mark tipizzati, non `style` libero.
+Text formatting as in TinyMCE: alignment, indentation, line height, direction (LTR/RTL), text and background color, font and size, letter case, and **styles with classes** from your site (`style_formats`). Colors and fonts are typed marks, not free `style`.
 
 ```bash
 pnpm add @scriba-editor/plugin-text-style
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -26,18 +28,18 @@ import {
   withBlockStyles,
 } from '@scriba-editor/plugin-text-style'
 
-const BLOCK_CLASSES = ['nota-margine', 'avviso'] // classi che il tuo sito stila
+const BLOCK_CLASSES = ['margin-note', 'warning'] // classes your site styles
 
 const schema = new Schema({
   nodes: withBlockClasses(withBlockStyles({ ...basicSchemaSpec.nodes /* ... */ }), BLOCK_CLASSES),
-  marks: { ...basicSchemaSpec.marks, ...textStyleMarks, ...classMarks(['evidenza']) },
+  marks: { ...basicSchemaSpec.marks, ...textStyleMarks, ...classMarks(['highlight']) },
 })
 
 const plugins = [
-  keymap(textStyleKeymap({ indent: listIndentCommands(schema) })), // Tab nelle liste e rientro con un solo tasto
+  keymap(textStyleKeymap({ indent: listIndentCommands(schema) })), // Tab in lists and indentation with a single key
 ]
 
-// toolbar e menu
+// toolbar and menus
 const items = [
   alignmentMenu(),
   ...indentItems(),
@@ -46,47 +48,47 @@ const items = [
   lineHeightMenu(),
   ...directionItems(),
   caseMenu('it'),
-  classFormatsMenu(schema, [{ label: 'Nota a margine', class: 'nota-margine', kind: 'block' }]),
+  classFormatsMenu(schema, [{ label: 'Margin note', class: 'margin-note', kind: 'block' }]),
 ]
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                                                                  | Cosa fa                                                                                                                         |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `textStyleMarks`                                                                                                                                      | Mark `text_color`, `background_color`, `font_family`, `font_size` (valori validati e normalizzati)                              |
-| `withBlockStyles(nodes, names?)`                                                                                                                      | Aggiunge `align`, `indent` (0-8, 2em a livello), `lineHeight` e `dir` ai blocchi di testo (predefiniti: `paragraph`, `heading`) |
-| `withBlockClasses(nodes, classes, names?)`                                                                                                            | Aggiunge `className` (solo dall'elenco) ai blocchi                                                                              |
-| `classMarks(classes)`                                                                                                                                 | Mark `text_class`: un `<span class>` con una delle classi                                                                       |
-| `textStyleKeymap(options?)`                                                                                                                           | Allineamento (Maiusc+Mod+L/E/R/J), rientro (Mod+] / Mod+[) e Backspace che toglie il rientro                                    |
-| `textStyleToolbarItems(schema, options?)`                                                                                                             | Allineamento, rientri, colori e font in un colpo solo                                                                           |
-| `alignmentMenu()`, `indentItems(options?)`, `colorItems(schema, options?)`, `fontItems(schema, options?)`                                             | Controlli singoli                                                                                                               |
-| `lineHeightMenu()`                                                                                                                                    | Interlinea: tema predefinito e valori ammessi (1, 1.15, 1.5, 2)                                                                 |
-| `directionItems()`                                                                                                                                    | Pulsanti da sinistra a destra e da destra a sinistra (`dir-ltr`, `dir-rtl`)                                                     |
-| `caseMenu(locale?)`, `changeCase(kind, locale?)`, `LETTER_CASES`                                                                                      | minuscolo, MAIUSCOLO, Iniziali Maiuscole, Come in una frase                                                                     |
-| `classFormatsMenu(schema, formats)`, `ClassFormat`                                                                                                    | Menu Formato ▸ Stili con le tue classi (`kind: 'block'` o `'inline'`)                                                           |
-| `setTextAlign`, `changeIndent`, `outdentAtStart`, `setLineHeight`, `setTextDirection`, `isAligned`, `hasLineHeight`, `hasTextDirection`, `MAX_INDENT` | Comandi e controlli sui blocchi                                                                                                 |
-| `setMarkValue(type, attrs \| null)`, `markValue(state, type, attr)`                                                                                   | Applica, toglie e legge un mark con valore                                                                                      |
-| `setBlockClass(name \| null)`, `hasBlockClass`, `CLASS_NAME`                                                                                          | Classi sui blocchi                                                                                                              |
-| `defaultTextColors`, `defaultBackgroundColors`, `defaultFontFamilies`, `defaultFontSizes`                                                             | Elenchi predefiniti (i colori del testo hanno contrasto almeno 4,5:1 su bianco)                                                 |
-| `TextStyleOptions`, `ColorOption`                                                                                                                     | `textColors`, `backgroundColors`, `fontFamilies`, `fontSizes`, `indent`                                                         |
+| Name                                                                                                                                                  | What it does                                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `textStyleMarks`                                                                                                                                      | Marks `text_color`, `background_color`, `font_family`, `font_size` (validated and normalized values)                 |
+| `withBlockStyles(nodes, names?)`                                                                                                                      | Adds `align`, `indent` (0-8, 2em per level), `lineHeight` and `dir` to text blocks (default: `paragraph`, `heading`) |
+| `withBlockClasses(nodes, classes, names?)`                                                                                                            | Adds `className` (only from the list) to blocks                                                                      |
+| `classMarks(classes)`                                                                                                                                 | Mark `text_class`: a `<span class>` with one of the classes                                                          |
+| `textStyleKeymap(options?)`                                                                                                                           | Alignment (Shift+Mod+L/E/R/J), indentation (Mod+] / Mod+[) and Backspace that removes the indent                     |
+| `textStyleToolbarItems(schema, options?)`                                                                                                             | Alignment, indents, colors and fonts in one go                                                                       |
+| `alignmentMenu()`, `indentItems(options?)`, `colorItems(schema, options?)`, `fontItems(schema, options?)`                                             | Individual controls                                                                                                  |
+| `lineHeightMenu()`                                                                                                                                    | Line height: theme default and allowed values (1, 1.15, 1.5, 2)                                                      |
+| `directionItems()`                                                                                                                                    | Left-to-right and right-to-left buttons (`dir-ltr`, `dir-rtl`)                                                       |
+| `caseMenu(locale?)`, `changeCase(kind, locale?)`, `LETTER_CASES`                                                                                      | lowercase, UPPERCASE, Title Case, Sentence case                                                                      |
+| `classFormatsMenu(schema, formats)`, `ClassFormat`                                                                                                    | Format ▸ Styles menu with your classes (`kind: 'block'` or `'inline'`)                                               |
+| `setTextAlign`, `changeIndent`, `outdentAtStart`, `setLineHeight`, `setTextDirection`, `isAligned`, `hasLineHeight`, `hasTextDirection`, `MAX_INDENT` | Commands and checks on blocks                                                                                        |
+| `setMarkValue(type, attrs \| null)`, `markValue(state, type, attr)`                                                                                   | Applies, removes and reads a mark with a value                                                                       |
+| `setBlockClass(name \| null)`, `hasBlockClass`, `CLASS_NAME`                                                                                          | Classes on blocks                                                                                                    |
+| `defaultTextColors`, `defaultBackgroundColors`, `defaultFontFamilies`, `defaultFontSizes`                                                             | Default lists (text colors have a contrast of at least 4.5:1 on white)                                               |
+| `TextStyleOptions`, `ColorOption`                                                                                                                     | `textColors`, `backgroundColors`, `fontFamilies`, `fontSizes`, `indent`                                              |
 
-### Opzioni (`TextStyleOptions`)
+### Options (`TextStyleOptions`)
 
-`textColors` e `backgroundColors` (`{ name, value }`: `name` è una chiave i18n per il nome accessibile), `fontFamilies` (`{ label, value }`), `fontSizes` (es. `'12pt'`) e `indent` (`{ more?, less? }`: comandi provati prima del rientro del blocco, ad esempio l'annidamento delle liste, così un solo paio di pulsanti e tasti serve a tutto).
+`textColors` and `backgroundColors` (`{ name, value }`: `name` is an i18n key for the accessible name), `fontFamilies` (`{ label, value }`), `fontSizes` (e.g. `'12pt'`) and `indent` (`{ more?, less? }`: commands tried before the block indentation, for example list nesting, so a single pair of buttons and keys handles everything).
 
-## Tastiera
+## Keyboard
 
-| Tasti                     | Azione                                                                       |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| Maiusc+Mod+L / E / R / J  | Allinea a sinistra / al centro / a destra / giustifica                       |
-| Mod+] / Mod+[             | Aumenta / riduce il rientro                                                  |
-| Backspace a inizio blocco | Toglie un livello di rientro; il blocco resta com'è (un titolo resta titolo) |
+| Keys                              | Action                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------ |
+| Shift+Mod+L / E / R / J           | Align left / center / right / justify                                          |
+| Mod+] / Mod+[                     | Increase / decrease indent                                                     |
+| Backspace at the start of a block | Removes one indent level; the block stays as it is (a heading stays a heading) |
 
-## Accessibilità
+## Accessibility
 
-I menu mostrano nome, icona e scorciatoia di ogni voce e lo stato attivo (`isActive`); le caselle di colore hanno nome accessibile (`color.name.*`) e non si affidano solo al colore; i menu del font mostrano il valore corrente come un `select`.
+Menus show the name, icon and shortcut of each item and the active state (`isActive`); color swatches have an accessible name (`color.name.*`) and do not rely on color alone; the font menus show the current value like a `select`.
 
-## Sicurezza
+## Security
 
-Niente `style` libero (CLAUDE.md 5.4): colori solo `#rrggbb`/`rgb()`/nomi normalizzati, famiglie di font e lunghezze validate (`normalizeColor`, `normalizeFontFamily`, `normalizeLength`), interlinea e allineamento da liste chiuse. Le **classi** sono solo quelle che elenchi (`[a-z][a-z0-9-]{0,63}`, mai `scriba-...`; un elenco non valido lancia `RangeError`): ogni altra classe è scartata, quindi `MsoNormal` e simili incollati da Word non entrano mai. Usa gli stessi elenchi sul server con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+No free `style` (CLAUDE.md 5.4): colors only as `#rrggbb`/`rgb()`/normalized names, font families and lengths validated (`normalizeColor`, `normalizeFontFamily`, `normalizeLength`), line height and alignment from closed lists. The only **classes** are the ones you list (`[a-z][a-z0-9-]{0,63}`, never `scriba-...`; an invalid list throws `RangeError`): every other class is discarded, so `MsoNormal` and similar classes pasted from Word never get in. Use the same lists on the server with `@scriba-editor/sanitize-server`. See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).

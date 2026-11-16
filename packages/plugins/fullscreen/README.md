@@ -1,14 +1,15 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-fullscreen
 
-Modalità **schermo intero** per l'editor Scriba: il contenitore (barra, area di scrittura, barra di
-stato) copre la finestra e la pagina sotto smette di scorrere. Come il pulsante "Fullscreen" di
-TinyMCE.
+**Fullscreen** mode for the Scriba editor: the container (toolbar, writing area, status bar)
+covers the window and the page underneath stops scrolling. Like TinyMCE's "Fullscreen" button.
 
 ```bash
 pnpm add @scriba-editor/plugin-fullscreen
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -18,45 +19,45 @@ import {
   fullscreenToolbarItem,
 } from '@scriba-editor/plugin-fullscreen'
 
-// il contenitore con barra, area di scrittura e barra di stato
+// the container with toolbar, writing area and status bar
 const fullscreen = new Fullscreen(document.getElementById('app')!)
 
-// nello stato dell'editor
+// in the editor state
 plugins: [keymap(fullscreenKeymap(fullscreen), { priority: 80, readOnly: true })]
 
-// nella barra degli strumenti o nel menu Visualizza
+// in the toolbar or the View menu
 const button = fullscreenToolbarItem(fullscreen)
 ```
 
-Il keymap va registrato con `readOnly: true`: lo schermo intero funziona anche in sola lettura.
+The keymap must be registered with `readOnly: true`: fullscreen also works in read-only mode.
 
-## Esportazioni
+## Exports
 
-| Nome                                | Cosa fa                                                      |
-| ----------------------------------- | ------------------------------------------------------------ |
-| `new Fullscreen(target)`            | Gestisce lo schermo intero del contenitore `target`.         |
-| `fullscreen.active`                 | `true` se lo schermo intero è attivo.                        |
-| `fullscreen.toggle(view, on?)`      | Attiva, disattiva o inverte; l'editor mantiene il focus.     |
-| `fullscreenKeymap(fullscreen)`      | Scorciatoie (vedi sotto).                                    |
-| `fullscreenToolbarItem(fullscreen)` | Pulsante con `aria-pressed`, usabile anche in sola lettura.  |
-| `FULLSCREEN_META`                   | Chiave dei metadati della transazione che aggiorna la barra. |
+| Name                                | What it does                                               |
+| ----------------------------------- | ---------------------------------------------------------- |
+| `new Fullscreen(target)`            | Manages fullscreen for the `target` container.             |
+| `fullscreen.active`                 | `true` if fullscreen is active.                            |
+| `fullscreen.toggle(view, on?)`      | Turns it on, off, or toggles it; the editor keeps focus.   |
+| `fullscreenKeymap(fullscreen)`      | Shortcuts (see below).                                     |
+| `fullscreenToolbarItem(fullscreen)` | Button with `aria-pressed`, also usable in read-only mode. |
+| `FULLSCREEN_META`                   | Metadata key of the transaction that updates the toolbar.  |
 
-## Scorciatoie
+## Shortcuts
 
-| Tasto             | Azione                               |
-| ----------------- | ------------------------------------ |
-| Ctrl/Cmd+Maiusc+F | Attiva o disattiva lo schermo intero |
-| Esc               | Esce (solo se è attivo)              |
+| Key              | Action                       |
+| ---------------- | ---------------------------- |
+| Ctrl/Cmd+Shift+F | Turns fullscreen on or off   |
+| Esc              | Exits (only if it is active) |
 
-## Note
+## Notes
 
-- Sono solo **classi CSS**: `scriba-fullscreen` sul contenitore e `scriba-fullscreen-open` su
-  `<html>`. Gli stili stanno in `@scriba-editor/themes`.
-- Non usa la Fullscreen API del browser: niente richieste di permesso, funziona negli iframe e con
-  una CSP rigida (nessuno stile inline).
-- Uscendo, la pagina torna alla posizione di scorrimento che aveva.
-- Il cambio di stato invia una transazione vuota con metadati, così la barra aggiorna il pulsante
-  premuto.
+- It is only **CSS classes**: `scriba-fullscreen` on the container and `scriba-fullscreen-open` on
+  `<html>`. The styles live in `@scriba-editor/themes`.
+- It does not use the browser's Fullscreen API: no permission prompts, it works in iframes and with
+  a strict CSP (no inline styles).
+- On exit, the page returns to the scroll position it had.
+- The state change dispatches an empty transaction with metadata, so the toolbar updates the
+  pressed button.
 
-Per la tastiera e il focus vedi [accessibilità](../../../docs/accessibilita.md); per scrivere un
-plugin simile, [plugin](../../../docs/plugin.md).
+For keyboard and focus see [accessibility](../../../docs/accessibility.md); to write a similar
+plugin, [plugins](../../../docs/plugins.md).

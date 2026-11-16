@@ -1,102 +1,104 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/collab-server
 
-Server di collaborazione in tempo reale per Scriba (compatibile con y-websocket, basato su Yjs e `ws`): autenticazione, permessi, limiti e identità assegnate dal server.
+Real-time collaboration server for Scriba (compatible with y-websocket, built on Yjs and `ws`): authentication, permissions, limits and server-assigned identities.
 
 ```bash
 pnpm add @scriba-editor/collab-server @scriba-editor/core
 ```
 
-Lato browser serve `@scriba-editor/plugin-collab`. Guida completa: [Collaborazione](../../docs/collaborazione.md).
+On the browser side you need `@scriba-editor/plugin-collab`. Full guide: [Collaboration](../../docs/collaboration.md).
 
-## Uso
+## Usage
 
 ```ts
 import { listenCollabServer, documentFromYjs } from '@scriba-editor/collab-server'
 import { serializeHTML } from '@scriba-editor/core'
 import { sanitizeHTML } from '@scriba-editor/sanitize-server'
-import { schema } from './schema.js' // lo stesso schema usato nel browser
+import { schema } from './schema.js' // the same schema used in the browser
 
 const { close } = listenCollabServer({
   port: 4174,
   schema,
-  // OBBLIGATORIO: chi sei e cosa puoi fare su questo documento. null = rifiutato.
+  // REQUIRED: who you are and what you can do on this document. null = rejected.
   async authenticate(token, documentName) {
-    const user = await verificaToken(token) // la tua sessione / JWT
+    const user = await verifyToken(token) // your session / JWT
     if (!user) return null
-    const ruolo = await permessi(user.id, documentName) // mai decidere dal solo nome!
-    if (!ruolo) return null
+    const role = await permissions(user.id, documentName) // never decide from the name alone!
+    if (!role) return null
     return {
-      user: { id: user.id, name: user.nome },
-      canWrite: ruolo === 'editor',
-      canComment: ruolo !== 'lettore',
+      user: { id: user.id, name: user.name },
+      canWrite: role === 'editor',
+      canComment: role !== 'reader',
     }
   },
-  load: (name) => leggiStato(name), // Uint8Array salvato, o null per un documento nuovo
+  load: (name) => readState(name), // saved Uint8Array, or null for a new document
   async store(name, state, ydoc) {
     const html = sanitizeHTML(schema, serializeHTML(documentFromYjs(schema, ydoc)))
-    await salvaStato(name, state, html)
+    await saveState(name, state, html)
   },
 })
 ```
 
-Per agganciarlo a un server HTTP esistente usa `attachCollabServer(wss, options)` con un
-`WebSocketServer` di `ws`: imposta anche il limite di dimensione dei messaggi.
+To attach it to an existing HTTP server, use `attachCollabServer(wss, options)` with a `ws`
+`WebSocketServer`: also set the message size limit there.
 
-## Sicurezza
+## Security
 
-- **Autenticazione obbligatoria**: `authenticate` è un'opzione richiesta (senza, il costruttore
-  lancia un errore). Il token arriva come **primo messaggio** (mai nell'URL); entro
-  `authTimeoutMs` la connessione deve autenticarsi, altrimenti viene chiusa.
-- **Permessi per documento**: verifica sempre nel tuo `authenticate` che l'utente possa accedere
-  a quel documento. Nessun documento deve essere accessibile solo indovinandone il nome (il nome
-  accettato è `[\w.-]{1,128}`).
-- **Sola lettura**: con `canWrite: false` ogni modifica viene rifiutata. Con `canComment: true`
-  (e l'opzione `schema`) passano solo commenti e ancore dei commenti.
-- **Blocchi protetti**: `canEditBlock(id)` (con lo `schema` dotato di id di blocco, vedi
-  `@scriba-editor/plugin-permissions`) annulla le modifiche ai blocchi non consentiti.
-- **Identità decise dal server**: nome e colore dei cursori e autore dei commenti vengono
-  dall'autenticazione, non dal client (`rewriteAwareness`); i nomi sono testo, mai HTML.
-- **Limiti**: dimensione dei messaggi e del documento, frequenza, connessioni per documento
-  (vedi sotto). Un client che li supera viene disconnesso.
-- **Il documento salvato è input non fidato**: ricostruiscilo con `documentFromYjs` (passa dallo
-  schema) e ripassa l'HTML da `@scriba-editor/sanitize-server` prima di salvarlo o mostrarlo.
-- In produzione metti il server dietro TLS (`wss://`).
+- **Authentication is mandatory**: `authenticate` is a required option (without it, the constructor
+  throws an error). The token arrives as the **first message** (never in the URL); the connection
+  must authenticate within `authTimeoutMs`, otherwise it is closed.
+- **Per-document permissions**: always check in your `authenticate` that the user may access that
+  document. No document must be accessible just by guessing its name (the accepted name is
+  `[\w.-]{1,128}`).
+- **Read-only**: with `canWrite: false` every change is rejected. With `canComment: true` (and the
+  `schema` option) only comments and comment anchors get through.
+- **Protected blocks**: `canEditBlock(id)` (with a `schema` that has block ids, see
+  `@scriba-editor/plugin-permissions`) reverts changes to blocks that are not allowed.
+- **Identities decided by the server**: cursor name and color and comment author come from
+  authentication, not from the client (`rewriteAwareness`); names are text, never HTML.
+- **Limits**: message and document size, rate, connections per document (see below). A client that
+  exceeds them is disconnected.
+- **The saved document is untrusted input**: rebuild it with `documentFromYjs` (it goes through the
+  schema) and pass the HTML through `@scriba-editor/sanitize-server` before saving or displaying it.
+- In production, put the server behind TLS (`wss://`).
 
-## Opzioni (`CollabServerOptions`)
+## Options (`CollabServerOptions`)
 
-| Opzione         | Default     | Significato                                                                      |
-| --------------- | ----------- | -------------------------------------------------------------------------------- |
-| `authenticate`  | (richiesta) | `(token, documentName) => AuthResult \| null`, anche asincrona.                  |
-| `load`          | —           | Carica lo stato Yjs salvato (`Uint8Array`) o `null` per un documento nuovo.      |
-| `store`         | —           | `(name, state, ydoc)`: salva il documento (con ritardo, e quando esce l'ultimo). |
-| `storeDelayMs`  | `2000`      | Ritardo prima di salvare dopo le modifiche.                                      |
-| `loadComments`  | —           | Carica i thread di commenti (`StoredThread[]`).                                  |
-| `storeComments` | —           | Salva i thread di commenti.                                                      |
-| `limits`        | vedi sotto  | `CollabLimits`.                                                                  |
-| `schema`        | —           | Schema dell'editor: serve per `canEditBlock` e `canComment`.                     |
-| `field`         | `'scriba'`  | Nome del frammento XML condiviso (come nel client).                              |
+| Option          | Default    | Meaning                                                                                    |
+| --------------- | ---------- | ------------------------------------------------------------------------------------------ |
+| `authenticate`  | (required) | `(token, documentName) => AuthResult \| null`, may also be async.                          |
+| `load`          | —          | Loads the saved Yjs state (`Uint8Array`) or `null` for a new document.                     |
+| `store`         | —          | `(name, state, ydoc)`: saves the document (with a delay, and when the last client leaves). |
+| `storeDelayMs`  | `2000`     | Delay before saving after changes.                                                         |
+| `loadComments`  | —          | Loads the comment threads (`StoredThread[]`).                                              |
+| `storeComments` | —          | Saves the comment threads.                                                                 |
+| `limits`        | see below  | `CollabLimits`.                                                                            |
+| `schema`        | —          | Editor schema: needed for `canEditBlock` and `canComment`.                                 |
+| `field`         | `'scriba'` | Name of the shared XML fragment (same as in the client).                                   |
 
-`AuthResult`: `{ user: { id, name, color? }, canWrite, canEditBlock?, canComment? }` (`color` è
-uno slot da 0 a 7, di default derivato dall'id).
+`AuthResult`: `{ user: { id, name, color? }, canWrite, canEditBlock?, canComment? }` (`color` is a
+slot from 0 to 7, derived from the id by default).
 
-`listenCollabServer` accetta in più `port` e `host?`, e restituisce `{ server, wss, close() }`.
+`listenCollabServer` also accepts `port` and `host?`, and returns `{ server, wss, close() }`.
 
-### Limiti (`CollabLimits`)
+### Limits (`CollabLimits`)
 
-| Limite                      | Default          |
-| --------------------------- | ---------------- |
-| `maxMessageBytes`           | 1 MB             |
-| `maxDocumentBytes`          | 10 MB            |
-| `messagesPerSecond`         | 60 (raffiche x2) |
-| `authTimeoutMs`             | 5000             |
-| `maxConnectionsPerDocument` | 100              |
+| Limit                       | Default        |
+| --------------------------- | -------------- |
+| `maxMessageBytes`           | 1 MB           |
+| `maxDocumentBytes`          | 10 MB          |
+| `messagesPerSecond`         | 60 (bursts x2) |
+| `authTimeoutMs`             | 5000           |
+| `maxConnectionsPerDocument` | 100            |
 
-## Altre esportazioni
+## Other exports
 
-`CollabServer` (classe, `handleConnection(ws, req)` e `close()`), `attachCollabServer`,
-`listenCollabServer`, `documentFromYjs(schema, ydoc, field?)`, le costanti `MESSAGE_SYNC`,
-`MESSAGE_AWARENESS`, `MESSAGE_AUTH`, `MESSAGE_COMMENTS`, i codici di chiusura `CLOSE`
-(`4400`, `4401`, `4403`, `4413`, `4429`), e le funzioni di basso livello `rewriteAwareness`,
-`applyGuardedUpdate`, `applyAnnotationUpdate`, `applyCommentOp`, `publicThreads`.
+`CollabServer` (class, `handleConnection(ws, req)` and `close()`), `attachCollabServer`,
+`listenCollabServer`, `documentFromYjs(schema, ydoc, field?)`, the constants `MESSAGE_SYNC`,
+`MESSAGE_AWARENESS`, `MESSAGE_AUTH`, `MESSAGE_COMMENTS`, the close codes `CLOSE` (`4400`, `4401`,
+`4403`, `4413`, `4429`), and the low-level functions `rewriteAwareness`, `applyGuardedUpdate`,
+`applyAnnotationUpdate`, `applyCommentOp`, `publicThreads`.
 
-Requisiti: Node con modulo ES (`"type": "module"`).
+Requirements: Node with ES modules (`"type": "module"`).

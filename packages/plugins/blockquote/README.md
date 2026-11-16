@@ -1,16 +1,18 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-blockquote
 
-Blocchi di **citazione** per l'editor Scriba: avvolge uno o più blocchi in una `<blockquote>`, o li
-toglie dalla citazione. Equivale al pulsante "Citazione" di TinyMCE, ma il contenuto resta
-vincolato allo schema (una citazione contiene sempre blocchi, mai testo "libero").
+**Blockquote** blocks for the Scriba editor: wraps one or more blocks in a `<blockquote>`, or
+lifts them out of the blockquote. It matches the TinyMCE "Blockquote" button, but the content
+stays bound to the schema (a blockquote always contains blocks, never "loose" text).
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-blockquote
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { Schema, basicSchemaSpec } from '@scriba-editor/core'
@@ -25,10 +27,10 @@ const schema = new Schema({
   marks: basicSchemaSpec.marks,
 })
 
-// pulsante nella barra degli strumenti (gruppo "blocchi")
+// button in the toolbar ("blocks" group)
 toolbar.items = [toolbarGroup('blocks', 'toolbar.group.blocks', blockquoteToolbarItems(schema))]
 
-// voce nel menu slash ("/citazione")
+// item in the slash menu ("/quote")
 const quote = {
   id: 'quote',
   label: (t) => t('block.blockquote'),
@@ -38,25 +40,26 @@ const quote = {
 }
 ```
 
-## Cosa esporta
+## Exports
 
-| Export                           | Descrizione                                                                          |
-| -------------------------------- | ------------------------------------------------------------------------------------ |
-| `blockquoteNodes`                | Nodo `blockquote` (gruppo `block`, contenuto `block+`) da aggiungere allo schema.    |
-| `toggleBlockquote(schema)`       | Comando: avvolge i blocchi selezionati in una citazione, o li toglie se già dentro.  |
-| `blockquoteToolbarItems(schema)` | Pulsante `blockquote` (icona `quote`, premuto quando il cursore è in una citazione). |
+| Export                           | Description                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------- |
+| `blockquoteNodes`                | `blockquote` node (group `block`, content `block+`) to add to the schema.                |
+| `toggleBlockquote(schema)`       | Command: wraps the selected blocks in a blockquote, or lifts them out if already inside. |
+| `blockquoteToolbarItems(schema)` | `blockquote` button (icon `quote`, pressed when the cursor is in a blockquote).          |
 
-HTML letto e scritto: `<blockquote>…</blockquote>`, senza attributi.
+HTML read and written: `<blockquote>…</blockquote>`, without attributes.
 
-## Note
+## Notes
 
-- Lo schema deve avere il gruppo `block` (lo ha `basicSchemaSpec`). Se manca il nodo `blockquote`,
-  `toggleBlockquote` e `blockquoteToolbarItems` lanciano un `RangeError`: aggiungi `blockquoteNodes`.
-- Il comando segue la regola `(state, dispatch?) => boolean`: senza `dispatch` dice solo se può
-  essere eseguito (serve ad abilitare o disabilitare il pulsante).
-- Il testo del pulsante usa la chiave i18n `block.blockquote` (pacchetto `@scriba-editor/i18n`).
-- Sicurezza: l'HTML incollato o caricato passa dal parser dello schema, che accetta solo
-  `<blockquote>` senza attributi; vedi [sicurezza](../../../docs/sicurezza.md) e
-  [plugin](../../../docs/plugin.md).
-- Accessibilità: il pulsante è nella toolbar con `aria-pressed` e navigazione a frecce; vedi
-  [accessibilità](../../../docs/accessibilita.md).
+- The schema must have the `block` group (`basicSchemaSpec` has it). If the `blockquote` node is
+  missing, `toggleBlockquote` and `blockquoteToolbarItems` throw a `RangeError`: add
+  `blockquoteNodes`.
+- The command follows the `(state, dispatch?) => boolean` rule: without `dispatch` it only tells
+  whether it can run (used to enable or disable the button).
+- The button text uses the i18n key `block.blockquote` (package `@scriba-editor/i18n`).
+- Security: pasted or loaded HTML goes through the schema parser, which accepts only
+  `<blockquote>` without attributes; see [security](../../../docs/security.md) and
+  [plugins](../../../docs/plugins.md).
+- Accessibility: the button is in the toolbar with `aria-pressed` and arrow-key navigation; see
+  [accessibility](../../../docs/accessibility.md).

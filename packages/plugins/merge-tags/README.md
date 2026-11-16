@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-merge-tags
 
-Campi di unione come i "merge tags" di TinyMCE: segnaposto `{{cliente.nome}}` che la tua applicazione riempie in seguito (lettere, e-mail, contratti).
+Merge fields like the TinyMCE "merge tags": `{{customer.name}}` placeholders that your application fills in later (letters, emails, contracts).
 
 ```bash
 pnpm add @scriba-editor/plugin-merge-tags
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -18,45 +20,45 @@ import {
 } from '@scriba-editor/plugin-merge-tags'
 
 const tags: MergeTag[] = [
-  { name: 'cliente.nome', label: 'Nome', group: 'Cliente' },
-  { name: 'cliente.email', label: 'E-mail', group: 'Cliente' },
-  { name: 'data_oggi', label: 'Data di oggi' },
+  { name: 'customer.name', label: 'Name', group: 'Customer' },
+  { name: 'customer.email', label: 'Email', group: 'Customer' },
+  { name: 'today_date', label: "Today's date" },
 ]
 
 const schema = new Schema({ nodes: { ...basicSchemaSpec.nodes, ...mergeTagNodes }, marks })
 
 const suggest = mergeTags(tags, t)
 const plugins = [...suggest.plugins, keymap(suggest.keymap(), { priority: 110 })]
-// nella toolbar, menu Inserisci: mergeTagMenu(tags)
+// in the toolbar, Insert menu: mergeTagMenu(tags)
 ```
 
-Riempire i valori (testo semplice, la formattazione intorno resta):
+Filling in the values (plain text, the surrounding formatting stays):
 
 ```ts
-const filled = fillMergeTags(state.doc, { 'cliente.nome': 'Anna Rossi' })
+const filled = fillMergeTags(state.doc, { 'customer.name': 'Anna Rossi' })
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                                           | Cosa fa                                                                                              |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `mergeTagNodes`                                                | Nodo inline atomico `merge_tag`. HTML: `<span data-merge-tag="cliente.nome">{{cliente.nome}}</span>` |
-| `mergeTags(tags, t)`                                           | Restituisce `{ plugins, keymap() }`: scrivendo `{{` si apre l'elenco, filtrato per nome o etichetta  |
-| `mergeTagMenu(tags)`                                           | Voce di menu "Campo di unione" con una riga per ogni tag                                             |
-| `insertMergeTag(name)`                                         | Comando: inserisce il tag al cursore (sostituisce la selezione); non agisce nei blocchi di codice    |
-| `fillMergeTags(doc, values)`                                   | Documento con ogni tag sostituito dal suo valore; un tag senza valore resta com'è                    |
-| `mergeTagsIn(state)`                                           | Nomi dei tag usati, in ordine e senza ripetizioni                                                    |
-| `isMergeTagName`, `MERGE_TAG_NAME`, `MAX_MERGE_TAG_NAME` (100) | Validazione del nome                                                                                 |
-| `MergeTag`                                                     | `{ name, label, group? }`                                                                            |
+| Name                                                           | What it does                                                                                          |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `mergeTagNodes`                                                | Atomic inline `merge_tag` node. HTML: `<span data-merge-tag="customer.name">{{customer.name}}</span>` |
+| `mergeTags(tags, t)`                                           | Returns `{ plugins, keymap() }`: typing `{{` opens the list, filtered by name or label                |
+| `mergeTagMenu(tags)`                                           | "Merge tag" menu item with one row per tag                                                            |
+| `insertMergeTag(name)`                                         | Command: inserts the tag at the cursor (replaces the selection); does nothing in code blocks          |
+| `fillMergeTags(doc, values)`                                   | Document with every tag replaced by its value; a tag without a value stays as it is                   |
+| `mergeTagsIn(state)`                                           | Names of the tags used, in order and without duplicates                                               |
+| `isMergeTagName`, `MERGE_TAG_NAME`, `MAX_MERGE_TAG_NAME` (100) | Name validation                                                                                       |
+| `MergeTag`                                                     | `{ name, label, group? }`                                                                             |
 
-## Tastiera e accessibilità
+## Keyboard and accessibility
 
-Con l'elenco `{{` aperto: frecce Su/Giù, Invio o Tab per scegliere, Esc per chiudere. L'elenco è un `listbox` con focus nel testo, come per le menzioni (vedi [@scriba-editor/plugin-mention](../mention/README.md), di cui riusa `createSuggestion`). L'etichetta mostrata è `Gruppo › Etichetta`, a te la traduzione.
+With the `{{` list open: Up/Down arrow keys, Enter or Tab to choose, Esc to close. The list is a `listbox` with focus in the text, as for mentions (see [@scriba-editor/plugin-mention](../mention/README.md), whose `createSuggestion` it reuses). The label shown is `Group › Label`; translating it is up to you.
 
-## Sicurezza
+## Security
 
-- Il nome è **solo** `[a-z0-9_.]` (segmenti separati da punto, al massimo 100 caratteri): niente markup, niente spazi. Un nome diverso nell'HTML in ingresso fa scartare il nodo.
-- L'elenco dei tag è configurazione, non input: un nome non valido lancia `RangeError` subito.
-- `fillMergeTags` inserisce i valori **come testo**, mai come HTML. Se li prendi da dati utente, il server deve comunque ripassare l'HTML finale con `@scriba-editor/sanitize-server`.
+- The name is **only** `[a-z0-9_.]` (segments separated by dots, at most 100 characters): no markup, no spaces. Any other name in incoming HTML causes the node to be discarded.
+- The tag list is configuration, not input: an invalid name throws `RangeError` immediately.
+- `fillMergeTags` inserts the values **as text**, never as HTML. If you take them from user data, the server must still pass the final HTML through `@scriba-editor/sanitize-server`.
 
-Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).

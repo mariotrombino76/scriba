@@ -1,16 +1,18 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-details
 
-**Sezioni comprimibili** (fisarmonica) per l'editor Scriba: un titolo cliccabile che mostra o
-nasconde i blocchi sotto di sé. Nell'HTML sono i nativi `<details>` e `<summary>`. Come il plugin
-"Accordion" di TinyMCE, ma inserito nello schema con regole chiare.
+**Collapsible sections** (accordion) for the Scriba editor: a clickable title that shows or hides
+the blocks below it. In HTML they are the native `<details>` and `<summary>`. Like TinyMCE's
+"Accordion" plugin, but built into the schema with clear rules.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-details
 ```
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -35,35 +37,36 @@ const state = EditorState.create({
 
 const view = new EditorView(el, { state, nodeViews: { details: detailsNodeView(t) } })
 
-// menu Inserisci e menu slash
+// Insert menu and slash menu
 const items = [detailsToolbarItem(schema), detailsToggleItem()]
 const slash = detailsSlashItem(schema)
 ```
 
-## Cosa esporta
+## What it exports
 
-| Export                                                                                                                                                             | Descrizione                                                                         |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `detailsNodes`                                                                                                                                                     | Nodi `details` (attributo `open`, default `true`) e `details_summary` (titolo).     |
-| `detailsNodeView(t)`                                                                                                                                               | Node view: pulsante per aprire/chiudere, titolo e contenuto.                        |
-| `detailsKeymap()`                                                                                                                                                  | `Enter` nel titolo passa al contenuto; `Backspace` in una sezione vuota la rimuove. |
-| `detailsAutoOpen()`                                                                                                                                                | Plugin: apre una sezione chiusa quando il cursore entra nel suo contenuto nascosto. |
-| `detailsToolbarItem(schema)`                                                                                                                                       | Pulsante: mette i blocchi selezionati in una sezione, o li toglie.                  |
-| `detailsToggleItem()`                                                                                                                                              | Voce di menu: apre o chiude la sezione al cursore (il modo da tastiera).            |
-| `detailsSlashItem(schema)`                                                                                                                                         | Voce slash ("/fisarmonica", "/sezione", "/accordion"…).                             |
-| `insertDetails(schema)`, `removeDetails(schema)`, `toggleDetailsOpen`, `setDetailsOpen(pos, open)`, `enterFromSummary`, `removeEmptyDetails`, `findDetails(state)` | Comandi e utilità.                                                                  |
+| Export                                                                                                                                                             | Description                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `detailsNodes`                                                                                                                                                     | Nodes `details` (attribute `open`, default `true`) and `details_summary` (title).      |
+| `detailsNodeView(t)`                                                                                                                                               | Node view: button to open/close, title and content.                                    |
+| `detailsKeymap()`                                                                                                                                                  | `Enter` in the title moves to the content; `Backspace` in an empty section removes it. |
+| `detailsAutoOpen()`                                                                                                                                                | Plugin: opens a closed section when the cursor enters its hidden content.              |
+| `detailsToolbarItem(schema)`                                                                                                                                       | Button: puts the selected blocks in a section, or takes them out.                      |
+| `detailsToggleItem()`                                                                                                                                              | Menu item: opens or closes the section at the cursor (the keyboard way).               |
+| `detailsSlashItem(schema)`                                                                                                                                         | Slash item ("/fisarmonica", "/sezione", "/accordion"…).                                |
+| `insertDetails(schema)`, `removeDetails(schema)`, `toggleDetailsOpen`, `setDetailsOpen(pos, open)`, `enterFromSummary`, `removeEmptyDetails`, `findDetails(state)` | Commands and utilities.                                                                |
 
-HTML: `<details open><summary>Titolo</summary><p>…</p></details>`. Un `<details>` incollato senza
-`<summary>` ottiene un titolo vuoto; un `<summary>` fuori da un `<details>` conserva solo il testo.
+HTML: `<details open><summary>Title</summary><p>…</p></details>`. A pasted `<details>` without a
+`<summary>` gets an empty title; a `<summary>` outside a `<details>` keeps only its text.
 
-## Note
+## Notes
 
-- Se chiudi una sezione con il cursore nel contenuto, il cursore si sposta alla fine del titolo
-  (altrimenti sarebbe in un punto invisibile).
-- In sola lettura il pulsante apre e chiude solo sullo schermo, senza modificare il documento.
-- Accessibilità: il pulsante ha `aria-label` (`details.toggle`) e `aria-expanded`; non è nella
-  tabulazione del testo, si raggiunge da tastiera con la voce di menu `detailsToggleItem()`. Vedi
-  [accessibilità](../../../docs/accessibilita.md).
-- Sicurezza: l'unico attributo è il booleano `open`, validato dallo schema; non ci sono stili o
-  script. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
-- L'aspetto (sezione nascosta quando chiusa) viene dal CSS del tema (`@scriba-editor/themes`).
+- If you close a section while the cursor is in its content, the cursor moves to the end of the
+  title (otherwise it would be in an invisible spot).
+- In read-only mode the button opens and closes the section only on screen, without changing the
+  document.
+- Accessibility: the button has `aria-label` (`details.toggle`) and `aria-expanded`; it is not in
+  the text's tab order, you reach it from the keyboard with the `detailsToggleItem()` menu item.
+  See [accessibility](../../../docs/accessibility.md).
+- Security: the only attribute is the boolean `open`, validated by the schema; there are no styles
+  or scripts. See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).
+- The look (section hidden when closed) comes from the theme CSS (`@scriba-editor/themes`).

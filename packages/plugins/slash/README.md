@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-slash
 
-Menu a comandi con `/` (`/tabella`, `/immagine`, `/titolo`): una funzione che TinyMCE non offre di serie. Si scrive `/` a inizio riga o dopo uno spazio, si filtra scrivendo e si sceglie la voce.
+Command menu with `/` (`/table`, `/image`, `/heading`): a feature TinyMCE does not offer out of the box. You type `/` at the start of a line or after a space, filter by typing, and choose the item.
 
 ```bash
 pnpm add @scriba-editor/plugin-slash
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -18,8 +20,8 @@ import {
 } from '@scriba-editor/plugin-slash'
 
 const slashItems: SlashItem[] = [
-  ...basicSlashItems(schema), // paragrafo e titoli 1-3
-  taskSlashItem(schema), // voci fornite da altri plugin
+  ...basicSlashItems(schema), // paragraph and headings 1-3
+  taskSlashItem(schema), // items provided by other plugins
   calloutSlashItem(schema),
   {
     id: 'bullet_list',
@@ -32,34 +34,34 @@ const slashItems: SlashItem[] = [
 
 const plugins = [
   ...slashCommands(slashItems, t),
-  keymap(slashKeymap(slashItems, t), { priority: 110 }), // alta priorità
+  keymap(slashKeymap(slashItems, t), { priority: 110 }), // high priority
 ]
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                             | Cosa fa                                                                                                                                                      |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `slashCommands(items, t)`                        | Plugin del menu `/`                                                                                                                                          |
-| `slashKeymap(items, t)`                          | Tasti con il menu aperto                                                                                                                                     |
-| `basicSlashItems(schema)`                        | Paragrafo e titoli 1-3, per i tipi presenti nello schema                                                                                                     |
-| `SlashItem`                                      | `{ id, label(t), keywords?, icon?, command?, run?(view) }`: `command` agisce sul documento, `run` serve per azioni che usano la view (es. aprire un dialogo) |
-| `filterItems(items, query, t)`                   | Le voci che corrispondono: ogni parola deve comparire nell'etichetta o nelle parole chiave; prima chi inizia per la ricerca                                  |
-| `fold(text)`                                     | Minuscolo senza accenti ("Città" diventa "citta"): la ricerca ignora maiuscole e accenti                                                                     |
-| `chooseItem(view, item)`                         | Toglie `/ricerca` ed esegue la voce                                                                                                                          |
-| `getSlashState(state)`, `slashKey`, `SlashState` | Stato del menu                                                                                                                                               |
+| Name                                             | What it does                                                                                                                                               |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `slashCommands(items, t)`                        | The `/` menu plugin                                                                                                                                        |
+| `slashKeymap(items, t)`                          | Keys while the menu is open                                                                                                                                |
+| `basicSlashItems(schema)`                        | Paragraph and headings 1-3, for the types present in the schema                                                                                            |
+| `SlashItem`                                      | `{ id, label(t), keywords?, icon?, command?, run?(view) }`: `command` acts on the document, `run` is for actions that use the view (e.g. opening a dialog) |
+| `filterItems(items, query, t)`                   | The matching items: every word must appear in the label or the keywords; items that start with the query come first                                        |
+| `fold(text)`                                     | Lowercase without accents ("Città" becomes "citta"): search ignores case and accents                                                                       |
+| `chooseItem(view, item)`                         | Removes `/query` and runs the item                                                                                                                         |
+| `getSlashState(state)`, `slashKey`, `SlashState` | Menu state                                                                                                                                                 |
 
-## Tastiera
+## Keyboard
 
-`/` all'inizio di un blocco o dopo uno spazio apre il menu (mai nel codice in linea né in un blocco di codice). Frecce Su/Giù spostano la selezione, Invio o Tab scelgono, Esc chiude (il testo scritto resta). Uno spazio subito dopo `/`, o dopo una ricerca senza risultati, chiude il menu e si continua a scrivere. La ricerca è lunga al massimo 40 caratteri.
+`/` at the start of a block or after a space opens the menu (never in inline code or in a code block). Up/Down arrow keys move the selection, Enter or Tab choose, Esc closes (the typed text stays). A space right after `/`, or after a search with no results, closes the menu and you keep typing. The query is at most 40 characters long.
 
-## Accessibilità
+## Accessibility
 
-Il menu è un `listbox` sotto la `/` (sopra se sotto manca spazio) mentre il focus resta nel testo; l'editor punta al menu con `aria-controls` e alla voce evidenziata con `aria-activedescendant`, quindi i lettori di schermo annunciano la voce mentre si scrive o ci si muove. Con nessun risultato compare "Nessun comando" (`slash.none`).
+The menu is a `listbox` below the `/` (above it if there is no room below) while focus stays in the text; the editor points to the menu with `aria-controls` and to the highlighted item with `aria-activedescendant`, so screen readers announce the item as you type or move. With no results, "No commands" (`slash.none`) appears.
 
-## Note
+## Notes
 
-- Etichette e icone sono testo/SVG creati dal codice, mai HTML. Le voci sono definite da te: il menu non carica nulla dall'esterno.
-- La posizione è impostata via CSSOM, quindi funziona con una CSP rigida.
+- Labels and icons are text/SVG created by code, never HTML. You define the items: the menu loads nothing from outside.
+- The position is set via CSSOM, so it works with a strict CSP.
 
-Vedi [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md).
+See [plugins](../../../docs/plugins.md) and [accessibility](../../../docs/accessibility.md).

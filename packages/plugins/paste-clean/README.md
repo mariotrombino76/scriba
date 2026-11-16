@@ -1,45 +1,47 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-paste-clean
 
-Incolla pulito da Word, Google Docs e pagine web, come il plugin "Paste from Word / PowerPoint" di TinyMCE (`paste`/`powerpaste`): liste vere al posto di quelle finte di Word, niente involucri Office/Docs, niente font e nero predefiniti.
+Clean paste from Word, Google Docs and web pages, like TinyMCE's "Paste from Word / PowerPoint" plugin (`paste`/`powerpaste`): real lists instead of Word's fake ones, no Office/Docs wrappers, no default fonts and black.
 
 ```bash
 pnpm add @scriba-editor/plugin-paste-clean
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { pasteClean } from '@scriba-editor/plugin-paste-clean'
 
 const plugins = [
-  pasteClean(), // oppure pasteClean({ keepFonts: true, keepColors: false })
+  pasteClean(), // or pasteClean({ keepFonts: true, keepColors: false })
   // ...
 ]
 ```
 
-Il plugin agisce sul DOM dell'HTML incollato **prima** del parser dello schema (`transformPastedDOM` della view).
+The plugin acts on the DOM of the pasted HTML **before** the schema parser (the view's `transformPastedDOM`).
 
-## Cosa pulisce
+## What it cleans
 
-| Origine     | Interventi                                                                                                                                                                                 |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Word        | ricostruisce liste annidate vere dai paragrafi `mso-list`; rimuove tag con namespace (`o:p`, `v:shape`, ...) e i numeri/pallini finti; `MsoTitle` diventa `h1`, `MsoSubtitle` diventa `h2` |
-| Google Docs | toglie l'involucro `docs-internal-guid` e gli `<br>` al livello principale                                                                                                                 |
-| Tutte       | sotto-liste lasciate dentro `<ul>`/`<ol>` spostate nell'elemento precedente; paragrafi con soli spazi/`&nbsp;` svuotati                                                                    |
-| Stili       | via `font-family` e `font-size`; via il colore nero o quasi nero (`windowtext`, `black`, `#000`, ...) e gli sfondi trasparenti                                                             |
+| Source      | Changes                                                                                                                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Word        | rebuilds real nested lists from `mso-list` paragraphs; removes namespaced tags (`o:p`, `v:shape`, ...) and the fake numbers/bullets; `MsoTitle` becomes `h1`, `MsoSubtitle` becomes `h2` |
+| Google Docs | removes the `docs-internal-guid` wrapper and the top-level `<br>` elements                                                                                                               |
+| All         | sub-lists left inside `<ul>`/`<ol>` are moved into the previous item; paragraphs with only spaces/`&nbsp;` are emptied                                                                   |
+| Styles      | removes `font-family` and `font-size`; removes black or near-black color (`windowtext`, `black`, `#000`, ...) and transparent backgrounds                                                |
 
-La provenienza è rilevata da `detectSource(body)` (`'word' | 'google-docs' | 'other'`).
+The source is detected by `detectSource(body)` (`'word' | 'google-docs' | 'other'`).
 
-## Esportazioni
+## Exports
 
-| Nome                             | Cosa fa                                                                            |
-| -------------------------------- | ---------------------------------------------------------------------------------- |
-| `pasteClean(options?)`           | Plugin da aggiungere all'editor                                                    |
-| `cleanPastedDOM(body, options?)` | Pulisce un `body` sul posto e restituisce la provenienza (utile fuori dall'editor) |
-| `detectSource(body)`             | Riconosce Word, Google Docs o altro                                                |
-| `PasteCleanOptions`              | `keepFonts` (predefinito `false`), `keepColors` (predefinito `true`)               |
-| `PasteSource`                    | `'word' \| 'google-docs' \| 'other'`                                               |
+| Name                             | What it does                                                                |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| `pasteClean(options?)`           | Plugin to add to the editor                                                 |
+| `cleanPastedDOM(body, options?)` | Cleans a `body` in place and returns the source (useful outside the editor) |
+| `detectSource(body)`             | Recognizes Word, Google Docs or other                                       |
+| `PasteCleanOptions`              | `keepFonts` (default `false`), `keepColors` (default `true`)                |
+| `PasteSource`                    | `'word' \| 'google-docs' \| 'other'`                                        |
 
-## Sicurezza
+## Security
 
-Questo plugin migliora la **fedeltà**, non la sicurezza. Gira su un documento **inerte** (nulla viene eseguito) e ciò che lascia passa comunque dal parser dello schema, che scarta tutto ciò che non conosce (script, handler `on*`, URL non ammessi, stili liberi). L'HTML incollato è input non fidato: chi salva HTML deve ripassarlo sempre da `@scriba-editor/sanitize-server` sul server. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+This plugin improves **fidelity**, not security. It runs on an **inert** document (nothing is executed) and whatever it lets through still goes through the schema parser, which discards everything it does not know (scripts, `on*` handlers, disallowed URLs, free styles). Pasted HTML is untrusted input: if you save HTML, you must always run it through `@scriba-editor/sanitize-server` on the server. See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).

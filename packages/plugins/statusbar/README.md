@@ -1,12 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-statusbar
 
-La barra di stato di TinyMCE: **percorso degli elementi** (`ul › li › p › strong`) e **maniglia per ridimensionare** l'editor. Non sono plugin dell'editor ma due elementi DOM che metti sotto l'editor; si affiancano al conteggio parole di [@scriba-editor/plugin-word-count](../word-count/README.md).
+The TinyMCE status bar: **element path** (`ul › li › p › strong`) and **resize handle** for the
+editor. They are not editor plugins but two DOM elements that you put below the editor; they sit
+next to the word count of [@scriba-editor/plugin-word-count](../word-count/README.md).
 
 ```bash
 pnpm add @scriba-editor/plugin-statusbar
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { createElementPath, createResizeHandle } from '@scriba-editor/plugin-statusbar'
@@ -19,31 +23,39 @@ statusbar.append(createResizeHandle(view, t, { minHeight: 160 }).el)
 editorContainer.after(statusbar)
 ```
 
-Ogni funzione restituisce `{ el, destroy() }`: chiama `destroy()` quando togli la barra (rimuove anche l'ascolto sulla view).
+Each function returns `{ el, destroy() }`: call `destroy()` when you remove the bar (it also
+removes the listener on the view).
 
-## Esportazioni
+## Exports
 
-| Nome                                    | Cosa fa                                                                                                           |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `createElementPath(view, t)`            | `<nav>` con il percorso: prima i blocchi attorno al cursore (dal più esterno), poi i mark attivi nel cursore      |
-| `elementPath(state)`                    | Lo stesso elenco come dati (`PathEntry`: `tag`, `pos`, con `pos` nullo per i mark)                                |
-| `createResizeHandle(view, t, options?)` | Pulsante per cambiare l'altezza dell'editor                                                                       |
-| `ResizeOptions`                         | `minHeight` (predefinito 120 px), `maxHeight` (predefinito nessun limite), `step` (predefinito 20 px per freccia) |
-| `SIZED_CLASS`                           | Classe `scriba-sized` messa sull'editor quando ha un'altezza impostata (poi scorre all'interno)                   |
+| Name                                    | What it does                                                                                                     |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `createElementPath(view, t)`            | `<nav>` with the path: first the blocks around the cursor (outermost first), then the marks active at the cursor |
+| `elementPath(state)`                    | The same list as data (`PathEntry`: `tag`, `pos`, with `pos` null for marks)                                     |
+| `createResizeHandle(view, t, options?)` | Button to change the editor height                                                                               |
+| `ResizeOptions`                         | `minHeight` (default 120 px), `maxHeight` (default no limit), `step` (default 20 px per arrow press)             |
+| `SIZED_CLASS`                           | `scriba-sized` class set on the editor when it has a set height (it then scrolls inside)                         |
 
-## Tastiera
+## Keyboard
 
-**Percorso**: un solo punto di tabulazione (il blocco corrente, `aria-current="location"`); frecce Sinistra/Destra, Home e Fine si spostano tra i blocchi; clic o Invio su un blocco lo seleziona per intero e riporta il focus nel testo.
+**Path**: a single tab stop (the current block, `aria-current="location"`); Left/Right arrow
+keys, Home and End move between blocks; click or Enter on a block selects it entirely and puts
+focus back in the text.
 
-**Maniglia**: trascinamento con mouse, penna o tocco; frecce Su/Giù cambiano l'altezza di `step` pixel, Pag Su/Pag Giù di cinque volte tanto; doppio clic o Esc ridanno l'altezza naturale.
+**Handle**: drag with mouse, pen or touch; Up/Down arrow keys change the height by `step`
+pixels, Page Up/Page Down by five times as much; double-click or Esc restores the natural height.
 
-## Accessibilità
+## Accessibility
 
-Il percorso è un `<nav>` con etichetta "Percorso dell'elemento" (`path.label`) e pulsanti con titolo "Seleziona {tag}"; la maniglia è un `<button>` con `aria-label` che spiega i tasti (`resize.label`), quindi è usabile solo con la tastiera.
+The path is a `<nav>` labeled "Element path" (`path.label`) with buttons titled "Select {tag}";
+the handle is a `<button>` with an `aria-label` that explains the keys (`resize.label`), so it
+can be used with the keyboard alone.
 
-## Note
+## Notes
 
-- I nomi dei tag derivano da `toHTML` dello schema, validati con `^[a-z][a-z0-9-]*$` (altrimenti si usa il nome del nodo) e inseriti come testo.
-- L'altezza è impostata via CSSOM (`el.style.height`), senza attributo `style`: compatibile con una CSP rigida.
+- Tag names come from the schema's `toHTML`, validated with `^[a-z][a-z0-9-]*$` (otherwise the
+  node name is used) and inserted as text.
+- The height is set through the CSSOM (`el.style.height`), without a `style` attribute:
+  compatible with a strict CSP.
 
-Vedi [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md).
+See [plugins](../../../docs/plugins.md) and [accessibility](../../../docs/accessibility.md).

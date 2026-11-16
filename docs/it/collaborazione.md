@@ -1,3 +1,5 @@
+[English](../collaboration.md) · **Italiano**
+
 # Collaborazione in tempo reale
 
 Più persone sullo stesso documento, ognuna con il proprio cursore colorato, senza conflitti e
@@ -35,7 +37,7 @@ const view = new EditorView(place, {
   editable: () => shared.provider.status === 'connected' && shared.provider.canWrite,
 })
 shared.provider.onStatus(() => view.updateState(view.state))
-place.after(collabStatusElement(document, shared.provider, t)) // "Connesso", "Riconnessione…"
+place.after(collabStatusElement(document, shared.provider, t)) // "Online", "Connessione…"
 
 // quando l'editor si chiude
 shared.destroy()

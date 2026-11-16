@@ -1,3 +1,5 @@
+[English](../plugins.md) · **Italiano**
+
 # Plugin
 
 Ogni funzione oltre al testo di base è un plugin, in un pacchetto `@scriba-editor/plugin-*`. Un plugin
@@ -107,7 +109,7 @@ sections })` per il tasto destro, `clipboardItems` (taglia, copia, incolla), `hi
 | `plugin-collab`      | Collaborazione in tempo reale (Yjs) con i cursori degli altri                                                                                                     | `collab`, `collabCommentStore` — vedi [Collaborazione](collaborazione.md)                 |
 | `plugin-comments`    | Commenti con discussioni e modifiche proposte (revisioni)                                                                                                         | `commentMarks`, `commentsPlugin`, `commentsPanel`, `suggestionMarks`, `suggestionsPlugin` |
 | `plugin-permissions` | Blocchi protetti (non modificabili da alcuni utenti), controllati anche sul server; una selezione che li contiene cancella solo il resto                          | `withBlockIds`, `blockPermissions`                                                        |
-| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni                                                                                           | vedi la [guida AI](../packages/plugins/ai/README.md)                                      |
+| `plugin-ai`          | Assistente AI con il tuo backend: testo, blocchi generati, più versioni                                                                                           | vedi la [guida AI](../../packages/plugins/ai/README.it.md)                                |
 | `plugin-revisions`   | Cronologia versioni: elenco delle versioni salvate dal tuo server, confronto con il documento attuale (aggiunto/tolto, parola per parola), ripristino annullabile | `revisionsToolbarItem`, `openRevisionDialog`, `diffDocs`, `parseRevision`                 |
 
 ### Cronologia versioni

@@ -1,15 +1,17 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-callout
 
-**Riquadri evidenziati** (callout) per l'editor Scriba: un box attorno a uno o più blocchi, con un
-tipo (`info`, `tip`, `warning`, `danger`) per segnalare note, suggerimenti, avvisi e pericoli.
+**Callouts** for the Scriba editor: a box around one or more blocks, with a type (`info`, `tip`,
+`warning`, `danger`) to flag notes, tips, warnings and dangers.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-callout
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { Schema, basicSchemaSpec } from '@scriba-editor/core'
@@ -20,14 +22,14 @@ const schema = new Schema({
   marks: basicSchemaSpec.marks,
 })
 
-// menu slash e pulsante (menu Inserisci)
+// slash menu and button (Insert menu)
 const slashItems = [calloutSlashItem(schema)]
 const item = calloutToolbarItem(schema)
 ```
 
-Nell'editor e nell'HTML salvato il riquadro è un `<aside class="scriba-callout" data-callout="…">`,
-con lo stile del tema. Con Vue puoi dargli una vista con la scelta del tipo: il componente di
-esempio `CalloutView` di `@scriba-editor/vue`.
+In the editor and in the saved HTML the callout is an `<aside class="scriba-callout" data-callout="…">`,
+styled by the theme. With Vue you can give it a view with a type picker: the example component
+`CalloutView` from `@scriba-editor/vue`.
 
 ```ts
 import { CalloutView, vueNodeView } from '@scriba-editor/vue'
@@ -38,17 +40,17 @@ const view = new EditorView(el, {
 })
 ```
 
-## Cosa esporta
+## Exports
 
-| Export                         | Descrizione                                                                                         |
-| ------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `calloutNodes`                 | Nodo `callout` (gruppo `block`, contenuto `block+`) con l'attributo `kind` (default `info`).        |
-| `CALLOUT_KINDS`                | I tipi ammessi: `info`, `tip`, `warning`, `danger`.                                                 |
-| `CalloutKind`                  | Tipo TypeScript dei quattro valori.                                                                 |
-| `isCalloutKind(value)`         | Verifica se un valore è un tipo ammesso.                                                            |
-| `toggleCallout(schema, kind?)` | Comando: avvolge i blocchi selezionati in un riquadro di tipo `kind` (default `info`), o li toglie. |
-| `calloutToolbarItem(schema)`   | Pulsante `callout`, premuto quando il cursore è dentro un riquadro (chiave i18n `callout.insert`).  |
-| `calloutSlashItem(schema)`     | Voce del menu slash ("/riquadro"; parole chiave: callout, riquadro, nota, avviso, box, note).       |
+| Export                         | Description                                                                                     |
+| ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `calloutNodes`                 | `callout` node (group `block`, content `block+`) with the `kind` attribute (default `info`).    |
+| `CALLOUT_KINDS`                | The allowed types: `info`, `tip`, `warning`, `danger`.                                          |
+| `CalloutKind`                  | TypeScript type of the four values.                                                             |
+| `isCalloutKind(value)`         | Checks whether a value is an allowed type.                                                      |
+| `toggleCallout(schema, kind?)` | Command: wraps the selected blocks in a callout of type `kind` (default `info`), or removes it. |
+| `calloutToolbarItem(schema)`   | `callout` button, pressed when the cursor is inside a callout (i18n key `callout.insert`).      |
+| `calloutSlashItem(schema)`     | Slash menu item ("Callout"; keywords: callout, riquadro, nota, avviso, box, note).              |
 
 ## HTML
 
@@ -56,15 +58,15 @@ const view = new EditorView(el, {
 <aside class="scriba-callout" data-callout="warning">…</aside>
 ```
 
-Solo un `<aside>` con `data-callout` viene letto come riquadro; un `<aside>` qualunque preso da
-una pagina web perde il riquadro e conserva solo il contenuto.
+Only an `<aside>` with `data-callout` is read as a callout; an arbitrary `<aside>` taken from a web
+page loses the callout and keeps only its content.
 
-## Note
+## Notes
 
-- Se il nodo `callout` manca dallo schema, `toggleCallout` lancia un `RangeError`: aggiungi
+- If the `callout` node is missing from the schema, `toggleCallout` throws a `RangeError`: add
   `calloutNodes`.
-- Il plugin definisce solo nodo e comandi: l'aspetto nell'editor lo dà la node view (qui
-  `CalloutView` di `@scriba-editor/vue`, oppure una tua).
-- Sicurezza: il tipo è una lista chiusa; qualunque altro valore diventa `info`, e l'attributo
-  viene validato dallo schema (`isCalloutKind`). Vedi [sicurezza](../../../docs/sicurezza.md).
-- Per scrivere una node view propria vedi [plugin](../../../docs/plugin.md).
+- The plugin defines only the node and the commands: the look in the editor comes from the node
+  view (here `CalloutView` from `@scriba-editor/vue`, or your own).
+- Security: the type is a closed list; any other value becomes `info`, and the attribute is
+  validated by the schema (`isCalloutKind`). See [security](../../../docs/security.md).
+- To write your own node view, see [plugins](../../../docs/plugins.md).

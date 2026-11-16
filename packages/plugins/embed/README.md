@@ -1,17 +1,19 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-embed
 
-**Media** per l'editor Scriba: video (YouTube, Vimeo, Dailymotion), musica (Spotify), mappe
-(Google Maps) e file video/audio. Corrisponde al plugin "Media" di TinyMCE, ma con una differenza di
-fondo: si salva solo _quale servizio_ e _quale contenuto_, e l'indirizzo dell'`<iframe>` viene
-sempre ricostruito dal plugin, mai copiato da ciò che incolli.
+**Media** for the Scriba editor: videos (YouTube, Vimeo, Dailymotion), music (Spotify), maps
+(Google Maps) and video/audio files. It matches TinyMCE's "Media" plugin, with one fundamental
+difference: only _which service_ and _which content_ are saved, and the `<iframe>` address is
+always rebuilt by the plugin, never copied from what you paste.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-embed
 ```
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -26,7 +28,7 @@ import {
   type MediaOptions,
 } from '@scriba-editor/plugin-embed'
 
-// l'upload dei file è una tua funzione: restituisce l'URL (https o relativo) dato dal server
+// file upload is your own function: it returns the URL (https or relative) given by the server
 const mediaOptions: MediaOptions = { upload: (file) => myServerUpload(file), maxSize: 50_000_000 }
 
 const schema = new Schema({
@@ -38,7 +40,7 @@ const state = EditorState.create({
   schema,
   plugins: [
     keymap(embedKeymap(t, mediaOptions), { priority: 70 }),
-    ...embedPlugins(t, mediaOptions), // doppio clic su un media: apre la finestra
+    ...embedPlugins(t, mediaOptions), // double-click on a media item: opens the dialog
     // …
   ],
 })
@@ -52,52 +54,54 @@ const view = new EditorView(el, {
   },
 })
 
-// menu Inserisci e menu slash
+// Insert menu and slash menu
 const item = embedToolbarItem(t, mediaOptions)
 const slash = embedSlashItem(t, mediaOptions)
 ```
 
-## Cosa esporta
+## Exports
 
-| Export                                                                                             | Descrizione                                                                                                           |
-| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `embedNodes`                                                                                       | Nodo `embed` (atomo di blocco): attributi `provider`, `ref`, `title`, `width`, `height`.                              |
-| `mediaNodes`                                                                                       | Nodi `video_file` e `audio_file` (`<video controls>`, `<audio controls>`), attributo `src`.                           |
-| `embedNodeView(t)`, `mediaFileNodeView(t)`                                                         | Node view: scheda con tipo, titolo e indirizzo (il player non viene caricato mentre scrivi); player reale per i file. |
-| `embedKeymap(t, options?)`                                                                         | `Invio` su un media selezionato apre la finestra.                                                                     |
-| `embedPlugins(t, options?)`                                                                        | Doppio clic su un media apre la finestra (solo se l'editor è modificabile).                                           |
-| `embedToolbarItem(t, options?)`                                                                    | Voce "Media" (icona `video`).                                                                                         |
-| `embedSlashItem(t, options?)`                                                                      | Voce slash ("/video", "/mappa", "/spotify"…).                                                                         |
-| `openMediaDialog(view, t, options?)`                                                               | La finestra: un indirizzo (o il codice `<iframe>` del servizio) oppure un file da caricare.                           |
-| `insertEmbed(attrs)`, `insertMediaFile(kind, src)`, `selectedMedia(state)`                         | Comandi e utilità.                                                                                                    |
-| `embedFromAddress`, `embedFromPlayerUrl`, `playerUrl`, `pageUrl`, `isEmbedRef`, `EMBED_PROVIDERS`… | Lettura e costruzione degli indirizzi.                                                                                |
-| `EMBED_SANDBOX`, `EMBED_REFERRER_POLICY`, `EMBED_FRAME_SRC`                                        | Costanti di sicurezza (vedi sotto).                                                                                   |
-| `safeMediaUrl`, `mediaKindOf`, `mediaKindOfType`, `MEDIA_TYPES`                                    | Utilità per i file video/audio.                                                                                       |
+| Export                                                                                             | Description                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `embedNodes`                                                                                       | `embed` node (block atom): attributes `provider`, `ref`, `title`, `width`, `height`.                               |
+| `mediaNodes`                                                                                       | `video_file` and `audio_file` nodes (`<video controls>`, `<audio controls>`), `src` attribute.                     |
+| `embedNodeView(t)`, `mediaFileNodeView(t)`                                                         | Node views: a card with type, title and address (the player is not loaded while you write); real player for files. |
+| `embedKeymap(t, options?)`                                                                         | `Enter` on a selected media item opens the dialog.                                                                 |
+| `embedPlugins(t, options?)`                                                                        | Double-clicking a media item opens the dialog (only if the editor is editable).                                    |
+| `embedToolbarItem(t, options?)`                                                                    | "Media" item (`video` icon).                                                                                       |
+| `embedSlashItem(t, options?)`                                                                      | Slash item ("/video", "/map", "/spotify"…).                                                                        |
+| `openMediaDialog(view, t, options?)`                                                               | The dialog: an address (or the service's `<iframe>` code) or a file to upload.                                     |
+| `insertEmbed(attrs)`, `insertMediaFile(kind, src)`, `selectedMedia(state)`                         | Commands and utilities.                                                                                            |
+| `embedFromAddress`, `embedFromPlayerUrl`, `playerUrl`, `pageUrl`, `isEmbedRef`, `EMBED_PROVIDERS`… | Reading and building addresses.                                                                                    |
+| `EMBED_SANDBOX`, `EMBED_REFERRER_POLICY`, `EMBED_FRAME_SRC`                                        | Security constants (see below).                                                                                    |
+| `safeMediaUrl`, `mediaKindOf`, `mediaKindOfType`, `MEDIA_TYPES`                                    | Utilities for video/audio files.                                                                                   |
 
-Opzioni (`MediaOptions`): `upload(file) => Promise<string>` (senza, i file si possono solo
-collegare per indirizzo) e `maxSize` in byte (default 100 MB, solo un aiuto per l'utente).
+Options (`MediaOptions`): `upload(file) => Promise<string>` (without it, files can only be
+linked by address) and `maxSize` in bytes (default 100 MB, only a help for the user).
 
-## Sicurezza
+## Security
 
-- **Whitelist di domini.** Sono ammessi solo YouTube (in modalità privacy `youtube-nocookie.com`),
-  Vimeo, Dailymotion, Spotify e Google Maps, e solo i loro indirizzi di player esatti, in `https`.
-  Qualunque altro `<iframe>` (anche incollato o caricato) viene scartato.
-- **`sandbox` fisso.** L'iframe esce sempre con `sandbox="allow-scripts allow-same-origin allow-presentation"`,
-  `referrerpolicy="strict-origin-when-cross-origin"` e `loading="lazy"`: mai letti dall'input.
-- **Riferimenti validati** (id, formato) con espressioni rigide; titolo senza caratteri di
-  controllo (max 200), larghezza e altezza entro limiti fissi.
-- **File video/audio:** solo indirizzi `https` o relativi (mai `data:`, `blob:`, `javascript:`);
-  `controls` sempre attivo; autoplay, loop, poster e ogni altro attributo vengono scartati.
-- **CSP.** Le pagine che mostrano l'HTML salvato devono ammettere i servizi in `frame-src`
-  (`EMBED_FRAME_SRC`) e, per i file, l'origine in `media-src`. L'editor stesso non carica i player.
-- **Upload:** il controllo del tipo e della dimensione nel browser è solo un aiuto; il server deve
-  verificare tipo reale, dimensione e contenuto.
-- L'HTML in ingresso passa comunque dal parser dello schema. Vedi [sicurezza](../../../docs/sicurezza.md)
-  e [plugin](../../../docs/plugin.md).
+- **Domain whitelist.** Only YouTube (in privacy mode, `youtube-nocookie.com`), Vimeo,
+  Dailymotion, Spotify and Google Maps are allowed, and only their exact player addresses, over
+  `https`. Any other `<iframe>` (including pasted or loaded ones) is discarded.
+- **Fixed `sandbox`.** The iframe is always output with
+  `sandbox="allow-scripts allow-same-origin allow-presentation"`,
+  `referrerpolicy="strict-origin-when-cross-origin"` and `loading="lazy"`: never read from the input.
+- **Validated references** (id, format) with strict regular expressions; title without control
+  characters (max 200), width and height within fixed limits.
+- **Video/audio files:** only `https` or relative addresses (never `data:`, `blob:`,
+  `javascript:`); `controls` always on; autoplay, loop, poster and any other attribute are discarded.
+- **CSP.** Pages that display the saved HTML must allow the services in `frame-src`
+  (`EMBED_FRAME_SRC`) and, for files, the origin in `media-src`. The editor itself does not load
+  the players.
+- **Upload:** the type and size check in the browser is only a help; the server must verify the
+  real type, size and content.
+- Incoming HTML still goes through the schema parser. See [security](../../../docs/security.md)
+  and [plugins](../../../docs/plugins.md).
 
-## Accessibilità
+## Accessibility
 
-La scheda nell'editor ha `role="img"` con un'etichetta (es. tipo e titolo); l'iframe esportato ha
-sempre un `title` (il titolo, o il nome del servizio). I file hanno controlli nativi con etichetta.
-La finestra ha focus trap e restituisce il focus all'editor. Vedi
-[accessibilità](../../../docs/accessibilita.md).
+The card in the editor has `role="img"` with a label (e.g. type and title); the exported iframe
+always has a `title` (the title, or the service name). Files have native controls with a label.
+The dialog has a focus trap and returns focus to the editor. See
+[accessibility](../../../docs/accessibility.md).

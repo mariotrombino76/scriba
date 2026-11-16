@@ -1,48 +1,50 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/themes
 
-Il tema CSS di Scriba: un solo foglio di stile, chiaro e scuro, personalizzabile con variabili CSS.
+The Scriba CSS theme: a single stylesheet, light and dark, customizable with CSS variables.
 
 ```bash
 pnpm add @scriba-editor/themes
 ```
 
-## Uso
+## Usage
 
 ```ts
 import '@scriba-editor/themes/scriba.css'
 ```
 
-Oppure da HTML (il file è `scriba.css` nel pacchetto):
+Or from HTML (the file is `scriba.css` in the package):
 
 ```html
 <link rel="stylesheet" href="/node_modules/@scriba-editor/themes/scriba.css" />
 ```
 
-Con lo script per il browser (`@scriba-editor/browser`) il foglio di stile è già incluso come
-`scriba.css` di quel pacchetto. Il tema è un normale foglio di stile: non richiede
-`style-src 'unsafe-inline'` e funziona con una CSP rigida (gli stili dinamici dell'editor
-passano dal CSSOM).
+With the browser script (`@scriba-editor/browser`) the stylesheet is already included as that
+package's `scriba.css`. The theme is a normal stylesheet: it does not require
+`style-src 'unsafe-inline'` and it works with a strict CSP (the editor's dynamic styles go
+through the CSSOM).
 
-## Chiaro e scuro
+## Light and dark
 
-Il tema segue le preferenze del sistema (`prefers-color-scheme`). Per forzare uno schema
-indipendentemente dal sistema, imposta l'attributo `data-scriba-theme` su un antenato
-dell'editor, di solito `<html>`:
+The theme follows the system preferences (`prefers-color-scheme`). To force a scheme regardless
+of the system, set the `data-scriba-theme` attribute on an ancestor of the editor, usually
+`<html>`:
 
 ```html
 <html data-scriba-theme="dark">
-  <!-- sempre scuro -->
+  <!-- always dark -->
   <html data-scriba-theme="light">
-    <!-- sempre chiaro, anche con il sistema in scuro -->
+    <!-- always light, even when the system is dark -->
   </html>
 </html>
 ```
 
-I colori rispettano il contrasto WCAG 2.2 AA in entrambi gli schemi.
+The colors meet WCAG 2.2 AA contrast in both schemes.
 
-## Variabili CSS
+## CSS variables
 
-Per adattarlo al tuo sito ridefinisci le variabili (`--scriba-*`) dopo aver caricato il tema:
+To adapt it to your site, redefine the variables (`--scriba-*`) after loading the theme:
 
 ```css
 :root {
@@ -51,53 +53,54 @@ Per adattarlo al tuo sito ridefinisci le variabili (`--scriba-*`) dopo aver cari
 }
 ```
 
-Se ridefinisci i colori, ridefiniscili anche per lo schema scuro (dentro
-`@media (prefers-color-scheme: dark)` e/o `:root[data-scriba-theme='dark']`).
+If you redefine the colors, redefine them for the dark scheme too (inside
+`@media (prefers-color-scheme: dark)` and/or `:root[data-scriba-theme='dark']`).
 
-| Variabile                                             | Uso                                                      |
-| ----------------------------------------------------- | -------------------------------------------------------- |
-| `--scriba-bg`, `--scriba-text`, `--scriba-muted`      | Sfondo, testo e testo secondario.                        |
-| `--scriba-border`                                     | Bordi e separatori.                                      |
-| `--scriba-accent`, `--scriba-accent-bg`               | Colore di accento e suo sfondo (pulsanti attivi, hover). |
-| `--scriba-focus`                                      | Anello del focus.                                        |
-| `--scriba-code-bg`                                    | Sfondo del codice.                                       |
-| `--scriba-error`, `--scriba-warning`                  | Messaggi di errore e di avviso.                          |
-| `--scriba-radius`                                     | Raggio degli angoli.                                     |
-| `--scriba-font`                                       | Carattere dell'interfaccia.                              |
-| `--scriba-hl-*`                                       | Evidenziazione della sintassi nei blocchi di codice.     |
-| `--scriba-find-bg`, `--scriba-find-current`           | Risultati di "Trova e sostituisci".                      |
-| `--scriba-comment-bg`, `--scriba-comment-active`      | Testo commentato.                                        |
-| `--scriba-suggest-insert`, `--scriba-suggest-delete`  | Suggerimenti (modifiche tracciate).                      |
-| `--scriba-callout-{info,tip,warning,danger}` e `…-bg` | Riquadri di avviso.                                      |
+| Variable                                                | Use                                                      |
+| ------------------------------------------------------- | -------------------------------------------------------- |
+| `--scriba-bg`, `--scriba-text`, `--scriba-muted`        | Background, text and secondary text.                     |
+| `--scriba-border`                                       | Borders and separators.                                  |
+| `--scriba-accent`, `--scriba-accent-bg`                 | Accent color and its background (active buttons, hover). |
+| `--scriba-focus`                                        | Focus ring.                                              |
+| `--scriba-code-bg`                                      | Code background.                                         |
+| `--scriba-error`, `--scriba-warning`                    | Error and warning messages.                              |
+| `--scriba-radius`                                       | Corner radius.                                           |
+| `--scriba-font`                                         | UI font.                                                 |
+| `--scriba-hl-*`                                         | Syntax highlighting in code blocks.                      |
+| `--scriba-find-bg`, `--scriba-find-current`             | "Find and replace" results.                              |
+| `--scriba-comment-bg`, `--scriba-comment-active`        | Commented text.                                          |
+| `--scriba-suggest-insert`, `--scriba-suggest-delete`    | Suggestions (tracked changes).                           |
+| `--scriba-callout-{info,tip,warning,danger}` and `…-bg` | Callout boxes.                                           |
 
-L'elenco completo è nelle prime righe di `scriba.css`.
+The full list is in the first lines of `scriba.css`.
 
-## Barra fissa in alto
+## Sticky toolbar
 
-Aggiungi la classe `scriba-sticky` al contenitore dell'editor (`class` in Vue, `className` in
-React; con lo script per il browser l'opzione `stickyToolbar: true`): la barra degli strumenti
-resta in vista in cima alla finestra mentre un testo lungo scorre. Se la pagina ha
-un'intestazione fissa, spostala con `--scriba-sticky-offset`:
+Add the `scriba-sticky` class to the editor container (`class` in Vue, `className` in React;
+with the browser script, the `stickyToolbar: true` option): the toolbar stays visible at the top
+of the window while a long text scrolls. If the page has a fixed header, offset it with
+`--scriba-sticky-offset`:
 
 ```css
 :root {
-  --scriba-sticky-offset: 56px; /* altezza dell'intestazione fissa */
+  --scriba-sticky-offset: 56px; /* height of the fixed header */
 }
 ```
 
-Il tema lascia anche spazio sopra il cursore (`scroll-padding-top`), così il browser lo porta
-in vista sotto la barra e non dietro di essa (WCAG 2.4.11).
+The theme also leaves room above the cursor (`scroll-padding-top`), so the browser brings it
+into view below the toolbar and not behind it (WCAG 2.4.11).
 
-## Telefoni e tablet
+## Phones and tablets
 
-Con puntatore "grossolano" (`@media (pointer: coarse)`, cioè il dito) pulsanti e voci di menu
-diventano alti 44 px (2,75 rem); con il mouse i pulsanti sono alti 2,25 rem (almeno 24 px,
-WCAG 2.5.8). La pagina deve avere
+With a "coarse" pointer (`@media (pointer: coarse)`, that is, a finger) buttons and menu items
+become 44 px (2.75 rem) tall; with the mouse, buttons are 2.25 rem tall (at least 24 px,
+WCAG 2.5.8). The page must have
 `<meta name="viewport" content="width=device-width, initial-scale=1">`.
 
-## Modalità inline
+## Inline mode
 
-Il contenitore con la classe `scriba-inline` (la mette il componente con `inline`) prende
-caratteri, colori e misure della pagina, senza riquadro. Vedi [Iniziare](../../docs/iniziare.md#modalità-inline).
+The container with the `scriba-inline` class (the component adds it with `inline`) takes the
+page's fonts, colors and sizes, without a frame. See
+[Getting started](../../docs/getting-started.md#inline-mode).
 
-Altro: [Accessibilità](../../docs/accessibilita.md).
+More: [Accessibility](../../docs/accessibility.md).

@@ -1,3 +1,5 @@
+[English](../security.md) · **Italiano**
+
 # Sicurezza
 
 > In parole semplici: l'editor è la porta d'ingresso di una casa. Tutto ciò che entra (testo
@@ -178,7 +180,7 @@ e commenti. Dettagli in [Collaborazione](collaborazione.md).
 - Il documento può contenere istruzioni malevole rivolte all'AI (prompt injection): trattalo
   come dato nel tuo backend e non dare al modello strumenti che agiscono fuori dall'editor.
 
-Dettagli nella [guida AI](../packages/plugins/ai/README.md).
+Dettagli nella [guida AI](../../packages/plugins/ai/README.it.md).
 
 ## Lista di controllo per chi integra
 
@@ -188,4 +190,4 @@ Dettagli nella [guida AI](../packages/plugins/ai/README.md).
 - [ ] Collaborazione: `authenticate` che verifica davvero il token e i permessi per documento.
 - [ ] AI: chiave solo sul server, limiti di frequenza e dimensione, utenti informati.
 
-Hai trovato una vulnerabilità? Segui [SECURITY.md](../SECURITY.md) (segnalazione privata).
+Hai trovato una vulnerabilità? Segui [SECURITY.md](../../SECURITY.it.md) (segnalazione privata).

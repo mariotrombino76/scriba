@@ -1,14 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-find-replace
 
-Trova e sostituisci per l'editor Scriba, con evidenziazione dei risultati nel testo, ricerca con
-maiuscole/minuscole, parola intera ed **espressioni regolari**. Come il plugin "Search and
-Replace" di TinyMCE, ma con le regex eseguite in modo sicuro (vedi sotto).
+Find and replace for the Scriba editor, with match highlighting in the text, case-sensitive search,
+whole word and **regular expressions**. Like the TinyMCE "Search and Replace" plugin, but with
+regexes run safely (see below).
 
 ```bash
 pnpm add @scriba-editor/plugin-find-replace
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -18,69 +20,69 @@ import {
   findReplaceToolbarItem,
 } from '@scriba-editor/plugin-find-replace'
 
-// nello stato dell'editor
+// in the editor state
 plugins: [...findReplacePlugins(), keymap(findReplaceKeymap(t), { priority: 80, readOnly: true })]
 
-// nella barra degli strumenti o nel menu Modifica
+// in the toolbar or in the Edit menu
 const find = findReplaceToolbarItem(t)
 ```
 
-Il keymap va registrato con `readOnly: true`: la ricerca funziona anche in sola lettura (la
-sostituzione resta disattivata).
+Register the keymap with `readOnly: true`: search also works in read-only mode (replace stays
+disabled).
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                          | Cosa fa                                                           |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `findReplacePlugins()`                                                                        | Stato e decorazioni dei risultati evidenziati.                    |
-| `findReplaceKeymap(t, options?)`                                                              | Ctrl/Cmd+F apre il pannello (al posto della ricerca del browser). |
-| `findReplaceToolbarItem(t, options?)`                                                         | Pulsante "Trova e sostituisci" (icona di ricerca).                |
-| `openFindPanel`, `FindPanel`                                                                  | Il pannello, apribile da codice.                                  |
-| `SearchRunner`, `WORKER_POLICY`                                                               | Esegue le ricerche (le regex in un Web Worker).                   |
-| `compileQuery`, `searchTexts`, `expandReplacement`, `MAX_QUERY_LENGTH`, `DEFAULT_MAX_MATCHES` | Il motore di ricerca, funzioni pure su stringhe.                  |
-| `findKey`, `getFindState`, `blockTexts`, `toMatches`                                          | Accesso allo stato dei risultati.                                 |
+| Name                                                                                          | What it does                                                |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `findReplacePlugins()`                                                                        | State and decorations for the highlighted matches.          |
+| `findReplaceKeymap(t, options?)`                                                              | Ctrl/Cmd+F opens the panel (instead of the browser search). |
+| `findReplaceToolbarItem(t, options?)`                                                         | "Find and replace" button (search icon).                    |
+| `openFindPanel`, `FindPanel`                                                                  | The panel, which you can open from code.                    |
+| `SearchRunner`, `WORKER_POLICY`                                                               | Runs the searches (regexes in a Web Worker).                |
+| `compileQuery`, `searchTexts`, `expandReplacement`, `MAX_QUERY_LENGTH`, `DEFAULT_MAX_MATCHES` | The search engine, pure functions on strings.               |
+| `findKey`, `getFindState`, `blockTexts`, `toMatches`                                          | Access to the match state.                                  |
 
 `options` (`FindReplaceOptions`):
 
-| Opzione        | Descrizione                                                                      |
-| -------------- | -------------------------------------------------------------------------------- |
-| `timeout`      | Tempo massimo di una ricerca con regex, in ms (default 1000).                    |
-| `maxMatches`   | Risultati massimi riportati (default 10 000).                                    |
-| `createWorker` | Fabbrica di worker personalizzata, se il tuo bundler richiede un'altra sintassi. |
+| Option         | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| `timeout`      | Maximum time for a regex search, in ms (default 1000).           |
+| `maxMatches`   | Maximum number of matches reported (default 10 000).             |
+| `createWorker` | Custom worker factory, if your bundler needs a different syntax. |
 
-## Pannello
+## Panel
 
-Finestra **non modale**: il documento resta visibile e modificabile. Campi "Trova" e "Sostituisci",
-opzioni (maiuscole/minuscole, parola intera, espressione regolare), pulsanti precedente/successivo,
-sostituisci e sostituisci tutto.
+A **non-modal** dialog: the document stays visible and editable. "Find" and "Replace with" fields,
+options (match case, whole word, regular expression), previous/next buttons, replace and replace
+all.
 
-| Tasto                         | Azione                                                           |
-| ----------------------------- | ---------------------------------------------------------------- |
-| Ctrl/Cmd+F                    | Apre (o porta il focus sul) pannello                             |
-| Invio / Maiusc+Invio          | Risultato successivo / precedente (nel campo "Trova")            |
-| Invio nel campo "Sostituisci" | Sostituisce il risultato corrente                                |
-| Esc                           | Chiude il pannello e seleziona nell'editor il risultato corrente |
+| Key                               | Action                                                       |
+| --------------------------------- | ------------------------------------------------------------ |
+| Ctrl/Cmd+F                        | Opens (or moves focus to) the panel                          |
+| Enter / Shift+Enter               | Next / previous match (in the "Find" field)                  |
+| Enter in the "Replace with" field | Replaces the current match                                   |
+| Esc                               | Closes the panel and selects the current match in the editor |
 
-Nelle regex, nella sostituzione valgono `$&` (tutta la corrispondenza), `$1`…`$99` (gruppi) e `$$`
-(un dollaro). Nel testo semplice la sostituzione è letterale.
+With regexes, the replacement supports `$&` (the whole match), `$1`…`$99` (groups) and `$$` (a
+dollar sign). With plain text the replacement is literal.
 
-## Sicurezza
+## Security
 
-Una regex scritta dall'utente può essere "catastrofica" e bloccare la pagina (ReDoS). Per questo:
+A regex written by the user can be "catastrophic" and freeze the page (ReDoS). For this reason:
 
-- il testo semplice è sempre cercato come stringa con escape (tempo lineare);
-- le espressioni regolari girano in un **Web Worker** che viene terminato allo scadere del tempo
-  limite (`timeout`): l'utente vede un messaggio e la pagina non si blocca;
-- la lunghezza della ricerca è limitata a 500 caratteri e i risultati a `maxMatches`;
-- le corrispondenze vuote vengono ignorate (`a*` non cicla all'infinito).
+- plain text is always searched as an escaped string (linear time);
+- regular expressions run in a **Web Worker** that is terminated when the time limit (`timeout`)
+  expires: the user sees a message and the page does not freeze;
+- the search length is limited to 500 characters and the matches to `maxMatches`;
+- empty matches are ignored (`a*` does not loop forever).
 
-Se la tua CSP ha una direttiva `trusted-types`, consenti la policy `scriba-worker`; se i worker non
-sono utilizzabili, le ricerche con regex non partono (viene mostrato un messaggio) mentre il testo
-semplice continua a funzionare. Vedi [sicurezza](../../../docs/sicurezza.md).
+If your CSP has a `trusted-types` directive, allow the `scriba-worker` policy; if workers cannot be
+used, regex searches do not start (a message is shown) while plain text keeps working. See
+[security](../../../docs/security.md).
 
-## Accessibilità
+## Accessibility
 
-Il numero di risultati ("3 di 12") è in una regione `status` collegata al campo con
-`aria-describedby`; il pannello ha titolo e campi etichettati, è usabile da tastiera e Esc riporta
-il focus nell'editor. Vedi [accessibilità](../../../docs/accessibilita.md) e
-[plugin](../../../docs/plugin.md).
+The number of matches ("3 of 12") is in a `status` region linked to the field with
+`aria-describedby`; the panel has a title and labeled fields, is keyboard-usable, and Esc returns
+focus to the editor. See [accessibility](../../../docs/accessibility.md) and
+[plugins](../../../docs/plugins.md).

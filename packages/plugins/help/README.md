@@ -1,15 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-help
 
-Il menu "Aiuto" dell'editor Scriba: una finestra con **tutte le scorciatoie da tastiera**, divise
-in gruppi e con un campo di ricerca. Come la finestra "Help" di TinyMCE (Alt+0), ma l'elenco si
-costruisce da solo a partire dai pulsanti e dai menu realmente presenti, quindi non va mai fuori
-sincronia.
+The "Help" menu of the Scriba editor: a dialog with **all the keyboard shortcuts**, split into
+groups and with a search field. Like TinyMCE's "Help" dialog (Alt+0), but the list builds itself
+from the buttons and menus that are actually present, so it never goes out of sync.
 
 ```bash
 pnpm add @scriba-editor/plugin-help
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -25,7 +26,7 @@ import {
 
 const helpOptions: HelpOptions = {
   t,
-  // letto all'apertura: i gruppi riflettono i pulsanti e i menu di quel momento
+  // read when the dialog opens: the groups reflect the buttons and menus at that moment
   groups: () => [
     shortcutsFromItems([...toolbar.items, ...menubar.menus.flatMap((m) => m.items)]),
     editingHelp({ slash: true, mentions: true }),
@@ -34,51 +35,51 @@ const helpOptions: HelpOptions = {
   ],
 }
 
-// nello stato dell'editor
+// in the editor state
 plugins: [keymap(helpKeymap(helpOptions), { priority: 80, readOnly: true })]
 
-// nel menu Aiuto
+// in the Help menu
 const entry = helpItem(helpOptions)
 ```
 
-## Opzioni (`HelpOptions`)
+## Options (`HelpOptions`)
 
-| Opzione  | Descrizione                                                                   |
-| -------- | ----------------------------------------------------------------------------- |
-| `t`      | Traduttore (obbligatorio).                                                    |
-| `groups` | I gruppi da mostrare, in ordine: un array, o una funzione letta all'apertura. |
-| `mac`    | Notazione dei tasti (Cmd/Ctrl); se manca viene rilevata.                      |
+| Option   | Description                                                                       |
+| -------- | --------------------------------------------------------------------------------- |
+| `t`      | Translator (required).                                                            |
+| `groups` | The groups to show, in order: an array, or a function read when the dialog opens. |
+| `mac`    | Key notation (Cmd/Ctrl); detected if missing.                                     |
 
-## Gruppi pronti
+## Ready-made groups
 
-| Funzione                                    | Contenuto                                                                                                |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `shortcutsFromItems(items)`                 | Le scorciatoie dei pulsanti e dei menu, con le loro etichette; ogni combinazione compare una sola volta. |
-| `editingHelp({ slash?, mentions? })`        | Tasti senza pulsante: a capo, incolla senza formato, Tab, Maiusc+Tab; `/` e `@` se usati.                |
-| `markdownHelp()`                            | Le scorciatoie Markdown di `@scriba-editor/plugin-markdown` (`# `, `- `, `**testo**`, …).                |
-| `navigationHelp({ bubble?, contextMenu? })` | Frecce, Esc, Alt+F10 (barra sulla selezione), Maiusc+F10 (menu contestuale).                             |
+| Function                                    | Content                                                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `shortcutsFromItems(items)`                 | The shortcuts of buttons and menus, with their labels; each combination appears only once.        |
+| `editingHelp({ slash?, mentions? })`        | Keys without a button: line break, paste without formatting, Tab, Shift+Tab; `/` and `@` if used. |
+| `markdownHelp()`                            | The Markdown shortcuts of `@scriba-editor/plugin-markdown` (`# `, `- `, `**text**`, …).           |
+| `navigationHelp({ bubble?, contextMenu? })` | Arrow keys, Esc, Alt+F10 (toolbar on the selection), Shift+F10 (context menu).                    |
 
-Un gruppo è `HelpGroup { id, title, shortcuts }` e una riga è `HelpShortcut { keys?, typed?, label }`
-(`keys` sono combinazioni come `"Mod-b"`, `typed` è il testo da digitare): puoi aggiungere i tuoi.
+A group is `HelpGroup { id, title, shortcuts }` and a row is `HelpShortcut { keys?, typed?, label }`
+(`keys` are combinations such as `"Mod-b"`, `typed` is the text to type): you can add your own.
 
-## Esportazioni
+## Exports
 
-`helpItem(options)` (voce "Scorciatoie da tastiera…", attiva anche in sola lettura),
+`helpItem(options)` ("Keyboard shortcuts…" item, enabled in read-only mode too),
 `helpKeymap(options)`, `openHelpDialog(view, options)`, `shortcutsFromItems`, `editingHelp`,
-`markdownHelp`, `navigationHelp`, tipi `HelpOptions`, `HelpGroup`, `HelpShortcut`.
+`markdownHelp`, `navigationHelp`, types `HelpOptions`, `HelpGroup`, `HelpShortcut`.
 
-## Scorciatoia
+## Shortcut
 
-| Tasto | Azione                             |
-| ----- | ---------------------------------- |
-| Alt+0 | Apre la finestra delle scorciatoie |
+| Key   | Action                     |
+| ----- | -------------------------- |
+| Alt+0 | Opens the shortcuts dialog |
 
-Registra il keymap con `readOnly: true`.
+Register the keymap with `readOnly: true`.
 
-## Accessibilità
+## Accessibility
 
-Finestra modale con focus trap; il focus torna all'editor alla chiusura. Il campo di ricerca è
-etichettato e filtra le righe; l'area scorrevole ha `role="region"` ed è raggiungibile da tastiera,
-ogni gruppo è una tabella con intestazione; "nessun risultato" è annunciato (`role="status"`). La
-finestra è costruita solo con `createElement` e `textContent`. Vedi
-[accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+Modal dialog with a focus trap; focus returns to the editor on close. The search field is
+labeled and filters the rows; the scrollable area has `role="region"` and is reachable from the
+keyboard, each group is a table with a header; "no results" is announced (`role="status"`). The
+dialog is built only with `createElement` and `textContent`. See
+[accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).

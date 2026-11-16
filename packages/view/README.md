@@ -1,14 +1,19 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/view
 
-La "vetrina" di Scriba: mostra un `EditorState` nel browser con un `contentEditable` controllato, intercetta `beforeinput`, gestisce la composizione IME e sincronizza la selezione tra DOM e modello.
+The "shop window" of Scriba: it shows an `EditorState` in the browser with a controlled
+`contentEditable`, intercepts `beforeinput`, handles IME composition and syncs the selection
+between the DOM and the model.
 
 ```bash
 pnpm add @scriba-editor/view @scriba-editor/core
 ```
 
-`@scriba-editor/view` non conosce i plugin specifici: parla con il core tramite stato e transazioni.
+`@scriba-editor/view` does not know specific plugins: it talks to the core through state and
+transactions.
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -24,7 +29,7 @@ import { EditorView, parseContent, serializeContent } from '@scriba-editor/view'
 import '@scriba-editor/themes/scriba.css'
 
 const state = EditorState.create({
-  doc: parseContent(basicSchema, '<p>Ciao</p>', 'html'),
+  doc: parseContent(basicSchema, '<p>Hello</p>', 'html'),
   plugins: [
     history(),
     keymap(historyKeymap),
@@ -35,60 +40,61 @@ const state = EditorState.create({
 
 const view = new EditorView(document.querySelector('#editor')!, {
   state,
-  label: 'Editor di testo formattato',
-  // opzionale: la nuova transazione va applicata e mostrata da te
+  label: 'Rich text editor',
+  // optional: you apply and show the new transaction yourself
   // dispatchTransaction(tr) { this.updateState(this.state.apply(tr)) },
 })
 
-// per salvare
+// to save
 const html = serializeContent(view.state.doc, 'html')
 ```
 
 ## `EditorView`
 
-`new EditorView(place, options)` crea l'elemento `contentEditable` (classe `scriba-editor`,
-`role="textbox"`, `aria-multiline="true"`) dentro `place`. Il browser non modifica mai il DOM da
-solo: ogni input diventa una transazione e il DOM viene aggiornato dal modello, solo nei blocchi
-cambiati.
+`new EditorView(place, options)` creates the `contentEditable` element (class `scriba-editor`,
+`role="textbox"`, `aria-multiline="true"`) inside `place`. The browser never changes the DOM on
+its own: every input becomes a transaction and the DOM is updated from the model, only in the
+changed blocks.
 
-| Opzione               | Significato                                                                        |
-| --------------------- | ---------------------------------------------------------------------------------- |
-| `state`               | Lo `EditorState` iniziale (obbligatorio).                                          |
-| `dispatchTransaction` | Riceve ogni transazione. Default: `view.updateState(view.state.apply(tr))`.        |
-| `editable`            | `(state) => boolean`: se il contenuto si può modificare. Default: sempre.          |
-| `canAnnotate`         | `(state) => boolean`: in sola lettura, se si può ancora commentare.                |
-| `label`               | Nome accessibile dell'area (`aria-label`).                                         |
-| `nodeViews`           | Viste personalizzate dei nodi atomici, per nome del tipo (vedi `NodeViewFactory`). |
+| Option                | Meaning                                                                        |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `state`               | The initial `EditorState` (required).                                          |
+| `dispatchTransaction` | Receives every transaction. Default: `view.updateState(view.state.apply(tr))`. |
+| `editable`            | `(state) => boolean`: whether the content can be edited. Default: always.      |
+| `canAnnotate`         | `(state) => boolean`: in read-only mode, whether commenting is still allowed.  |
+| `label`               | Accessible name of the area (`aria-label`).                                    |
+| `nodeViews`           | Custom views for atomic nodes, by type name (see `NodeViewFactory`).           |
 
-Membri principali: `state`, `dom`, `dispatch(tr)`, `updateState(state)`, `subscribe(listener)`
-(restituisce la funzione per annullare l'iscrizione), `focus()`, `hasFocus()`, `editable`,
+Main members: `state`, `dom`, `dispatch(tr)`, `updateState(state)`, `subscribe(listener)`
+(returns the function to unsubscribe), `focus()`, `hasFocus()`, `editable`,
 `posAtCoords(x, y)`, `posAtDOM(node, offset)`, `domAtPos(pos)`, `destroy()`.
 
-## Contenuto: HTML o JSON
+## Content: HTML or JSON
 
-| Funzione                              | Descrizione                                                         |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| `parseContent(schema, value, format)` | Costruisce un documento da HTML (`'html'`) o JSON (`'json'`).       |
-| `serializeContent(doc, format)`       | Serializza il documento (stringa HTML o oggetto JSON).              |
-| `sameContent(a, b)`                   | Uguaglianza strutturale di due contenuti (evita cicli nei wrapper). |
-| `Content`, `ContentFormat`            | Tipi: `string \| NodeJSON` e `'html' \| 'json'`.                    |
+| Function                              | Description                                                     |
+| ------------------------------------- | --------------------------------------------------------------- |
+| `parseContent(schema, value, format)` | Builds a document from HTML (`'html'`) or JSON (`'json'`).      |
+| `serializeContent(doc, format)`       | Serializes the document (HTML string or JSON object).           |
+| `sameContent(a, b)`                   | Structural equality of two contents (avoids loops in wrappers). |
+| `Content`, `ContentFormat`            | Types: `string \| NodeJSON` and `'html' \| 'json'`.             |
 
-Altre esportazioni: `renderSpec`, `parseInertHTML`, `TRUSTED_TYPES_POLICY`, `DecorationIndex`,
-`stateDecorations`, `someProp`, i tipi `NodeView`, `NodeViewFactory`, `PluginView`,
+Other exports: `renderSpec`, `parseInertHTML`, `TRUSTED_TYPES_POLICY`, `DecorationIndex`,
+`stateDecorations`, `someProp`, the types `NodeView`, `NodeViewFactory`, `PluginView`,
 `ViewPluginProps`, `ClipboardContent`, `TransformPastedDOM`.
 
-## Sicurezza
+## Security
 
-- Il contenuto che entra (`parseContent`, incolla, vista sorgente, trascinamento) è **input non
-  fidato**: l'HTML viene letto con `parseInertHTML` in un **documento inerte** (`DOMParser`,
-  mai `innerHTML` nella pagina attiva) e ricostruito dal parser dello schema; ciò che lo schema
-  non conosce viene scartato. Il JSON è validato da `schema.nodeFromJSON`.
-- Gli stili dinamici passano dal CSSOM (`el.style…`), mai da attributi `style` né da tag `<style>`
-  iniettati: l'editor funziona con una CSP rigida.
-- Con `require-trusted-types-for 'script'` consenti la policy `scriba` (`TRUSTED_TYPES_POLICY`)
-  nella direttiva `trusted-types`: serve solo a leggere l'HTML in un documento inerte.
-- L'HTML in uscita nasce dal documento, ma quello **salvato** va sempre ripassato sul server da
-  `@scriba-editor/sanitize-server`.
+- Incoming content (`parseContent`, paste, source view, drag and drop) is **untrusted input**:
+  the HTML is read with `parseInertHTML` in an **inert document** (`DOMParser`, never
+  `innerHTML` in the live page) and rebuilt by the schema parser; whatever the schema does not
+  know is dropped. JSON is validated by `schema.nodeFromJSON`.
+- Dynamic styles go through the CSSOM (`el.style…`), never through `style` attributes or
+  injected `<style>` tags: the editor works with a strict CSP.
+- With `require-trusted-types-for 'script'`, allow the `scriba` policy
+  (`TRUSTED_TYPES_POLICY`) in the `trusted-types` directive: it is used only to read HTML in an
+  inert document.
+- Outgoing HTML is generated from the document, but the **saved** HTML must always go through
+  `@scriba-editor/sanitize-server` on the server.
 
-Dettagli: [Sicurezza](../../docs/sicurezza.md), [Accessibilità](../../docs/accessibilita.md),
-[Concetti](../../docs/concetti.md).
+Details: [Security](../../docs/security.md), [Accessibility](../../docs/accessibility.md),
+[Concepts](../../docs/concepts.md).

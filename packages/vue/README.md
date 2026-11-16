@@ -1,14 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/vue
 
-L'editor Scriba come componente Vue 3 (`<ScribaEditor v-model>`) e composable `useScriba()`.
+The Scriba editor as a Vue 3 component (`<ScribaEditor v-model>`) and a `useScriba()` composable.
 
 ```bash
 pnpm add @scriba-editor/vue @scriba-editor/themes
 ```
 
-Richiede `vue` 3.5 o successivo.
+Requires `vue` 3.5 or later.
 
-## Uso
+## Usage
 
 ```vue
 <script setup lang="ts">
@@ -16,7 +18,7 @@ import { ref } from 'vue'
 import { ScribaEditor } from '@scriba-editor/vue'
 import '@scriba-editor/themes/scriba.css'
 
-const html = ref('<p>Ciao</p>')
+const html = ref('<p>Hello</p>')
 </script>
 
 <template>
@@ -24,40 +26,41 @@ const html = ref('<p>Ciao</p>')
 </template>
 ```
 
-Il contenuto (`v-model`, `setContent`) è **input non fidato**: passa sempre dal parser dello
-schema in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server`
-sul server prima di salvarlo o mostrarlo (vedi [Sicurezza](../../docs/sicurezza.md)).
+The content (`v-model`, `setContent`) is **untrusted input**: it always goes through the schema
+parser in an inert document. The saved HTML must still be run through
+`@scriba-editor/sanitize-server` on the server before you save or display it (see
+[Security](../../docs/security.md)).
 
-## Proprietà
+## Props
 
-| Proprietà    | Default                      | Significato                                                                                          |
-| ------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `modelValue` | `null`                       | Il contenuto (HTML o JSON), per `v-model`. Un valore cambiato dall'esterno sostituisce il documento. |
-| `format`     | `'html'`                     | `'html'` o `'json'`.                                                                                 |
-| `schema`     | `basicSchema`                | Lo schema (letto alla creazione).                                                                    |
-| `plugins`    | —                            | Plugin aggiuntivi (letti alla creazione).                                                            |
-| `editable`   | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                                             |
-| `label`      | "Editor di testo formattato" | Nome accessibile dell'area di scrittura (tradotto secondo `locale`).                                 |
-| `locale`     | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`).        |
-| `toolbar`    | `true`                       | Mostra la toolbar predefinita.                                                                       |
-| `inline`     | `false`                      | Modalità inline: stili della pagina, toolbar mobile solo mentre si scrive (letta al montaggio).      |
-| `nodeViews`  | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                                        |
+| Prop         | Default            | Meaning                                                                                        |
+| ------------ | ------------------ | ---------------------------------------------------------------------------------------------- |
+| `modelValue` | `null`             | The content (HTML or JSON), for `v-model`. A value changed from outside replaces the document. |
+| `format`     | `'html'`           | `'html'` or `'json'`.                                                                          |
+| `schema`     | `basicSchema`      | The schema (read at creation).                                                                 |
+| `plugins`    | —                  | Additional plugins (read at creation).                                                         |
+| `editable`   | `true`             | `false`: read-only (can be changed at any time).                                               |
+| `label`      | "Rich text editor" | Accessible name of the writing area (translated according to `locale`).                        |
+| `locale`     | `'it'`             | Language (`'it'`, `'en'`) or a messages object (`fr`, `de`, `es` from `@scriba-editor/i18n`).  |
+| `toolbar`    | `true`             | Shows the default toolbar.                                                                     |
+| `inline`     | `false`            | Inline mode: page styles, floating toolbar only while typing (read at mount).                  |
+| `nodeViews`  | —                  | Custom views of atomic nodes (read at creation).                                               |
 
-Evento: `update:modelValue`, emesso a ogni modifica dell'utente con il contenuto nel formato
-scelto (stringa HTML o oggetto JSON). Il componente espone `getContent()`, `setContent(content)`,
-`focus()`, `view` e `state` (usa un `ref` al componente). Per la barra fissa in cima alla finestra
-aggiungi la classe `scriba-sticky` (vedi [@scriba-editor/themes](../themes/README.md)).
+Event: `update:modelValue`, emitted on every user change with the content in the chosen format
+(HTML string or JSON object). The component exposes `getContent()`, `setContent(content)`,
+`focus()`, `view` and `state` (use a `ref` to the component). For a toolbar pinned to the top of
+the window, add the `scriba-sticky` class (see [@scriba-editor/themes](../themes/README.md)).
 
-Lo schema, i plugin e il formato vengono letti quando l'editor viene creato (al montaggio);
-`editable`, `label` e `locale` seguono le proprietà.
+The schema, plugins and format are read when the editor is created (at mount); `editable`,
+`label` and `locale` follow the props.
 
 ```vue
-<ScribaEditor v-model="doc" format="json" locale="en" :editable="!bloccato" inline />
+<ScribaEditor v-model="doc" format="json" locale="en" :editable="!locked" inline />
 ```
 
-## Composable `useScriba()`
+## `useScriba()` composable
 
-Per un'interfaccia tutta tua:
+For a fully custom UI:
 
 ```vue
 <script setup lang="ts">
@@ -66,7 +69,7 @@ import { useScriba } from '@scriba-editor/vue'
 
 const place = ref<HTMLElement | null>(null)
 const scriba = useScriba(place, {
-  content: '<p>Ciao</p>',
+  content: '<p>Hello</p>',
   onChange: (content) => console.log(content),
 })
 </script>
@@ -76,32 +79,32 @@ const scriba = useScriba(place, {
 </template>
 ```
 
-`useScriba(target, options)` crea l'editor al montaggio e lo distrugge allo smontaggio. Opzioni
-(`UseScribaOptions`): `schema`, `content`, `format`, `plugins`, `defaultPlugins` (`false` per
-sostituire cronologia e scorciatoie predefinite), `editable`, `label` (anche ref o getter),
-`onChange`, `nodeViews`. Restituisce `view` e `state` (shallow ref), `getContent()`,
-`setContent(content)` (non annullabile) e `focus()`. `defaultScribaPlugins(schema)` elenca i
-plugin predefiniti.
+`useScriba(target, options)` creates the editor at mount and destroys it at unmount. Options
+(`UseScribaOptions`): `schema`, `content`, `format`, `plugins`, `defaultPlugins` (`false` to
+replace the default history and shortcuts), `editable`, `label` (also a ref or getter),
+`onChange`, `nodeViews`. Returns `view` and `state` (shallow refs), `getContent()`,
+`setContent(content)` (not undoable) and `focus()`. `defaultScribaPlugins(schema)` lists the
+default plugins.
 
 ## Nuxt
 
-L'editor ha bisogno del DOM del browser: mettilo dentro `<ClientOnly>` (o in un componente
-`.client.vue`).
+The editor needs the browser DOM: put it inside `<ClientOnly>` (or in a `.client.vue`
+component).
 
-## Componenti Vue come nodi del documento
+## Vue components as document nodes
 
-`vueNodeView(Componente, { t, appContext, as })` disegna un nodo con un componente Vue; lo passi
-in `nodeViews`. Il componente riceve `node`, `attrs`, `selected`, `editable`, `updateAttrs`,
-`leave` e `t` (tipo `NodeViewProps`); per i nodi con contenuto usa `<NodeViewContent />`. Il
-documento resta la fonte di verità e l'HTML in uscita viene sempre da `toHTML` del nodo, mai dal
-DOM del componente. Esempi pronti: `TaskView` e `CalloutView`.
+`vueNodeView(Component, { t, appContext, as })` renders a node with a Vue component; you pass it
+in `nodeViews`. The component receives `node`, `attrs`, `selected`, `editable`, `updateAttrs`,
+`leave` and `t` (type `NodeViewProps`); for nodes with content, use `<NodeViewContent />`. The
+document stays the source of truth and the output HTML always comes from the node's `toHTML`,
+never from the component's DOM. Ready-made examples: `TaskView` and `CalloutView`.
 
 ```ts
 import { vueNodeView, TaskView } from '@scriba-editor/vue'
 const nodeViews = { task: vueNodeView(TaskView, { t }) }
 ```
 
-Altre esportazioni: `parseContent`, `serializeContent`, i tipi `Content` e `ContentFormat`.
+Other exports: `parseContent`, `serializeContent`, the types `Content` and `ContentFormat`.
 
-Altro: [Iniziare](../../docs/iniziare.md), [Accessibilità](../../docs/accessibilita.md),
-[Plugin](../../docs/plugin.md).
+More: [Getting started](../../docs/getting-started.md), [Accessibility](../../docs/accessibility.md),
+[Plugins](../../docs/plugins.md).

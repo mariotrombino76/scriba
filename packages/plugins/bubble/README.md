@@ -1,15 +1,17 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-bubble
 
-**Menu "bubble"** per l'editor Scriba: una piccola barra di formattazione che compare sopra il
-testo selezionato (grassetto, link, commento…). TinyMCE la chiama "quickbars" / selection toolbar.
+**Bubble menu** for the Scriba editor: a small formatting bar that appears above the selected
+text (bold, link, comment…). TinyMCE calls it "quickbars" / selection toolbar.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-bubble
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { bubbleKeymap, bubbleMenu } from '@scriba-editor/plugin-bubble'
@@ -30,37 +32,37 @@ const state = EditorState.create({
 })
 ```
 
-## Opzioni (`BubbleMenuOptions`)
+## Options (`BubbleMenuOptions`)
 
-| Opzione | Descrizione                                                                         |
-| ------- | ----------------------------------------------------------------------------------- |
-| `items` | I controlli della barra (`ToolbarItem[]`), gli stessi della toolbar principale.     |
-| `t`     | Traduttore di `@scriba-editor/i18n` (etichetta della barra: chiave `bubble.label`). |
-| `mac`   | Se mostrare le scorciatoie come ⌘ (default: rilevamento della piattaforma).         |
+| Option  | Description                                                            |
+| ------- | ---------------------------------------------------------------------- |
+| `items` | The bar controls (`ToolbarItem[]`), the same as in the main toolbar.   |
+| `t`     | Translator from `@scriba-editor/i18n` (bar label: key `bubble.label`). |
+| `mac`   | Whether to show shortcuts as ⌘ (default: platform detection).          |
 
-## Cosa esporta
+## Exports
 
-- `bubbleMenu(options)`: il plugin; la barra è un normale `scriba-toolbar` con la classe
+- `bubbleMenu(options)`: the plugin; the bar is a normal `scriba-toolbar` with the class
   `scriba-bubble`.
-- `bubbleKeymap()`: la scorciatoia **Alt+F10**, che porta il focus dentro la barra quando è visibile.
-- Tipo `BubbleMenuOptions`.
+- `bubbleKeymap()`: the **Alt+F10** shortcut, which moves focus into the bar when it is visible.
+- Type `BubbleMenuOptions`.
 
-## Comportamento e accessibilità
+## Behavior and accessibility
 
-- Compare con una selezione di testo non vuota e il focus nell'editor (o nella barra).
-- Non compare mentre il mouse sta ancora selezionando, nei blocchi di codice e quando l'editor è in
-  sola lettura. Chi può solo commentare (`canAnnotate`) la vede, con attivi solo i controlli
-  permessi.
-- Si posiziona sopra la selezione, o sotto se manca spazio; dopo un tocco va **sotto**, lasciando
-  libero lo spazio sopra al menu di sistema (copia, incolla).
-- Tastiera: Alt+F10 entra nella barra; una sola tappa di tabulazione, frecce per muoversi, Esc
-  riporta al testo. Esc nell'editor chiude la barra finché la selezione resta la stessa.
-- Ha `role="toolbar"` e stato `aria-pressed` come la toolbar principale; vedi
-  [accessibilità](../../../docs/accessibilita.md).
+- It appears with a non-empty text selection and focus in the editor (or in the bar).
+- It does not appear while the mouse is still selecting, in code blocks, or when the editor is
+  read-only. Users who can only comment (`canAnnotate`) see it, with only the allowed controls
+  enabled.
+- It is positioned above the selection, or below if there is not enough room; after a touch it
+  goes **below**, leaving the space above free for the system menu (copy, paste).
+- Keyboard: Alt+F10 enters the bar; a single tab stop, arrow keys to move, Esc goes back to the
+  text. Esc in the editor closes the bar as long as the selection stays the same.
+- It has `role="toolbar"` and `aria-pressed` state like the main toolbar; see
+  [accessibility](../../../docs/accessibility.md).
 
-## Note
+## Notes
 
-- Il posizionamento usa il CSSOM (`style.top`, `style.left`), compatibile con una CSP rigida
-  ([sicurezza](../../../docs/sicurezza.md)).
-- Il plugin non conosce i comandi dei singoli plugin: gli passi tu gli elementi. Vedi
-  [plugin](../../../docs/plugin.md).
+- Positioning uses the CSSOM (`style.top`, `style.left`), compatible with a strict CSP
+  ([security](../../../docs/security.md)).
+- The plugin does not know the commands of individual plugins: you pass it the items. See
+  [plugins](../../../docs/plugins.md).

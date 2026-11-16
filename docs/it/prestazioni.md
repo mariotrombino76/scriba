@@ -1,3 +1,5 @@
+[English](../performance.md) · **Italiano**
+
 # Prestazioni
 
 Obiettivo (CLAUDE.md §7): un documento da **1 MB di testo** resta fluido, con meno di **16 ms**

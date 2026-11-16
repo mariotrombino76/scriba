@@ -1,28 +1,30 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/sanitize-server
 
-Sanificazione dell'HTML lato server (Node, senza DOM del browser) con **lo stesso schema** dell'editor Scriba.
+Server-side HTML sanitization (Node, no browser DOM) with **the same schema** as the Scriba editor.
 
 ```bash
 pnpm add @scriba-editor/sanitize-server @scriba-editor/core
 ```
 
-## Perché è obbligatorio
+## Why it is mandatory
 
-La pulizia fatta nel browser è una comodità, non una protezione: chiunque può mandare HTML
-arbitrario alla tua API senza passare dall'editor. **Chi salva o mostra HTML ricevuto da un
-client deve ripassarlo da questo pacchetto**, con lo stesso schema usato nell'editor, prima di
-salvarlo e prima di mostrarlo.
+Cleaning done in the browser is a convenience, not a protection: anyone can send arbitrary HTML
+to your API without going through the editor. **If you save or display HTML received from a
+client, you must run it through this package**, with the same schema used in the editor, before
+saving it and before displaying it.
 
-## Uso
+## Usage
 
 ```ts
 import { sanitizeHTML, InputTooLargeError } from '@scriba-editor/sanitize-server'
-import { schema } from './schema.js' // lo stesso schema usato nel browser
+import { schema } from './schema.js' // the same schema used in the browser
 
-app.post('/api/note', (req, res) => {
+app.post('/api/notes', (req, res) => {
   try {
-    const pulito = sanitizeHTML(schema, String(req.body.html ?? ''))
-    salva(pulito)
+    const clean = sanitizeHTML(schema, String(req.body.html ?? ''))
+    save(clean)
     res.sendStatus(204)
   } catch (e) {
     if (e instanceof InputTooLargeError) return res.sendStatus(413)
@@ -31,43 +33,44 @@ app.post('/api/note', (req, res) => {
 })
 ```
 
-L'HTML è letto con `parse5` come farebbe il browser (documento intero, scripting disabilitato) e
-passa dal parser dello schema: tutto ciò che lo schema non conosce (`<script>`, attributi `on*`,
-stili liberi, protocolli non ammessi, SVG…) viene scartato. L'output è poi riscritto dal
-serializzatore, con escape di testo e attributi: non viene mai copiato dall'input.
+The HTML is read with `parse5` the way the browser would read it (whole document, scripting
+disabled) and goes through the schema parser: everything the schema does not know (`<script>`,
+`on*` attributes, free styles, disallowed protocols, SVG…) is discarded. The output is then
+rewritten by the serializer, with text and attributes escaped: it is never copied from the input.
 
-Se salvi in **JSON**, sul server ricostruisci il documento con `schema.nodeFromJSON(json)`:
-lancia un errore per tutto ciò che lo schema rifiuta.
+If you save as **JSON**, rebuild the document on the server with `schema.nodeFromJSON(json)`: it
+throws an error for everything the schema rejects.
 
 ## API
 
-| Esportazione                                | Descrizione                                                                                    |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `sanitizeHTML(schema, html, options?)`      | Analizza l'HTML con lo schema e lo serializza di nuovo: restituisce una stringa pulita.        |
-| `parseHTMLOnServer(schema, html, options?)` | Come sopra, ma restituisce il documento (`Node` di `@scriba-editor/core`) senza serializzarlo. |
-| `SanitizeOptions`                           | Opzioni (vedi sotto).                                                                          |
-| `InputTooLargeError`                        | Errore (`RangeError`) lanciato se l'input supera `maxInputLength`.                             |
-| `adaptParse5(node)`                         | Espone un nodo `parse5` come `DOMLike` per il parser del core (uso avanzato).                  |
+| Export                                      | Description                                                                                         |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `sanitizeHTML(schema, html, options?)`      | Parses the HTML with the schema and serializes it again: returns a clean string.                    |
+| `parseHTMLOnServer(schema, html, options?)` | Same as above, but returns the document (`Node` from `@scriba-editor/core`) without serializing it. |
+| `SanitizeOptions`                           | Options (see below).                                                                                |
+| `InputTooLargeError`                        | Error (`RangeError`) thrown if the input exceeds `maxInputLength`.                                  |
+| `adaptParse5(node)`                         | Exposes a `parse5` node as `DOMLike` for the core parser (advanced use).                            |
 
-### Opzioni
+### Options
 
-| Opzione          | Default     | Significato                                                             |
-| ---------------- | ----------- | ----------------------------------------------------------------------- |
-| `maxInputLength` | `5_000_000` | Lunghezza massima dell'input in caratteri; oltre, `InputTooLargeError`. |
-| `maxDepth`       | `256`       | Profondità massima di annidamento (da `HTMLParseOptions` del core).     |
-| `maxNodes`       | `200_000`   | Numero massimo di nodi creati (da `HTMLParseOptions` del core).         |
+| Option           | Default     | Meaning                                                               |
+| ---------------- | ----------- | --------------------------------------------------------------------- |
+| `maxInputLength` | `5_000_000` | Maximum input length in characters; beyond it, `InputTooLargeError`.  |
+| `maxDepth`       | `256`       | Maximum nesting depth (from the core's `HTMLParseOptions`).           |
+| `maxNodes`       | `200_000`   | Maximum number of nodes created (from the core's `HTMLParseOptions`). |
 
-Se superi `maxDepth` o `maxNodes` il parser lancia `HTMLLimitError` (esportato da `@scriba-editor/core`);
-un input che non è una stringa lancia `TypeError`. Gestisci questi errori rispondendo con un
-errore al client, senza salvare nulla.
+If you exceed `maxDepth` or `maxNodes`, the parser throws `HTMLLimitError` (exported by
+`@scriba-editor/core`); an input that is not a string throws `TypeError`. Handle these errors by
+responding to the client with an error, without saving anything.
 
-## Note
+## Notes
 
-- Usa **lo stesso schema** del browser (stessi nodi, mark e plugin): con uno schema più povero
-  perderesti contenuto legittimo, con uno più ricco accetteresti ciò che l'editor non produce.
-- Anche l'HTML serializzato dal documento di `documentFromYjs` (`@scriba-editor/collab-server`) va ripassato da qui prima
-  di essere mostrato altrove.
-- Questo pacchetto non sostituisce la validazione degli upload (tipo reale, dimensione,
-  antivirus, niente SVG): vedi [Sicurezza](../../docs/sicurezza.md).
+- Use **the same schema** as the browser (same nodes, marks and plugins): with a poorer schema you
+  would lose legitimate content, with a richer one you would accept what the editor does not
+  produce.
+- The HTML serialized from the `documentFromYjs` document (`@scriba-editor/collab-server`) must
+  also be run through this package before being displayed elsewhere.
+- This package does not replace upload validation (real type, size, antivirus, no SVG): see
+  [Security](../../docs/security.md).
 
-Guida completa e lista di controllo per chi integra: [Sicurezza](../../docs/sicurezza.md).
+Full guide and checklist for integrators: [Security](../../docs/security.md).

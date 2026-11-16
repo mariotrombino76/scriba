@@ -1,14 +1,16 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-footnotes
 
-Note a piè di pagina per l'editor Scriba: riferimenti numerati nel testo ed elenco delle note in
-fondo al documento, **sempre sincronizzati**. Come il plugin per le note di TinyMCE, ma l'ordine e i
-numeri sono mantenuti dall'editor.
+Footnotes for the Scriba editor: numbered references in the text and the list of notes at the end
+of the document, **always in sync**. Like TinyMCE's footnotes plugin, but the order and the
+numbers are maintained by the editor.
 
 ```bash
 pnpm add @scriba-editor/plugin-footnotes
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { Schema, keymap, basicSchemaSpec } from '@scriba-editor/core'
@@ -26,65 +28,65 @@ const schema = new Schema({
   marks: basicSchemaSpec.marks,
 })
 
-// nello stato dell'editor
+// in the editor state
 plugins: [keymap(footnotesKeymap(schema), { priority: 70 }), footnotes()]
 
-// menu Inserisci e menu slash ("/nota")
+// Insert menu and slash menu ("/footnote")
 const items = [footnoteToolbarItem(schema), footnoteGoToItem()]
 const slash = footnoteSlashItem(schema)
 ```
 
-## Come funziona
+## How it works
 
-In HTML un riferimento e la sua nota sono collegati da un numero:
+In HTML a reference and its note are linked by a number:
 
 ```html
-testo<sup><a href="#fn-1" id="fnref-1">1</a></sup> …
+text<sup><a href="#fn-1" id="fnref-1">1</a></sup> …
 <ol class="scriba-footnotes">
-  <li id="fn-1"><p>La nota.</p></li>
+  <li id="fn-1"><p>The note.</p></li>
 </ol>
 ```
 
-`footnotes()` rimette in ordine dopo ogni modifica (digitazione, incolla, annulla, collaborazione): i
-riferimenti sono numerati 1, 2, 3… nell'ordine di lettura; c'è un solo elenco in fondo al documento
-con una nota per riferimento, nello stesso ordine; un riferimento senza nota ne riceve una vuota, le
-note senza riferimento spariscono. Se due riferimenti hanno la stessa chiave (uno è stato copiato)
-la nota resta a quello già presente.
+`footnotes()` puts things back in order after every change (typing, paste, undo, collaboration):
+references are numbered 1, 2, 3… in reading order; there is a single list at the end of the
+document with one note per reference, in the same order; a reference without a note gets an empty
+one, notes without a reference disappear. If two references have the same key (one was copied),
+the note stays with the one that was already there.
 
-## Esportazioni
+## Exports
 
-| Nome                                   | Cosa fa                                                                                                          |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `footnoteNodes`                        | Nodi dello schema: `footnote_ref` (inline, atomo), `footnotes` (elenco), `footnote` (nota, uno o più paragrafi). |
-| `footnotes()`                          | Plugin che mantiene numeri, ordine ed elenco delle note.                                                         |
-| `insertFootnote(schema)`               | Comando: inserisce il riferimento nel cursore e la nota nell'elenco; il cursore passa nella nota.                |
-| `goToFootnote`                         | Comando: dal riferimento selezionato alla nota, e dalla nota al riferimento.                                     |
-| `footnotesKeymap(schema)`              | Scorciatoie (vedi sotto).                                                                                        |
-| `footnoteToolbarItem(schema)`          | Voce "Inserisci nota".                                                                                           |
-| `footnoteGoToItem()`                   | Voce "Vai alla nota / al testo" (per menu e menu contestuale).                                                   |
-| `footnoteSlashItem(schema)`            | Voce del menu slash.                                                                                             |
-| `syncFootnotes(tr, schema, existing?)` | Aggiunge a una transazione i passi che rimettono in ordine le note.                                              |
-| `FOOTNOTES_CLASS`, `MAX_FOOTNOTES`     | Classe dell'elenco (`scriba-footnotes`) e numero massimo di note (9999).                                         |
+| Name                                   | What it does                                                                                                |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `footnoteNodes`                        | Schema nodes: `footnote_ref` (inline, atom), `footnotes` (list), `footnote` (note, one or more paragraphs). |
+| `footnotes()`                          | Plugin that maintains the numbers, order and list of notes.                                                 |
+| `insertFootnote(schema)`               | Command: inserts the reference at the cursor and the note in the list; the cursor moves into the note.      |
+| `goToFootnote`                         | Command: from the selected reference to the note, and from the note to the reference.                       |
+| `footnotesKeymap(schema)`              | Shortcuts (see below).                                                                                      |
+| `footnoteToolbarItem(schema)`          | "Footnote" item.                                                                                            |
+| `footnoteGoToItem()`                   | "Go to the note or back to the text" item (for menus and the context menu).                                 |
+| `footnoteSlashItem(schema)`            | Slash menu item.                                                                                            |
+| `syncFootnotes(tr, schema, existing?)` | Adds to a transaction the steps that put the notes back in order.                                           |
+| `FOOTNOTES_CLASS`, `MAX_FOOTNOTES`     | List class (`scriba-footnotes`) and maximum number of notes (9999).                                         |
 
-## Scorciatoie
+## Shortcuts
 
-| Tasto                              | Azione                             |
-| ---------------------------------- | ---------------------------------- |
-| Ctrl/Cmd+Alt+F                     | Inserisce una nota a piè di pagina |
-| Invio (su riferimento selezionato) | Apre la sua nota                   |
+| Key                             | Action             |
+| ------------------------------- | ------------------ |
+| Ctrl/Cmd+Alt+F                  | Inserts a footnote |
+| Enter (on a selected reference) | Opens its note     |
 
-Il comando non è disponibile nei blocchi di codice, dentro una nota (niente note nelle note) né dove
-lo schema non ammette il riferimento.
+The command is not available in code blocks, inside a note (no notes within notes), or where the
+schema does not allow the reference.
 
-## Sicurezza
+## Security
 
-- Gli id in HTML sono **solo** `fn-<numero>` e `fnref-<numero>` (prefissi fissi, numeri 1–9999 senza
-  zeri iniziali): niente DOM clobbering di variabili globali della pagina.
-- L'elenco viene riconosciuto in ingresso solo con la classe `scriba-footnotes`; ciò che non
-  corrisponde viene scartato dal parser dello schema.
-- La chiave che lega riferimento e nota resta nell'editor, non nell'HTML (solo `[a-z0-9]`, al massimo
-  24 caratteri).
+- The ids in HTML are **only** `fn-<number>` and `fnref-<number>` (fixed prefixes, numbers 1–9999
+  without leading zeros): no DOM clobbering of the page's global variables.
+- On input, the list is recognized only with the `scriba-footnotes` class; anything that does not
+  match is discarded by the schema parser.
+- The key that ties a reference to its note stays in the editor, not in the HTML (only `[a-z0-9]`,
+  at most 24 characters).
 
-L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server`: vedi
-[sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md). Per la tastiera e i
-dialoghi vedi [accessibilità](../../../docs/accessibilita.md).
+The saved HTML must still be re-sanitized with `@scriba-editor/sanitize-server`: see
+[security](../../../docs/security.md) and [plugins](../../../docs/plugins.md). For keyboard and
+dialogs see [accessibility](../../../docs/accessibility.md).

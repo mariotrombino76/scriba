@@ -1,20 +1,23 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-word-count
 
-Conteggio di parole e caratteri come il plugin `wordcount` di TinyMCE: un contatore nella barra di stato e un dialogo con i numeri del documento e della selezione.
+Word and character count like the TinyMCE `wordcount` plugin: a counter in the status bar and a
+dialog with the numbers for the document and the selection.
 
 ```bash
 pnpm add @scriba-editor/plugin-word-count
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { createWordCountStatus, openWordCountDialog } from '@scriba-editor/plugin-word-count'
 
-// contatore nella barra di stato (un pulsante che apre il dialogo)
+// counter in the status bar (a button that opens the dialog)
 statusbar.append(createWordCountStatus(view, t).el)
 
-// voce di menu "Conteggio parole"
+// "Word count" menu item
 const wordCountItem: ToolbarButton = {
   type: 'button',
   id: 'wordcount',
@@ -25,28 +28,38 @@ const wordCountItem: ToolbarButton = {
 }
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                       | Cosa fa                                                                                                |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| `createWordCountStatus(view, t, options?)` | Pulsante "N parole"; restituisce `{ el, destroy() }`                                                   |
-| `openWordCountDialog(view, t, options?)`   | Dialogo con parole, caratteri e caratteri senza spazi, per documento e selezione                       |
-| `WordCountOptions`                         | `locale` (predefinito: lingua della pagina), `delay` (ms di pausa prima di ricontare, predefinito 300) |
-| `countString(text, locale?)`               | `{ words, characters, charactersNoSpaces }` di un testo                                                |
-| `countWords(text, locale?)`                | Solo le parole (più veloce)                                                                            |
-| `countRange(doc, from?, to?, locale?)`     | Conteggio di un intervallo del documento                                                               |
-| `countState(state, locale?)`               | `{ document, selection }`; `selection` è `null` se non c'è selezione                                   |
-| `rangeText(doc, from?, to?)`               | Testo semplice di un intervallo: blocchi, a capo e immagini separano le parole                         |
-| `TextCount`                                | Tipo del risultato                                                                                     |
+| Name                                       | What it does                                                                                    |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `createWordCountStatus(view, t, options?)` | "N words" button; returns `{ el, destroy() }`                                                   |
+| `openWordCountDialog(view, t, options?)`   | Dialog with words, characters and characters without spaces, for the document and the selection |
+| `WordCountOptions`                         | `locale` (default: the page language), `delay` (ms of pause before counting again, default 300) |
+| `countString(text, locale?)`               | `{ words, characters, charactersNoSpaces }` of a text                                           |
+| `countWords(text, locale?)`                | Words only (faster)                                                                             |
+| `countRange(doc, from?, to?, locale?)`     | Count of a document range                                                                       |
+| `countState(state, locale?)`               | `{ document, selection }`; `selection` is `null` if there is no selection                       |
+| `rangeText(doc, from?, to?)`               | Plain text of a range: blocks, line breaks and images separate words                            |
+| `TextCount`                                | Result type                                                                                     |
 
-## Come conta
+## How it counts
 
-Le parole vengono da `Intl.Segmenter` quando disponibile, quindi funziona anche per lingue senza spazi come il giapponese (altrimenti una regola di riserva su lettere e cifre, con apostrofo e trattino interni: "l'albero", "e-mail"). I caratteri sono quelli percepiti dalle persone (un'emoji o "é" vale uno), con gli spazi ma senza gli a capo. Il contatore si aggiorna quando si smette di scrivere (`delay`), così resta fluido nei documenti grandi.
+Words come from `Intl.Segmenter` when available, so it also works for languages without spaces
+such as Japanese (otherwise a fallback rule on letters and digits, with inner apostrophes and
+hyphens: "l'albero", "e-mail"). Characters are the ones people perceive (an emoji or "é" counts
+as one), including spaces but not line breaks. The counter updates when you stop typing
+(`delay`), so it stays smooth in large documents.
 
-## Accessibilità
+## Accessibility
 
-Il contatore è un `<button>` raggiungibile da tastiera; il dialogo ha focus trap, restituisce il focus all'editor e presenta i numeri in una vera tabella con intestazioni di colonna e di riga (`scope`). Il singolare e il plurale ("1 parola", "2 parole") sono tradotti, e i numeri seguono il formato della lingua.
+The counter is a `<button>` reachable from the keyboard; the dialog has a focus trap, returns
+focus to the editor and shows the numbers in a real table with column and row headers
+(`scope`). Singular and plural ("1 word", "2 words") are translated, and numbers follow the
+language's format.
 
-## Note
+## Notes
 
-Il testo è calcolato dal documento (mai dal DOM) e mostrato come testo. Vedi [plugin](../../../docs/plugin.md) e [accessibilità](../../../docs/accessibilita.md). Si affianca al percorso e alla maniglia di [@scriba-editor/plugin-statusbar](../statusbar/README.md).
+The text is computed from the document (never from the DOM) and shown as text. See
+[plugins](../../../docs/plugins.md) and [accessibility](../../../docs/accessibility.md). It sits
+next to the path and the resize handle of
+[@scriba-editor/plugin-statusbar](../statusbar/README.md).

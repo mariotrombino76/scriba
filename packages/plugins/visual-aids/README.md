@@ -1,43 +1,45 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-visual-aids
 
-Aiuti visivi di TinyMCE: **Mostra blocchi** (`visualblocks`) e **Mostra caratteri invisibili** (`visualchars`). Servono solo durante la scrittura e **non finiscono mai nell'HTML**.
+TinyMCE visual aids: **Show blocks** (`visualblocks`) and **Show invisible characters** (`visualchars`). They are only for writing and **never end up in the HTML**.
 
 ```bash
 pnpm add @scriba-editor/plugin-visual-aids
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { visualAids, visualAidsItems } from '@scriba-editor/plugin-visual-aids'
 
 const plugins = [
-  visualAids(), // oppure visualAids({ blocks: true })
+  visualAids(), // or visualAids({ blocks: true })
 ]
-// nel menu Visualizza: ...visualAidsItems()
+// in the View menu: ...visualAidsItems()
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                    | Cosa fa                                                                                                                                                                        |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `visualAids(initial?)`                  | Plugin: tiene lo stato, mette la classe sull'editor ed evidenzia i caratteri. `initial` è un `Partial<VisualAids>` (tutto spento di default)                                   |
-| `visualAidsItems()`                     | Due pulsanti per il menu Visualizza: `visual-blocks` ("Mostra blocchi") e `visual-chars` ("Mostra caratteri invisibili"), con stato attivo e disponibili anche in sola lettura |
-| `toggleVisualBlocks`                    | Comando: mostra o nasconde i contorni dei blocchi                                                                                                                              |
-| `toggleVisualChars`                     | Comando: mostra o nasconde spazi non separabili e trattini morbidi                                                                                                             |
-| `getVisualAids(state)`, `visualAidsKey` | Stato corrente (`{ blocks, chars }`)                                                                                                                                           |
-| `SHOW_BLOCKS_CLASS`                     | Classe `scriba-show-blocks` sull'editor: il tema disegna i blocchi                                                                                                             |
-| `VisualAids`                            | Tipo dello stato                                                                                                                                                               |
+| Name                                    | What it does                                                                                                                                                            |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `visualAids(initial?)`                  | Plugin: keeps the state, puts the class on the editor and highlights the characters. `initial` is a `Partial<VisualAids>` (everything off by default)                   |
+| `visualAidsItems()`                     | Two buttons for the View menu: `visual-blocks` ("Show blocks") and `visual-chars` ("Show invisible characters"), with active state and also available in read-only mode |
+| `toggleVisualBlocks`                    | Command: shows or hides the block outlines                                                                                                                              |
+| `toggleVisualChars`                     | Command: shows or hides non-breaking spaces and soft hyphens                                                                                                            |
+| `getVisualAids(state)`, `visualAidsKey` | Current state (`{ blocks, chars }`)                                                                                                                                     |
+| `SHOW_BLOCKS_CLASS`                     | `scriba-show-blocks` class on the editor: the theme draws the blocks                                                                                                    |
+| `VisualAids`                            | Type of the state                                                                                                                                                       |
 
-## Come funziona
+## How it works
 
-- **Blocchi**: l'editor riceve la classe `scriba-show-blocks`; contorni e nomi dei blocchi sono disegnati dal CSS del tema (`@scriba-editor/themes`).
-- **Caratteri**: spazio non separabile (U+00A0), spazio non separabile stretto (U+202F) e trattino morbido (U+00AD) sono evidenziati con decorazioni (`scriba-char-nbsp`, `scriba-char-shy`); sono calcolati una volta per documento.
+- **Blocks**: the editor gets the `scriba-show-blocks` class; block outlines and names are drawn by the theme CSS (`@scriba-editor/themes`).
+- **Characters**: non-breaking space (U+00A0), narrow non-breaking space (U+202F) and soft hyphen (U+00AD) are highlighted with decorations (`scriba-char-nbsp`, `scriba-char-shy`); they are computed once per document.
 
-## Accessibilità
+## Accessibility
 
-I pulsanti riportano lo stato attivo (`isActive`) come ogni voce della toolbar e si usano da tastiera. Le decorazioni sono solo visive: non cambiano il testo né ciò che leggono gli assistivi.
+The buttons report their active state (`isActive`) like every toolbar item and can be used from the keyboard. The decorations are visual only: they change neither the text nor what assistive technologies read.
 
-## Note
+## Notes
 
-Nulla viene scritto nel documento né nell'HTML esportato, quindi non c'è impatto sulla sicurezza dei dati. Vedi [plugin](../../../docs/plugin.md).
+Nothing is written into the document or the exported HTML, so there is no impact on data security. See [plugins](../../../docs/plugins.md).

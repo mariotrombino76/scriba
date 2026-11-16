@@ -1,64 +1,65 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-autosave
 
-**Bozza automatica** per l'editor Scriba, come l'autosave di TinyMCE: mentre scrivi, una copia del
-documento viene tenuta nel browser; se la scheda si chiude per sbaglio puoi ripristinarla da
-"File > Ripristina ultima bozza".
+**Automatic draft** for the Scriba editor, like the TinyMCE autosave: while you write, a copy of the
+document is kept in the browser; if the tab is closed by mistake you can restore it from
+"File > Restore last draft".
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-autosave
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { autosave, clearDraft, restoreDraftItem } from '@scriba-editor/plugin-autosave'
 
-// una chiave per documento: bozze di documenti diversi non si mescolano
-const draftOptions = { key: 'scriba:nota-42', delay: 2000 }
+// one key per document: drafts of different documents do not mix
+const draftOptions = { key: 'scriba:note-42', delay: 2000 }
 
 const state = EditorState.create({ schema, plugins: [history(), autosave(draftOptions) /* … */] })
 
-// voce del menu File
+// File menu item
 menubar.menus = [{ id: 'file', label: 'menu.file', items: [restoreDraftItem(draftOptions, t)] }]
 
-// dopo il salvataggio vero sul server: la bozza non serve più
+// after the real save on the server: the draft is no longer needed
 clearDraft(draftOptions)
 ```
 
-## Opzioni (`AutosaveOptions`)
+## Options (`AutosaveOptions`)
 
-| Opzione     | Default        | Descrizione                                                                       |
-| ----------- | -------------- | --------------------------------------------------------------------------------- |
-| `key`       | (obbligatoria) | Chiave della bozza, una per documento.                                            |
-| `delay`     | `2000`         | Attesa in ms dopo l'ultima modifica prima di salvare.                             |
-| `storage`   | `localStorage` | Qualsiasi oggetto con `getItem`, `setItem`, `removeItem`; `null` per disattivare. |
-| `maxLength` | `2000000`      | Dimensione massima della bozza (caratteri di JSON): oltre non si salva.           |
+| Option      | Default        | Description                                                            |
+| ----------- | -------------- | ---------------------------------------------------------------------- |
+| `key`       | (required)     | Draft key, one per document.                                           |
+| `delay`     | `2000`         | Wait in ms after the last change before saving.                        |
+| `storage`   | `localStorage` | Any object with `getItem`, `setItem`, `removeItem`; `null` to disable. |
+| `maxLength` | `2000000`      | Maximum draft size (JSON characters): beyond that it is not saved.     |
 
-## Cosa esporta
+## Exports
 
-- `autosave(options)`: plugin che salva dopo la prima modifica (non il documento appena aperto),
-  `delay` ms dopo l'ultima. Salva subito anche quando la pagina si nasconde (`visibilitychange`),
-  si chiude (`pagehide`) o l'editor viene distrutto.
-- `readDraft(schema, options)`: la bozza validata, `{ doc, savedAt }`, oppure `null`.
-- `restoreDraft(view, options)`: mette la bozza nell'editor come **un solo passo annullabile**;
-  `false` se non c'è o se un plugin rifiuta la modifica (es. blocco protetto).
-- `draftTransaction(state, draft)`: la transazione minima dal documento attuale alla bozza.
-- `clearDraft(options)`: cancella la bozza; chiamala dopo il salvataggio reale e al logout.
-- `restoreDraftItem(options, t?)`: voce "Ripristina ultima bozza", attiva solo se esiste una bozza
-  diversa dal documento. Con `t`, un ripristino rifiutato è spiegato in una finestra.
-- Tipi: `AutosaveOptions`, `DraftStorage`.
+- `autosave(options)`: plugin that saves after the first change (not the document just opened),
+  `delay` ms after the last one. It also saves immediately when the page is hidden
+  (`visibilitychange`), closed (`pagehide`) or the editor is destroyed.
+- `readDraft(schema, options)`: the validated draft, `{ doc, savedAt }`, or `null`.
+- `restoreDraft(view, options)`: puts the draft into the editor as **a single undoable step**;
+  `false` if there is none or if a plugin rejects the change (e.g. a protected block).
+- `draftTransaction(state, draft)`: the minimal transaction from the current document to the draft.
+- `clearDraft(options)`: deletes the draft; call it after the real save and on logout.
+- `restoreDraftItem(options, t?)`: "Restore last draft" item, enabled only if there is a draft that
+  differs from the document. With `t`, a rejected restore is explained in a dialog.
+- Types: `AutosaveOptions`, `DraftStorage`.
 
-## Note
+## Notes
 
-- **Privacy:** la bozza resta su questo dispositivo, **non cifrata**, in `localStorage`. Attivala
-  solo dove è accettabile (computer condivisi, dati sensibili) e chiama `clearDraft` al logout.
-- **Sicurezza:** il contenuto del browser è input non fidato, altri script della pagina possono
-  averlo scritto. `readDraft` lo valida con `schema.nodeFromJSON`: una bozza non valida o troppo
-  grande viene ignorata. Vedi [sicurezza](../../../docs/sicurezza.md).
-- Se lo storage è pieno o bloccato (impostazioni privacy, iframe isolati) l'editor continua a
-  funzionare, senza bozza.
-- Il ripristino tocca solo i blocchi che differiscono, quindi i blocchi protetti invariati non
-  vengono riscritti.
-- Il testo della voce usa le chiavi i18n `autosave.*`. Vedi [plugin](../../../docs/plugin.md).
+- **Privacy:** the draft stays on this device, **unencrypted**, in `localStorage`. Enable it only
+  where that is acceptable (shared computers, sensitive data) and call `clearDraft` on logout.
+- **Security:** browser storage content is untrusted input; other scripts on the page may have
+  written it. `readDraft` validates it with `schema.nodeFromJSON`: an invalid or too large draft is
+  ignored. See [security](../../../docs/security.md).
+- If storage is full or blocked (privacy settings, sandboxed iframes) the editor keeps working,
+  without a draft.
+- Restoring touches only the blocks that differ, so unchanged protected blocks are not rewritten.
+- The item text uses the `autosave.*` i18n keys. See [plugins](../../../docs/plugins.md).

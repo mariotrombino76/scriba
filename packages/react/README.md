@@ -1,49 +1,51 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/react
 
-L'editor Scriba come componente React (18 e 19).
+The Scriba editor as a React component (18 and 19).
 
 ```bash
 pnpm add @scriba-editor/react @scriba-editor/themes
 ```
 
-## Uso
+## Usage
 
 ```tsx
 import { useState } from 'react'
 import { ScribaEditor } from '@scriba-editor/react'
 import '@scriba-editor/themes/scriba.css'
 
-export function Nota() {
-  const [html, setHtml] = useState('<p>Ciao</p>')
+export function Note() {
+  const [html, setHtml] = useState('<p>Hello</p>')
   return <ScribaEditor value={html} onChange={(v) => setHtml(v as string)} />
 }
 ```
 
-Il contenuto (`value`, `setContent`) è **input non fidato**: passa sempre dal parser dello schema
-in un documento inerte. L'HTML salvato va comunque ripassato da `@scriba-editor/sanitize-server` sul
-server prima di salvarlo o mostrarlo.
+The content (`value`, `setContent`) is **untrusted input**: it always goes through the schema
+parser in an inert document. The saved HTML must still be run through
+`@scriba-editor/sanitize-server` on the server before you save or display it.
 
-## Proprietà
+## Props
 
-| Proprietà   | Default                      | Significato                                                                                   |
-| ----------- | ---------------------------- | --------------------------------------------------------------------------------------------- |
-| `value`     | `null`                       | Il contenuto (HTML o JSON). Un valore cambiato dall'esterno sostituisce il documento.         |
-| `onChange`  | —                            | Chiamata a ogni modifica dell'utente, con il contenuto nel formato scelto.                    |
-| `format`    | `'html'`                     | `'html'` o `'json'`.                                                                          |
-| `schema`    | `basicSchema`                | Lo schema (letto alla creazione).                                                             |
-| `plugins`   | —                            | Plugin aggiuntivi (letti alla creazione).                                                     |
-| `editable`  | `true`                       | `false`: sola lettura (si può cambiare in ogni momento).                                      |
-| `label`     | "Editor di testo formattato" | Nome accessibile dell'area di scrittura.                                                      |
-| `locale`    | `'it'`                       | Lingua (`'it'`, `'en'`) o un oggetto di messaggi (`fr`, `de`, `es` da `@scriba-editor/i18n`). |
-| `toolbar`   | `true`                       | Mostra la toolbar predefinita.                                                                |
-| `nodeViews` | —                            | Viste personalizzate dei nodi atomici (lette alla creazione).                                 |
-| `className` | —                            | Classe aggiuntiva del contenitore.                                                            |
+| Prop        | Default            | Meaning                                                                                       |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------------- |
+| `value`     | `null`             | The content (HTML or JSON). A value changed from outside replaces the document.               |
+| `onChange`  | —                  | Called on every user change, with the content in the chosen format.                           |
+| `format`    | `'html'`           | `'html'` or `'json'`.                                                                         |
+| `schema`    | `basicSchema`      | The schema (read at creation).                                                                |
+| `plugins`   | —                  | Additional plugins (read at creation).                                                        |
+| `editable`  | `true`             | `false`: read-only (can be changed at any time).                                              |
+| `label`     | "Rich text editor" | Accessible name of the writing area.                                                          |
+| `locale`    | `'it'`             | Language (`'it'`, `'en'`) or a messages object (`fr`, `de`, `es` from `@scriba-editor/i18n`). |
+| `toolbar`   | `true`             | Shows the default toolbar.                                                                    |
+| `nodeViews` | —                  | Custom views of atomic nodes (read at creation).                                              |
+| `className` | —                  | Additional class of the container.                                                            |
 
-## Ref e hook
+## Ref and hook
 
-Il `ref` del componente espone `getContent()`, `setContent(content)`, `focus()`, `view` e `state`.
+The component's `ref` exposes `getContent()`, `setContent(content)`, `focus()`, `view` and `state`.
 
-Per un'interfaccia tutta tua c'è l'hook:
+For a fully custom UI there is the hook:
 
 ```tsx
 import { useRef } from 'react'
@@ -51,10 +53,10 @@ import { useScriba } from '@scriba-editor/react'
 
 function Editor() {
   const place = useRef<HTMLDivElement>(null)
-  const scriba = useScriba(place, { content: '<p>Ciao</p>', onChange: console.log })
+  const scriba = useScriba(place, { content: '<p>Hello</p>', onChange: console.log })
   return <div ref={place} />
 }
 ```
 
-Lo schema, i plugin e il formato vengono letti quando l'editor viene creato (al montaggio);
-`editable`, `label` e `onChange` seguono le proprietà. Funziona con `StrictMode`.
+The schema, plugins and format are read when the editor is created (at mount); `editable`,
+`label` and `onChange` follow the props. It works with `StrictMode`.

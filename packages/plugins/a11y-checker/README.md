@@ -1,16 +1,18 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-a11y-checker
 
-**Verifica dell'accessibilità** del documento per l'editor Scriba, come l'"Accessibility checker"
-di TinyMCE (`a11ycheck`): trova i problemi rispetto a WCAG 2.2, li mostra uno alla
-volta nel testo e propone una correzione.
+**Accessibility checking** of the document for the Scriba editor, like TinyMCE's "Accessibility
+checker" (`a11ycheck`): it finds issues against WCAG 2.2, shows them one at a time in the text and
+proposes a fix.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-a11y-checker
 ```
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -24,61 +26,61 @@ const state = EditorState.create({
   plugins: [a11yChecker({ level: 'AA' }) /* … */],
 })
 
-// voce del menu Strumenti: apre la finestra
+// Tools menu item: opens the dialog
 menubar.menus = [{ id: 'tools', label: 'menu.tools', items: [a11yCheckerItem(t)] }]
 
-// senza editor, anche sul server: fermare il salvataggio di un documento con errori
+// without an editor, on the server too: block saving a document that has errors
 const issues = checkAccessibility(view.state.doc, { level: 'AA' })
 const errors = issues.filter((i) => i.severity === 'error')
 ```
 
-## Opzioni (`A11yOptions`)
+## Options (`A11yOptions`)
 
-| Opzione            | Default                          | Descrizione                                                                   |
-| ------------------ | -------------------------------- | ----------------------------------------------------------------------------- |
-| `level`            | `'AA'`                           | Livello WCAG: `'A'` salta il contrasto, `'AAA'` è più severo.                 |
-| `rules`            | tutte attive                     | Disattiva singole verifiche, es. `{ 'table-caption': false }`.                |
-| `background`       | `#ffffff`                        | Sfondo su cui si vede il testo, per il contrasto (se il testo non ha il suo). |
-| `color`            | `#000000`                        | Colore del testo senza colore proprio.                                        |
-| `genericLinkTexts` | testi comuni, italiani e inglesi | Testi di link che non dicono la destinazione ("clicca qui"…).                 |
-| `maxAltLength`     | `150`                            | Oltre questa lunghezza il testo alternativo riceve un suggerimento.           |
+| Option             | Default                           | Description                                                                      |
+| ------------------ | --------------------------------- | -------------------------------------------------------------------------------- |
+| `level`            | `'AA'`                            | WCAG level: `'A'` skips contrast, `'AAA'` is stricter.                           |
+| `rules`            | all enabled                       | Disables individual checks, e.g. `{ 'table-caption': false }`.                   |
+| `background`       | `#ffffff`                         | Background the text is shown on, for contrast (if the text has none of its own). |
+| `color`            | `#000000`                         | Color of text that has no color of its own.                                      |
+| `genericLinkTexts` | common texts, Italian and English | Link texts that do not say where the link goes ("click here"…).                  |
+| `maxAltLength`     | `150`                             | Above this length the alt text gets a suggestion.                                |
 
-Opzioni non valide (colori non riconosciuti, `maxAltLength` non intero positivo) lanciano un
-`RangeError` subito, all'avvio del plugin.
+Invalid options (unrecognized colors, a `maxAltLength` that is not a positive integer) throw a
+`RangeError` immediately, when the plugin starts.
 
-## Verifiche (`A11Y_RULES`)
+## Checks (`A11Y_RULES`)
 
 `image-alt`, `image-alt-filename`, `image-alt-long`, `link-no-text`, `link-text`, `adjacent-links`,
 `heading-empty`, `heading-order`, `paragraph-as-heading`, `fake-list`, `table-headers`,
 `table-header-empty`, `table-caption`, `embed-title`, `contrast`, `justified-text`.
-Ogni problema ha una gravità (`error`, `warning`, `info`), il criterio WCAG e, dove possibile, una
-correzione (scrivere il testo alternativo, scegliere il livello del titolo, riga o colonna di
-intestazione, unire link adiacenti, colore suggerito, allineamento a sinistra…).
+Each issue has a severity (`error`, `warning`, `info`), the WCAG criterion and, where possible, a
+fix (write the alt text, choose the heading level, header row or column, merge adjacent links,
+suggested color, left alignment…).
 
-## Cosa esporta
+## What it exports
 
-- `a11yChecker(options?)`: il plugin (stato, problemi ignorati, evidenziazione del problema corrente).
-- `a11yCheckerItem(t)`: voce "Verifica accessibilità" (icona `accessibility`), disponibile anche in
-  sola lettura (le correzioni sono allora nascoste).
-- `openA11yDialog(view, t)`: la finestra; richiede il plugin `a11yChecker()`.
-- `checkAccessibility(doc, options?)`: funzione pura, senza DOM; restituisce i problemi in ordine di
-  documento.
+- `a11yChecker(options?)`: the plugin (state, ignored issues, highlighting of the current issue).
+- `a11yCheckerItem(t)`: "Accessibility checker" item (icon `accessibility`), also available in
+  read-only mode (the fixes are then hidden).
+- `openA11yDialog(view, t)`: the dialog; requires the `a11yChecker()` plugin.
+- `checkAccessibility(doc, options?)`: pure function, no DOM; returns the issues in document
+  order.
 - `a11yIssues(state)`, `ignoreIssue(issue)`, `clearIgnoredIssues`, `setCurrentIssue(target)`,
-  `a11yCheckerKey`, `A11Y_CURRENT_CLASS`: stato e comandi.
+  `a11yCheckerKey`, `A11Y_CURRENT_CLASS`: state and commands.
 - `contrastRatio`, `luminance`, `suggestColor`, `isUnhelpfulAlt`, `GENERIC_LINK_TEXTS`,
   `understandingUrl`.
-- Tipi: `A11yIssue`, `A11yOptions`, `A11yLevel`, `A11ySeverity`, `A11yRuleId`, `A11yRepair`,
+- Types: `A11yIssue`, `A11yOptions`, `A11yLevel`, `A11ySeverity`, `A11yRuleId`, `A11yRepair`,
   `A11yAction`, `A11yTarget`, `WcagCriterion`…
 
-## Note
+## Notes
 
-- La finestra mostra un problema alla volta (Precedente, Successivo, Ignora): il testo interessato
-  viene selezionato ed evidenziato (classe `scriba-a11y-current`, definita dal tema). "Ignora" vale
-  per la sessione e **non** viene salvato nel documento.
-- Accessibilità della finestra: stato annunciato con `role="status"`, errori con `role="alert"`,
-  focus trap e ritorno del focus all'editor. Vedi [accessibilità](../../../docs/accessibilita.md).
-- Sicurezza: la finestra è costruita solo con `createElement` e `textContent`, nessun `innerHTML`;
-  le correzioni passano da comandi del modello. Vedi [sicurezza](../../../docs/sicurezza.md).
-- I testi delle verifiche sono nelle traduzioni (`a11y.*`, pacchetto `@scriba-editor/i18n`). Per l'uso
-  nella tua pagina vedi [plugin](../../../docs/plugin.md).
-- Il controllo copre il **contenuto del documento**, non l'accessibilità della pagina che lo ospita.
+- The dialog shows one issue at a time (Previous, Next, Ignore): the affected text is selected and
+  highlighted (class `scriba-a11y-current`, defined by the theme). "Ignore" lasts for the session
+  and is **not** saved in the document.
+- Accessibility of the dialog: status announced with `role="status"`, errors with `role="alert"`,
+  focus trap and focus returned to the editor. See [accessibility](../../../docs/accessibility.md).
+- Security: the dialog is built only with `createElement` and `textContent`, no `innerHTML`; the
+  fixes go through model commands. See [security](../../../docs/security.md).
+- The check texts are in the translations (`a11y.*`, package `@scriba-editor/i18n`). For use in
+  your page, see [plugins](../../../docs/plugins.md).
+- The check covers the **document content**, not the accessibility of the page that hosts it.

@@ -1,42 +1,44 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-source
 
-Vista del codice sorgente HTML, come il pulsante "Source code" di TinyMCE: si apre un dialogo con l'HTML del documento, lo si modifica e si salva di nuovo nel documento (un solo passo di undo).
+HTML source code view, like TinyMCE's "Source code" button: a dialog opens with the document's HTML, you edit it and save it back into the document (a single undo step).
 
 ```bash
 pnpm add @scriba-editor/plugin-source
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { sourceToolbarItem } from '@scriba-editor/plugin-source'
 
-// nella toolbar o nel menu Strumenti
+// in the toolbar or the Tools menu
 sourceToolbarItem(t)
-// con limiti propri
-sourceToolbarItem(t, { maxLength: 500_000, parse: {/* HTMLParseOptions del core */} })
+// with your own limits
+sourceToolbarItem(t, { maxLength: 500_000, parse: {/* core HTMLParseOptions */} })
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                  | Cosa fa                                                                                                                      |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `sourceToolbarItem(t, options?)`      | Pulsante "Codice sorgente" (`id: 'source'`); disponibile anche in sola lettura                                               |
-| `openSourceDialog(view, t, options?)` | Apre il dialogo da codice e restituisce l'handle                                                                             |
-| `documentSource(doc)`                 | HTML del documento dal serializzatore, un blocco di primo livello per riga                                                   |
-| `parseSource(view, html, options?)`   | Legge l'HTML modificato come ogni input non fidato; lancia `HTMLLimitError` oltre i limiti                                   |
-| `SourceOptions`                       | `maxLength` (predefinito `DEFAULT_MAX_SOURCE_LENGTH` = 2 000 000 caratteri), `parse` (limiti di profondità e numero di nodi) |
+| Name                                  | What it does                                                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `sourceToolbarItem(t, options?)`      | "Source code" button (`id: 'source'`); also available in read-only mode                                         |
+| `openSourceDialog(view, t, options?)` | Opens the dialog from code and returns the handle                                                               |
+| `documentSource(doc)`                 | The document's HTML from the serializer, one top-level block per line                                           |
+| `parseSource(view, html, options?)`   | Reads the edited HTML like any untrusted input; throws `HTMLLimitError` beyond the limits                       |
+| `SourceOptions`                       | `maxLength` (default `DEFAULT_MAX_SOURCE_LENGTH` = 2 000 000 characters), `parse` (depth and node count limits) |
 
-## Accessibilità
+## Accessibility
 
-Il dialogo ha focus trap e restituisce il focus all'editor; l'area di testo ha etichetta e descrizione (`aria-describedby`), e se l'HTML supera i limiti compare un messaggio in una regione `aria-live` con `aria-invalid` sull'area. In sola lettura si vede il codice ma "Salva" è disattivato e l'area è `readOnly`.
+The dialog has a focus trap and returns focus to the editor; the text area has a label and a description (`aria-describedby`), and if the HTML exceeds the limits a message appears in an `aria-live` region with `aria-invalid` on the text area. In read-only mode you can see the code, but "Save" is disabled and the text area is `readOnly`.
 
-## Sicurezza
+## Security
 
-L'HTML scritto qui è **input non fidato**, come un incolla:
+The HTML written here is **untrusted input**, like a paste:
 
-- è letto in un **documento inerte** (`DOMParser`, con la policy Trusted Types), mai con `innerHTML` nel documento attivo;
-- poi passa dal **parser dello schema**, che scarta ciò che non conosce (`<script>`, `<style>`, handler `on*`, URL non ammessi, attributi sconosciuti);
-- ci sono limiti di lunghezza e di annidamento (profondità e numero di nodi): oltre, il salvataggio è rifiutato con un messaggio.
+- it is read in an **inert document** (`DOMParser`, with the Trusted Types policy), never with `innerHTML` in the live document;
+- then it goes through the **schema parser**, which discards what it does not know (`<script>`, `<style>`, `on*` handlers, disallowed URLs, unknown attributes);
+- there are length and nesting limits (depth and node count): beyond them, saving is rejected with a message.
 
-Il sorgente mostrato è quello del serializzatore (con escape), non una copia del DOM. Questo non sostituisce il controllo lato server: ripassa sempre l'HTML con `@scriba-editor/sanitize-server` prima di salvarlo. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+The source shown comes from the serializer (with escaping), not a copy of the DOM. This does not replace the server-side check: always re-sanitize the HTML with `@scriba-editor/sanitize-server` before saving it. See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).

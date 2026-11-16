@@ -1,12 +1,14 @@
-# Documentazione di Scriba
+**English** · [Italiano](it/README.md)
 
-Scriba è un editor di testo formattato (WYSIWYG) per il web: le funzioni di TinyMCE più un
-documento strutturato e sicuro per costruzione, collaborazione in tempo reale, scorciatoie
-Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obbligato.
+# Scriba documentation
 
-## In due minuti
+Scriba is a rich-text (WYSIWYG) editor for the web: TinyMCE's features plus a structured document
+that is secure by construction, real-time collaboration, Markdown shortcuts, "/" commands,
+comments, mentions and an AI assistant with no mandatory provider.
 
-**Una pagina qualsiasi** (nessun framework, nessuna build):
+## In two minutes
+
+**Any page** (no framework, no build):
 
 ```html
 <link
@@ -22,35 +24,35 @@ Markdown, comandi "/", commenti, menzioni e un assistente AI senza fornitore obb
 ></script>
 <div id="editor"></div>
 <script src="/js/editor.js"></script>
-<!-- /js/editor.js: Scriba.createEditor('#editor', { onChange: (html) => salva(html) }) -->
+<!-- /js/editor.js: Scriba.createEditor('#editor', { onChange: (html) => save(html) }) -->
 ```
 
-`/js/editor.js` è un file tuo (non di Scriba), separato dalla pagina per funzionare con una CSP
-rigida: vedi [Iniziare](iniziare.md#pagina-qualsiasi-script-da-cdn).
+`/js/editor.js` is your own file (not part of Scriba), kept separate from the page so that it
+works with a strict CSP: see [Getting started](getting-started.md#any-page-cdn-script).
 
 **Vue 3:** `<ScribaEditor v-model="html" />` · **React:** `<ScribaEditor value={html} onChange={setHtml} />`
 
-Poi, sul server, **ripassa sempre l'HTML** da `sanitizeHTML` di `@scriba-editor/sanitize-server` prima di
-salvarlo o mostrarlo: vedi [Sicurezza](sicurezza.md).
+Then, on the server, **always pass the HTML** through `sanitizeHTML` from
+`@scriba-editor/sanitize-server` before saving or displaying it: see [Security](security.md).
 
-## Guide
+## Guides
 
-| Guida                               | Contenuto                                                                           |
-| ----------------------------------- | ----------------------------------------------------------------------------------- |
-| [Iniziare](iniziare.md)             | Installazione nei vari ambienti, tema, lingua, contenuto HTML o JSON.               |
-| [Concetti](concetti.md)             | Schema, documento, transazioni, comandi, plugin: come funziona, in parole semplici. |
-| [Plugin](plugin.md)                 | Tutti i plugin, a cosa servono e come si collegano a toolbar e tastiera.            |
-| [Sicurezza](sicurezza.md)           | Cosa protegge l'editor, cosa spetta al tuo server, CSP, upload, link.               |
-| [Collaborazione](collaborazione.md) | Più persone sullo stesso documento: client e server.                                |
-| [Accessibilità](accessibilita.md)   | Tastiera, lettori di schermo, scorciatoie.                                          |
-| [Prestazioni](prestazioni.md)       | Documenti grandi, benchmark e peso dei pacchetti.                                   |
+| Guide                                 | Contents                                                                             |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| [Getting started](getting-started.md) | Installation in different environments, theme, language, HTML or JSON content.       |
+| [Concepts](concepts.md)               | Schema, document, transactions, commands, plugins: how it works, in plain words.     |
+| [Plugins](plugins.md)                 | All the plugins, what they are for and how they connect to the toolbar and keyboard. |
+| [Security](security.md)               | What the editor protects, what is up to your server, CSP, uploads, links.            |
+| [Collaboration](collaboration.md)     | Several people on the same document: client and server.                              |
+| [Accessibility](accessibility.md)     | Keyboard, screen readers, shortcuts.                                                 |
+| [Performance](performance.md)         | Large documents, benchmarks and package size.                                        |
 
-Guide dei singoli pacchetti:
+Guides for individual packages:
 
-- [Assistente AI](../packages/plugins/ai/README.md) — configurazione, backend, blocchi generati,
-  più versioni tra cui scegliere.
-- [React](../packages/react/README.md) — `<ScribaEditor>` e `useScriba()`.
-- [Script da CDN](../packages/browser/README.md) — `Scriba.createEditor` senza build.
+- [AI assistant](../packages/plugins/ai/README.md) — configuration, backend, generated blocks,
+  several versions to choose from.
+- [React](../packages/react/README.md) — `<ScribaEditor>` and `useScriba()`.
+- [CDN script](../packages/browser/README.md) — `Scriba.createEditor` without a build.
 
-Per chi sviluppa Scriba: [CHANGELOG](../CHANGELOG.md), [rilasci](../RELEASING.md),
-[segnalare una vulnerabilità](../SECURITY.md). Il playground è la demo: `pnpm dev`.
+For Scriba developers: [CHANGELOG](../CHANGELOG.md), [releases](../RELEASING.md),
+[reporting a vulnerability](../SECURITY.md). The playground is the demo: `pnpm dev`.

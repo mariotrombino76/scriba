@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-mention
 
-Menzioni `@persona` come in TinyMCE (plugin Mentions): scrivendo `@` all'inizio di una riga o dopo uno spazio si apre un elenco di persone trovate **dal tuo backend**, e la scelta inserisce un nodo `mention` atomico.
+`@person` mentions as in TinyMCE (Mentions plugin): typing `@` at the start of a line or after a space opens a list of people found **by your backend**, and choosing one inserts an atomic `mention` node.
 
 ```bash
 pnpm add @scriba-editor/plugin-mention
 ```
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -17,9 +19,9 @@ import {
 } from '@scriba-editor/plugin-mention'
 import { keymap } from '@scriba-editor/core'
 
-// la ricerca chiama il tuo server (con la sessione dell'utente)
+// the search calls your server (with the user's session)
 const searchPeople: MentionSearch = async (query, signal) => {
-  const res = await fetch(`/api/persone?q=${encodeURIComponent(query)}`, { signal })
+  const res = await fetch(`/api/people?q=${encodeURIComponent(query)}`, { signal })
   return res.ok ? await res.json() : []
 }
 
@@ -27,48 +29,48 @@ const schema = new Schema({ nodes: { ...basicSchemaSpec.nodes, ...mentionNodes }
 
 const plugins = [
   ...mentions({ search: searchPeople, t }),
-  keymap(mentionKeymap(), { priority: 110 }), // alta priorità: Invio e Tab scelgono la voce
+  keymap(mentionKeymap(), { priority: 110 }), // high priority: Enter and Tab choose the item
 ]
 ```
 
-Una voce restituita da `search` ha la forma `{ id, label, detail? }` (`MentionItem`).
+An item returned by `search` has the shape `{ id, label, detail? }` (`MentionItem`).
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                              | Cosa fa                                                                                                                        |
+| Name                                                                                              | What it does                                                                                                                   |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `mentionNodes`                                                                                    | Nodo inline atomico `mention` (attributi `id`, `label`). HTML: `<span class="scriba-mention" data-mention-id="…">@Nome</span>` |
-| `mentions(options)`                                                                               | Plugin del suggerimento: elenco dopo `@`, ricerca asincrona                                                                    |
-| `mentionKeymap()`                                                                                 | Tasti con l'elenco aperto                                                                                                      |
-| `chooseMention(view, item)`                                                                       | Sceglie una voce da codice (ha un proprio passo di undo)                                                                       |
-| `closeMention(tr)`, `getMentionState(state)`, `mentionKey`, `isLoading(state)`                    | Stato dell'elenco                                                                                                              |
-| `cleanResults(raw, max)`                                                                          | Scarta le voci non valide, i doppioni di `id` e oltre `max`                                                                    |
-| `isMentionId`, `isMentionLabel`, `labelFromText`, `MAX_ID_LENGTH` (200), `MAX_LABEL_LENGTH` (100) | Validazioni dei dati                                                                                                           |
-| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Costruttore generico di elenchi a trigger (lo usa anche `@scriba-editor/plugin-merge-tags`)                                    |
+| `mentionNodes`                                                                                    | Atomic inline `mention` node (attributes `id`, `label`). HTML: `<span class="scriba-mention" data-mention-id="…">@Name</span>` |
+| `mentions(options)`                                                                               | Suggestion plugin: list after `@`, asynchronous search                                                                         |
+| `mentionKeymap()`                                                                                 | Keys while the list is open                                                                                                    |
+| `chooseMention(view, item)`                                                                       | Chooses an item from code (it has its own undo step)                                                                           |
+| `closeMention(tr)`, `getMentionState(state)`, `mentionKey`, `isLoading(state)`                    | List state                                                                                                                     |
+| `cleanResults(raw, max)`                                                                          | Discards invalid items, duplicate `id`s and anything beyond `max`                                                              |
+| `isMentionId`, `isMentionLabel`, `labelFromText`, `MAX_ID_LENGTH` (200), `MAX_LABEL_LENGTH` (100) | Data validation                                                                                                                |
+| `createSuggestion`, `SuggestConfig`, `SuggestItem`, ...                                           | Generic builder for trigger-based lists (also used by `@scriba-editor/plugin-merge-tags`)                                      |
 
-### Opzioni di `mentions()` (`MentionMenuOptions`)
+### `mentions()` options (`MentionMenuOptions`)
 
-| Opzione      | Descrizione                                                                                                                                           |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `search`     | `(query, signal) => Promise<MentionItem[]>`; `query` è `""` subito dopo `@`; il `signal` si annulla se l'utente continua a scrivere o chiude l'elenco |
-| `t`          | Funzione di traduzione (`createTranslator` di `@scriba-editor/i18n`)                                                                                  |
-| `debounce`   | Pausa prima di cercare, in ms (predefinito 150)                                                                                                       |
-| `maxResults` | Voci mostrate al massimo (predefinito 8, massimo 50)                                                                                                  |
-| `timeout`    | Una ricerca più lenta fallisce, in ms (predefinito 10 000)                                                                                            |
+| Option       | Description                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search`     | `(query, signal) => Promise<MentionItem[]>`; `query` is `""` right after `@`; the `signal` is aborted if the user keeps typing or closes the list |
+| `t`          | Translation function (`createTranslator` from `@scriba-editor/i18n`)                                                                              |
+| `debounce`   | Pause before searching, in ms (default 150)                                                                                                       |
+| `maxResults` | Maximum number of items shown (default 8, maximum 50)                                                                                             |
+| `timeout`    | A slower search fails, in ms (default 10 000)                                                                                                     |
 
-## Tastiera
+## Keyboard
 
-Con l'elenco aperto: frecce Su/Giù spostano la selezione, Invio o Tab scelgono, Esc chiude (il testo scritto resta). Uno spazio subito dopo `@`, o dopo una ricerca senza risultati, chiude l'elenco e si continua a scrivere. Dopo la scelta Ctrl+Z restituisce il testo `@query` digitato.
+With the list open: Up/Down arrow keys move the selection, Enter or Tab choose, Esc closes (the typed text stays). A space right after `@`, or after a search with no results, closes the list and you keep typing. After choosing, Ctrl+Z gives back the typed `@query` text.
 
-## Accessibilità
+## Accessibility
 
-L'elenco è un `listbox` sotto il cursore mentre il focus resta nel testo (`aria-controls` e `aria-activedescendant` sull'editor); gli stati "Ricerca…", "Nessuna persona trovata" e "Ricerca non riuscita" sono annunciati come messaggi di stato.
+The list is a `listbox` below the cursor while focus stays in the text (`aria-controls` and `aria-activedescendant` on the editor); the states "Searching…", "No one found" and "Search failed" are announced as status messages.
 
-## Sicurezza
+## Security
 
-Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).
 
-- I risultati arrivano da una **sorgente esterna** e sono input non fidato: `cleanResults` tiene solo voci con `id` (1–200 caratteri, senza spazi) e `label` (1–100 caratteri, una riga) validi, senza caratteri di controllo né segni di direzione.
-- Nome e dettaglio sono mostrati **come testo**, mai come HTML.
-- La `label` è solo testo di visualizzazione: chiunque può incollare una menzione con un nome qualsiasi. Risolvi sempre l'`id` sul server (nome attuale, permessi, notifiche).
-- Prima che l'utente scriva `@` non viene inviato nulla. Il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`.
+- Results come from an **external source** and are untrusted input: `cleanResults` keeps only items with a valid `id` (1–200 characters, no spaces) and `label` (1–100 characters, one line), without control characters or direction marks.
+- Name and detail are shown **as text**, never as HTML.
+- The `label` is display text only: anyone can paste a mention with any name. Always resolve the `id` on the server (current name, permissions, notifications).
+- Nothing is sent before the user types `@`. The server must still re-sanitize the HTML with `@scriba-editor/sanitize-server`.

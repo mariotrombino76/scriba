@@ -1,24 +1,26 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-charmap
 
-**Caratteri speciali ed emoji** per l'editor Scriba: una finestra con categorie, griglia di
-caratteri e ricerca per nome (in italiano o inglese), come il "Special character" di TinyMCE ma con
-emoji e nomi in due lingue. Inserisce testo semplice: nessun markup.
+**Special characters and emoji** for the Scriba editor: a dialog with categories, a character
+grid and search by name (in Italian or English), like TinyMCE's "Special character" but with emoji
+and names in two languages. It inserts plain text: no markup.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-charmap
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { charmapToolbarItem, openCharmapDialog } from '@scriba-editor/plugin-charmap'
 
-// pulsante (barra degli strumenti o menu Inserisci)
+// button (toolbar or Insert menu)
 toolbarItems.push(charmapToolbarItem(t))
 
-// voce del menu slash
+// slash menu item
 const slashItem = {
   id: 'charmap',
   label: (tr) => tr('charmap.button'),
@@ -28,39 +30,40 @@ const slashItem = {
 }
 ```
 
-`t` è il traduttore di `@scriba-editor/i18n` (`createTranslator('it')`).
+`t` is the translator from `@scriba-editor/i18n` (`createTranslator('it')`).
 
-## Cosa esporta
+## Exports
 
-| Export                                 | Descrizione                                                                     |
-| -------------------------------------- | ------------------------------------------------------------------------------- |
-| `charmapToolbarItem(t, options?)`      | Pulsante `charmap` (icona `smile`); attivo solo dove il cursore è in testo.     |
-| `openCharmapDialog(view, t, options?)` | Apre la finestra; restituisce il `DialogHandle`.                                |
-| `insertCharacter(view, entry)`         | Inserisce il carattere alla selezione (come digitato) e lo aggiunge ai recenti. |
-| `searchCharacters(query)`              | Cerca per nome (italiano o inglese, senza accenti) o per il carattere stesso.   |
-| `recentCharacters()`                   | Ultimi caratteri inseriti (al massimo 20, solo in questa pagina).               |
-| `codePoints(text)`                     | Codici Unicode, es. `U+20AC`.                                                   |
-| `CHARACTERS`, `EMOJI_CATEGORIES`       | Dati: categorie e voci (`CharEntry`, `CategoryId`).                             |
+| Export                                 | Description                                                                          |
+| -------------------------------------- | ------------------------------------------------------------------------------------ |
+| `charmapToolbarItem(t, options?)`      | `charmap` button (`smile` icon); enabled only where the cursor is in text.           |
+| `openCharmapDialog(view, t, options?)` | Opens the dialog; returns the `DialogHandle`.                                        |
+| `insertCharacter(view, entry)`         | Inserts the character at the selection (as if typed) and adds it to the recent ones. |
+| `searchCharacters(query)`              | Searches by name (Italian or English, without accents) or by the character itself.   |
+| `recentCharacters()`                   | Last inserted characters (at most 20, only on this page).                            |
+| `codePoints(text)`                     | Unicode code points, e.g. `U+20AC`.                                                  |
+| `CHARACTERS`, `EMOJI_CATEGORIES`       | Data: categories and entries (`CharEntry`, `CategoryId`).                            |
 
-Opzioni (`CharmapOptions`):
+Options (`CharmapOptions`):
 
-- `locale`: lingua dei nomi, `'it'` o `'en'` (default: la lingua della pagina, altrimenti inglese);
-- `columns`: caratteri per riga nella griglia (default 10, minimo 4).
+- `locale`: language of the names, `'it'` or `'en'` (default: the page language, otherwise English);
+- `columns`: characters per row in the grid (default 10, minimum 4).
 
-Categorie: recenti, valute, punteggiatura, matematica, frecce, latino, greco, simboli, faccine,
-persone, natura, cibo, oggetti, simboli emoji.
+Categories: recent, currencies, punctuation, math, arrows, Latin, Greek, symbols, smileys, people,
+nature, food, objects, emoji symbols.
 
-## Tastiera e accessibilità
+## Keyboard and accessibility
 
-- La ricerca ha il focus all'apertura; Freccia giù passa alla griglia.
-- Schede delle categorie: frecce sinistra/destra, Home, Fine.
-- Griglia: frecce in due dimensioni, Home, Fine; Invio inserisce il carattere e chiude.
-- Ogni cella ha un `aria-label` con il nome del carattere; la finestra intrappola il focus e lo
-  restituisce all'editor alla chiusura. Vedi [accessibilità](../../../docs/accessibilita.md).
+- The search field has focus when the dialog opens; Down arrow moves to the grid.
+- Category tabs: Left/Right arrow keys, Home, End.
+- Grid: arrow keys in two dimensions, Home, End; Enter inserts the character and closes.
+- Every cell has an `aria-label` with the character's name; the dialog traps focus and returns it
+  to the editor when it closes. See [accessibility](../../../docs/accessibility.md).
 
-## Note
+## Notes
 
-- Si inserisce solo testo (`insertText`): niente HTML, quindi nessun rischio di iniezione. Vedi
-  [sicurezza](../../../docs/sicurezza.md).
-- La griglia imposta le colonne via CSSOM, compatibile con una CSP rigida.
-- Vedi [plugin](../../../docs/plugin.md) per come collegare i pulsanti alla toolbar e al menu slash.
+- Only text is inserted (`insertText`): no HTML, so no risk of injection. See
+  [security](../../../docs/security.md).
+- The grid sets its columns via CSSOM, compatible with a strict CSP.
+- See [plugins](../../../docs/plugins.md) for how to connect the buttons to the toolbar and the
+  slash menu.

@@ -1,12 +1,14 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-table
 
-Tabelle con la parità delle tabelle di TinyMCE (comprese quelle avanzate): inserimento con selettore di dimensione, righe e colonne, celle unite e divise, intestazioni, selezione di celle, larghezza delle colonne, proprietà di tabella e cella, ordinamento per colonna, incolla di celle come in un foglio di calcolo.
+Tables on par with TinyMCE tables (including the advanced ones): insertion with a size picker, rows and columns, merged and split cells, headers, cell selection, column widths, table and cell properties, sorting by column, pasting cells as in a spreadsheet.
 
 ```bash
 pnpm add @scriba-editor/plugin-table
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { keymap } from '@scriba-editor/core'
@@ -21,53 +23,53 @@ import {
 const schema = new Schema({ nodes: { ...basicSchemaSpec.nodes, ...tableNodes }, marks })
 
 const plugins = [
-  ...tablePlugins(), // normalizzazione, selezione di celle, ridimensionamento colonne, incolla celle
-  keymap(tableKeymap(), { priority: 55 }), // sopra le liste: Tab si muove tra le celle
+  ...tablePlugins(), // normalization, cell selection, column resizing, cell paste
+  keymap(tableKeymap(), { priority: 55 }), // above lists: Tab moves between cells
 ]
 
-// toolbar: ...tableToolbarItems(schema, t)   // "Inserisci tabella" (selettore 8x10) + menu "Tabella" contestuale
-// menu contestuale: tableContextMenu(schema, t)
+// toolbar: ...tableToolbarItems(schema, t)   // "Insert table" (8x10 picker) + contextual "Table" menu
+// context menu: tableContextMenu(schema, t)
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                                                                                                | Cosa fa                                                                                                                                                            |
+| Name                                                                                                                | What it does                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tableNodes`                                                                                                        | Nodi `table`, `table_row`, `table_cell`, `table_header` (attributi tipizzati: `colspan`, `rowspan`, `colwidth`, `background`, `valign`, bordi, `caption`, `align`) |
-| `tablePlugins()`                                                                                                    | Normalizzazione (tabelle rettangolari) e view: celle selezionate, colonne, incolla                                                                                 |
-| `tableKeymap()`                                                                                                     | Tab, Shift+Tab, Shift+frecce, frecce per uscire dalla tabella, Backspace/Canc                                                                                      |
-| `tableToolbarItems(schema, t)`                                                                                      | Menu di inserimento e menu "Tabella" (visibile solo dentro una tabella)                                                                                            |
-| `tableContextMenu(schema, t)`                                                                                       | Sezione del menu contestuale: Cella, Riga, Colonna, proprietà, elimina                                                                                             |
-| `insertTable(rows, cols, headerRow?)`                                                                               | Inserisce una tabella (al massimo `MAX_ROWS` = 50 righe e `MAX_COLS` = 20 colonne)                                                                                 |
-| `addRow(before)`, `addColumn(before)`, `deleteRow`, `deleteColumn`, `deleteTable`                                   | Struttura                                                                                                                                                          |
-| `mergeCells`, `splitCell`                                                                                           | Unione e divisione celle                                                                                                                                           |
-| `toggleHeader('row' \| 'column')`, `isHeaderOn(state, kind)`                                                        | Intestazioni di riga o colonna                                                                                                                                     |
-| `changeColumnWidth(delta, defaultWidth?)`, `setColumnWidths`                                                        | Larghezza delle colonne                                                                                                                                            |
-| `setCellProps(props)`, `setTableProps(props)`                                                                       | Proprietà di cella e di tabella (colore di sfondo, bordi, allineamento verticale, didascalia, ...)                                                                 |
-| `sortTable(order, options?)`                                                                                        | Ordina le righe per la colonna della cella selezionata (`'asc'` o `'desc'`)                                                                                        |
-| `pasteCells(state, content)`                                                                                        | Incolla una tabella dentro un'altra dalla cella selezionata, ampliando la tabella                                                                                  |
-| `goToCell(dir)`, `selectedRect(state)`                                                                              | Navigazione e rettangolo selezionato                                                                                                                               |
-| `openTableDialog(view, t)`, `openTablePropsDialog`, `openCellDialog`                                                | Dialoghi (dimensioni, proprietà tabella, proprietà cella)                                                                                                          |
-| `CellSelection`, `TableGrid`, `buildTable`, `tableAt`, `cellPosAt`, `isCell`                                        | Selezione di celle e griglia, per chi scrive comandi propri                                                                                                        |
-| `compareCellText`, `parseLocaleNumber`, `SortOrder`, `SortOptions`                                                  | Confronto usato dall'ordinamento                                                                                                                                   |
-| `tableNormalize()`                                                                                                  | Il solo plugin di normalizzazione (già incluso in `tablePlugins()`)                                                                                                |
-| `MAX_SPAN` (100), `MIN_COL_WIDTH` (24), `MAX_COL_WIDTH` (2000), `MAX_BORDER_WIDTH` (10), `MAX_CAPTION_LENGTH` (500) | Limiti                                                                                                                                                             |
+| `tableNodes`                                                                                                        | Nodes `table`, `table_row`, `table_cell`, `table_header` (typed attributes: `colspan`, `rowspan`, `colwidth`, `background`, `valign`, borders, `caption`, `align`) |
+| `tablePlugins()`                                                                                                    | Normalization (rectangular tables) and view: selected cells, columns, paste                                                                                        |
+| `tableKeymap()`                                                                                                     | Tab, Shift+Tab, Shift+arrow keys, arrow keys to leave the table, Backspace/Delete                                                                                  |
+| `tableToolbarItems(schema, t)`                                                                                      | Insert menu and "Table" menu (visible only inside a table)                                                                                                         |
+| `tableContextMenu(schema, t)`                                                                                       | Context menu section: Cell, Row, Column, properties, delete                                                                                                        |
+| `insertTable(rows, cols, headerRow?)`                                                                               | Inserts a table (at most `MAX_ROWS` = 50 rows and `MAX_COLS` = 20 columns)                                                                                         |
+| `addRow(before)`, `addColumn(before)`, `deleteRow`, `deleteColumn`, `deleteTable`                                   | Structure                                                                                                                                                          |
+| `mergeCells`, `splitCell`                                                                                           | Merge and split cells                                                                                                                                              |
+| `toggleHeader('row' \| 'column')`, `isHeaderOn(state, kind)`                                                        | Row or column headers                                                                                                                                              |
+| `changeColumnWidth(delta, defaultWidth?)`, `setColumnWidths`                                                        | Column widths                                                                                                                                                      |
+| `setCellProps(props)`, `setTableProps(props)`                                                                       | Cell and table properties (background color, borders, vertical alignment, caption, ...)                                                                            |
+| `sortTable(order, options?)`                                                                                        | Sorts the rows by the column of the selected cell (`'asc'` or `'desc'`)                                                                                            |
+| `pasteCells(state, content)`                                                                                        | Pastes a table into another one starting from the selected cell, enlarging the table                                                                               |
+| `goToCell(dir)`, `selectedRect(state)`                                                                              | Navigation and selected rectangle                                                                                                                                  |
+| `openTableDialog(view, t)`, `openTablePropsDialog`, `openCellDialog`                                                | Dialogs (size, table properties, cell properties)                                                                                                                  |
+| `CellSelection`, `TableGrid`, `buildTable`, `tableAt`, `cellPosAt`, `isCell`                                        | Cell selection and grid, for writing your own commands                                                                                                             |
+| `compareCellText`, `parseLocaleNumber`, `SortOrder`, `SortOptions`                                                  | Comparison used by sorting                                                                                                                                         |
+| `tableNormalize()`                                                                                                  | The normalization plugin alone (already included in `tablePlugins()`)                                                                                              |
+| `MAX_SPAN` (100), `MIN_COL_WIDTH` (24), `MAX_COL_WIDTH` (2000), `MAX_BORDER_WIDTH` (10), `MAX_CAPTION_LENGTH` (500) | Limits                                                                                                                                                             |
 
-### Ordinamento
+### Sorting
 
-`sortTable` confronta i numeri per valore (con il formato della lingua: `1.234,5` in italiano, `1,234.5` in inglese) e il resto in ordine alfabetico senza distinguere maiuscole e accenti ("2" prima di "10"). Le righe di intestazione in cima restano, le celle vuote vanno in fondo, i valori uguali mantengono l'ordine; non si può con celle unite su più righe. La lingua è `options.locale`, altrimenti il `lang` più vicino all'editor.
+`sortTable` compares numbers by value (using the language's format: `1.234,5` in Italian, `1,234.5` in English) and everything else alphabetically, ignoring case and accents ("2" before "10"). Header rows at the top stay in place, empty cells go to the bottom, equal values keep their order; it does not work with cells merged across several rows. The language is `options.locale`, otherwise the nearest `lang` to the editor.
 
-## Tastiera
+## Keyboard
 
-- **Tab / Maiusc+Tab**: cella successiva/precedente (si seleziona il contenuto). Oltre la prima o l'ultima cella non fanno nulla, così il focus può uscire dall'editor: **nessuna trappola da tastiera**.
-- **Maiusc+frecce**: creano o ampliano una selezione di celle (ai bordi del testo della cella).
-- **Frecce** oltre la prima o l'ultima cella, quando prima o dopo la tabella non c'è nulla: viene creato un paragrafo, così il cursore può sempre uscire.
-- **Backspace / Canc** con tutte le celle selezionate eliminano la tabella; con meno celle le svuotano.
+- **Tab / Shift+Tab**: next/previous cell (its content gets selected). Past the first or last cell they do nothing, so focus can leave the editor: **no keyboard trap**.
+- **Shift+arrow keys**: create or extend a cell selection (at the edges of the cell text).
+- **Arrow keys** past the first or last cell, when there is nothing before or after the table: a paragraph is created, so the cursor can always get out.
+- **Backspace / Delete** with all cells selected delete the table; with fewer cells they empty them.
 
-## Accessibilità
+## Accessibility
 
-Il menu "Tabella" e il menu contestuale sono raggiungibili da tastiera; la tabella conserva la semantica `th`/`td` e può avere una didascalia (`caption`). I dialoghi hanno focus trap e messaggi di errore in una regione `aria-live` con `aria-invalid` sul campo non valido; i controlli colore hanno un campo esadecimale con etichetta. Vedi [accessibilità](../../../docs/accessibilita.md).
+The "Table" menu and the context menu are reachable from the keyboard; the table keeps its `th`/`td` semantics and can have a caption (`caption`). Dialogs have a focus trap and error messages in an `aria-live` region with `aria-invalid` on the invalid field; color controls have a labeled hex field. See [accessibility](../../../docs/accessibility.md).
 
-## Sicurezza
+## Security
 
-Tutti gli attributi sono tipizzati e validati: span da 1 a 100, larghezze 24-2000 px, bordo al massimo 10 px, colori normalizzati (mai `style` libero), didascalia al massimo 500 caratteri, testo nascosto (script, style, ...) escluso. Righe e colonne dell'incolla hanno un tetto (anti-DoS). L'HTML incollato (anche da Word o Google Docs) passa dal parser dello schema; il server deve comunque ripassare l'HTML con `@scriba-editor/sanitize-server`. Vedi [sicurezza](../../../docs/sicurezza.md) e [plugin](../../../docs/plugin.md).
+All attributes are typed and validated: spans from 1 to 100, widths 24-2000 px, borders at most 10 px, normalized colors (never free-form `style`), captions at most 500 characters, hidden text (script, style, ...) excluded. Pasted rows and columns have a cap (anti-DoS). Pasted HTML (including from Word or Google Docs) goes through the schema parser; the server must still re-sanitize the HTML with `@scriba-editor/sanitize-server`. See [security](../../../docs/security.md) and [plugins](../../../docs/plugins.md).

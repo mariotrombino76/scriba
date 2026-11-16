@@ -1,25 +1,27 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/ui
 
-L'interfaccia di Scriba come Web Components vanilla: barra degli strumenti, barra dei menu, menu, dialog, menu del tasto destro e modalità inline. Funzionano con qualsiasi framework, o senza.
+The Scriba UI as vanilla Web Components: toolbar, menu bar, menus, dialogs, right-click menu and inline mode. They work with any framework, or without one.
 
 ```bash
 pnpm add @scriba-editor/ui @scriba-editor/view @scriba-editor/core @scriba-editor/i18n @scriba-editor/themes
 ```
 
-I componenti parlano con l'editor solo tramite **comandi pubblici**: un pulsante è abilitato
-esattamente quando il suo comando può essere eseguito (e non lo è in sola lettura).
+The components talk to the editor only through **public commands**: a button is enabled exactly
+when its command can run (and it is not in read-only mode).
 
-## Uso
+## Usage
 
 ```ts
 import { createTranslator } from '@scriba-editor/i18n'
 import { defineScribaToolbar, defaultToolbarItems } from '@scriba-editor/ui'
 import '@scriba-editor/themes/scriba.css'
 
-// `view` è l'EditorView di @scriba-editor/view, `schema` lo schema dell'editor
+// `view` is the EditorView from @scriba-editor/view, `schema` the editor schema
 const t = createTranslator('it')
 
-defineScribaToolbar() // registra <scriba-toolbar> (una sola volta)
+defineScribaToolbar() // registers <scriba-toolbar> (only once)
 const toolbar = document.createElement('scriba-toolbar')
 document.querySelector('#editor')!.before(toolbar)
 toolbar.translator = t
@@ -27,44 +29,44 @@ toolbar.items = defaultToolbarItems(schema)
 toolbar.view = view
 ```
 
-Le voci aggiuntive dei plugin (liste, tabelle, immagini…) si aggiungono all'array:
-`[...defaultToolbarItems(schema), ...listToolbarItems(schema)]`. Esempio completo in
-[Iniziare](../../docs/iniziare.md#su-misura-con-i-pacchetti).
+Extra items from plugins (lists, tables, images…) are added to the array:
+`[...defaultToolbarItems(schema), ...listToolbarItems(schema)]`. Full example in
+[Getting started](../../docs/getting-started.md#custom-setup-with-the-packages).
 
-## Esportazioni
+## Exports
 
-| Esportazione                                                                                                                                | Descrizione                                                                                    |
-| ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `ScribaToolbar`, `defineScribaToolbar()`                                                                                                    | `<scriba-toolbar>`: proprietà `view`, `items`, `translator`.                                   |
-| `ScribaMenubar`, `defineScribaMenubar()`                                                                                                    | `<scriba-menubar>`: barra dei menu (File, Modifica…), proprietà `view`, `menus`, `translator`. |
-| `defaultToolbarItems(schema)`                                                                                                               | Le voci predefinite (cronologia, formati, stili dei blocchi…) per lo schema dato.              |
-| `toolbarGroup`, `historyItems`, `markItems`, `blockStyleMenu`, `clearFormatItem`, `selectAllItem`, `nonBreakingSpaceItem`, `clipboardItems` | Costruttori delle singole voci e gruppi.                                                       |
-| `ToolbarItem`, `ToolbarButton`, `ToolbarGroup`, `ToolbarMenu`, …                                                                            | Tipi per scrivere voci proprie (`id`, `label`, `command`, `isActive`, `shortcut`…).            |
-| `contextMenu(view, options)`                                                                                                                | Menu del tasto destro: sezioni che si applicano dove si clicca.                                |
-| `MenuPopup`, `popupEntries`                                                                                                                 | Menu a comparsa riusabili.                                                                     |
-| `openDialog`                                                                                                                                | Dialog modale (focus trap, ritorno del focus).                                                 |
-| `inlineToolbar(container, toolbar)`                                                                                                         | Modalità inline: la barra compare solo mentre si scrive. Restituisce `{ update, destroy }`.    |
-| `createIcon`, `formatShortcut`, `isMac`                                                                                                     | Icone e testo delle scorciatoie (`Mod` = Ctrl o ⌘).                                            |
+| Export                                                                                                                                      | Description                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `ScribaToolbar`, `defineScribaToolbar()`                                                                                                    | `<scriba-toolbar>`: properties `view`, `items`, `translator`.                         |
+| `ScribaMenubar`, `defineScribaMenubar()`                                                                                                    | `<scriba-menubar>`: menu bar (File, Edit…), properties `view`, `menus`, `translator`. |
+| `defaultToolbarItems(schema)`                                                                                                               | The default items (history, formats, block styles…) for the given schema.             |
+| `toolbarGroup`, `historyItems`, `markItems`, `blockStyleMenu`, `clearFormatItem`, `selectAllItem`, `nonBreakingSpaceItem`, `clipboardItems` | Builders for the individual items and groups.                                         |
+| `ToolbarItem`, `ToolbarButton`, `ToolbarGroup`, `ToolbarMenu`, …                                                                            | Types for writing your own items (`id`, `label`, `command`, `isActive`, `shortcut`…). |
+| `contextMenu(view, options)`                                                                                                                | Right-click menu: sections that apply where you click.                                |
+| `MenuPopup`, `popupEntries`                                                                                                                 | Reusable popup menus.                                                                 |
+| `openDialog`                                                                                                                                | Modal dialog (focus trap, focus return).                                              |
+| `inlineToolbar(container, toolbar)`                                                                                                         | Inline mode: the toolbar appears only while you write. Returns `{ update, destroy }`. |
+| `createIcon`, `formatShortcut`, `isMac`                                                                                                     | Icons and shortcut text (`Mod` = Ctrl or ⌘).                                          |
 
-Le voci di un pulsante (`ToolbarButton`) hanno `id`, `label: (t) => string`, `command`,
-facoltativi `icon`, `shortcut`, `isActive`, `isVisible`, `priority` e `run` (azione
-personalizzata, ad esempio per aprire un dialog).
+Button items (`ToolbarButton`) have `id`, `label: (t) => string`, `command`, and optional `icon`,
+`shortcut`, `isActive`, `isVisible`, `priority` and `run` (a custom action, for example to open a
+dialog).
 
-## Accessibilità
+## Accessibility
 
-- `role="toolbar"` con navigazione a frecce (un solo punto di tabulazione), stato `aria-pressed`
-  sui pulsanti attivi, `aria-haspopup`/`aria-expanded` sui menu, scorciatoie nei suggerimenti.
-- La barra dei menu segue il pattern WAI-ARIA _menubar_; il menu del tasto destro il pattern
-  _menu_ (anche da tastiera: tasto Menu e Maiusc+F10).
-- I dialog hanno il focus trap e restituiscono il focus alla chiusura; Esc li chiude.
-- Con la barra che non entra nello schermo, le voci meno importanti passano in "Altro".
-- Tutti i testi vengono dal traduttore (`@scriba-editor/i18n`), mai stringhe fisse.
+- `role="toolbar"` with arrow-key navigation (a single tab stop), `aria-pressed` state on active
+  buttons, `aria-haspopup`/`aria-expanded` on menus, shortcuts in the tooltips.
+- The menu bar follows the WAI-ARIA _menubar_ pattern; the right-click menu follows the _menu_
+  pattern (also from the keyboard: Menu key and Shift+F10).
+- Dialogs have a focus trap and return focus when closed; Esc closes them.
+- When the toolbar does not fit on the screen, the less important items move into "More options".
+- All texts come from the translator (`@scriba-editor/i18n`), never hard-coded strings.
 
-Dettagli: [Accessibilità](../../docs/accessibilita.md).
+Details: [Accessibility](../../docs/accessibility.md).
 
-## Sicurezza e CSP
+## Security and CSP
 
-I componenti non usano `innerHTML` né stili inline: gli stili dinamici passano dal CSSOM, quindi
-funzionano con una CSP rigida (senza `unsafe-inline`). I testi mostrati (nomi, etichette,
-parametri di traduzione) sono sempre inseriti come **testo**, mai come HTML. Per l'aspetto
-(variabili `--scriba-*`, tocco, barra fissa) vedi [@scriba-editor/themes](../themes/README.md).
+The components use neither `innerHTML` nor inline styles: dynamic styles go through the CSSOM, so
+they work with a strict CSP (without `unsafe-inline`). Displayed texts (names, labels, translation
+parameters) are always inserted as **text**, never as HTML. For the look (`--scriba-*` variables,
+touch, sticky toolbar) see [@scriba-editor/themes](../themes/README.md).

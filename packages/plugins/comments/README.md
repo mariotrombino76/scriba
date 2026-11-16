@@ -1,16 +1,18 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-comments
 
-**Commenti** sul testo selezionato e **suggerimenti** (modifiche tracciate) per l'editor Scriba.
-Come i plugin Comments e Suggested Edits di TinyMCE. I commenti
-vivono in uno _store_ (in memoria, oppure sul tuo server), non nel documento.
+**Comments** on the selected text and **suggestions** (track changes) for the Scriba editor. Like
+the TinyMCE Comments and Suggested Edits plugins. Comments live in a _store_ (in memory, or on your
+server), not in the document.
 
-## Installazione
+## Installation
 
 ```bash
 pnpm add @scriba-editor/plugin-comments
 ```
 
-## Uso
+## Usage
 
 ```ts
 import {
@@ -25,8 +27,8 @@ import {
   suggestionsPlugin,
 } from '@scriba-editor/plugin-comments'
 
-// solo in locale: l'autore è chi passi tu. Con più utenti usa un backend (vedi Sicurezza).
-const comments = createMemoryCommentStore({ id: 'local', name: 'Tu' })
+// local only: the author is whoever you pass. With multiple users, use a backend (see Security).
+const comments = createMemoryCommentStore({ id: 'local', name: 'You' })
 
 const schema = new Schema({
   nodes: basicSchemaSpec.nodes,
@@ -38,59 +40,59 @@ const state = EditorState.create({
   plugins: [
     commentsPlugin(comments),
     suggestionsPlugin({ store: comments, t }),
-    // readOnly: true => anche chi può solo commentare usa la scorciatoia
+    // readOnly: true => users who can only comment can use the shortcut too
     keymap(commentsKeymap(comments, t), { priority: 80, readOnly: true }),
   ],
 })
 
-// pannello dei commenti in una barra laterale
+// comments panel in a sidebar
 commentsPanel(view, { store: comments, t, container: sidebar })
 
-// pulsanti: "Commenta" (bubble o menu Inserisci) e "Modalità suggerimenti" (menu Visualizza)
+// buttons: "Comment" (bubble or Insert menu) and "Suggest changes" (View menu)
 const items = [commentToolbarItem(comments, t), suggestToolbarItem()]
 ```
 
-Con la collaborazione, al posto dello store in memoria usa `collabCommentStore(provider)` di
+With collaboration, instead of the in-memory store use `collabCommentStore(provider)` from
 [`@scriba-editor/plugin-collab`](../collab/README.md).
 
-## Cosa esporta
+## Exports
 
-| Export                                                                                                                                                                 | Descrizione                                                                                      |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `commentMarks`                                                                                                                                                         | Mark `comment`: contiene solo l'id del thread, non viene esportato in HTML.                      |
-| `suggestionMarks`                                                                                                                                                      | Mark `suggest_insert` e `suggest_delete`, anch'essi non esportati.                               |
-| `commentsPlugin(store)`                                                                                                                                                | Tiene i thread nello stato e evidenzia il testo commentato (solo thread aperti).                 |
-| `suggestionsPlugin({ store, t?, onBlocked? })`                                                                                                                         | Modalità suggerimenti: il testo digitato è una proposta, quello cancellato resta barrato.        |
-| `commentsKeymap(store, t)`                                                                                                                                             | **Mod+Alt+M** commenta la selezione.                                                             |
-| `commentToolbarItem(store, t)`, `suggestToolbarItem()`                                                                                                                 | Pulsanti (il secondo ha `aria-pressed`).                                                         |
-| `commentsPanel(view, options)`                                                                                                                                         | Pannello dei thread; opzioni `store`, `t`, `container`, `locale` (default: lingua della pagina). |
-| `openCommentDialog(view, store, t)`                                                                                                                                    | Finestra per un nuovo commento.                                                                  |
-| `addComment`, `deleteThread`, `removeAnchor`, `focusThread`, `threadRange`, `commentsAt`, `getComments`, `commentsKey`                                                 | Funzioni sui commenti.                                                                           |
-| `listSuggestions(doc)`, `resolveSuggestion(view, id, accept)`, `resolveAllSuggestions(state, accept)`, `setSuggesting`, `suggestingEnabled`, `suggestKey`              | Funzioni sui suggerimenti.                                                                       |
-| `createMemoryCommentStore(user)`, `cleanCommentText`, `MAX_COMMENT_LENGTH` (5000), tipi `CommentStore`, `CommentThread`, `CommentEntry`, `CommentAuthor`, `ThreadKind` | Lo store.                                                                                        |
+| Export                                                                                                                                                                  | Description                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `commentMarks`                                                                                                                                                          | `comment` mark: holds only the thread id, not exported to HTML.                         |
+| `suggestionMarks`                                                                                                                                                       | `suggest_insert` and `suggest_delete` marks, also not exported.                         |
+| `commentsPlugin(store)`                                                                                                                                                 | Keeps the threads in the state and highlights commented text (open threads only).       |
+| `suggestionsPlugin({ store, t?, onBlocked? })`                                                                                                                          | Suggestion mode: typed text is a proposal, deleted text stays struck through.           |
+| `commentsKeymap(store, t)`                                                                                                                                              | **Mod+Alt+M** comments the selection.                                                   |
+| `commentToolbarItem(store, t)`, `suggestToolbarItem()`                                                                                                                  | Buttons (the second has `aria-pressed`).                                                |
+| `commentsPanel(view, options)`                                                                                                                                          | Thread panel; options `store`, `t`, `container`, `locale` (default: the page language). |
+| `openCommentDialog(view, store, t)`                                                                                                                                     | Dialog for a new comment.                                                               |
+| `addComment`, `deleteThread`, `removeAnchor`, `focusThread`, `threadRange`, `commentsAt`, `getComments`, `commentsKey`                                                  | Comment functions.                                                                      |
+| `listSuggestions(doc)`, `resolveSuggestion(view, id, accept)`, `resolveAllSuggestions(state, accept)`, `setSuggesting`, `suggestingEnabled`, `suggestKey`               | Suggestion functions.                                                                   |
+| `createMemoryCommentStore(user)`, `cleanCommentText`, `MAX_COMMENT_LENGTH` (5000), types `CommentStore`, `CommentThread`, `CommentEntry`, `CommentAuthor`, `ThreadKind` | The store.                                                                              |
 
-Uno `CommentStore` ha `userId`, `threads()`, `subscribe(listener)`, `createThread`, `reply`,
-`setResolved`, `deleteComment`, `deleteThread`: implementalo sul tuo backend.
+A `CommentStore` has `userId`, `threads()`, `subscribe(listener)`, `createThread`, `reply`,
+`setResolved`, `deleteComment`, `deleteThread`: implement it on your backend.
 
-## Note
+## Notes
 
-- Accettare o rifiutare un suggerimento (singolo o tutti) è **un solo passo di annulla**. Prima di
-  esportare l'HTML risolvi i suggerimenti con `resolveAllSuggestions(state, true | false)`: i mark
-  non vengono scritti.
-- In modalità suggerimenti sono permesse solo modifiche di testo; le altre sono rifiutate e un
-  messaggio gentile (`suggest.blocked`, `role="status"`) viene letto dagli screen reader.
-- Chi ha l'editor in sola lettura ma `canAnnotate` può comunque commentare.
-- Accessibilità: finestra con focus trap, messaggi di stato e errori in regioni live, scorciatoia da
-  tastiera; vedi [accessibilità](../../../docs/accessibilita.md).
+- Accepting or rejecting a suggestion (one or all) is **a single undo step**. Before exporting HTML,
+  resolve the suggestions with `resolveAllSuggestions(state, true | false)`: the marks are not
+  written.
+- In suggestion mode only text changes are allowed; the others are rejected and a polite message
+  (`suggest.blocked`, `role="status"`) is read by screen readers.
+- Users with the editor in read-only mode but with `canAnnotate` can still comment.
+- Accessibility: dialog with focus trap, status and error messages in live regions, keyboard
+  shortcut; see [accessibility](../../../docs/accessibility.md).
 
-## Sicurezza
+## Security
 
-- **L'autore lo decide lo store**, cioè il tuo backend dalla sessione dell'utente (o il server di
-  collaborazione): mai il client. `createMemoryCommentStore` si fida del nome che gli passi, quindi
-  è solo per demo, test o uso singolo.
-- I mark dei commenti e dei suggerimenti **non hanno regole di parsing HTML**: un HTML incollato o
-  caricato non può creare commenti né proposte. Contengono solo un id validato (`[\w-]{1,64}`).
-- I testi dei commenti sono testo semplice, ripuliti e limitati a 5000 caratteri, e mostrati con
-  `textContent`, mai come HTML.
-- Vedi [sicurezza](../../../docs/sicurezza.md), [collaborazione](../../../docs/collaborazione.md) e
-  [plugin](../../../docs/plugin.md).
+- **The author is decided by the store**, that is your backend from the user's session (or the
+  collaboration server): never the client. `createMemoryCommentStore` trusts the name you pass it,
+  so it is only for demos, tests or single-user use.
+- Comment and suggestion marks **have no HTML parse rules**: pasted or loaded HTML cannot create
+  comments or proposals. They only hold a validated id (`[\w-]{1,64}`).
+- Comment texts are plain text, cleaned and limited to 5000 characters, and displayed with
+  `textContent`, never as HTML.
+- See [security](../../../docs/security.md), [collaboration](../../../docs/collaboration.md) and
+  [plugins](../../../docs/plugins.md).

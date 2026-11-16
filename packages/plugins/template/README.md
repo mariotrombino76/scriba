@@ -1,67 +1,69 @@
+**English** · [Italiano](README.it.md)
+
 # @scriba-editor/plugin-template
 
-Modelli di documento come il plugin `template` di TinyMCE e `advtemplate`: un dialogo con l'elenco dei modelli, descrizione, anteprima di sola lettura e "Inserisci". I modelli possono arrivare dal tuo server.
+Document templates like the TinyMCE `template` and `advtemplate` plugins: a dialog with the list of templates, description, read-only preview and "Insert". Templates can come from your server.
 
 ```bash
 pnpm add @scriba-editor/plugin-template
 ```
 
-## Uso
+## Usage
 
 ```ts
 import { templateToolbarItem, type TemplateOptions } from '@scriba-editor/plugin-template'
 
 const templateOptions: TemplateOptions = {
   locale: 'it-IT',
-  values: { azienda: 'Ditta Esempio' }, // per i segnaposto {{azienda}}
+  values: { company: 'Example Ltd' }, // for the {{company}} placeholders
   templates: [
     {
-      title: 'Verbale di riunione',
-      description: 'Titolo, data, partecipanti e decisioni.',
+      title: 'Meeting minutes',
+      description: 'Title, date, attendees and decisions.',
       content:
-        '<h2>Verbale di riunione</h2><p><strong>Data:</strong> {{date}}</p><h3>Decisioni</h3><ol><li><p></p></li></ol>',
+        '<h2>Meeting minutes</h2><p><strong>Date:</strong> {{date}}</p><h3>Decisions</h3><ol><li><p></p></li></ol>',
     },
     {
-      title: 'Lettera',
-      // caricato solo alla prima anteprima, ad esempio dal server
-      content: () => fetch('/api/modelli/lettera').then((r) => r.text()),
+      title: 'Letter',
+      // loaded only on the first preview, for example from the server
+      content: () => fetch('/api/templates/letter').then((r) => r.text()),
     },
   ],
-  // oppure templates: () => fetch('/api/modelli').then((r) => r.json())
+  // or templates: () => fetch('/api/templates').then((r) => r.json())
 }
 
-// menu Inserisci o toolbar:
+// Insert menu or toolbar:
 templateToolbarItem(t, templateOptions)
 ```
 
-## Esportazioni
+## Exports
 
-| Nome                                   | Cosa fa                                                                                     |
-| -------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `templateToolbarItem(t, options)`      | Voce "Modello..." (`id: 'template'`); disattivata in sola lettura                           |
-| `openTemplateDialog(view, t, options)` | Apre il dialogo da codice                                                                   |
-| `TemplateOptions`                      | `templates` (elenco o funzione asincrona), `values?`, `locale?`                             |
-| `Template`                             | `{ title, description?, content }`; `content` è HTML o una funzione asincrona che lo carica |
-| `TemplateValue`                        | Testo, oppure funzione chiamata a ogni uso                                                  |
-| `insertTemplate(fragment)`             | Comando: inserisce il contenuto nella selezione (un solo passo di undo)                     |
-| `parseTemplate(schema, html, values?)` | HTML del modello trasformato in documento dello schema                                      |
-| `fillPlaceholders(text, values)`       | Sostituisce i `{{nome}}` conosciuti; gli altri restano com'erano                            |
-| `defaultTemplateValues(locale?)`       | I segnaposto predefiniti `{{date}}` e `{{time}}`                                            |
-| `MAX_TEMPLATE_LENGTH`                  | 1 000 000 caratteri: oltre, il modello è rifiutato, non tagliato                            |
+| Name                                   | What it does                                                                             |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `templateToolbarItem(t, options)`      | "Template…" item (`id: 'template'`); disabled in read-only mode                          |
+| `openTemplateDialog(view, t, options)` | Opens the dialog from code                                                               |
+| `TemplateOptions`                      | `templates` (list or async function), `values?`, `locale?`                               |
+| `Template`                             | `{ title, description?, content }`; `content` is HTML or an async function that loads it |
+| `TemplateValue`                        | Text, or a function called on every use                                                  |
+| `insertTemplate(fragment)`             | Command: inserts the content at the selection (a single undo step)                       |
+| `parseTemplate(schema, html, values?)` | Template HTML turned into a schema document                                              |
+| `fillPlaceholders(text, values)`       | Replaces the known `{{name}}` placeholders; the others stay as they were                 |
+| `defaultTemplateValues(locale?)`       | The default `{{date}}` and `{{time}}` placeholders                                       |
+| `MAX_TEMPLATE_LENGTH`                  | 1 000 000 characters: beyond that, the template is rejected, not truncated               |
 
-## Comportamento
+## Behavior
 
-I blocchi del modello mantengono il tipo (un titolo resta titolo): il paragrafo al cursore viene diviso, oppure sostituito se vuoto. In un documento vuoto, o con tutto selezionato, il modello diventa l'intero documento. Dove i blocchi non entrano (cella di tabella, codice) il contenuto è adattato come un incolla. I segnaposto `{{nome}}` (lettere, cifre, `_`, `.`, `-`) sono riempiti solo nei nodi di testo; `date` e `time` sono predefiniti, i tuoi `values` si aggiungono.
+Template blocks keep their type (a heading stays a heading): the paragraph at the cursor is split, or replaced if empty. In an empty document, or with everything selected, the template becomes the whole document. Where blocks do not fit (table cell, code), the content is adapted like a paste. The `{{name}}` placeholders (letters, digits, `_`, `.`, `-`) are filled only in text nodes; `date` and `time` are predefined, your `values` are added to them.
 
-## Accessibilità
+## Accessibility
 
-Il dialogo ha focus trap e restituisce il focus all'editor. I modelli sono un gruppo di radio (frecce) con la descrizione collegata (`aria-describedby`); l'anteprima è una regione con etichetta; caricamenti ed errori sono annunciati (`role="status"` e `role="alert"`).
+The dialog has a focus trap and returns focus to the editor. The templates are a radio group (arrow keys) with the description linked (`aria-describedby`); the preview is a labeled region; loading and errors are announced (`role="status"` and `role="alert"`).
 
-## Sicurezza
+## Security
 
-- Il contenuto dei modelli può arrivare dal server: è **input non fidato**. L'HTML è letto in un documento inerte e passa dal parser dello schema (come un incolla); oltre `MAX_TEMPLATE_LENGTH` è rifiutato.
-- I valori dei segnaposto sono inseriti **solo come testo**, mai come markup, anche se contengono `<` o `>`.
-- Titolo e descrizione sono mostrati come testo. Una risposta lenta per un modello non più selezionato è ignorata, un caricamento fallito mostra un errore.
-- Il server che salva i documenti deve comunque ripassarli da `@scriba-editor/sanitize-server`.
+- Template content can come from the server: it is **untrusted input**. The HTML is read in an inert document and goes through the schema parser (like a paste); beyond `MAX_TEMPLATE_LENGTH` it is rejected.
+- Placeholder values are inserted **only as text**, never as markup, even if they contain `<` or `>`.
+- Title and description are displayed as text. A slow response for a template that is no longer selected is ignored; a failed load shows an error.
+- The server that saves the documents must still pass them through `@scriba-editor/sanitize-server`.
 
-Vedi [sicurezza](../../../docs/sicurezza.md), [accessibilità](../../../docs/accessibilita.md) e [plugin](../../../docs/plugin.md).
+See [security](../../../docs/security.md), [accessibility](../../../docs/accessibility.md) and [plugins](../../../docs/plugins.md).
