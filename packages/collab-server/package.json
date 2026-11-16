@@ -27,7 +27,7 @@
     "@scriba-editor/plugin-permissions": "workspace:*",
     "@types/ws": "8.18.2",
     "lib0": "0.2.119",
-    "ws": "8.22.1",
+    "ws": "8.23.0",
     "y-protocols": "1.0.7",
     "yjs": "13.6.33"
   },
