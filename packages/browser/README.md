@@ -7,13 +7,13 @@ Scriba in qualsiasi pagina web, senza framework e senza build: un foglio di stil
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.1/dist/scriba.css"
   integrity="sha384-bCFNutcDIpxCiQSC0BSWyqdqJn83GqK1gCHnWU2On4iJI3DFadguiLg7XWQt8Tka"
   crossorigin="anonymous"
 />
 <script
-  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"
-  integrity="sha384-awy+OAUb3MAF7xONl9xV4XRN4qeGq/Um5XJJdZ6Z8Hpyf6LHK0eouDun9gUHSo2U"
+  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.1/dist/scriba.iife.js"
+  integrity="sha384-sT+cCdJ0Ks8h+R2Lldj9ZjIc4bSobhUeVXZ2FE5tFiEaWAe/W8FVWh2YXcktaDid"
   crossorigin="anonymous"
 ></script>
 
@@ -39,7 +39,7 @@ ogni altro JavaScript (nome e percorso a tua scelta). `scriba.iife.js` crea l'og
 
 Indica sempre una **versione esatta** nell'URL e tieni `integrity` (SRI) e
 `crossorigin="anonymous"` sui tag: così il browser rifiuta un file diverso da quello atteso. Gli
-hash qui sopra valgono solo per la 0.1.0; per un'altra versione calcolali dal file scaricato:
+hash qui sopra valgono solo per la 0.1.1; per un'altra versione calcolali dal file scaricato:
 
 ```bash
 curl -sL https://cdn.jsdelivr.net/npm/@scriba-editor/browser@<versione>/dist/scriba.iife.js \

@@ -46,13 +46,13 @@ in più un documento strutturato e sicuro per costruzione.
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.css"
+  href="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.1/dist/scriba.css"
   integrity="sha384-bCFNutcDIpxCiQSC0BSWyqdqJn83GqK1gCHnWU2On4iJI3DFadguiLg7XWQt8Tka"
   crossorigin="anonymous"
 />
 <script
-  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.0/dist/scriba.iife.js"
-  integrity="sha384-awy+OAUb3MAF7xONl9xV4XRN4qeGq/Um5XJJdZ6Z8Hpyf6LHK0eouDun9gUHSo2U"
+  src="https://cdn.jsdelivr.net/npm/@scriba-editor/browser@0.1.1/dist/scriba.iife.js"
+  integrity="sha384-sT+cCdJ0Ks8h+R2Lldj9ZjIc4bSobhUeVXZ2FE5tFiEaWAe/W8FVWh2YXcktaDid"
   crossorigin="anonymous"
 ></script>
 <div id="editor"></div>
