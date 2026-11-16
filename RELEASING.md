@@ -36,6 +36,20 @@ numero. La avvia una persona, mandando un tag su GitHub; poi il workflow
    Poi cancella il token e il segreto `NPM_TOKEN`: i rilasci successivi si autenticano con OIDC,
    senza token salvati.
 
+   Si può fare per tutti i pacchetti insieme da terminale (npm ≥ 11.15, dopo `npm login`, in un
+   terminale vero perché serve la 2FA nel browser):
+
+   ```bash
+   npm trust github @scriba-editor/<nome> --repo mariotrombino76/scriba --file release.yml \
+     --env npm --allow-publish --yes
+   ```
+
+   Ripetilo per ogni pacchetto con 2 secondi di pausa; alla prima 2FA scegli "salta per 5
+   minuti". Controllo: `npm trust list @scriba-editor/<nome>`.
+
+   > Fatto per la 0.1.0 il 2026-11-16: tutti i 51 pacchetti hanno il Trusted Publisher e
+   > `release.yml` non usa più `NPM_TOKEN`.
+
 5. **Licenza.** `LICENSE` (Apache 2.0) e `NOTICE` (attribuzione a Mario Trombino) sono nella
    radice e in ogni pacchetto. npm include solo i file nella cartella del pacchetto: se cambiano,
    ricopiali in tutti.

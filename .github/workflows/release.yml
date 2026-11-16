@@ -73,14 +73,22 @@ jobs:
       - run: pnpm test
       - run: pnpm test:security
       - run: pnpm build
+      # Authentication: trusted publishing (OIDC) configured on npm for every package
+      # (repository mariotrombino76/scriba, release.yml, environment npm). No token is
+      # stored. npm publishes the tarball made by pnpm pack (which rewrites workspace:
+      # dependencies); npm handles OIDC from 11.5.1.
       - name: Publish
-        env:
-          # first release: a granular npm token saved as the NPM_TOKEN secret of the
-          # "npm" environment; afterwards trusted publishing (OIDC) needs no token
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
+          node -e '
+            const [a, b, c] = require("node:child_process").execSync("npm --version").toString().trim().split(".").map(Number)
+            if (a < 11 || (a === 11 && (b < 5 || (b === 5 && c < 1)))) {
+              console.error("npm >= 11.5.1 is needed for trusted publishing")
+              process.exit(1)
+            }'
           version="${VERSION#v}"
+          out="$RUNNER_TEMP/packages"
+          mkdir -p "$out"
           names=$(pnpm -r ls --depth -1 --json | node -e '
             let s = ""
             process.stdin.on("data", (d) => (s += d)).on("end", () => {
@@ -96,8 +104,11 @@ jobs:
               echo "Waiting $DELAY_MINUTES minutes before $name"
               sleep $((DELAY_MINUTES * 60))
             fi
+            rm -f "$out"/*.tgz
+            pnpm --filter "$name" pack --pack-destination "$out"
+            tarball=$(ls "$out"/*.tgz)
             for attempt in 1 2 3 4; do
-              if pnpm --filter "$name" publish --access public --provenance --no-git-checks; then
+              if npm publish "$tarball" --access public --provenance; then
                 break
               fi
               if [ "$attempt" -eq 4 ]; then
