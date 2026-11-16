@@ -47,9 +47,10 @@ jobs:
           ref: ${{ inputs.version && format('refs/tags/v{0}', inputs.version) || github.ref }}
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        # no registry-url: its .npmrc only holds ${NODE_AUTH_TOKEN}, which trusted
+        # publishing does not use (npm publishes to registry.npmjs.org by default)
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # the tag must match the version of every package

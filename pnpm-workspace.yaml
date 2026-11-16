@@ -13,3 +13,7 @@ overrides:
   'mammoth>argparse': 2.0.1
   # jsdom (tests only): undici 8.12.2 fixes GHSA DoS and SRI bypass advisories (8.0.0–8.12.1)
   'jsdom>undici': 8.12.2
+  # dev only (@vue/test-utils > js-beautify, typescript-eslint): GHSA-g3hv-75wg-m249 (glob,
+  # post-timeout traversal) and the minimatch globparts DoS; no upstream release yet
+  'glob@>=9.0.0 <=14.0.1': ^14.0.2
+  'minimatch@>=7.0.0 <11.0.1': ^11.0.1
