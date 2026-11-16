@@ -23,19 +23,19 @@
   "dependencies": {
     "@scriba-editor/core": "workspace:*",
     "@scriba-editor/i18n": "workspace:*",
+    "@scriba-editor/plugin-markdown": "workspace:*",
     "@scriba-editor/ui": "workspace:*",
     "@scriba-editor/view": "workspace:*",
-    "@scriba-editor/plugin-markdown": "workspace:*",
-    "mammoth": "1.13.0",
-    "docx": "9.8.1",
-    "jszip": "3.10.2"
+    "docx": "9.15.3",
+    "jszip": "3.10.2",
+    "mammoth": "1.13.0"
   },
   "devDependencies": {
-    "@scriba-editor/plugin-list": "workspace:*",
     "@scriba-editor/plugin-blockquote": "workspace:*",
+    "@scriba-editor/plugin-image": "workspace:*",
     "@scriba-editor/plugin-link": "workspace:*",
-    "@scriba-editor/plugin-table": "workspace:*",
-    "@scriba-editor/plugin-image": "workspace:*"
+    "@scriba-editor/plugin-list": "workspace:*",
+    "@scriba-editor/plugin-table": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
