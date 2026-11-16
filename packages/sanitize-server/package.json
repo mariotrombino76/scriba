@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/sanitize-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server-side (Node) HTML sanitization with the same schema as the Scriba editor.",
   "type": "module",
   "sideEffects": false,

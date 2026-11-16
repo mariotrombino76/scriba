@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/vue",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vue 3 wrapper for the Scriba editor: <ScribaEditor v-model> and useScriba().",
   "type": "module",
   "sideEffects": false,

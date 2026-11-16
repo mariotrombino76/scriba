@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/browser",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scriba for any web page: one script (global Scriba) or one ES module, plus the CSS. No framework, no build step.",
   "type": "module",
   "sideEffects": [

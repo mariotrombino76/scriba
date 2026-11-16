@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UI for the Scriba editor as vanilla Web Components (toolbar…).",
   "type": "module",
   "sideEffects": false,

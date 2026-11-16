@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Schema-based document model, transactions and commands for the Scriba editor. DOM-free.",
   "type": "module",
   "sideEffects": false,

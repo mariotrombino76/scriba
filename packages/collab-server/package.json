@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/collab-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Collaboration server for Scriba (y-websocket compatible): authentication, permissions, limits, server-assigned identities.",
   "type": "module",
   "sideEffects": false,

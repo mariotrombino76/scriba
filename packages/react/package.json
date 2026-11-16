@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React wrapper for the Scriba editor: <ScribaEditor value onChange> and useScriba().",
   "type": "module",
   "sideEffects": false,

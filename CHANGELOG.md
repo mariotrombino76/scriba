@@ -10,6 +10,8 @@ incompatibile è comunque segnalata qui nella sezione **Modificato**, con l'indi
 
 ## Non rilasciato
 
+## 0.1.1 — 2026-11-16
+
 ### Corretto
 
 - **view:** una selezione fatta subito prima di lasciare l'editor (per esempio Maiusc+Home e poi
@@ -23,6 +25,15 @@ incompatibile è comunque segnalata qui nella sezione **Modificato**, con l'indi
 - **core:** quando Backspace trasforma il primo blocco del documento in paragrafo, il paragrafo
   conserva gli attributi che ha in comune con il blocco di prima (allineamento, rientro,
   direzione).
+
+### Modificato
+
+- **Dipendenze:** `parse5` 8.1.0 (`sanitize-server`), `ws` 8.22.1 (`collab-server`), `docx` 9.15.3
+  (`plugin-file`).
+- **Documentazione:** gli esempi CDN hanno `integrity` (SRI) e `crossorigin`, e spiegano che
+  `/js/editor.js` è un file del sito che usa Scriba.
+- **Pubblicazione:** i pacchetti sono pubblicati con il _Trusted Publisher_ di npm (OIDC, nessun
+  token salvato) e con provenance.
 
 ## 0.1.0 — 2026-11-10
 

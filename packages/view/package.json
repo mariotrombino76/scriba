@@ -1,6 +1,6 @@
 {
   "name": "@scriba-editor/view",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DOM view for the Scriba editor: contentEditable, beforeinput, IME, selection sync.",
   "type": "module",
   "sideEffects": false,
