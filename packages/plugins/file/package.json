@@ -26,7 +26,7 @@
     "@scriba-editor/plugin-markdown": "workspace:*",
     "@scriba-editor/ui": "workspace:*",
     "@scriba-editor/view": "workspace:*",
-    "docx": "9.15.3",
+    "docx": "9.15.4",
     "jszip": "3.10.2",
     "mammoth": "1.13.0"
   },
