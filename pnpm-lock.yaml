@@ -57,8 +57,8 @@ importers:
         specifier: ^31.0.1
         version: 31.0.1
       katex:
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.19.1
+        version: 0.19.1
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
@@ -634,8 +634,8 @@ importers:
         specifier: workspace:*
         version: link:../../view
       katex:
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.19.1
+        version: 0.19.1
 
   packages/plugins/mention:
     dependencies:
@@ -934,8 +934,8 @@ importers:
         specifier: ^26.6.6
         version: 26.6.6
       katex:
-        specifier: 0.19.0
-        version: 0.19.0
+        specifier: 0.19.1
+        version: 0.19.1
 
   packages/themes: {}
 
@@ -1612,8 +1612,8 @@ packages:
     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
 
-  commander@15.0.0:
-    resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
+  commander@15.1.0:
+    resolution: {integrity: sha512-cgnQ88TRrWcC7pVq46RzJVRMktu3W2RcbnoidnfBsl1bmDCBwJS/udcIZpKoCrbAYYaCqsz1yZCVIgbIaU3ddQ==}
     engines: {node: '>=22.12.0'}
 
   concat-map@0.0.1:
@@ -1928,8 +1928,8 @@ packages:
   jszip@3.10.2:
     resolution: {integrity: sha512-3l+rb15IOWtUhU0H5MFqES/T6Kh7abYwjosBey/vD6hDt8zoEffkSC5Ws5SGtgVw3gBx2NEbhTeSW1+kWkpyTQ==}
 
-  katex@0.19.0:
-    resolution: {integrity: sha512-v6Tznz3zJ7u3niRCoDTsumM2+HA2XXcCu+WAacCeHD2z3p9A9Ks987o5FzfTGBN0e8A0vjEgIDvLbICrXpdw/Q==}
+  katex@0.19.1:
+    resolution: {integrity: sha512-jG8uKntjSEcm2EpQOh0XturpPuuC9r3Sq5HLHdsFdWZT27E672SF19QEi+of0/YeOy15lDgRhKvr5614uRrEfA==}
     hasBin: true
 
   keyv@4.5.4:
@@ -3102,7 +3102,7 @@ snapshots:
 
   commander@14.0.3: {}
 
-  commander@15.0.0: {}
+  commander@15.1.0: {}
 
   concat-map@0.0.1: {}
 
@@ -3413,9 +3413,9 @@ snapshots:
       readable-stream: 2.3.8
       setimmediate: 1.0.5
 
-  katex@0.19.0:
+  katex@0.19.1:
     dependencies:
-      commander: 15.0.0
+      commander: 15.1.0
 
   keyv@4.5.4:
     dependencies:
